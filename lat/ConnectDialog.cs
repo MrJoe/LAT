@@ -54,6 +54,8 @@ namespace lat
 		private ProfileManager profileManager;
 		private ListStore profileListStore;
 
+		public lat.Connection UserConnection;
+
 		public ConnectDialog ()
 		{
 			profileManager = new ProfileManager ();
@@ -135,11 +137,6 @@ namespace lat
 			{
 				profileListStore.AppendValues (s);
 			}
-		}
-
-		private void OnAppDelete (object o, DeleteEventArgs args) 
-		{	
-			exitApp ();
 		}
 
 		private void OnProfileAdd (object o, EventArgs args)
@@ -283,11 +280,15 @@ namespace lat
 			exitApp ();
 		}
 
+		private void OnAppDelete (object o, DeleteEventArgs args) 
+		{
+			exitApp ();
+		}
+
 		private void exitApp ()
 		{
 			connectionDialog.Destroy ();
 			Application.Quit ();
 		}
-
 	}
 }

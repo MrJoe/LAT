@@ -342,13 +342,9 @@ namespace lat
 			_modList.Clear ();
 		
 			LdapAttributeSet attributeSet = entry.getAttributeSet ();
-			
-			IEnumerator ienum = attributeSet.GetEnumerator ();
-			
-			while (ienum.MoveNext ())
-			{
-				LdapAttribute attr = (LdapAttribute)ienum.Current;
 
+			foreach (LdapAttribute attr in attributeSet)
+			{
 				string[] svalues;
 				svalues = attr.StringValueArray;
 							

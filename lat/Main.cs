@@ -38,7 +38,7 @@ public class LdapAdministrationTool
 			Defines.LOCALE_DIR);
 
 		new ConnectDialog ();
-
+		
 		program.Run ();
 	}
 }
