@@ -316,7 +316,7 @@ namespace lat
 				Mono.Posix.Catalog.GetString ("Port"), _conn.Port.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("User"), _conn.User);
+				Mono.Posix.Catalog.GetString ("User"), _conn.AuthDN);
 
 			valuesStore.AppendValues (
 				Mono.Posix.Catalog.GetString ("Base DN"), _conn.LdapRoot);
@@ -520,6 +520,11 @@ namespace lat
 				setNameValueView ();	
 				toggleButtons (false);
 			}
+		}
+
+		private void OnReloginActivate (object o, EventArgs args)
+		{
+			new LoginDialog (_conn);
 		}
 
 		private void OnDisconnectActivate (object o, EventArgs args) 

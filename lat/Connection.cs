@@ -44,7 +44,17 @@ namespace lat
 			_ldapRoot = baseDN;
 			_ssl = ssl;
 
-			Init ();
+			try 
+			{
+				_conn = new LdapConnection ();
+
+	//			_conn.SecureSocketLayer = _ssl;	
+				_conn.Connect (host, port);
+				_conn.Bind (user, pass);
+			}
+			catch
+			{
+			}
 		}
 
 		public LdapEntry getEntry (string dn)
@@ -276,18 +286,16 @@ namespace lat
 			_conn.Disconnect ();
 		}
 
-		private void Init ()
+		public bool Bind (string user, string pass)
 		{
 			try 
 			{
-				_conn = new LdapConnection ();
-
-	//			_conn.SecureSocketLayer = _ssl;	
-				_conn.Connect (_host, _port);
-				_conn.Bind (_user, _pass);
+				_conn.Bind (user, pass);
+				return true;
 			}
 			catch
 			{
+				return false;
 			}
 		}
 
@@ -311,9 +319,9 @@ namespace lat
 			get { return _user; }
 		}
 
-		public string Pass
+		public string AuthDN
 		{
-			get { return _pass; }
+			get { return _conn.AuthenticationDN; }
 		}
 
 		public bool IsBound

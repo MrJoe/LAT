@@ -24,6 +24,7 @@ LAT_CSFILES = \
 	LDIF.cs \
 	LdapSearch.cs \
 	LdapTreeView.cs \
+	LoginDialog.cs \
 	Main.cs \
 	PasswordDialog.cs \
 	ProfileDialog.cs \
