@@ -431,8 +431,8 @@ namespace lat
 				if (name.Equals (_conn.Host))
 				{
 					clearValues ();
-					_currentView.removeHandlers ();
-					_currentView.removeDndHandlers ();
+
+					// FIXME: Need a way to remove the handlers
 
 					setNameValueView ();
 					showConnectionAttributes ();
@@ -495,10 +495,8 @@ namespace lat
 			{
 				if (_currentView != null)
 				{
-					removeButtonHandlers ();
 					_currentView.removeHandlers ();
 					_currentView.removeDndHandlers ();
-					_currentView = null;
 				}
 
 				toggleButtons (true);
@@ -515,7 +513,6 @@ namespace lat
 				{
 					_currentView.removeHandlers ();
 					_currentView.removeDndHandlers ();
-					_currentView = null;
 				}
 
 				_ldapTreeview.removeToolbarHandlers ();
