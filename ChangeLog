@@ -1,0 +1,75 @@
+Version 0.5.2
+
+	* BUGFIX: Use Mono.Posix.Catalog instead of GNU.gettext
+
+Version 0.5.1
+
+	* BUGFIX: Typo in connect dialog error messages causes crash
+
+Version 0.5
+
+	* Added search builder
+	* Added support for custom user-defined views
+	* BUGFIX: Use gettext for all strings
+	* BUGFIX: LdapTreeView inserts duplicate entries
+	* BUGFIX: Event handlers are not removed when view changes
+
+Version 0.4.1
+	
+	* BUGFIX: Verify required attributes when adding new entries
+	* BUGFIX: Cancel new entry if user doesn't select container
+	* BUGFIX: Don't crash if search filter is not valid
+	* BUGFIX: Don't prompt yes/no for each entry when doing mass delete
+	* Code cleanup; removed 1,000 lines
+
+Version 0.4
+
+	* Added LDIF import/export (including drag and drop support)
+	* Added search function
+	* Added toolbar (New, Edit, Delete, Refresh)
+	* Added "Contacts" view
+	* Use stock icons in more places
+	* Guido Trotter now maintiaing Debian scripts (Debian Bug #298381)
+	* BUGFIX: Duplicate profile created when doing a rename
+
+Version 0.3.1
+
+	* Added "Hosts" view
+	* Re-designed "Users" edit dialog
+	* Code cleanup
+	* BUGFIX: Remove hardcoded OUs; ask user what container to save entries to
+	* BUGFIX: Multiple dialogs appear when double clicking an entry
+	* BUGFIX: Make sure dialogs get destroyed
+	* BUGFIX: Fix crash when attributes missing
+	* BUGFIX: Don't crash when when there are no group members in "Groups" view
+
+Version 0.3
+
+	* Added support for different views
+	* Wrote initial views for Users & Groups
+	* Treviews support right click functionality
+	* Show connection properties when click on host
+	* Update menu items; make sure they are keyword accessible
+	* Added scripts for making Debian packages
+	* Various bugfixes
+
+Version 0.2.1
+
+	* Fixed bug in add/edit of profiles
+
+Version 0.2
+
+	* Rewrote LDAP browsing code
+	* Updated Connect/Profile dialogs to better conform to GNOME HIG
+	* Added support for renames
+	* Initial support for internationalization and localization
+	* Added .desktop entry
+	* Various bugfixes
+
+Version 0.1.1
+
+	* Included missing lat.glade file
+
+Version 0.1
+
+	* Initial public release.

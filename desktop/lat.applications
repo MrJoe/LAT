@@ -1,0 +1,8 @@
+lat
+	command=lat
+	name=lat
+	can_open_multiple_files=false
+	expects_uris=false
+	requires_terminal=false
+	startup_notify=true
+	supported_uri_schemes=file

@@ -1,0 +1,48 @@
+lat (0.5.2-1) unstable; urgency=low
+
+  * LAT v0.5.2 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Tues, 29 Mar 2005 16:04:30 -0500
+
+lat (0.5.1-1) unstable; urgency=low
+
+  * LAT v0.5.1 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Mon, 28 Mar 2005 07:31:26 -0500
+
+lat (0.5-1) unstable; urgency=low
+
+  * LAT v0.5 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Sat, 26 Mar 2005 02:19:15 -0500
+
+lat (0.4.1-1) unstable; urgency=low
+
+  * LAT v0.4.1 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Sun, 13 Mar 2005 11:12:10 -0500
+
+lat (0.4-1) unstable; urgency=low
+
+  * LAT v0.4 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Sun, 13 Mar 2005 07:27:35 -0500
+
+lat (0.3.1-1) unstable; urgency=low
+
+  * LAT v0.3.1 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Sun, 06 Mar 2005 17:25:10 -0500
+
+lat (0.3-1) unstable; urgency=low
+
+  * LAT v0.3 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Sun, 27 Feb 2005 18:49:22 -0500
+
+lat (0.2-1) unstable; urgency=low
+
+  * Initial Debian package release.
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Sun, 20 Feb 2005 21:04:02 -0500
+

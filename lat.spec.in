@@ -1,0 +1,47 @@
+Name: lat
+Version: @VERSION@
+Release: 1
+
+Group: Applications/System
+License: GPL
+URL: http://people.mmgsecurity.com/~lorenb/lat
+
+Source: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-root
+Requires: /sbin/ldconfig, mono, gtk-sharp
+BuildRequires: mono-devel, gtk-sharp-devel
+
+Summary: LDAP Administrator Tool
+%description
+LDAP Administrator Tool.
+
+%prep
+%setup -q
+
+%build
+%configure
+make %{_smp_mflags}
+
+%install
+rm -rf %{buildroot}
+%makeinstall
+
+%clean
+rm -rf %{buildroot}
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README TODO
+%{_bindir}/*
+%{_sysconfdir}/*
+%{_libdir}/%{name}/*
+%{_datadir}/applications/%{name}.desktop
+
+%changelog
+* Thu Feb 03 2005 Loren Bandiera <lorenb@mmgsecurity.com>
+- Initial RPM release
+

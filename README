@@ -1,0 +1,47 @@
+General Information
+===================
+
+lat stands for LDAP Administration Tool.  The tool allows you to browse
+LDAP-based directories and add/edit/delete entries contained within.  It
+can store profiles for quick access to different servers. 
+
+There are also different views available such as Users, Groups and Hosts 
+which allow you to easily manage objects without having to deal with the 
+intricacies of LDAP.
+
+lat is released under the GNU General Public License (GPL) version 2, 
+see the file 'COPYING' for more information.
+
+The official web site is:
+
+	http://people.mmgsecurity.com/~lorenb/lat/
+
+Installation
+============
+
+lat requires the following other packages:
+
+	* Mono >= 1.0.4
+	* Gtk# >= 1.0.4
+
+Simple installation procedure:
+
+	# tar zxvf lat-X.X.tar.gz
+	# cd lat-X.X
+	# ./configure
+	# make
+	# make install
+
+See the file 'INSTALL' for more detailed information.
+
+Hacking
+=======
+
+LAT is written in C# using Mono and Gtk#. The source code is available from 
+the MMG Security Subversion repository in the module lat.
+
+	$ svn co http://svn.mmgsecurity.com/svn/lat 
+
+Bugs / Patches
+==================
+Bugs/patches can be reported/submitted to http://bugs.mmgsecurity.com/
