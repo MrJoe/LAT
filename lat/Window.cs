@@ -431,6 +431,9 @@ namespace lat
 				if (name.Equals (_conn.Host))
 				{
 					clearValues ();
+					_currentView.removeHandlers ();
+					_currentView.removeDndHandlers ();
+
 					setNameValueView ();
 					showConnectionAttributes ();
 
