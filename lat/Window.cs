@@ -497,6 +497,7 @@ namespace lat
 				{
 					_currentView.removeHandlers ();
 					_currentView.removeDndHandlers ();
+					_currentView = null;
 				}
 
 				toggleButtons (true);
@@ -513,6 +514,7 @@ namespace lat
 				{
 					_currentView.removeHandlers ();
 					_currentView.removeDndHandlers ();
+					_currentView = null;
 				}
 
 				_ldapTreeview.removeToolbarHandlers ();
