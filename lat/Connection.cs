@@ -198,6 +198,22 @@ namespace lat
 			}
 		}
 
+		public bool Move (string oldDN, string newRDN, string parentDN)
+		{
+			if (!_conn.Connected)
+				return false;
+
+			try
+			{
+				_conn.Rename (oldDN, newRDN, parentDN, true);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
 		public bool Rename (string oldDN, string newDN, bool saveOld)
 		{
 			if (!_conn.Connected)

@@ -74,6 +74,9 @@ namespace lat
 
 		private static ViewFactory viewFactory;
 		private lat.View _currentView = null;
+
+		private string _cutDN = null;
+		private string _pasteDN = null;
 		
 		public latWindow (Connection conn) 
 		{
@@ -385,7 +388,6 @@ namespace lat
 			editButton.Clicked -= new EventHandler (_currentView.OnEditActivate);
 			deleteButton.Clicked -= new EventHandler (_currentView.OnDeleteActivate);
 			refreshButton.Clicked -= new EventHandler (_currentView.OnRefreshActivate);
-
 		}
 
 		private void changeView (string name)
@@ -570,6 +572,15 @@ namespace lat
 
 		private void OnCutActivate (object o, EventArgs args)
 		{
+			if (!(viewNotebook.Page == 1))
+				return;
+
+			_cutDN = _ldapTreeview.getSelectedDN ();
+
+			if (_cutDN.Equals (null))
+				return;
+
+			Console.WriteLine ("CUT: {0}", _cutDN);
 		}
 
 		private void OnCopyActivate (object o, EventArgs args)
@@ -578,6 +589,27 @@ namespace lat
 
 		private void OnPasteActivate (object o, EventArgs args)
 		{
+			if (!(viewNotebook.Page == 1))
+				return;
+
+			_pasteDN = _ldapTreeview.getSelectedDN ();
+
+			if (_pasteDN.Equals (null))
+				return;
+
+			LdapEntry le = _conn.getEntry (_cutDN);
+			LdapAttribute attr = le.getAttribute ("cn");
+
+			string newRDN = String.Format ("cn={0},{1}",
+				attr.StringValue, _pasteDN);
+
+Console.WriteLine ("PASTE: {0}", _pasteDN);
+Console.WriteLine ("newRDN: {0}", newRDN);
+
+//			if (_conn.Rename (_cutDN, newRDN, true))
+//				Console.WriteLine ("MOVED");
+//			else
+//				Console.WriteLine ("FAILED");
 		}
 
 		private void OnViewChanged (object o, EventArgs args)
