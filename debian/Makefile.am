@@ -4,8 +4,8 @@ EXTRA_DIST = \
 	dirs \
 	files \
 	rules \
-	compat \    
-	copyright \  
+	compat \
+	copyright \
 	docs \
 	menu.ex \
 	watch.ex
