@@ -29,7 +29,7 @@ namespace lat
 	{
 		private static string[] _author = { "Loren Bandiera" };
 		private static string _desc = "LDAP Administration Tool";
-		private static string _copy = "Copyright (c) 2005, MMG Security, Inc.";
+		private static string _copy = "Copyright 2005 MMG Security Inc.";
 
 		public AboutDialog ()
 		{
@@ -41,7 +41,7 @@ namespace lat
 				_author,
 				null, null, null);
 
-			ab.Run ();
+			ab.Show ();
 		}
 
 		public static void Show ()
