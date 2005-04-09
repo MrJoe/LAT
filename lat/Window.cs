@@ -5,8 +5,7 @@
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
+// the Free Software Foundation; Version 2 .
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -591,7 +590,7 @@ namespace lat
 		{
 			if (!(viewNotebook.Page == 1))
 				return;
-
+/*
 			_pasteDN = _ldapTreeview.getSelectedDN ();
 
 			if (_pasteDN.Equals (null))
@@ -606,10 +605,13 @@ namespace lat
 Console.WriteLine ("PASTE: {0}", _pasteDN);
 Console.WriteLine ("newRDN: {0}", newRDN);
 
-//			if (_conn.Rename (_cutDN, newRDN, true))
-//				Console.WriteLine ("MOVED");
-//			else
-//				Console.WriteLine ("FAILED");
+			if (_conn.Move ("cn=Some Test,ou=people,dc=example,dc=com", 
+					"",
+					"ou=groups,dc=example,dc=com"))
+				Console.WriteLine ("MOVED");
+			else
+				Console.WriteLine ("FAILED");
+*/
 		}
 
 		private void OnViewChanged (object o, EventArgs args)
