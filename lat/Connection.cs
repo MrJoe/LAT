@@ -197,6 +197,22 @@ namespace lat
 			}
 		}
 
+		public bool Copy (string oldDN, string newRDN, string parentDN)
+		{
+			if (!_conn.Connected)
+				return false;
+
+			try
+			{
+				_conn.Rename (oldDN, newRDN, parentDN, false);
+				return true;
+			}
+			catch (LdapException e)
+			{
+				return false;
+			}
+		}
+
 		public bool Move (string oldDN, string newRDN, string parentDN)
 		{
 			if (!_conn.Connected)
@@ -209,7 +225,6 @@ namespace lat
 			}
 			catch (LdapException e)
 			{
-Console.WriteLine ("Move error: {0} - RC: {1}", e.LdapErrorMessage, e.ResultCode);
 				return false;
 			}
 		}

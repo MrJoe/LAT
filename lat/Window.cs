@@ -76,6 +76,7 @@ namespace lat
 
 		private string _cutDN = null;
 		private string _pasteDN = null;
+		private bool _isCopy = false;
 		
 		public latWindow (Connection conn) 
 		{
@@ -576,14 +577,19 @@ namespace lat
 
 			_cutDN = _ldapTreeview.getSelectedDN ();
 
-			if (_cutDN.Equals (null))
-				return;
-
-			Console.WriteLine ("CUT: {0}", _cutDN);
+			Logger.Log.Debug ("cut - dn: {0}", _cutDN);
 		}
 
 		public void OnCopyActivate (object o, EventArgs args)
 		{
+			if (!(viewNotebook.Page == 1))
+				return;
+
+			_cutDN = _ldapTreeview.getSelectedDN ();
+
+			_isCopy = true;
+
+			Logger.Log.Debug ("copy - dn: {0}", _cutDN);
 		}
 
 		public void OnPasteActivate (object o, EventArgs args)
@@ -600,20 +606,58 @@ namespace lat
 			LdapAttribute attr = le.getAttribute ("cn");
 
 			string newRDN = String.Format ("cn={0}", attr.StringValue);
+	
+			bool result = false;
 
-			if (_conn.Move (_cutDN, newRDN,	_pasteDN))
+			if (_isCopy)
 			{
+				result = _conn.Copy (_cutDN, newRDN, _pasteDN);
+			}
+			else
+			{
+				result = _conn.Move (_cutDN, newRDN, _pasteDN);
+			}
+
+
+			if (result)
+			{
+				string msg = null;
+
+				if (_isCopy)
+				{
+					msg = String.Format ("Entry {0} copied to {1}", 
+						_cutDN, _pasteDN);
+				}
+				else
+				{
+					msg = String.Format ("Entry {0} moved to {1}", 
+						_cutDN, _pasteDN);
+				}
+
 				Util.MessageBox (mainWindow, 
-					String.Format ("Entry {0} moved to {1}", _cutDN, _pasteDN), 
+					msg, 
 					MessageType.Info);
 			}
 			else
 			{
+				string msg = null;
+
+				if (_isCopy)
+				{
+					msg = "Unable to copy entry " + _cutDN;
+				}
+				else
+				{
+					msg = "Unable to move entry " + _cutDN;
+				}
+
 				Util.MessageBox (mainWindow, 
-					"Unable to move entry " + _cutDN, 
+					msg, 
 					MessageType.Error);
 			}
 
+			if (_isCopy)
+				_isCopy = false;
 		}
 
 		public void OnViewChanged (object o, EventArgs args)
