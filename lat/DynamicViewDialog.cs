@@ -41,7 +41,7 @@ namespace lat
 		
 		private LdapEntry _le;
 		private ArrayList _modList;
-		private Hashtable _di;
+//		private Hashtable _di;
 
 		public DynamicViewDialog (lat.Connection conn) : base (conn)
 		{

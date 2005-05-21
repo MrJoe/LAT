@@ -194,10 +194,10 @@ namespace lat
 			passwordDialog.HideAll ();
 		}
 
-		private void OnDlgDelete (object o, DeleteEventArgs args)
-		{
-			passwordDialog.HideAll ();
-		}
+//		private void OnDlgDelete (object o, DeleteEventArgs args)
+//		{
+//			passwordDialog.HideAll ();
+//		}
 
 		public string Password 
 		{

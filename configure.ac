@@ -33,7 +33,7 @@ AC_PATH_PROG(MONO, mono)
 MCS_FLAGS=
 MONO_FLAGS=
 if test $USE_MAINTAINER_MODE = yes; then
-	MCS_FLAGS="-g"
+	MCS_FLAGS="-debug"
 	MONO_FLAGS="--debug"
 fi
 AC_SUBST(MCS_FLAGS)

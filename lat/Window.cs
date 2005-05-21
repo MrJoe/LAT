@@ -75,7 +75,7 @@ namespace lat
 		private lat.View _currentView = null;
 
 		private string _cutDN = null;
-		private string _pasteDN = null;
+//		private string _pasteDN = null;
 		
 		public latWindow (Connection conn) 
 		{
