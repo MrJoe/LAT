@@ -75,7 +75,7 @@ namespace lat
 		private lat.View _currentView = null;
 
 		private string _cutDN = null;
-//		private string _pasteDN = null;
+		private string _pasteDN = null;
 		
 		public latWindow (Connection conn) 
 		{
@@ -590,7 +590,7 @@ namespace lat
 		{
 			if (!(viewNotebook.Page == 1))
 				return;
-/*
+
 			_pasteDN = _ldapTreeview.getSelectedDN ();
 
 			if (_pasteDN.Equals (null))
@@ -599,19 +599,21 @@ namespace lat
 			LdapEntry le = _conn.getEntry (_cutDN);
 			LdapAttribute attr = le.getAttribute ("cn");
 
-			string newRDN = String.Format ("cn={0},{1}",
-				attr.StringValue, _pasteDN);
+			string newRDN = String.Format ("cn={0}", attr.StringValue);
 
-Console.WriteLine ("PASTE: {0}", _pasteDN);
-Console.WriteLine ("newRDN: {0}", newRDN);
-
-			if (_conn.Move ("cn=Some Test,ou=people,dc=example,dc=com", 
-					"",
-					"ou=groups,dc=example,dc=com"))
-				Console.WriteLine ("MOVED");
+			if (_conn.Move (_cutDN, newRDN,	_pasteDN))
+			{
+				Util.MessageBox (mainWindow, 
+					String.Format ("Entry {0} moved to {1}", _cutDN, _pasteDN), 
+					MessageType.Info);
+			}
 			else
-				Console.WriteLine ("FAILED");
-*/
+			{
+				Util.MessageBox (mainWindow, 
+					"Unable to move entry " + _cutDN, 
+					MessageType.Error);
+			}
+
 		}
 
 		public void OnViewChanged (object o, EventArgs args)
