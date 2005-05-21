@@ -521,12 +521,12 @@ namespace lat
 			}
 		}
 
-		private void OnReloginActivate (object o, EventArgs args)
+		public void OnReloginActivate (object o, EventArgs args)
 		{
 			new LoginDialog (_conn);
 		}
 
-		private void OnDisconnectActivate (object o, EventArgs args) 
+		public void OnDisconnectActivate (object o, EventArgs args) 
 		{
 			_conn.Disconnect ();
 
@@ -536,7 +536,7 @@ namespace lat
 			new ConnectDialog ();
 		}
 
-		private void OnImportActivate (object o, EventArgs args)
+		public void OnImportActivate (object o, EventArgs args)
 		{
 			FileSelection fs = new FileSelection (
 				Mono.Posix.Catalog.GetString ("Choose a file"));
@@ -553,7 +553,7 @@ namespace lat
 			Util.ImportData (_conn, mainWindow, ub.Uri);
 		}
 
-		private void OnExportActivate (object o, EventArgs args)
+		public void OnExportActivate (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = new SelectContainerDialog (_conn, mainWindow);
 
@@ -569,7 +569,7 @@ namespace lat
 			Util.ExportData (_conn, scd.DN);
 		}
 
-		private void OnCutActivate (object o, EventArgs args)
+		public void OnCutActivate (object o, EventArgs args)
 		{
 			if (!(viewNotebook.Page == 1))
 				return;
@@ -582,11 +582,11 @@ namespace lat
 			Console.WriteLine ("CUT: {0}", _cutDN);
 		}
 
-		private void OnCopyActivate (object o, EventArgs args)
+		public void OnCopyActivate (object o, EventArgs args)
 		{
 		}
 
-		private void OnPasteActivate (object o, EventArgs args)
+		public void OnPasteActivate (object o, EventArgs args)
 		{
 			if (!(viewNotebook.Page == 1))
 				return;
@@ -614,7 +614,7 @@ Console.WriteLine ("newRDN: {0}", newRDN);
 */
 		}
 
-		private void OnViewChanged (object o, EventArgs args)
+		public void OnViewChanged (object o, EventArgs args)
 		{
 			clearValues ();
 
@@ -653,12 +653,12 @@ Console.WriteLine ("newRDN: {0}", newRDN);
 			}
 		}
 
-		private void OnQuitActivate (object o, EventArgs args) 
+		public void OnQuitActivate (object o, EventArgs args) 
 		{
 			Application.Quit ();
 		}
 
-		private void OnAboutActivate (object o, EventArgs args) 
+		public void OnAboutActivate (object o, EventArgs args) 
 		{
 			AboutDialog.Show ();
 		}
