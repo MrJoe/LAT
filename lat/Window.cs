@@ -55,6 +55,7 @@ namespace lat
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
 		[Glade.Widget] Gtk.Button applyButton;
+		[Glade.Widget] Gtk.Statusbar statusBar;
 
 		private LdapTreeView _ldapTreeview;
 
@@ -78,6 +79,8 @@ namespace lat
 		private string _pasteDN = null;
 		private bool _isCopy = false;
 		
+		private const int _id = 1;
+
 		public latWindow (Connection conn) 
 		{
 			_conn = conn;
@@ -156,11 +159,32 @@ namespace lat
 
 			toggleButtons (false);
 
+			// status bar
+			statusBar.HasResizeGrip = false;
+			updateStatusBar ();
+
 			// handlers		
 			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
 
 			applyButton.Sensitive = false;
 			applyButton.Clicked += new EventHandler (OnApplyClicked);
+		}
+
+		private void updateStatusBar ()
+		{
+			string msg = null;
+
+			if (_conn.AuthDN == null)
+			{
+				msg = String.Format("Bind DN: anonymous");
+			}
+			else
+			{
+				msg = String.Format("Bind DN: {0}", _conn.AuthDN);
+			}
+
+			statusBar.Pop (_id);
+			statusBar.Push (_id, msg);
 		}
 	
 		private void toggleButtons (bool btnState)
@@ -522,9 +546,13 @@ namespace lat
 			}
 		}
 
+
+
 		public void OnReloginActivate (object o, EventArgs args)
 		{
+
 			new LoginDialog (_conn);
+			updateStatusBar ();
 		}
 
 		public void OnDisconnectActivate (object o, EventArgs args) 
@@ -657,7 +685,9 @@ namespace lat
 			}
 
 			if (_isCopy)
+			{
 				_isCopy = false;
+			}
 		}
 
 		public void OnViewChanged (object o, EventArgs args)
