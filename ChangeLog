@@ -1,3 +1,12 @@
+Version 0.5.3
+
+	* Added re-login feature
+	* Added support for Copy/Cut/Paste entries in browser
+	* Added --debug command line option
+	* Display bind DN on status bar
+	* New about dialog
+	* BUGFIX: Fix compile warnings under Mono 1.1.x
+
 Version 0.5.2
 
 	* BUGFIX: Use Mono.Posix.Catalog instead of GNU.gettext

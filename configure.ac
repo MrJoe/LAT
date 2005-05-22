@@ -1,4 +1,4 @@
-AC_INIT(lat, 0.5.2, lorenb@mmgsecurity.com)
+AC_INIT(lat, 0.5.3, lorenb@mmgsecurity.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(lat/Main.cs)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
