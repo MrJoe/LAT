@@ -97,6 +97,7 @@ namespace lat
 			this.HeadersVisible = false;
 
 			this.RowActivated += new RowActivatedHandler (ldapRowActivated);
+			this.RowCollapsed += new RowCollapsedHandler (ldapRowCollapsed);
 			this.RowExpanded += new RowExpandedHandler (ldapRowExpanded);
 
 			Gtk.Drag.DestSet (this, DestDefaults.All, _targetsTable,
@@ -169,8 +170,51 @@ namespace lat
 			} 		
 		}
 
+		private void ldapRowCollapsed (object o, RowCollapsedArgs args)
+		{
+			Logger.Log.Debug ("BEGIN ldapRowCollapsed");
+
+			string name = (string) browserStore.GetValue (
+					args.Iter, (int)TreeCols.DN);
+
+			Logger.Log.Debug ("collapsed row: {0}", name);
+
+			TreeIter child;
+
+			browserStore.IterChildren (out child, args.Iter);
+
+			string fcName = (string) browserStore.GetValue (
+					child, (int)TreeCols.DN);
+				
+			Logger.Log.Debug ("\tchild: {0}", fcName);
+
+
+			TreeIter lastChild = child;
+
+			while (browserStore.IterNext (ref child))
+			{
+				browserStore.Remove (ref lastChild);
+
+				string cn = (string) browserStore.GetValue (
+					child, (int)TreeCols.DN);
+				
+				Logger.Log.Debug ("\tchild: {0}", cn);
+
+				lastChild = child;
+			}
+
+			browserStore.Remove (ref lastChild);
+
+			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Open, IconSize.Menu, "");
+			browserStore.AppendValues (args.Iter, pb, "");
+
+			Logger.Log.Debug ("END ldapRowCollapsed");
+		}
+
 		private void ldapRowExpanded (object o, RowExpandedArgs args)
 		{
+			Logger.Log.Debug ("BEGIN ldapRowExpanded");
+
 			string name = null;
 			bool firstPass = false;
 
@@ -179,7 +223,10 @@ namespace lat
 			name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
 
 			if (name == _conn.Host)
+			{
+				Logger.Log.Debug ("END ldapRowExpanded");
 				return;
+			}
 
 			TreeIter parent, child;
 			browserStore.IterParent (out parent, args.Iter);
@@ -197,8 +244,12 @@ namespace lat
 				browserStore.Remove (ref child);
 			}
 
+			Logger.Log.Debug ("expanded row: {0}", name);
+
 			foreach (LdapEntry le in ldapEntries)
 			{
+				Logger.Log.Debug ("\tchild: {0}", le.DN);
+
 				TreeIter _newChild;
 
 				if (firstPass)
@@ -208,22 +259,22 @@ namespace lat
 
 					browserStore.AppendValues (child, pb, "");
 				
-					if (!_knownEntries.ContainsKey (le.DN))
-						_knownEntries.Add (le.DN, le.DN);
+//					if (!_knownEntries.ContainsKey (le.DN))
+//						_knownEntries.Add (le.DN, le.DN);
 
 					firstPass = false;
 				}
 				else
 				{
-					if (_knownEntries.ContainsKey (le.DN))
-						return;
+//					if (_knownEntries.ContainsKey (le.DN))
+//						return;
 
 					_newChild = browserStore.AppendValues (args.Iter, pb, le.DN);
 					browserStore.AppendValues (_newChild, pb, "");
 				}
-
 			}
 
+			Logger.Log.Debug ("END ldapRowExpanded");
 		}
 
 		public void removeToolbarHandlers ()
