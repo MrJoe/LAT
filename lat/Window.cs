@@ -76,6 +76,8 @@ namespace lat
 		private lat.View _currentView = null;
 
 		private string _cutDN = null;
+		private TreeIter _cutIter;
+
 		private string _pasteDN = null;
 		private bool _isCopy = false;
 		
@@ -604,6 +606,7 @@ namespace lat
 				return;
 
 			_cutDN = _ldapTreeview.getSelectedDN ();
+			_cutIter = _ldapTreeview.getSelectedIter ();
 
 			Logger.Log.Debug ("cut - dn: {0}", _cutDN);
 		}
@@ -665,6 +668,9 @@ namespace lat
 				Util.MessageBox (mainWindow, 
 					msg, 
 					MessageType.Info);
+
+				if (!_isCopy)
+					_ldapTreeview.RemoveRow (_cutIter);
 			}
 			else
 			{

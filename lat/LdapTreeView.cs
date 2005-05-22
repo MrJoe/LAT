@@ -69,8 +69,6 @@ namespace lat
 
 		private enum TreeCols { Icon, DN };
 
-		private Hashtable _knownEntries;
-
 		public event dnSelectedHandler dnSelected;
 
 		private static TargetEntry[] _sourceTable = new TargetEntry[]
@@ -88,8 +86,6 @@ namespace lat
 		{
 			_conn = conn;
 			_parent = parent;
-
-			_knownEntries = new Hashtable ();
 
 			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 
@@ -150,6 +146,24 @@ namespace lat
 			return null;
 		}
 
+		public TreeIter getSelectedIter ()
+		{
+			TreeModel ldapModel;
+			TreeIter ldapIter;
+
+			if (this.Selection.GetSelected (out ldapModel, out ldapIter))
+			{
+				return ldapIter;
+			}
+
+			return ldapIter;
+		}
+
+		public void RemoveRow (TreeIter iter)
+		{
+			browserStore.Remove (ref iter);
+		}
+
 		private void ldapRowActivated (object o, RowActivatedArgs args)
 		{	
 			TreePath path = args.Path;
@@ -176,6 +190,12 @@ namespace lat
 
 			string name = (string) browserStore.GetValue (
 					args.Iter, (int)TreeCols.DN);
+
+			if (name == _conn.Host)
+			{
+				Logger.Log.Debug ("END ldapRowCollapsed");
+				return;
+			}
 
 			Logger.Log.Debug ("collapsed row: {0}", name);
 
@@ -259,16 +279,10 @@ namespace lat
 
 					browserStore.AppendValues (child, pb, "");
 				
-//					if (!_knownEntries.ContainsKey (le.DN))
-//						_knownEntries.Add (le.DN, le.DN);
-
 					firstPass = false;
 				}
 				else
 				{
-//					if (_knownEntries.ContainsKey (le.DN))
-//						return;
-
 					_newChild = browserStore.AppendValues (args.Iter, pb, le.DN);
 					browserStore.AppendValues (_newChild, pb, "");
 				}
