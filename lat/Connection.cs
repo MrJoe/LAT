@@ -31,7 +31,7 @@ namespace lat
 		private string _ldapRoot = null;
 		private string _user;
 		private string _pass;
-//		private bool _ssl;
+		private bool _ssl;
 		private LdapConnection _conn;
 
 		public Connection (string host, int port, string user, string pass, string baseDN, bool ssl)
@@ -41,13 +41,13 @@ namespace lat
 			_user = user;
 			_pass = pass;
 			_ldapRoot = baseDN;
-//			_ssl = ssl;
+			_ssl = ssl;
 
 			try 
 			{
 				_conn = new LdapConnection ();
 
-	//			_conn.SecureSocketLayer = _ssl;	
+				_conn.SecureSocketLayer = _ssl;	
 				_conn.Connect (_host, _port);
 				_conn.Bind (_user, _pass);
 			}
@@ -367,8 +367,7 @@ namespace lat
 
 		public bool UseSSL
 		{
-			get { return false; }
-	//		get { return _conn.SecureSocketLayer; }
+			get { return _conn.SecureSocketLayer; }
 		}
 
 		public int Protocol

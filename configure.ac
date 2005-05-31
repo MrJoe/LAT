@@ -12,7 +12,7 @@ AM_PROG_LIBTOOL
 AC_PROG_INTLTOOL([0.21])
 
 dnl Version dependencies
-MONO_REQUIRED=1.0
+MONO_REQUIRED=1.1
 GTKSHARP_REQUIRED=1.0
 
 dnl pkgconfig checks

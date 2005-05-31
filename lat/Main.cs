@@ -51,7 +51,7 @@ public class LdapAdministrationTool
 			string arg = args[i];
 			++i;
 
-			string next_arg = i < args.Length ? args[i] : null;
+//			string next_arg = i < args.Length ? args[i] : null;
 
 			switch (arg)
 			{

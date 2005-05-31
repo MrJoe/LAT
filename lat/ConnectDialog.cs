@@ -82,9 +82,6 @@ namespace lat
 			encryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			noEncryptionRadioButton.Active = true;
 		
-			encryptionRadioButton.Sensitive = false;
-			noEncryptionRadioButton.Sensitive = false;
-
 			connectButton.Clicked += new EventHandler (OnConnectClicked);
 			closeButton.Clicked += new EventHandler (OnCloseClicked);
 
@@ -241,10 +238,12 @@ namespace lat
 			if (encryptionRadioButton.Active)
 			{
 				useSSL = true;
+				portEntry.Text = "636";
 			}
 			else
 			{
 				useSSL = false;
+				portEntry.Text = "389";
 			}
 		}
 
