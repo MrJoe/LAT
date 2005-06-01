@@ -102,11 +102,9 @@ namespace lat
 			return (X509CertificateCollection) pi.GetValue (ssl, null);
 		}
 
-		static void Ssl (string host)
+		public static void Ssl (string host, Gtk.Window parent)
 		{
 			Logger.Log.Debug ("Importing certificates from '{0}' into the user's store.", host);
-
-			int n=0;
 
 			X509CertificateCollection coll = GetCertificatesFromSslSession (host);
 
@@ -137,17 +135,25 @@ namespace lat
 						store = GetStoreFromName (X509Stores.Names.IntermediateCA, false);
 					}
 
-					Console.WriteLine ("{0}{1} X.509 Certificate v{2}", 	
+					if (store.Certificates.Contains (x509)) {
+						Logger.Log.Debug ("Store already contains certificate");
+						break;
+					}
+
+					string msg = "Do you want to import this certificate?\n\n";
+
+					msg += String.Format ("{0}{1} X.509 Certificate v{2}", 	
 						Environment.NewLine,
 						selfsign ? "Self-signed " : String.Empty,
 						x509.Version);
-					Console.WriteLine ("   Issued from: {0}", x509.IssuerName);
-					Console.WriteLine ("   Issued to:   {0}", x509.SubjectName);
-					Console.WriteLine ("   Valid from:  {0}", x509.ValidFrom);
-					Console.WriteLine ("   Valid until: {0}", x509.ValidUntil);
+	
+					msg += String.Format ("Issued from: {0}\n", x509.IssuerName);
+					msg += String.Format ("Issued to:   {0}\n", x509.SubjectName);
+					msg += String.Format ("Valid from:  {0}\n", x509.ValidFrom);
+					msg += String.Format ("Valid until: {0}\n", x509.ValidUntil);
 
 					if (!x509.IsCurrent)
-						Console.WriteLine ("   *** WARNING: Certificate isn't current ***");
+						msg += "\n   *** WARNING: Certificate isn't current ***\n";
 					if ((i > 0) && !selfsign) {
 						X509Certificate signer = coll [i-1];
 						bool signed = false;
@@ -157,45 +163,48 @@ namespace lat
 							} else if (signer.DSA != null) {
 								signed = x509.VerifySignature (signer.RSA);
 							} else {
-								Console.WriteLine ("   *** WARNING: Couldn't not find who signed this certificate ***");
+								msg += "\n   *** WARNING: Couldn't not find who signed this certificate ***\n";
 								signed = true; // skip next warning
 							}
 
 							if (!signed)
-								Console.WriteLine ("   *** WARNING: Certificate signature is INVALID ***");
+								msg += "\n   *** WARNING: Certificate signature is INVALID ***\n";
 						}
 						catch {
 							failed = true;
 						}
 					}
 					if (failed) {
-						Console.WriteLine ("   *** ERROR: Couldn't decode certificate properly ***");
-						Console.WriteLine ("   *** try 'man certmgr' for additional help or report to bugzilla.ximian.com ***");
+
+						Gtk.MessageDialog ed = new Gtk.MessageDialog (parent, 
+							Gtk.DialogFlags.DestroyWithParent,
+							Gtk.MessageType.Error, 
+							Gtk.ButtonsType.Close, 
+							"Couldn't decode certificate properly");
+
+						ed.Run ();
+						ed.Destroy();
+		
 						break;
 					}
 
-					if (store.Certificates.Contains (x509)) {
-						Console.WriteLine ("This certificate is already in the {0} store.", store.Name);
-					} else {
-						Console.Write ("Import this certificate into the {0} store ?", store.Name);
-						string answer = Console.ReadLine ().ToUpper ();
-						if ((answer == "YES") || (answer == "Y")) {
-							store.Import (x509);
-							n++;
-						} else {
-							Logger.Log.Debug ("Certificate not imported into store {0}.", store.Name);
-							break;
-						}
-					}
-				}
-			}
+					Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
+						Gtk.DialogFlags.DestroyWithParent,
+						Gtk.MessageType.Question, 
+						Gtk.ButtonsType.YesNo, 
+						msg);
+	     
+					Gtk.ResponseType result = (Gtk.ResponseType)md.Run ();
 
-			Console.WriteLine ();
-			if (n == 0) {
-				Console.WriteLine ("No certificate were added to the stores.");
-			} else {
-				Console.WriteLine ("{0} certificate{1} added to the stores.", 
-					n, (n == 1) ? String.Empty : "s");
+					if (result == Gtk.ResponseType.Yes) {
+						store.Import (x509);
+						Logger.Log.Debug ("Certificate successfully imported.");
+					} else {
+						Logger.Log.Debug ("Certificate not imported into store {0}.", store.Name);
+						break;
+					}
+					
+				}
 			}
 		}
 	}

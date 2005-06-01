@@ -115,7 +115,17 @@ namespace lat
 		private void OnRowDoubleClicked (object o, RowActivatedArgs args) 
 		{
 			Connection conn = getSelectedProfile ();
-				
+
+			if (conn.UseSSL)
+			{
+				string url = String.Format ("ldaps://{0}:{1}",
+					conn.Host, conn.Port);
+
+				CertificateManager.Ssl (url, connectionDialog);
+			}
+			
+			conn.Bind ();
+	
 			if (doConnect (conn))
 			{
 				connectionDialog.Destroy ();
@@ -259,12 +269,30 @@ namespace lat
 					passEntry.Text,
 					ldapBaseEntry.Text,
 					useSSL);
+
+				if (useSSL)
+				{
+					string url = String.Format ("ldaps://{0}:{1}",
+						hostEntry.Text, portEntry.Text);
+
+					CertificateManager.Ssl (url, connectionDialog);
+				}
 			}
 			else if (notebook1.CurrentPage == 1)
 			{
 				// Profile
-				conn = getSelectedProfile ();			
+				conn = getSelectedProfile ();
+
+				if (conn.UseSSL)
+				{
+					string url = String.Format ("ldaps://{0}:{1}",
+						conn.Host, conn.Port);
+
+					CertificateManager.Ssl (url, connectionDialog);
+				}
 			}
+
+			conn.Bind ();
 
 			if (doConnect(conn))
 			{

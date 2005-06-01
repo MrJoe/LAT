@@ -42,7 +42,10 @@ namespace lat
 			_pass = pass;
 			_ldapRoot = baseDN;
 			_ssl = ssl;
+		}
 
+		public void Bind ()
+		{
 			try 
 			{
 				_conn = new LdapConnection ();
@@ -53,6 +56,7 @@ namespace lat
 			}
 			catch
 			{
+				Logger.Log.Debug ("Bind failed");
 			}
 		}
 
@@ -367,7 +371,7 @@ namespace lat
 
 		public bool UseSSL
 		{
-			get { return _conn.SecureSocketLayer; }
+			get { return _ssl; }
 		}
 
 		public int Protocol
