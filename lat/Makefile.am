@@ -6,6 +6,7 @@ LAT_CSFILES = \
 	AboutDialog.cs \
 	AssemblyInfo.cs \
 	AddEntryDialog.cs \
+	CertMgr.cs \
 	ConnectDialog.cs \
 	Connection.cs \
 	ConnectionProfile.cs \
@@ -46,7 +47,8 @@ LAT_SOURCES_BUILD = $(addprefix $(srcdir)/, $(LAT_CSFILES))
 
 LAT_REFERENCES = \
 	Novell.Directory.Ldap \
-	Mono.Posix
+	Mono.Posix \
+	Mono.Security
 
 LAT_REFERENCES_BUILD = $(addprefix -r:, $(LAT_REFERENCES))
 
