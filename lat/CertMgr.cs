@@ -43,6 +43,10 @@ namespace lat
 	{
 		CertificateManager () {}
 
+		private static Mono.Security.Protocol.Tls.SecurityProtocolType protocol = Mono.Security.Protocol.Tls.SecurityProtocolType.Default;
+		private static X509CertificateCollection certificates = new X509CertificateCollection ();
+
+	
 		static X509Store GetStoreFromName (string storeName, bool machine) 
 		{
 			X509Stores stores = ((machine) ? X509StoreManager.LocalMachine : X509StoreManager.CurrentUser);
@@ -207,5 +211,6 @@ namespace lat
 				}
 			}
 		}
+
 	}
 }
