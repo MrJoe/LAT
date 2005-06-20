@@ -63,14 +63,14 @@ all: $(LAT_ASSEMBLY)
 LATlibdir = $(prefix)/lib/lat
 LATlib_DATA = $(LAT_ASSEMBLY)
 
-LAT_MANS = \
+man_MANS = \
 	lat.1
 
 bin_SCRIPTS = lat
 
 EXTRA_DIST = \
 	$(LAT_CSFILES) \
-	$(LAT_MANS) \
+	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
 	lat.glade \

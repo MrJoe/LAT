@@ -42,6 +42,7 @@ make %{?_smp_mflags}
 %{_libdir}/%{name}/*
 %{_mandir}/man1/lat.1.gz
 %{_datadir}/applications/%{name}.desktop
+%{_datadir}/application-registry/%{name}.applications
 
 %changelog
 * Thu Feb 03 2005 Loren Bandiera <lorenb@mmgsecurity.com>
