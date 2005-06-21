@@ -1,15 +1,29 @@
 AC_INIT(lat, 0.5.3, lorenb@mmgsecurity.com)
-AC_PREREQ(2.52)
-AC_CONFIG_SRCDIR(lat/Main.cs)
+AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
-AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
+AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs
-AC_ISC_POSIX
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
+AC_PROG_CXX
 AC_PROG_INTLTOOL([0.21])
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+if test "x$PKG_CONFIG" = "xno"; then
+	AC_MSG_ERROR([You need to install pkg-config])
+fi
+
+AC_PATH_PROG(MONO, mono)
+AC_PATH_PROG(MCS, mcs)
+
+AC_MSG_CHECKING([for mono.pc])
+if test -z `$PKG_CONFIG --variable=prefix mono`; then
+  AC_MSG_ERROR([missing the mono.pc file, usually found in the mono-devel package])
+else
+  AC_MSG_RESULT([found])
+fi
 
 dnl Version dependencies
 MONO_REQUIRED=1.1
