@@ -1,0 +1,709 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-06-20 17:26-0400\n"
+"PO-Revision-Date: 2005-06-23 09:52-0300\n"
+"Last-Translator: Pablo Borges <pablort@gmail.com>\n"
+"Language-Team: pt_BR <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lat/ConnectDialog.cs:182
+#, csharp-format
+msgid "Are you sure you want to delete the profile: {0}"
+msgstr "Voc tem certeza que quer remover o perfil: {0}"
+
+#: lat/ConnectDialog.cs:215
+#, csharp-format
+msgid "Unable to connect to: ldap://{0}:{1}"
+msgstr "No foi possvel conectar em: ldap://{0}:{1}"
+
+#: lat/ConnectDialog.cs:222
+#, csharp-format
+msgid "Unable to bind to: ldap://{0}:{1}"
+msgstr "No foi possvel criar o vnculo em: ldap://{0}:{1}"
+
+#: lat/ContactsView.cs:29 lat/CustomView.cs:29 lat/GroupsView.cs:30
+#: lat/Window.cs:396
+msgid "Name"
+msgstr "Nome"
+
+#: lat/ContactsView.cs:30
+msgid "Email"
+msgstr "Email"
+
+#: lat/ContactsView.cs:31
+msgid "Work"
+msgstr "Trabalho"
+
+#: lat/ContactsView.cs:32
+msgid "Home"
+msgstr "Casa"
+
+#: lat/ContactsView.cs:33
+msgid "Mobile"
+msgstr "Celular"
+
+#: lat/CustomView.cs:109
+#, csharp-format
+msgid ""
+"Are you sure you want to delete:\n"
+"{0}"
+msgstr ""
+"Voc tem certeza que deseja apagar:\n"
+"{0}"
+
+#: lat/GroupsView.cs:29
+msgid "Group ID"
+msgstr "ID do Grupo"
+
+#: lat/HostsView.cs:29
+msgid "Hostname"
+msgstr "Hostname"
+
+#: lat/HostsView.cs:30
+msgid "IP Address"
+msgstr "Endereo IP"
+
+#: lat/HostsView.cs:31
+msgid "Comment"
+msgstr "Comentrio"
+
+#: lat/RenameEntryDialog.cs:71
+#, csharp-format
+msgid "Entry {0} has been renamed to {1}."
+msgstr "Entrada {0} foi renomeada para {1}."
+
+#: lat/RenameEntryDialog.cs:80
+#, csharp-format
+msgid "Unable to rename entry {0}."
+msgstr "No foi possvel renomear a entrada {0}."
+
+#: lat/UsersView.cs:29
+msgid "Username"
+msgstr "Usurio"
+
+#: lat/UsersView.cs:30
+msgid "Full Name"
+msgstr "Nome Completo"
+
+#: lat/Util.cs:58
+#, csharp-format
+msgid "Entry {0} has been added."
+msgstr "A entrada {0} foi adicionada."
+
+#: lat/Util.cs:65
+#, csharp-format
+msgid "Unable to add entry {0}"
+msgstr "No foi possvel adicionar a entrada {0}"
+
+#: lat/Util.cs:87
+#, csharp-format
+msgid "Entry {0} has been modified."
+msgstr "A entrada {0} foi modificada."
+
+#: lat/Util.cs:94
+#, csharp-format
+msgid "Unable to modify entry {0}"
+msgstr "No foi possvel modificar a entrada {0}"
+
+#: lat/Util.cs:107
+#, csharp-format
+msgid ""
+"Are you sure you want to delete:\n"
+"\n"
+msgstr ""
+"Voc tem certeza que deseja apagar:\n"
+"\n"
+
+#: lat/Util.cs:131
+msgid "Entries successfully deleted."
+msgstr "As entradas foram removidas com sucesso."
+
+#: lat/Util.cs:135
+msgid "Unable to delete all entries."
+msgstr "No foi possvel remover todas as entradas"
+
+#: lat/Util.cs:149
+#, csharp-format
+msgid ""
+"Are you sure you want to delete\n"
+"{0}"
+msgstr ""
+"Voce tem certeza que deseja apagar\n"
+"{0}"
+
+#: lat/Util.cs:166
+#, csharp-format
+msgid "Entry {0} has been deleted."
+msgstr "A entrada {0} foi apagada"
+
+#: lat/Util.cs:175
+#, csharp-format
+msgid "Unable to delete entry {0}"
+msgstr "No foi possvel remover a entrada {0}"
+
+#: lat/Util.cs:195
+#, csharp-format
+msgid ""
+"Imported {0} entries\n"
+"from {1}."
+msgstr ""
+"{0} entradas foram importadas\n"
+"de {1}."
+
+#: lat/Util.cs:230
+#, csharp-format
+msgid "Imported {0} entries."
+msgstr "{0} entradas foram importadas."
+
+#: lat/Util.cs:285
+msgid "Save export as"
+msgstr "Salvar export como"
+
+#: lat/ViewDialog.cs:107
+#, csharp-format
+msgid ""
+"You must provide values for the following attributes:\n"
+"\n"
+msgstr ""
+"Voc precisa fornecer valores para os seguintes atributos:\n"
+"\n"
+
+#: lat/Window.cs:275
+msgid "No matches found."
+msgstr "No matches found."
+
+#: lat/Window.cs:308
+msgid "Invalid search filter."
+msgstr "Filtro de pesquisa invlido"
+
+#: lat/Window.cs:319
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to start the search?"
+msgstr ""
+"Onde no diretrio voc\n"
+"gostaria de comear a busca?"
+
+#: lat/Window.cs:321
+msgid "Select search base"
+msgstr "Selecione a base de pesquisa"
+
+#: lat/Window.cs:342
+msgid "Host"
+msgstr "Host"
+
+#: lat/Window.cs:345
+msgid "Port"
+msgstr "Porta"
+
+#: lat/Window.cs:348
+msgid "User"
+msgstr "Usurio"
+
+#: lat/Window.cs:351
+msgid "Base DN"
+msgstr "DN Base"
+
+#: lat/Window.cs:354
+msgid "Connected"
+msgstr "Conectado"
+
+#: lat/Window.cs:358
+msgid "Bound"
+msgstr "Vinculado"
+
+#: lat/Window.cs:361
+msgid "TLS/SSL"
+msgstr "TLS/SSL"
+
+#: lat/Window.cs:364
+msgid "Protocol Version"
+msgstr "Verso do Protocolo"
+
+#: lat/Window.cs:406
+msgid "Value"
+msgstr "Valor"
+
+#: lat/Window.cs:573
+msgid "Choose a file"
+msgstr "Escolha um arquivo"
+
+#: lat/Window.cs:591
+msgid "Export entry"
+msgstr "Exportar entrada"
+
+#: lat/Window.cs:594
+msgid "Select the container you wish to export."
+msgstr "Selecione o container que voc deseja exportar."
+
+#: lat/lat.glade.h:1
+msgid " Use Salt"
+msgstr " Use Salt"
+
+#: lat/lat.glade.h:2
+msgid "..."
+msgstr "..."
+
+#: lat/lat.glade.h:3
+msgid "<b>Account Details</b>"
+msgstr "<b>Detalhes da Conta</b>"
+
+#: lat/lat.glade.h:4
+msgid "<b>Advanced Settings</b>"
+msgstr "<b>Configuraes Avanadas</b>"
+
+#: lat/lat.glade.h:5
+msgid "<b>All Groups</b>"
+msgstr "<b>Todos os Grupos</b>"
+
+#: lat/lat.glade.h:6
+msgid "<b>Basic Settings</b>"
+msgstr "<b>Configuraes Bsicas</b>"
+
+#: lat/lat.glade.h:7
+msgid "<b>Contact Information</b>"
+msgstr "<b>Informao do Contato</b>"
+
+#: lat/lat.glade.h:8
+msgid "<b>General</b>"
+msgstr "<b>Geral</b>"
+
+#: lat/lat.glade.h:9
+msgid "<b>Member Of</b>"
+msgstr "<b>Membro de</b>"
+
+#: lat/lat.glade.h:10
+msgid "<b>Members</b>"
+msgstr "<b>Membros</b>"
+
+#: lat/lat.glade.h:11
+msgid "<b>Profile</b>"
+msgstr "<b>Perfil</b>"
+
+#: lat/lat.glade.h:12
+msgid "<b>Search Criteria</b>"
+msgstr "<b>Critrios de Pesquisa</b>"
+
+#: lat/lat.glade.h:13
+msgid "<span weight=\"bold\">Address</span>"
+msgstr "<span weight=\"bold\">Endereo</span>"
+
+#: lat/lat.glade.h:14
+msgid "<span weight=\"bold\">Attributes</span>"
+msgstr "<span weigh=\"bold\">Atributos</span>"
+
+#: lat/lat.glade.h:15
+msgid "<span weight=\"bold\">Contact Numbers</span>"
+msgstr "<span weight=\"bold\">Nmeros do Contato</span>"
+
+#: lat/lat.glade.h:16
+msgid "<span weight=\"bold\">Results</span>"
+msgstr "<span weigth=\"bold\">Resultados</span>"
+
+#: lat/lat.glade.h:17
+msgid "<span weight=\"bold\">Search Criteria</span>"
+msgstr "<span weight=\"bold\">Critrios de Pesquisa</span>"
+
+#: lat/lat.glade.h:18
+msgid "All"
+msgstr "Tudo"
+
+#: lat/lat.glade.h:19
+msgid "All users:"
+msgstr "Todos os usurios:"
+
+#: lat/lat.glade.h:20
+msgid "Attribute:  "
+msgstr "Atributo:  "
+
+#: lat/lat.glade.h:21
+msgid "Base DN:"
+msgstr "DN Base:"
+
+#: lat/lat.glade.h:22
+msgid "Base:"
+msgstr "Base:"
+
+#: lat/lat.glade.h:23
+msgid "Base: "
+msgstr "Base:"
+
+#: lat/lat.glade.h:24
+msgid "Browser"
+msgstr "Browser"
+
+#: lat/lat.glade.h:25
+msgid "City:    "
+msgstr "Cidade:   "
+
+#: lat/lat.glade.h:26
+msgid "Comment:  "
+msgstr "Comentrio:  "
+
+#: lat/lat.glade.h:27
+msgid "Condition: "
+msgstr "Condio: "
+
+#: lat/lat.glade.h:28
+msgid "Connect"
+msgstr "Conectar"
+
+#: lat/lat.glade.h:29
+msgid "Contacts"
+msgstr "Contatos"
+
+#: lat/lat.glade.h:30
+msgid "Current members:"
+msgstr "Atuais membros:"
+
+#: lat/lat.glade.h:31
+msgid "Custom Views"
+msgstr "Visualizao Customizada"
+
+#: lat/lat.glade.h:32
+msgid "Description:"
+msgstr "Descrio:"
+
+#: lat/lat.glade.h:33
+msgid "Description: "
+msgstr "Descrio: "
+
+#: lat/lat.glade.h:34
+msgid "Email:         "
+msgstr "Email:         "
+
+#: lat/lat.glade.h:35
+msgid "Encryption:"
+msgstr "Encryption:"
+
+#: lat/lat.glade.h:36
+msgid "Encryption:        "
+msgstr "Encryption:        "
+
+#: lat/lat.glade.h:37
+msgid "Enter Password"
+msgstr "Digite a senha"
+
+#: lat/lat.glade.h:38
+msgid "Enter Password: "
+msgstr "Digite a senha: "
+
+#: lat/lat.glade.h:39
+msgid ""
+"Enter a hostname and base DN \n"
+"for the LDAP directory\n"
+"you wish to connect to."
+msgstr ""
+"Entre com um hostname e DN Base \n"
+"para o diretrio LDAP\n"
+"voc deseja conectar."
+
+#: lat/lat.glade.h:42
+msgid "Entry name: "
+msgstr "Nome da Entrada: "
+
+#: lat/lat.glade.h:43
+msgid "Export LDIF..."
+msgstr "Exportar LDIF..."
+
+#: lat/lat.glade.h:44
+msgid "Fax:     "
+msgstr "Fax:     "
+
+#: lat/lat.glade.h:45
+msgid "Filter:  "
+msgstr "Filtro:  "
+
+#: lat/lat.glade.h:46
+msgid "First Name: "
+msgstr "Nome: "
+
+#: lat/lat.glade.h:47
+msgid "First Name:  "
+msgstr "Nome:  "
+
+#: lat/lat.glade.h:48
+msgid "General"
+msgstr "Geral"
+
+#: lat/lat.glade.h:49
+msgid "Group ID:       "
+msgstr "ID do Grupo:          "
+
+#: lat/lat.glade.h:50
+msgid "Group name: "
+msgstr "Nome do Grupo: "
+
+#: lat/lat.glade.h:51
+msgid "Groups"
+msgstr "Grupos"
+
+#: lat/lat.glade.h:52
+msgid "Home Directory:"
+msgstr "Diretrio Home:"
+
+#: lat/lat.glade.h:53
+msgid "Home:"
+msgstr "Home:"
+
+#: lat/lat.glade.h:54
+msgid "Hostname:"
+msgstr "Hostname:"
+
+#: lat/lat.glade.h:55
+msgid "Hostname: "
+msgstr "Hostname: "
+
+#: lat/lat.glade.h:56
+msgid "Hosts"
+msgstr "Hosts"
+
+#: lat/lat.glade.h:57
+msgid "IP Address: "
+msgstr "Endereo IP: "
+
+#: lat/lat.glade.h:58
+msgid "Import LDIF..."
+msgstr "Importar LDIF..."
+
+#: lat/lat.glade.h:59
+msgid "LAT - Add Entry"
+msgstr "LAT - Adicionar Entrada"
+
+#: lat/lat.glade.h:60
+msgid "LAT - Connect"
+msgstr "LAT - Conectar"
+
+#: lat/lat.glade.h:61
+msgid "LAT - Profile"
+msgstr "LAT - Perfil"
+
+#: lat/lat.glade.h:62
+msgid "LAT - Search Builder"
+msgstr "LAT - Construtor de Pesquisa"
+
+#: lat/lat.glade.h:63
+msgid "LAT - Select Container"
+msgstr "LAT - Selecionar um Container"
+
+#: lat/lat.glade.h:64
+msgid "LDAP Administration Tool"
+msgstr "Ferramenta de Admnistrao LDAP"
+
+#: lat/lat.glade.h:65
+msgid "Last Name:"
+msgstr "Sobrenome:"
+
+#: lat/lat.glade.h:66
+msgid "Last Name:  "
+msgstr "Sobrenome:  "
+
+#: lat/lat.glade.h:67
+msgid "Login"
+msgstr "Login"
+
+#: lat/lat.glade.h:68
+msgid "MD5"
+msgstr "MD5"
+
+#: lat/lat.glade.h:69
+msgid "Mail:    "
+msgstr "Email:    "
+
+#: lat/lat.glade.h:70
+msgid "Mobile:"
+msgstr "Celular:"
+
+#: lat/lat.glade.h:71
+msgid "Name:"
+msgstr "Nome:"
+
+#: lat/lat.glade.h:72
+msgid "Name:          "
+msgstr "Nome:"
+
+#: lat/lat.glade.h:73
+msgid "New Name:"
+msgstr "Novo Nome:"
+
+#: lat/lat.glade.h:74
+msgid "None"
+msgstr "Nenhum"
+
+#: lat/lat.glade.h:75
+msgid "Office:         "
+msgstr "Escritrio:"
+
+#: lat/lat.glade.h:76
+msgid "Office:          "
+msgstr "Escritrio:"
+
+#: lat/lat.glade.h:77
+msgid "Old Name:"
+msgstr "Nome Antigo:"
+
+#: lat/lat.glade.h:78
+msgid "Output:              "
+msgstr "Sada:"
+
+#: lat/lat.glade.h:79
+msgid "Pager: "
+msgstr "Pager: "
+
+#: lat/lat.glade.h:80
+msgid "Password:"
+msgstr "Senha:"
+
+#: lat/lat.glade.h:81
+msgid "Password:   "
+msgstr "Senha:   "
+
+#: lat/lat.glade.h:82
+msgid "Password:           "
+msgstr "Senha:           "
+
+#: lat/lat.glade.h:83
+msgid "Phone:"
+msgstr "Fone:"
+
+#: lat/lat.glade.h:84
+msgid "Port:"
+msgstr "Porta:"
+
+#: lat/lat.glade.h:85
+msgid "Postal (ZIP) Code:"
+msgstr "CEP:"
+
+#: lat/lat.glade.h:86
+msgid "Primary Group: "
+msgstr "Grupo Primrio: "
+
+#: lat/lat.glade.h:87
+msgid "Profiles"
+msgstr "Perfis"
+
+#: lat/lat.glade.h:88
+msgid "Quick Connect"
+msgstr "Conexo Rpida"
+
+#: lat/lat.glade.h:89
+msgid "Re-login..."
+msgstr "Re-login..."
+
+#: lat/lat.glade.h:90
+msgid "Rename Entry"
+msgstr "Renomear Entrada"
+
+#: lat/lat.glade.h:91
+msgid "SHA"
+msgstr "SHA"
+
+#: lat/lat.glade.h:92
+msgid "SSL/TLS"
+msgstr "SSL/TLS"
+
+#: lat/lat.glade.h:93
+msgid "Save old name as an attribute"
+msgstr "Salvar o nome anterior como um attributo"
+
+#: lat/lat.glade.h:94
+msgid "Search"
+msgstr "Pesquisa"
+
+#: lat/lat.glade.h:95
+msgid "Shell:                 "
+msgstr "Shell:"
+
+#: lat/lat.glade.h:96
+msgid "Show more options"
+msgstr "Mostrar mais opes"
+
+#: lat/lat.glade.h:97
+msgid "Start Search"
+msgstr "Comear Pesquisa"
+
+#: lat/lat.glade.h:98
+msgid "State: "
+msgstr "Estado: "
+
+#: lat/lat.glade.h:99
+msgid "Street:"
+msgstr "Rua:"
+
+#: lat/lat.glade.h:100
+msgid "Test Search"
+msgstr "Testar Pesquisa"
+
+#: lat/lat.glade.h:101
+msgid "UID:"
+msgstr "UID:"
+
+#: lat/lat.glade.h:102
+msgid "Username:"
+msgstr "Nome do usurio:"
+
+#: lat/lat.glade.h:103
+msgid "Username: "
+msgstr "Nome do usurio: "
+
+#: lat/lat.glade.h:104
+msgid "Username:   "
+msgstr "Nome do usurio:   "
+
+#: lat/lat.glade.h:105
+msgid "Users"
+msgstr "Usurios"
+
+#: lat/lat.glade.h:106
+msgid "Value:       "
+msgstr "Valor:       "
+
+#: lat/lat.glade.h:107
+msgid "Value:           "
+msgstr "Valor:           "
+
+#: lat/lat.glade.h:108
+msgid "View"
+msgstr "View"
+
+#: lat/lat.glade.h:109
+msgid "Views"
+msgstr "Views"
+
+#: lat/lat.glade.h:110
+msgid "Work:   "
+msgstr "Trabalho:   "
+
+#: lat/lat.glade.h:111
+msgid "_About"
+msgstr "S_obre"
+
+#: lat/lat.glade.h:112
+msgid "_Disconnect"
+msgstr "_Desconectar"
+
+#: lat/lat.glade.h:113
+msgid "_Edit"
+msgstr "_Editar"
+
+#: lat/lat.glade.h:114
+msgid "_Help"
+msgstr "_Ajuda"
+
+#: lat/lat.glade.h:115
+msgid "_Server"
+msgstr "_Servidor"
+
+#: lat/lat.glade.h:116
+msgid "_View"
+msgstr "_View"
