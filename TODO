@@ -1,4 +1,6 @@
-- Copy/Cut/Paste entries
+- Fix SSL support
 - Drag and Drop moves
+- Allow moving entries with children
+- Write support for Samba in different views or implement separate Samba view(s)
 - Write help
 - Cleanup code
