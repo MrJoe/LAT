@@ -83,6 +83,11 @@ namespace lat
 		
 		private const int _id = 1;
 
+		private static TargetEntry[] searchSourceTable = new TargetEntry[]
+		{
+			new TargetEntry ("text/plain", 0, 1),
+		};
+
 		public latWindow (Connection conn) 
 		{
 			_conn = conn;
@@ -161,6 +166,13 @@ namespace lat
 
 			toggleButtons (false);
 
+			Gtk.Drag.SourceSet (resultsTreeview, 
+				Gdk.ModifierType.Button1Mask | Gdk.ModifierType.Button3Mask, 
+				searchSourceTable, Gdk.DragAction.Copy | DragAction.Move);
+
+			resultsTreeview.DragBegin += new DragBeginHandler (OnSearchDragBegin);
+			resultsTreeview.DragDataGet += new DragDataGetHandler (OnSearchDragDataGet);
+
 			// status bar
 			statusBar.HasResizeGrip = false;
 			updateStatusBar ();
@@ -170,6 +182,31 @@ namespace lat
 
 			applyButton.Sensitive = false;
 			applyButton.Clicked += new EventHandler (OnApplyClicked);
+		}
+
+		public void OnSearchDragBegin (object o, DragBeginArgs args)
+		{
+			// FIXME: change icon
+			// FIXME: Drag.SetIconPixbuf (args.Context, <obj>, 0, 0);
+		}
+
+		public void OnSearchDragDataGet (object o, DragDataGetArgs args)
+		{
+			Gtk.TreeModel model;
+			Gtk.TreeIter iter;
+
+			if (!resultsTreeview.Selection.GetSelected (out model, out iter))
+				return;
+
+			string dn = (string) model.GetValue (iter, 0);
+			string data = null;
+
+			Util.ExportData (_conn, dn, out data);
+
+			Atom[] targets = args.Context.Targets;
+
+			args.SelectionData.Set (targets[0], 8,
+				System.Text.Encoding.UTF8.GetBytes (data));
 		}
 
 		private void updateStatusBar ()
