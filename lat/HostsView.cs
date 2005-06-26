@@ -26,9 +26,9 @@ namespace lat
 	public class HostsView : View
 	{
 		private static string[] _cols = { 
-			Mono.Posix.Catalog.GetString ("Hostname"), 
-			Mono.Posix.Catalog.GetString ("IP Address"),
-			Mono.Posix.Catalog.GetString ("Comment") };
+			Mono.Unix.Catalog.GetString ("Hostname"), 
+			Mono.Unix.Catalog.GetString ("IP Address"),
+			Mono.Unix.Catalog.GetString ("Comment") };
 
 		private static string[] _colAttrs = { "cn", "ipHostNumber", "description" };
 

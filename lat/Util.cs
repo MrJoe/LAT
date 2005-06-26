@@ -55,14 +55,14 @@ namespace lat
 			if (conn.Add (dn, attrs))
 			{
 				resMsg = String.Format (
-					Mono.Posix.Catalog.GetString ("Entry {0} has been added."), dn);
+					Mono.Unix.Catalog.GetString ("Entry {0} has been added."), dn);
 	
 				MessageBox (parent, resMsg, MessageType.Info);
 			}
 			else
 			{
 				resMsg = String.Format (
-					Mono.Posix.Catalog.GetString ("Unable to add entry {0}"), dn);
+					Mono.Unix.Catalog.GetString ("Unable to add entry {0}"), dn);
 
 				MessageBox (parent, resMsg, MessageType.Error);
 			}
@@ -84,14 +84,14 @@ namespace lat
 			if (conn.Modify (dn, mods))
 			{
 				resMsg = String.Format (
-					Mono.Posix.Catalog.GetString ("Entry {0} has been modified."), dn);
+					Mono.Unix.Catalog.GetString ("Entry {0} has been modified."), dn);
 
 				MessageBox (parent, resMsg, MessageType.Info);
 			}
 			else
 			{
 				resMsg = String.Format (
-					Mono.Posix.Catalog.GetString ("Unable to modify entry {0}"), dn);
+					Mono.Unix.Catalog.GetString ("Unable to modify entry {0}"), dn);
 
 				MessageBox (parent, resMsg, MessageType.Error);
 			}
@@ -104,7 +104,7 @@ namespace lat
 			bool retVal = false;
 
 			string msg = String.Format (
-				Mono.Posix.Catalog.GetString ("Are you sure you want to delete:\n\n"));
+				Mono.Unix.Catalog.GetString ("Are you sure you want to delete:\n\n"));
 			
 			foreach (string n in dn)
 			{
@@ -128,11 +128,11 @@ namespace lat
 
 				if (retVal)
 					MessageBox (parent, 
-						Mono.Posix.Catalog.GetString ("Entries successfully deleted."), 
+						Mono.Unix.Catalog.GetString ("Entries successfully deleted."), 
 						MessageType.Info);
 				else
 					MessageBox (parent, 
-					Mono.Posix.Catalog.GetString ("Unable to delete all entries."), 
+					Mono.Unix.Catalog.GetString ("Unable to delete all entries."), 
 					MessageType.Error);
 			}
 
@@ -146,7 +146,7 @@ namespace lat
 			bool retVal = false;
 
 			string msg = String.Format (
-				Mono.Posix.Catalog.GetString ("Are you sure you want to delete\n{0}"), dn);
+				Mono.Unix.Catalog.GetString ("Are you sure you want to delete\n{0}"), dn);
 				
 			MessageDialog md = new MessageDialog (parent, 
 					DialogFlags.DestroyWithParent,
@@ -163,7 +163,7 @@ namespace lat
 				if (conn.Delete (dn))
 				{
 					resMsg = String.Format (
-						Mono.Posix.Catalog.GetString ("Entry {0} has been deleted."), dn);
+						Mono.Unix.Catalog.GetString ("Entry {0} has been deleted."), dn);
 		
 					MessageBox (md, resMsg, MessageType.Info);
 
@@ -172,7 +172,7 @@ namespace lat
 				else
 				{
 					resMsg = String.Format (
-						Mono.Posix.Catalog.GetString ("Unable to delete entry {0}"), dn);
+						Mono.Unix.Catalog.GetString ("Unable to delete entry {0}"), dn);
 	
 					MessageBox (md, resMsg, MessageType.Error);
 				}
@@ -192,7 +192,7 @@ namespace lat
 			numImported = ldif.Import (uri);
 
 			string msg = String.Format (
-				Mono.Posix.Catalog.GetString ("Imported {0} entries\nfrom {1}."), 
+				Mono.Unix.Catalog.GetString ("Imported {0} entries\nfrom {1}."), 
 				numImported, uri.ToString());
 
 			if (numImported > 0)
@@ -227,7 +227,7 @@ namespace lat
 			numImported = ldif.Import (data);
 
 			msg = String.Format (
-				Mono.Posix.Catalog.GetString ("Imported {0} entries."),
+				Mono.Unix.Catalog.GetString ("Imported {0} entries."),
 				numImported);
 
 			if (numImported > 0)
@@ -282,7 +282,7 @@ namespace lat
 		public static void ExportData (lat.Connection conn, string dn)
 		{
 			FileSelection fs = new FileSelection (
-				Mono.Posix.Catalog.GetString ("Save export as"));
+				Mono.Unix.Catalog.GetString ("Save export as"));
 
 			fs.Run ();
 			fs.Hide ();

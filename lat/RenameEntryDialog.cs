@@ -68,7 +68,7 @@ namespace lat
 			if (_conn.Rename (oldDN, newDN, saveOld))
 			{
 				string msg = String.Format (
-					Mono.Posix.Catalog.GetString ("Entry {0} has been renamed to {1}."),
+					Mono.Unix.Catalog.GetString ("Entry {0} has been renamed to {1}."),
 					oldDN, newDN);
 
 				Util.MessageBox (renameEntryDialog, msg, MessageType.Info);
@@ -76,7 +76,7 @@ namespace lat
 			else
 			{
 				string msg = String.Format (
-					Mono.Posix.Catalog.GetString (
+					Mono.Unix.Catalog.GetString (
 					"Unable to rename entry {0}."), oldDN);
 
 				Util.MessageBox (renameEntryDialog, msg, MessageType.Error);

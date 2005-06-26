@@ -104,7 +104,7 @@ namespace lat
 		public void missingAlert (string[] missing)
 		{
 			string msg = String.Format (
-				Mono.Posix.Catalog.GetString ("You must provide values for the following attributes:\n\n"));
+				Mono.Unix.Catalog.GetString ("You must provide values for the following attributes:\n\n"));
 
 			foreach (string m in missing)
 			{

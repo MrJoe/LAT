@@ -77,7 +77,7 @@ public class LdapAdministrationTool
 		Program program = new Program (
 			Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 
-		Mono.Posix.Catalog.Init (
+		Mono.Unix.Catalog.Init (
 			Defines.PACKAGE, 
 			Defines.LOCALE_DIR);
 

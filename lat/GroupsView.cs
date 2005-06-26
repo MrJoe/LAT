@@ -26,8 +26,8 @@ namespace lat
 	public class GroupsView : View
 	{
 		private static string[] _cols = { 
-			Mono.Posix.Catalog.GetString ("Group ID"), 
-			Mono.Posix.Catalog.GetString ("Name") };
+			Mono.Unix.Catalog.GetString ("Group ID"), 
+			Mono.Unix.Catalog.GetString ("Name") };
 
 		private static string[] _colAttrs = { "gidNumber", "cn" };
 

@@ -58,7 +58,7 @@ namespace lat
 			if (!_conn.Bind (userEntry.Text, passEntry.Text))
 			{
 				Util.MessageBox (loginDialog,
-					Mono.Posix.Catalog.GetString ("Unable to re-login"),
+					Mono.Unix.Catalog.GetString ("Unable to re-login"),
 					MessageType.Error);
 			}
 

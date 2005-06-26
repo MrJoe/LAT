@@ -309,7 +309,7 @@ namespace lat
 			if (!(_searchResults.Count > 0))
 			{
 				resultsStore.AppendValues (
-					Mono.Posix.Catalog.GetString ("No matches found."));
+					Mono.Unix.Catalog.GetString ("No matches found."));
 			}
 			
 			foreach (LdapEntry le in _searchResults)
@@ -342,7 +342,7 @@ namespace lat
 			else
 			{
 				Util.MessageBox (mainWindow, 
-					Mono.Posix.Catalog.GetString ("Invalid search filter."), 
+					Mono.Unix.Catalog.GetString ("Invalid search filter."), 
 					MessageType.Error);
 			}			
 		}
@@ -353,9 +353,9 @@ namespace lat
 				new SelectContainerDialog (_conn, mainWindow);
 
 			scd.Message = String.Format (
-				Mono.Posix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
+				Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
 
-			scd.Title = Mono.Posix.Catalog.GetString ("Select search base");
+			scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
 			scd.Run ();
 
 			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
@@ -376,29 +376,29 @@ namespace lat
 			valuesStore.Clear ();
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("Host"), _conn.Host);
+				Mono.Unix.Catalog.GetString ("Host"), _conn.Host);
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("Port"), _conn.Port.ToString());
+				Mono.Unix.Catalog.GetString ("Port"), _conn.Port.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("User"), _conn.AuthDN);
+				Mono.Unix.Catalog.GetString ("User"), _conn.AuthDN);
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("Base DN"), _conn.LdapRoot);
+				Mono.Unix.Catalog.GetString ("Base DN"), _conn.LdapRoot);
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("Connected"),
+				Mono.Unix.Catalog.GetString ("Connected"),
 					 _conn.IsConnected.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("Bound"), _conn.IsBound.ToString());
+				Mono.Unix.Catalog.GetString ("Bound"), _conn.IsBound.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("TLS/SSL"), _conn.UseSSL.ToString());
+				Mono.Unix.Catalog.GetString ("TLS/SSL"), _conn.UseSSL.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Posix.Catalog.GetString ("Protocol Version"),
+				Mono.Unix.Catalog.GetString ("Protocol Version"),
 					 _conn.Protocol.ToString());
 		}
 
@@ -430,7 +430,7 @@ namespace lat
 			valuesListview.Model = valuesStore;
 
 			col = valuesListview.AppendColumn (
-				Mono.Posix.Catalog.GetString ("Name"), 
+				Mono.Unix.Catalog.GetString ("Name"), 
 				new CellRendererText (), "text", 0);
 
 			col.SortColumnId = 0;
@@ -440,7 +440,7 @@ namespace lat
 			cell.Edited += new EditedHandler (OnAttributeEdit);
 
 			col = valuesListview.AppendColumn (
-				Mono.Posix.Catalog.GetString ("Value"), cell, "text", 1);
+				Mono.Unix.Catalog.GetString ("Value"), cell, "text", 1);
 		
 			valuesStore.SetSortColumnId (0, SortType.Ascending);
 		}
@@ -607,7 +607,7 @@ namespace lat
 		public void OnImportActivate (object o, EventArgs args)
 		{
 			FileSelection fs = new FileSelection (
-				Mono.Posix.Catalog.GetString ("Choose a file"));
+				Mono.Unix.Catalog.GetString ("Choose a file"));
 			fs.Run ();
 			fs.Hide ();
 
@@ -625,10 +625,10 @@ namespace lat
 		{
 			SelectContainerDialog scd = new SelectContainerDialog (_conn, mainWindow);
 
-			scd.Title = Mono.Posix.Catalog.GetString ("Export entry");
+			scd.Title = Mono.Unix.Catalog.GetString ("Export entry");
 
 			scd.Message = 
-				Mono.Posix.Catalog.GetString ("Select the container you wish to export.");
+				Mono.Unix.Catalog.GetString ("Select the container you wish to export.");
 			scd.Run ();
 
 			if (scd.DN.Equals (""))

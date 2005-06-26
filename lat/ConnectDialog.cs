@@ -184,7 +184,7 @@ namespace lat
 			{
 				object ob = model.GetValue (iter, 0);
 				msg = String.Format ( 
-					Mono.Posix.Catalog.GetString ("Are you sure you want to delete the profile: {0}"),
+					Mono.Unix.Catalog.GetString ("Are you sure you want to delete the profile: {0}"),
 					ob.ToString ());
 				
 				MessageDialog md = new MessageDialog (connectionDialog, 
@@ -217,14 +217,14 @@ namespace lat
 			if (!conn.IsConnected)
 			{
 				msg = String.Format (
-					Mono.Posix.Catalog.GetString ("Unable to connect to: ldap://{0}:{1}"),
+					Mono.Unix.Catalog.GetString ("Unable to connect to: ldap://{0}:{1}"),
 					conn.Host, conn.Port);
 			}
 
 			if (!conn.IsBound && msg == null && conn.User != "")
 			{
 				msg = String.Format (
-					Mono.Posix.Catalog.GetString ("Unable to bind to: ldap://{0}:{1}"),
+					Mono.Unix.Catalog.GetString ("Unable to bind to: ldap://{0}:{1}"),
 					conn.Host, conn.Port);
 			}
 

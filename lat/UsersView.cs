@@ -26,8 +26,8 @@ namespace lat
 	public class UsersView : View
 	{
 		private static string[] _cols = { 
-			Mono.Posix.Catalog.GetString ("Username"), 
-			Mono.Posix.Catalog.GetString ("Full Name") };
+			Mono.Unix.Catalog.GetString ("Username"), 
+			Mono.Unix.Catalog.GetString ("Full Name") };
 
 		private static string[] _colAttrs = { "uid", "cn" };
 

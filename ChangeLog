@@ -1,6 +1,9 @@
+Version 0.5.4
+
 	* SSL support
 	* Allow drag and drop LDIF export from search results
-	* Added man page
+	* Wrote man page
+	* Added pt_BR translation
 	* BUGFIX: Fixed build errors in lat.spec.in
 
 Version 0.5.3

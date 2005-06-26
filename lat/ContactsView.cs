@@ -26,11 +26,11 @@ namespace lat
 	public class ContactsView : View
 	{
 		private static string[] _cols = { 
-			Mono.Posix.Catalog.GetString ("Name"), 
-			Mono.Posix.Catalog.GetString ("Email"), 
-			Mono.Posix.Catalog.GetString ("Work"), 
-			Mono.Posix.Catalog.GetString ("Home"), 
-			Mono.Posix.Catalog.GetString ("Mobile") };
+			Mono.Unix.Catalog.GetString ("Name"), 
+			Mono.Unix.Catalog.GetString ("Email"), 
+			Mono.Unix.Catalog.GetString ("Work"), 
+			Mono.Unix.Catalog.GetString ("Home"), 
+			Mono.Unix.Catalog.GetString ("Mobile") };
 
 		private static string[] _colAttrs = { "cn", "mail", "telephoneNumber", "homePhone", "mobile" };
 

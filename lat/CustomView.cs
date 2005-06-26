@@ -26,7 +26,7 @@ namespace lat
 {
 	public class CustomView : View
 	{
-		private static string[] _cols = { Mono.Posix.Catalog.GetString ("Name") };
+		private static string[] _cols = { Mono.Unix.Catalog.GetString ("Name") };
 
 		private CustomViewManager cvm;
 		private Hashtable _ti;
@@ -106,7 +106,7 @@ namespace lat
 
 
 				string msg = String.Format (
-					Mono.Posix.Catalog.GetString ("Are you sure you want to delete:\n{0}"), name);
+					Mono.Unix.Catalog.GetString ("Are you sure you want to delete:\n{0}"), name);
 
 				MessageDialog md = new MessageDialog (_parent, 
 					DialogFlags.DestroyWithParent,
