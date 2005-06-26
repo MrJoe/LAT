@@ -21,7 +21,7 @@ Installation
 
 lat requires the following other packages:
 
-	* Mono >= 1.0.4
+	* Mono >= 1.1.5
 	* Gtk# >= 1.0.4
 
 Simple installation procedure:
@@ -40,7 +40,13 @@ Hacking
 LAT is written in C# using Mono and Gtk#. The source code is available from 
 the MMG Security Subversion repository in the module lat.
 
-	$ svn co http://svn.mmgsecurity.com/svn/lat 
+	$ mkdir lat
+	$ cd lat
+	$ svn co http://svn.mmgsecurity.com/svn/lat/trunk
+	$ cd trunk
+	$ ./autogen.sh
+	$ ./configure
+	$ make
 
 Bugs / Patches
 ==================
