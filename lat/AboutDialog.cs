@@ -27,7 +27,7 @@ namespace lat
 	public class AboutDialog
 	{
 		private static string[] _author = { "Loren Bandiera" };
-		private static string _translators = "Pablo Borges";
+		private static string _translators = "Pablo Borges (pt_BR)";
 		private static string _desc = "LDAP Administration Tool";
 		private static string _copy = "Copyright 2005 MMG Security Inc.";
 
