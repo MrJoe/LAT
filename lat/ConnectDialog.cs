@@ -116,12 +116,17 @@ namespace lat
 		{
 			Connection conn = getSelectedProfile ();
 
+			Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
+			Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
+
+
 			if (conn.UseSSL)
 			{
 				string url = String.Format ("ldaps://{0}:{1}",
 					conn.Host, conn.Port);
 
-				CertificateManager.Ssl (url, connectionDialog);
+				if (!CertificateManager.Ssl (url, connectionDialog))
+					return;
 			}
 			
 			conn.Bind ();
@@ -275,7 +280,7 @@ namespace lat
 					string url = String.Format ("ldaps://{0}:{1}",
 						hostEntry.Text, portEntry.Text);
 
-					CertificateManager.Ssl (url, connectionDialog);
+					if (!CertificateManager.Ssl (url, connectionDialog));
 				}
 			}
 			else if (notebook1.CurrentPage == 1)
@@ -291,7 +296,8 @@ namespace lat
 					string url = String.Format ("ldaps://{0}:{1}",
 						conn.Host, conn.Port);
 
-					CertificateManager.Ssl (url, connectionDialog);
+					if (!CertificateManager.Ssl (url, connectionDialog))
+						return;
 				}
 			}
 

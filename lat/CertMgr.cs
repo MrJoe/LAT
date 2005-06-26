@@ -32,8 +32,8 @@ namespace lat
 	{
 		CertificateManager () {}
 
-		private static Mono.Security.Protocol.Tls.SecurityProtocolType protocol = Mono.Security.Protocol.Tls.SecurityProtocolType.Default;
-		private static X509CertificateCollection certificates = new X509CertificateCollection ();
+//		private static Mono.Security.Protocol.Tls.SecurityProtocolType protocol = Mono.Security.Protocol.Tls.SecurityProtocolType.Default;
+//		private static X509CertificateCollection certificates = new X509CertificateCollection ();
 
 	
 		static X509Store GetStoreFromName (string storeName, bool machine) 
@@ -95,9 +95,11 @@ namespace lat
 			return (X509CertificateCollection) pi.GetValue (ssl, null);
 		}
 
-		public static void Ssl (string host, Gtk.Window parent)
+		public static bool Ssl (string host, Gtk.Window parent)
 		{
 			Logger.Log.Debug ("Importing certificates from '{0}' into the user's store.", host);
+
+			bool retVal = true;
 
 			X509CertificateCollection coll = GetCertificatesFromSslSession (host);
 
@@ -133,9 +135,7 @@ namespace lat
 						break;
 					}
 
-					string msg = "Do you want to import this certificate?\n\n";
-
-					msg += String.Format ("{0}{1} X.509 Certificate v{2}", 	
+					string msg = String.Format ("{0}{1} X.509 Certificate v{2}", 	
 						Environment.NewLine,
 						selfsign ? "Self-signed " : String.Empty,
 						x509.Version);
@@ -178,28 +178,28 @@ namespace lat
 						ed.Run ();
 						ed.Destroy();
 		
+						retVal = false;
+
 						break;
 					}
 
-					Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
-						Gtk.DialogFlags.DestroyWithParent,
-						Gtk.MessageType.Question, 
-						Gtk.ButtonsType.YesNo, 
-						msg);
-	     
-					Gtk.ResponseType result = (Gtk.ResponseType)md.Run ();
+					CertificateDialog cd = new CertificateDialog (msg);
 
-					if (result == Gtk.ResponseType.Yes) {
+					Logger.Log.Debug ("CertificateDialog.UserResponse: {0}", cd.UserResponse);
+
+					if (cd.UserResponse == CertDialogResponse.Import) 
+					{
 						store.Import (x509);
 						Logger.Log.Debug ("Certificate successfully imported.");
-					} else {
-						Logger.Log.Debug ("Certificate not imported into store {0}.", store.Name);
-						break;
+					} 
+					else if (cd.UserResponse == CertDialogResponse.Cancel)
+					{
+						retVal = false;
 					}
-					
-				}
+				}			
 			}
-		}
 
+			return retVal;
+		}
 	}
 }

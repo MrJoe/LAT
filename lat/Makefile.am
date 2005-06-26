@@ -6,6 +6,7 @@ LAT_CSFILES = \
 	AboutDialog.cs \
 	AssemblyInfo.cs \
 	AddEntryDialog.cs \
+	CertificateDialog.cs \
 	CertMgr.cs \
 	ConnectDialog.cs \
 	Connection.cs \
