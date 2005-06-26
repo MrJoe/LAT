@@ -283,6 +283,9 @@ namespace lat
 				// Profile
 				conn = getSelectedProfile ();
 
+				Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
+				Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
+
 				if (conn.UseSSL)
 				{
 					string url = String.Format ("ldaps://{0}:{1}",

@@ -1,3 +1,6 @@
+	* SSL support
+	* Allow drag and drop LDIF export from search results
+
 Version 0.5.3
 
 	* Added re-login feature
