@@ -409,10 +409,10 @@ namespace lat
 			modifyGroup (groupEntry, mods);
 		}
 
-		private string getGidName (int gid)
-		{
-			return (string) _allGroupGids [gid.ToString()];
-		}
+//		private string getGidName (int gid)
+//		{
+//			return (string) _allGroupGids [gid.ToString()];
+//		}
 
 		private string getGidNumber (string name)
 		{

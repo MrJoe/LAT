@@ -89,9 +89,6 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "profileDialog", null);
 			ui.Autoconnect (this);		
 
-			encryptionRadioButton.Sensitive = false;
-			noEncryptionRadioButton.Sensitive = false;
-
 			noEncryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			noEncryptionRadioButton.Active = true;
 			
