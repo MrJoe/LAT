@@ -41,6 +41,7 @@ make %{?_smp_mflags}
 %{_bindir}/lat
 %{_libdir}/%{name}/*
 %{_mandir}/man1/lat.1.gz
+%{_datadir}/locale/*
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/application-registry/%{name}.applications
 
