@@ -135,7 +135,7 @@ namespace lat
 						break;
 					}
 
-					string msg = String.Format ("{0}{1} X.509 Certificate v{2}", 	
+					string msg = String.Format ("{0}{1} X.509 Certificate v{2}\n", 	
 						Environment.NewLine,
 						selfsign ? "Self-signed " : String.Empty,
 						x509.Version);
