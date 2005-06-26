@@ -1,4 +1,3 @@
-- Fix SSL support
 - SASL support
 - Drag and Drop moves
 - Allow moving entries with children
