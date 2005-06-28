@@ -30,18 +30,34 @@ public class Global
 
 public class LdapAdministrationTool
 {
+	public static void printUsage ()
+	{
+		string usage = Defines.PACKAGE + " " + Defines.VERSION + "\n" +
+			"Web page: http://people.mmgsecurity.com/~lorenb/lat/\n" +
+			"Copyright 2005 MMG Security, Inc.\n\n";
+
+		usage += 
+			"Usage: " + Defines.PACKAGE + " [OPTIONS]\n\n" +
+			"Options:\n" +
+			"  -d,  --debug\t\t\tTurn on debugging messages.\n" +
+			"  -v,  --version\t\tPrint version and exit.\n" +
+			"  -h,  --help\t\t\tPrint this usage message.\n";
+
+		Console.WriteLine (usage);
+	}
+
 	public static void printVersion ()
 	{
-		Console.WriteLine ("{0} {1}\n", Defines.PACKAGE, Defines.VERSION);
-		Console.WriteLine ("Copyright 2005 MMG Security, Inc.");
-		Console.WriteLine ("This is free software; see the source for copying conditions. There is NO");
-		Console.WriteLine ("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
+		string version = Defines.PACKAGE + " " + Defines.VERSION + "\n\n" +
+			"Copyright 2005 MMG Security, Inc.\n" +
+			"This is free software; see the source for copying conditions. There is NO\n" +
+			"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
+
+		Console.WriteLine (version);
 	}
 
 	public static void Main (string[] args)
 	{
-		Application.Init ();
-
 		// Parse command-line arguments 			
 		int i = 0;
 
@@ -60,6 +76,12 @@ public class LdapAdministrationTool
 					Global.Debug = true;
 					break;
 
+				case "-h":
+				case "--help":
+					printUsage ();
+					Environment.Exit (0);
+					break;
+
 				case "-v":
 				case "--version":
 					printVersion ();
@@ -73,6 +95,8 @@ public class LdapAdministrationTool
 		}
 
 		Logger.Log.Debug ("Starting {0} (version {1})", Defines.PACKAGE, Defines.VERSION);
+
+		Application.Init ();
 
 		Program program = new Program (
 			Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
