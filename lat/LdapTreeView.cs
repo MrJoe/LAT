@@ -400,6 +400,8 @@ namespace lat
 
 		public void OnDragDataGet (object o, DragDataGetArgs args)
 		{
+			Logger.Log.Debug ("BEGIN OnDragDataGet");
+
 			Gtk.TreeModel model;
 			Gtk.TreeIter iter;
 
@@ -409,16 +411,22 @@ namespace lat
 			string dn = (string) model.GetValue (iter, (int)TreeCols.DN);
 			string data = null;
 
+			Logger.Log.Debug ("Exporting entry: {0}", dn);
+
 			Util.ExportData (_conn, dn, out data);
 
 			Atom[] targets = args.Context.Targets;
 
 			args.SelectionData.Set (targets[0], 8,
 				System.Text.Encoding.UTF8.GetBytes (data));
+
+			Logger.Log.Debug ("END OnDragDataGet");
 		}
 
 		public void OnDragDataReceived (object o, DragDataReceivedArgs args)
 		{
+			Logger.Log.Debug ("BEGIN OnDragDataReceived");
+
 			bool success = false;
 
 			string data = System.Text.Encoding.UTF8.GetString (
@@ -445,7 +453,11 @@ namespace lat
 				}
 			}
 
+			Logger.Log.Debug ("import success: {0}", success.ToString());
+
 			Gtk.Drag.Finish (args.Context, success, false, args.Time);
+
+			Logger.Log.Debug ("END OnDragDataReceived");
 		}
 	}
 }

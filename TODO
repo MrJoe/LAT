@@ -1,6 +1,5 @@
 - SASL support
-- Drag and Drop moves
-- Allow moving entries with children
+- Drag and Drop moves (?? - possible conflict with dnd LDIF import/export)
 - Write support for Samba in different views or implement separate Samba view(s)
 - Write help
 - Cleanup code
