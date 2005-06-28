@@ -105,13 +105,14 @@ namespace lat
 			LdapMessage msg;
 
 			while ((msg = queue.getResponse ()) != null)
-			{
-			
+			{	
 				if (msg is LdapSearchResult)
 				{
 				
 					LdapEntry entry = ((LdapSearchResult) msg).Entry;
-					retVal.Add (entry);
+
+					if (entry != null)
+						retVal.Add (entry);
 				}
 			}
 			
