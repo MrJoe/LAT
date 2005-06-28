@@ -25,6 +25,7 @@ using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Utilclass;
 
 namespace lat 
 {
@@ -670,20 +671,18 @@ namespace lat
 			if (_pasteDN.Equals (null))
 				return;
 
-			LdapEntry le = _conn.getEntry (_cutDN);
-			LdapAttribute attr = le.getAttribute ("cn");
+			DN dn = new DN (_cutDN);
+			RDN r = (RDN) dn.RDNs[0];
 
-			string newRDN = String.Format ("cn={0}", attr.StringValue);
-	
 			bool result = false;
 
 			if (_isCopy)
 			{
-				result = _conn.Copy (_cutDN, newRDN, _pasteDN);
+				result = _conn.Copy (_cutDN, r.toString(false), _pasteDN);
 			}
 			else
 			{
-				result = _conn.Move (_cutDN, newRDN, _pasteDN);
+				result = _conn.Move (_cutDN, r.toString(false), _pasteDN);
 			}
 
 
@@ -693,12 +692,14 @@ namespace lat
 
 				if (_isCopy)
 				{
-					msg = String.Format ("Entry {0} copied to {1}", 
+					msg = String.Format (
+						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
 						_cutDN, _pasteDN);
 				}
 				else
 				{
-					msg = String.Format ("Entry {0} moved to {1}", 
+					msg = String.Format (
+						Mono.Unix.Catalog.GetString ("Entry {0} moved to {1}"), 
 						_cutDN, _pasteDN);
 				}
 
@@ -715,11 +716,13 @@ namespace lat
 
 				if (_isCopy)
 				{
-					msg = "Unable to copy entry " + _cutDN;
+					string txt = Mono.Unix.Catalog.GetString ("Unable to copy entry ");
+					msg = txt + _cutDN;
 				}
 				else
 				{
-					msg = "Unable to move entry " + _cutDN;
+					string txt = Mono.Unix.Catalog.GetString ("Unable to move entry ");
+					msg = txt + _cutDN;
 				}
 
 				Util.MessageBox (mainWindow, 
