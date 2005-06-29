@@ -23,7 +23,7 @@ msgstr "N'a pas pu decoder le certificat correctement"
 #: lat/ConnectDialog.cs:187
 #, csharp-format
 msgid "Are you sure you want to delete the profile: {0}"
-msgstr "Êtes vous sûr vous voulez supprimer le profil:"
+msgstr "Êtes vous sûr vous voulez supprimer le profil: {0}"
 
 #: lat/ConnectDialog.cs:220
 #, csharp-format
@@ -42,7 +42,7 @@ msgstr "Nom"
 
 #: lat/ContactsView.cs:30
 msgid "Email"
-msgstr "Email"
+msgstr ""
 
 #: lat/ContactsView.cs:31
 msgid "Work"
@@ -69,11 +69,11 @@ msgstr "Qualificateur De Fichier"
 
 #: lat/HostsView.cs:29
 msgid "Hostname"
-msgstr "Hostname"
+msgstr ""
 
 #: lat/HostsView.cs:30
 msgid "IP Address"
-msgstr "IP Address"
+msgstr ""
 
 #: lat/HostsView.cs:31
 msgid "Comment"
@@ -95,7 +95,7 @@ msgstr "Incapable de retitrer l'entrée {0}."
 
 #: lat/UsersView.cs:29
 msgid "Username"
-msgstr "Username"
+msgstr ""
 
 #: lat/UsersView.cs:30
 msgid "Full Name"
@@ -201,7 +201,7 @@ msgstr "Centre serveur"
 
 #: lat/Window.cs:383
 msgid "Port"
-msgstr "Port"
+msgstr ""
 
 #: lat/Window.cs:386
 msgid "User"
@@ -209,7 +209,7 @@ msgstr "Utilisateur"
 
 #: lat/Window.cs:389
 msgid "Base DN"
-msgstr "Base DN"
+msgstr ""
 
 #: lat/Window.cs:392
 msgid "Connected"
@@ -221,7 +221,7 @@ msgstr "Limite"
 
 #: lat/Window.cs:399
 msgid "TLS/SSL"
-msgstr "TLS/SSL"
+msgstr ""
 
 #: lat/Window.cs:402
 msgid "Protocol Version"
@@ -347,19 +347,19 @@ msgstr "Attribut:  "
 
 #: lat/lat.glade.h:22
 msgid "Base DN:"
-msgstr "Base DN:"
+msgstr ""
 
 #: lat/lat.glade.h:23
 msgid "Base:"
-msgstr "Base:"
+msgstr ""
 
 #: lat/lat.glade.h:24
 msgid "Base: "
-msgstr "Base: "
+msgstr ""
 
 #: lat/lat.glade.h:25
 msgid "Browser"
-msgstr "Browser"
+msgstr ""
 
 #: lat/lat.glade.h:26
 msgid "City:    "
@@ -371,7 +371,7 @@ msgstr "Commentaire:  "
 
 #: lat/lat.glade.h:28
 msgid "Condition: "
-msgstr "Condition: "
+msgstr ""
 
 #: lat/lat.glade.h:29
 msgid "Connect"
@@ -379,7 +379,7 @@ msgstr "Reliez"
 
 #: lat/lat.glade.h:30
 msgid "Contacts"
-msgstr "Contacts"
+msgstr ""
 
 #: lat/lat.glade.h:31
 msgid "Current members:"
@@ -391,15 +391,15 @@ msgstr "Vues Faites sur commande"
 
 #: lat/lat.glade.h:33
 msgid "Description:"
-msgstr "Description:"
+msgstr ""
 
 #: lat/lat.glade.h:34
 msgid "Description: "
-msgstr "Description: "
+msgstr ""
 
 #: lat/lat.glade.h:35
 msgid "Email:         "
-msgstr "Email:         "
+msgstr ""
 
 #: lat/lat.glade.h:36
 msgid "Encryption:"
@@ -474,11 +474,11 @@ msgstr "À la maison:"
 
 #: lat/lat.glade.h:55
 msgid "Hostname:"
-msgstr "Hostname:"
+msgstr ""
 
 #: lat/lat.glade.h:56
 msgid "Hostname: "
-msgstr "Hostname: "
+msgstr ""
 
 #: lat/lat.glade.h:57
 msgid "Hosts"
@@ -486,7 +486,7 @@ msgstr "Centres serveurs"
 
 #: lat/lat.glade.h:58
 msgid "IP Address: "
-msgstr "IP Address: "
+msgstr ""
 
 #: lat/lat.glade.h:59
 msgid "Import LDIF..."
@@ -536,7 +536,7 @@ msgstr "Ouverture"
 
 #: lat/lat.glade.h:71
 msgid "MD5"
-msgstr "MD5"
+msgstr ""
 
 #: lat/lat.glade.h:72
 msgid "Mail:    "
@@ -544,7 +544,7 @@ msgstr "Courrier:    "
 
 #: lat/lat.glade.h:73
 msgid "Mobile:"
-msgstr "Mobile:"
+msgstr ""
 
 #: lat/lat.glade.h:74
 msgid "Name:"
@@ -632,11 +632,11 @@ msgstr "Retitrez L'Entrée"
 
 #: lat/lat.glade.h:95
 msgid "SHA"
-msgstr "SHA"
+msgstr ""
 
 #: lat/lat.glade.h:96
 msgid "SSL/TLS"
-msgstr "SSL/TLS"
+msgstr ""
 
 #: lat/lat.glade.h:97
 msgid "Save old name as an attribute"
@@ -672,19 +672,19 @@ msgstr "Examinez La Recherche"
 
 #: lat/lat.glade.h:105
 msgid "UID:"
-msgstr "UID:"
+msgstr ""
 
 #: lat/lat.glade.h:106
 msgid "Username:"
-msgstr "Username:"
+msgstr ""
 
 #: lat/lat.glade.h:107
 msgid "Username: "
-msgstr "Username: "
+msgstr ""
 
 #: lat/lat.glade.h:108
 msgid "Username:   "
-msgstr "Username:   "
+msgstr ""
 
 #: lat/lat.glade.h:109
 msgid "Users"
