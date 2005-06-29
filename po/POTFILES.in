@@ -1,10 +1,12 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
+lat/CertMgr.cs
 lat/ConnectDialog.cs
 lat/ContactsView.cs
 lat/CustomView.cs
 lat/GroupsView.cs
 lat/HostsView.cs
+lat/LoginDialog.cs
 lat/RenameEntryDialog.cs
 lat/UsersView.cs
 lat/Util.cs

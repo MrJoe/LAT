@@ -41,6 +41,7 @@ if test "$DIE" -eq 1; then
 	exit 1
 fi
 
+libtoolize --copy --force
 intltoolize --force --copy || exit 1
 
 echo "Running $ACLOCAL ..."

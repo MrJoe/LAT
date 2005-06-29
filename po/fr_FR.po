@@ -3,41 +3,42 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: lat\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-29 09:07-0400\n"
-"PO-Revision-Date: 2005-06-23 09:52-0300\n"
-"Last-Translator: Pablo Borges <pablort@gmail.com>\n"
-"Language-Team: pt_BR <pt_BR@li.org>\n"
+"PO-Revision-Date: 2005-06-29 09:07-0400\n"
+"Last-Translator: Loren Bandiera <lorenb@mmgsecurity.com>\n"
+"Language-Team: fr_FR <fr_FR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lat/CertMgr.cs:173
 msgid "Couldn't decode certificate properly"
-msgstr ""
+msgstr "N'a pas pu decoder le certificat correctement"
 
 #: lat/ConnectDialog.cs:187
 #, csharp-format
 msgid "Are you sure you want to delete the profile: {0}"
-msgstr "Você tem certeza que quer remover o perfil: {0}"
+msgstr "Êtes vous sûr vous voulez supprimer le profil:"
 
 #: lat/ConnectDialog.cs:220
 #, csharp-format
 msgid "Unable to connect to: ldap://{0}:{1}"
-msgstr "Não foi possível conectar em: ldap://{0}:{1}"
+msgstr "Incapable de se relier à: ldap://{0}:{1}"
 
 #: lat/ConnectDialog.cs:227
 #, csharp-format
 msgid "Unable to bind to: ldap://{0}:{1}"
-msgstr "Não foi possível criar o vínculo em: ldap://{0}:{1}"
+msgstr "Incapable de lier: ldap://{0}:{1}"
 
 #: lat/ContactsView.cs:29 lat/CustomView.cs:29 lat/GroupsView.cs:30
 #: lat/Window.cs:434
 msgid "Name"
-msgstr "Nome"
+msgstr "Nom"
 
 #: lat/ContactsView.cs:30
 msgid "Email"
@@ -45,15 +46,15 @@ msgstr "Email"
 
 #: lat/ContactsView.cs:31
 msgid "Work"
-msgstr "Trabalho"
+msgstr "Travail"
 
 #: lat/ContactsView.cs:32
 msgid "Home"
-msgstr "Casa"
+msgstr "À la maison"
 
 #: lat/ContactsView.cs:33
 msgid "Mobile"
-msgstr "Celular"
+msgstr "Mobile"
 
 #: lat/CustomView.cs:109
 #, csharp-format
@@ -61,12 +62,10 @@ msgid ""
 "Are you sure you want to delete:\n"
 "{0}"
 msgstr ""
-"Você tem certeza que deseja apagar:\n"
-"{0}"
 
 #: lat/GroupsView.cs:29
 msgid "Group ID"
-msgstr "ID do Grupo"
+msgstr "Qualificateur De Fichier"
 
 #: lat/HostsView.cs:29
 msgid "Hostname"
@@ -74,53 +73,53 @@ msgstr "Hostname"
 
 #: lat/HostsView.cs:30
 msgid "IP Address"
-msgstr "Endereço IP"
+msgstr "IP Address"
 
 #: lat/HostsView.cs:31
 msgid "Comment"
-msgstr "Comentário"
+msgstr "Commentaire"
 
 #: lat/LoginDialog.cs:61
 msgid "Unable to re-login"
-msgstr ""
+msgstr "Incapable à l're-ouverture"
 
 #: lat/RenameEntryDialog.cs:71
 #, csharp-format
 msgid "Entry {0} has been renamed to {1}."
-msgstr "Entrada {0} foi renomeada para {1}."
+msgstr "L'entrée {0} a été retitrée {1}."
 
 #: lat/RenameEntryDialog.cs:80
 #, csharp-format
 msgid "Unable to rename entry {0}."
-msgstr "Não foi possível renomear a entrada {0}."
+msgstr "Incapable de retitrer l'entrée {0}."
 
 #: lat/UsersView.cs:29
 msgid "Username"
-msgstr "Usuário"
+msgstr "Username"
 
 #: lat/UsersView.cs:30
 msgid "Full Name"
-msgstr "Nome Completo"
+msgstr "Nom et prénoms"
 
 #: lat/Util.cs:58
 #, csharp-format
 msgid "Entry {0} has been added."
-msgstr "A entrada {0} foi adicionada."
+msgstr "L'entrée {0} a été ajoutée."
 
 #: lat/Util.cs:65
 #, csharp-format
 msgid "Unable to add entry {0}"
-msgstr "Não foi possível adicionar a entrada {0}"
+msgstr "Incapable d'ajouter l'entrée {0}"
 
 #: lat/Util.cs:87
 #, csharp-format
 msgid "Entry {0} has been modified."
-msgstr "A entrada {0} foi modificada."
+msgstr "L'entrée {0} a été modifiée."
 
 #: lat/Util.cs:94
 #, csharp-format
 msgid "Unable to modify entry {0}"
-msgstr "Não foi possível modificar a entrada {0}"
+msgstr "Incapable de modifier l'entrée {0}"
 
 #: lat/Util.cs:107
 #, csharp-format
@@ -128,16 +127,14 @@ msgid ""
 "Are you sure you want to delete:\n"
 "\n"
 msgstr ""
-"Você tem certeza que deseja apagar:\n"
-"\n"
 
 #: lat/Util.cs:131
 msgid "Entries successfully deleted."
-msgstr "As entradas foram removidas com sucesso."
+msgstr "Les entrées ont avec succès supprimé."
 
 #: lat/Util.cs:135
 msgid "Unable to delete all entries."
-msgstr "Não foi possível remover todas as entradas"
+msgstr "Incapable de supprimer toutes les entrées."
 
 #: lat/Util.cs:149
 #, csharp-format
@@ -145,18 +142,16 @@ msgid ""
 "Are you sure you want to delete\n"
 "{0}"
 msgstr ""
-"Voce tem certeza que deseja apagar\n"
-"{0}"
 
 #: lat/Util.cs:166
 #, csharp-format
 msgid "Entry {0} has been deleted."
-msgstr "A entrada {0} foi apagada"
+msgstr "L'entrée {0} a été supprimée."
 
 #: lat/Util.cs:175
 #, csharp-format
 msgid "Unable to delete entry {0}"
-msgstr "Não foi possível remover a entrada {0}"
+msgstr "Incapable de supprimer l'entrée {0}"
 
 #: lat/Util.cs:195
 #, csharp-format
@@ -164,17 +159,15 @@ msgid ""
 "Imported {0} entries\n"
 "from {1}."
 msgstr ""
-"{0} entradas foram importadas\n"
-"de {1}."
 
 #: lat/Util.cs:230
 #, csharp-format
 msgid "Imported {0} entries."
-msgstr "{0} entradas foram importadas."
+msgstr "{0} entrées importées."
 
 #: lat/Util.cs:285
 msgid "Save export as"
-msgstr "Salvar export como"
+msgstr "Économiser l'exportation As"
 
 #: lat/ViewDialog.cs:107
 #, csharp-format
@@ -182,16 +175,14 @@ msgid ""
 "You must provide values for the following attributes:\n"
 "\n"
 msgstr ""
-"Você precisa fornecer valores para os seguintes atributos:\n"
-"\n"
 
 #: lat/Window.cs:313
 msgid "No matches found."
-msgstr "No matches found."
+msgstr "Aucunes allumettes trouvées."
 
 #: lat/Window.cs:346
 msgid "Invalid search filter."
-msgstr "Filtro de pesquisa inválido"
+msgstr "Filtre inadmissible de recherche."
 
 #: lat/Window.cs:357
 #, csharp-format
@@ -199,36 +190,34 @@ msgid ""
 "Where in the directory would\n"
 "you like to start the search?"
 msgstr ""
-"Onde no diretório você\n"
-"gostaria de começar a busca?"
 
 #: lat/Window.cs:359
 msgid "Select search base"
-msgstr "Selecione a base de pesquisa"
+msgstr "Choisissez la base de recherche"
 
 #: lat/Window.cs:380
 msgid "Host"
-msgstr "Host"
+msgstr "Centre serveur"
 
 #: lat/Window.cs:383
 msgid "Port"
-msgstr "Porta"
+msgstr "Port"
 
 #: lat/Window.cs:386
 msgid "User"
-msgstr "Usuário"
+msgstr "Utilisateur"
 
 #: lat/Window.cs:389
 msgid "Base DN"
-msgstr "DN Base"
+msgstr "Base DN"
 
 #: lat/Window.cs:392
 msgid "Connected"
-msgstr "Conectado"
+msgstr "Relié"
 
 #: lat/Window.cs:396
 msgid "Bound"
-msgstr "Vinculado"
+msgstr "Limite"
 
 #: lat/Window.cs:399
 msgid "TLS/SSL"
@@ -236,47 +225,45 @@ msgstr "TLS/SSL"
 
 #: lat/Window.cs:402
 msgid "Protocol Version"
-msgstr "Versão do Protocolo"
+msgstr "Version De Protocole"
 
 #: lat/Window.cs:444
 msgid "Value"
-msgstr "Valor"
+msgstr "Valeur"
 
 #: lat/Window.cs:611
 msgid "Choose a file"
-msgstr "Escolha um arquivo"
+msgstr "Choisissez un dossier"
 
 #: lat/Window.cs:629
 msgid "Export entry"
-msgstr "Exportar entrada"
+msgstr "Entrée d'exportation"
 
 #: lat/Window.cs:632
 msgid "Select the container you wish to export."
-msgstr "Selecione o container que você deseja exportar."
+msgstr "Choisissez le récipient que vous souhaitez exporter."
 
 #: lat/Window.cs:696
-#, fuzzy, csharp-format
+#, csharp-format
 msgid "Entry {0} copied to {1}"
-msgstr "Entrada {0} foi renomeada para {1}."
+msgstr "L'entrée {0} a copié {1}"
 
 #: lat/Window.cs:702
-#, fuzzy, csharp-format
+#, csharp-format
 msgid "Entry {0} moved to {1}"
-msgstr "Entrada {0} foi renomeada para {1}."
+msgstr "L'entrée {0} s'est déplacée à {1}"
 
 #: lat/Window.cs:719
-#, fuzzy
 msgid "Unable to copy entry "
-msgstr "Não foi possível modificar a entrada {0}"
+msgstr "Incapable de copier l'entrée "
 
 #: lat/Window.cs:724
-#, fuzzy
 msgid "Unable to move entry "
-msgstr "Não foi possível modificar a entrada {0}"
+msgstr "Incapable de déplacer l'entrée"
 
 #: lat/lat.glade.h:1
 msgid " Use Salt"
-msgstr " Use Salt"
+msgstr " Employez Le Sel"
 
 #: lat/lat.glade.h:2
 msgid "..."
@@ -284,84 +271,83 @@ msgstr "..."
 
 #: lat/lat.glade.h:3
 msgid "<b>Account Details</b>"
-msgstr "<b>Detalhes da Conta</b>"
+msgstr "<b>Détails De Compte</b>"
 
 #: lat/lat.glade.h:4
 msgid "<b>Advanced Settings</b>"
-msgstr "<b>Configurações Avançadas</b>"
+msgstr "<b>Arrangements Avançés</b>"
 
 #: lat/lat.glade.h:5
 msgid "<b>All Groups</b>"
-msgstr "<b>Todos os Grupos</b>"
+msgstr "<b>Tous les Groupes</b>"
 
 #: lat/lat.glade.h:6
 msgid "<b>Basic Settings</b>"
-msgstr "<b>Configurações Básicas</b>"
+msgstr "<b>Arrangement De base</b>"
 
 #: lat/lat.glade.h:7
 msgid "<b>Contact Information</b>"
-msgstr "<b>Informação do Contato</b>"
+msgstr "<b>L'Information De Contact</b>"
 
 #: lat/lat.glade.h:8
 msgid "<b>General</b>"
-msgstr "<b>Geral</b>"
+msgstr "<b>Généralités</b>"
 
 #: lat/lat.glade.h:9
 msgid "<b>Member Of</b>"
-msgstr "<b>Membro de</b>"
+msgstr "<b>Membre De</b>"
 
 #: lat/lat.glade.h:10
 msgid "<b>Members</b>"
-msgstr "<b>Membros</b>"
+msgstr "<b>Membres</b>"
 
 #: lat/lat.glade.h:11
 msgid "<b>Profile</b>"
-msgstr "<b>Perfil</b>"
+msgstr "<b>Profil</b>"
 
 #: lat/lat.glade.h:12
 msgid "<b>Search Criteria</b>"
-msgstr "<b>Critérios de Pesquisa</b>"
+msgstr "<b>Critères De Recherche</b>"
 
 #: lat/lat.glade.h:13
-#, fuzzy
 msgid "<span size=\"larger\" weight=\"bold\">Connect to untrusted site?</span>"
-msgstr "<span weight=\"bold\">Números do Contato</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Reliez à untrusted l'emplacement?</span>"
 
 #: lat/lat.glade.h:14
 msgid "<span weight=\"bold\">Address</span>"
-msgstr "<span weight=\"bold\">Endereço</span>"
+msgstr "<span weight=\"bold\">Adresse</span>"
 
 #: lat/lat.glade.h:15
 msgid "<span weight=\"bold\">Attributes</span>"
-msgstr "<span weight=\"bold\">Atributos</span>"
+msgstr "<span weight=\"bold\">Attributs</span>"
 
 #: lat/lat.glade.h:16
 msgid "<span weight=\"bold\">Contact Numbers</span>"
-msgstr "<span weight=\"bold\">Números do Contato</span>"
+msgstr "<span weight=\"bold\">Nombres De Contact</span>"
 
 #: lat/lat.glade.h:17
 msgid "<span weight=\"bold\">Results</span>"
-msgstr "<span weight=\"bold\">Resultados</span>"
+msgstr "<span weight=\"bold\">Résultats</span>"
 
 #: lat/lat.glade.h:18
 msgid "<span weight=\"bold\">Search Criteria</span>"
-msgstr "<span weight=\"bold\">Critérios de Pesquisa</span>"
+msgstr "<span weight=\"bold\">Critères De Recherche</span>"
 
 #: lat/lat.glade.h:19
 msgid "All"
-msgstr "Tudo"
+msgstr "Tous"
 
 #: lat/lat.glade.h:20
 msgid "All users:"
-msgstr "Todos os usuários:"
+msgstr "Tous les utilisateurs:"
 
 #: lat/lat.glade.h:21
 msgid "Attribute:  "
-msgstr "Atributo:  "
+msgstr "Attribut:  "
 
 #: lat/lat.glade.h:22
 msgid "Base DN:"
-msgstr "DN Base:"
+msgstr "Base DN:"
 
 #: lat/lat.glade.h:23
 msgid "Base:"
@@ -369,7 +355,7 @@ msgstr "Base:"
 
 #: lat/lat.glade.h:24
 msgid "Base: "
-msgstr "Base:"
+msgstr "Base: "
 
 #: lat/lat.glade.h:25
 msgid "Browser"
@@ -377,39 +363,39 @@ msgstr "Browser"
 
 #: lat/lat.glade.h:26
 msgid "City:    "
-msgstr "Cidade:   "
+msgstr "Ville:    "
 
 #: lat/lat.glade.h:27
 msgid "Comment:  "
-msgstr "Comentário:  "
+msgstr "Commentaire:  "
 
 #: lat/lat.glade.h:28
 msgid "Condition: "
-msgstr "Condição: "
+msgstr "Condition: "
 
 #: lat/lat.glade.h:29
 msgid "Connect"
-msgstr "Conectar"
+msgstr "Reliez"
 
 #: lat/lat.glade.h:30
 msgid "Contacts"
-msgstr "Contatos"
+msgstr "Contacts"
 
 #: lat/lat.glade.h:31
 msgid "Current members:"
-msgstr "Atuais membros:"
+msgstr "Membres courants:"
 
 #: lat/lat.glade.h:32
 msgid "Custom Views"
-msgstr "Visualização Customizada"
+msgstr "Vues Faites sur commande"
 
 #: lat/lat.glade.h:33
 msgid "Description:"
-msgstr "Descrição:"
+msgstr "Description:"
 
 #: lat/lat.glade.h:34
 msgid "Description: "
-msgstr "Descrição: "
+msgstr "Description: "
 
 #: lat/lat.glade.h:35
 msgid "Email:         "
@@ -417,19 +403,19 @@ msgstr "Email:         "
 
 #: lat/lat.glade.h:36
 msgid "Encryption:"
-msgstr "Encryption:"
+msgstr "Chiffrage:"
 
 #: lat/lat.glade.h:37
 msgid "Encryption:        "
-msgstr "Encryption:        "
+msgstr "Chiffrage:        "
 
 #: lat/lat.glade.h:38
 msgid "Enter Password"
-msgstr "Digite a senha"
+msgstr "Entrez Le Mot de passe"
 
 #: lat/lat.glade.h:39
 msgid "Enter Password: "
-msgstr "Digite a senha: "
+msgstr "Entrez Le Mot de passe: "
 
 #: lat/lat.glade.h:40
 msgid ""
@@ -437,17 +423,14 @@ msgid ""
 "for the LDAP directory\n"
 "you wish to connect to."
 msgstr ""
-"Entre com um hostname e DN Base \n"
-"para o diretório LDAP\n"
-"você deseja conectar."
 
 #: lat/lat.glade.h:43
 msgid "Entry name: "
-msgstr "Nome da Entrada: "
+msgstr "Nom d'entrée: "
 
 #: lat/lat.glade.h:44
 msgid "Export LDIF..."
-msgstr "Exportar LDIF..."
+msgstr "Exportation LDIF..."
 
 #: lat/lat.glade.h:45
 msgid "Fax:     "
@@ -455,39 +438,39 @@ msgstr "Fax:     "
 
 #: lat/lat.glade.h:46
 msgid "Filter:  "
-msgstr "Filtro:  "
+msgstr "Filtre:  "
 
 #: lat/lat.glade.h:47
 msgid "First Name: "
-msgstr "Nome: "
+msgstr "Prénom: "
 
 #: lat/lat.glade.h:48
 msgid "First Name:  "
-msgstr "Nome:  "
+msgstr "Prénom:  "
 
 #: lat/lat.glade.h:49
 msgid "General"
-msgstr "Geral"
+msgstr "Généralités"
 
 #: lat/lat.glade.h:50
 msgid "Group ID:       "
-msgstr "ID do Grupo:          "
+msgstr "Qualificateur De Fichier:       "
 
 #: lat/lat.glade.h:51
 msgid "Group name: "
-msgstr "Nome do Grupo: "
+msgstr "Nom de groupe: "
 
 #: lat/lat.glade.h:52
 msgid "Groups"
-msgstr "Grupos"
+msgstr "Groupes"
 
 #: lat/lat.glade.h:53
 msgid "Home Directory:"
-msgstr "Diretório Home:"
+msgstr "Répertoire Local:"
 
 #: lat/lat.glade.h:54
 msgid "Home:"
-msgstr "Home:"
+msgstr "À la maison:"
 
 #: lat/lat.glade.h:55
 msgid "Hostname:"
@@ -499,15 +482,15 @@ msgstr "Hostname: "
 
 #: lat/lat.glade.h:57
 msgid "Hosts"
-msgstr "Hosts"
+msgstr "Centres serveurs"
 
 #: lat/lat.glade.h:58
 msgid "IP Address: "
-msgstr "Endereço IP: "
+msgstr "IP Address: "
 
 #: lat/lat.glade.h:59
 msgid "Import LDIF..."
-msgstr "Importar LDIF..."
+msgstr "Importation LDIF..."
 
 #: lat/lat.glade.h:60
 msgid ""
@@ -517,39 +500,39 @@ msgstr ""
 
 #: lat/lat.glade.h:62
 msgid "LAT - Add Entry"
-msgstr "LAT - Adicionar Entrada"
+msgstr "LAT - Ajoutez L'Entrée"
 
 #: lat/lat.glade.h:63
 msgid "LAT - Connect"
-msgstr "LAT - Conectar"
+msgstr "LAT - Reliez"
 
 #: lat/lat.glade.h:64
 msgid "LAT - Profile"
-msgstr "LAT - Perfil"
+msgstr "LAT - Profil"
 
 #: lat/lat.glade.h:65
 msgid "LAT - Search Builder"
-msgstr "LAT - Construtor de Pesquisa"
+msgstr "LAT - Constructeur De Recherche"
 
 #: lat/lat.glade.h:66
 msgid "LAT - Select Container"
-msgstr "LAT - Selecionar um Container"
+msgstr "LAT - Choisissez Le Récipient"
 
 #: lat/lat.glade.h:67
 msgid "LDAP Administration Tool"
-msgstr "Ferramenta de Administração LDAP"
+msgstr "Outil D'Administration de LDAP"
 
 #: lat/lat.glade.h:68
 msgid "Last Name:"
-msgstr "Sobrenome:"
+msgstr "Dernier Nom:"
 
 #: lat/lat.glade.h:69
 msgid "Last Name:  "
-msgstr "Sobrenome:  "
+msgstr "Dernier Nom:  "
 
 #: lat/lat.glade.h:70
 msgid "Login"
-msgstr "Login"
+msgstr "Ouverture"
 
 #: lat/lat.glade.h:71
 msgid "MD5"
@@ -557,95 +540,95 @@ msgstr "MD5"
 
 #: lat/lat.glade.h:72
 msgid "Mail:    "
-msgstr "Email:    "
+msgstr "Courrier:    "
 
 #: lat/lat.glade.h:73
 msgid "Mobile:"
-msgstr "Celular:"
+msgstr "Mobile:"
 
 #: lat/lat.glade.h:74
 msgid "Name:"
-msgstr "Nome:"
+msgstr "Nom:"
 
 #: lat/lat.glade.h:75
 msgid "Name:          "
-msgstr "Nome:"
+msgstr "Nom:           "
 
 #: lat/lat.glade.h:76
 msgid "New Name:"
-msgstr "Novo Nome:"
+msgstr "Nouveau Nom:"
 
 #: lat/lat.glade.h:77
 msgid "No, cancel the connection"
-msgstr ""
+msgstr "Le non, décommandent le raccordement"
 
 #: lat/lat.glade.h:78
 msgid "None"
-msgstr "Nenhum"
+msgstr "Aucun"
 
 #: lat/lat.glade.h:79
 msgid "Office:         "
-msgstr "Escritório:"
+msgstr "Bureau:         "
 
 #: lat/lat.glade.h:80
 msgid "Office:          "
-msgstr "Escritório:"
+msgstr "Bureau:          "
 
 #: lat/lat.glade.h:81
 msgid "Old Name:"
-msgstr "Nome Antigo:"
+msgstr "Vieux Nom:"
 
 #: lat/lat.glade.h:82
 msgid "Output:              "
-msgstr "Saída:"
+msgstr "Rendement:              "
 
 #: lat/lat.glade.h:83
 msgid "Pager: "
-msgstr "Pager: "
+msgstr "Pagineur: "
 
 #: lat/lat.glade.h:84
 msgid "Password:"
-msgstr "Senha:"
+msgstr ""
 
 #: lat/lat.glade.h:85
 msgid "Password:   "
-msgstr "Senha:   "
+msgstr "Mot de passe:   "
 
 #: lat/lat.glade.h:86
 msgid "Password:           "
-msgstr "Senha:           "
+msgstr "Mot de passe:          "
 
 #: lat/lat.glade.h:87
 msgid "Phone:"
-msgstr "Fone:"
+msgstr "Téléphone:"
 
 #: lat/lat.glade.h:88
 msgid "Port:"
-msgstr "Porta:"
+msgstr "Port:"
 
 #: lat/lat.glade.h:89
 msgid "Postal (ZIP) Code:"
-msgstr "CEP:"
+msgstr "Code Postal:"
 
 #: lat/lat.glade.h:90
 msgid "Primary Group: "
-msgstr "Grupo Primário: "
+msgstr "Groupe Primaire: "
 
 #: lat/lat.glade.h:91
 msgid "Profiles"
-msgstr "Perfis"
+msgstr "Profils"
 
 #: lat/lat.glade.h:92
 msgid "Quick Connect"
-msgstr "Conexão Rápida"
+msgstr "Reliez Vite"
 
 #: lat/lat.glade.h:93
 msgid "Re-login..."
-msgstr "Re-login..."
+msgstr "Re-ouverture..."
 
 #: lat/lat.glade.h:94
 msgid "Rename Entry"
-msgstr "Renomear Entrada"
+msgstr "Retitrez L'Entrée"
 
 #: lat/lat.glade.h:95
 msgid "SHA"
@@ -657,35 +640,35 @@ msgstr "SSL/TLS"
 
 #: lat/lat.glade.h:97
 msgid "Save old name as an attribute"
-msgstr "Salvar o nome anterior como um attributo"
+msgstr "Économiser le vieux nom comme attribut"
 
 #: lat/lat.glade.h:98
 msgid "Search"
-msgstr "Pesquisa"
+msgstr "Recherche"
 
 #: lat/lat.glade.h:99
 msgid "Shell:                 "
-msgstr "Shell:"
+msgstr "Coquille:                "
 
 #: lat/lat.glade.h:100
 msgid "Show more options"
-msgstr "Mostrar mais opções"
+msgstr "Montrez plus d'options"
 
 #: lat/lat.glade.h:101
 msgid "Start Search"
-msgstr "Começar Pesquisa"
+msgstr "Commencez La Recherche"
 
 #: lat/lat.glade.h:102
 msgid "State: "
-msgstr "Estado: "
+msgstr "État: "
 
 #: lat/lat.glade.h:103
 msgid "Street:"
-msgstr "Rua:"
+msgstr "Rue:"
 
 #: lat/lat.glade.h:104
 msgid "Test Search"
-msgstr "Testar Pesquisa"
+msgstr "Examinez La Recherche"
 
 #: lat/lat.glade.h:105
 msgid "UID:"
@@ -693,47 +676,47 @@ msgstr "UID:"
 
 #: lat/lat.glade.h:106
 msgid "Username:"
-msgstr "Nome do usuário:"
+msgstr "Username:"
 
 #: lat/lat.glade.h:107
 msgid "Username: "
-msgstr "Nome do usuário: "
+msgstr "Username: "
 
 #: lat/lat.glade.h:108
 msgid "Username:   "
-msgstr "Nome do usuário:   "
+msgstr "Username:   "
 
 #: lat/lat.glade.h:109
 msgid "Users"
-msgstr "Usuários"
+msgstr "Utilisateurs"
 
 #: lat/lat.glade.h:110
 msgid "Value:       "
-msgstr "Valor:       "
+msgstr "Valeur:        "
 
 #: lat/lat.glade.h:111
 msgid "Value:           "
-msgstr "Valor:           "
+msgstr "Valeur:            "
 
 #: lat/lat.glade.h:112
 msgid "View"
-msgstr "View"
+msgstr "Vue"
 
 #: lat/lat.glade.h:113
 msgid "Views"
-msgstr "Views"
+msgstr "Vues"
 
 #: lat/lat.glade.h:114
 msgid "Work:   "
-msgstr "Trabalho:   "
+msgstr "Travail:   "
 
 #: lat/lat.glade.h:115
 msgid "Yes, accept this certificate (always)"
-msgstr ""
+msgstr "Oui, acceptez ce certificat (toujours)"
 
 #: lat/lat.glade.h:116
 msgid "Yes, just accept this certicate for the current session"
-msgstr ""
+msgstr "Oui, acceptez juste ce certicate pour la session courante"
 
 #: lat/lat.glade.h:117
 msgid ""
@@ -743,24 +726,24 @@ msgstr ""
 
 #: lat/lat.glade.h:120
 msgid "_About"
-msgstr "S_obre"
+msgstr "_Au sujet de"
 
 #: lat/lat.glade.h:121
 msgid "_Disconnect"
-msgstr "_Desconectar"
+msgstr "_Débranchement"
 
 #: lat/lat.glade.h:122
 msgid "_Edit"
-msgstr "_Editar"
+msgstr "_Éditez"
 
 #: lat/lat.glade.h:123
 msgid "_Help"
-msgstr "_Ajuda"
+msgstr "_Aide"
 
 #: lat/lat.glade.h:124
 msgid "_Server"
-msgstr "_Servidor"
+msgstr "_Serveur"
 
 #: lat/lat.glade.h:125
 msgid "_View"
-msgstr "_View"
+msgstr "_Vue"
