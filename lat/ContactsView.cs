@@ -20,6 +20,7 @@
 
 using Gtk;
 using System;
+using Novell.Directory.Ldap;
 
 namespace lat
 {
@@ -52,6 +53,39 @@ namespace lat
 		public override void Populate ()
 		{
 			this.insertData (_colAttrs);
+		}
+
+		public override void DoPopUp ()
+		{
+			Menu popup = new Menu();
+
+			MenuItem mailItem = new MenuItem ("Send email");
+			mailItem.Activated += new EventHandler (OnEmailActivate);
+			mailItem.Show ();
+
+			popup.Append (mailItem);
+
+			popup.Popup(null, null, null, IntPtr.Zero, 3,
+					Gtk.Global.CurrentEventTime);
+		}
+
+		private void OnEmailActivate (object o, EventArgs args) 
+		{
+			Gtk.TreeModel model;
+
+			TreePath[] tp = this._tv.Selection.GetSelectedRows (out model);
+
+			LdapEntry le = this.lookupEntry (tp[0]);
+
+			if (le == null)
+				return;
+
+			LdapAttribute la = le.getAttribute ("mail");
+
+			if (la.StringValue == null || la.StringValue == "")
+				return;
+
+			Gnome.Url.Show ("mailto:" + la.StringValue);
 		}
 	}
 }

@@ -1,3 +1,4 @@
+	* Added popup menu to views.
 	* BUGFIX: Incorrect RDNs generated in copy/cut/paste code
 	* BUGFIX: Insert line break into certificate dialog text
 

@@ -59,6 +59,7 @@ namespace lat
 
 			_tv = tv;
 			_tv.Selection.Mode = SelectionMode.Multiple;
+			_tv.ButtonPressEvent += new ButtonPressEventHandler (OnEntryRightClick);
 
 			_lookupTable = new Hashtable ();
 
@@ -74,6 +75,43 @@ namespace lat
 			_tv.DragDataReceived += new DragDataReceivedHandler (OnDragDataReceived);
 
 			_tv.RowActivated += new RowActivatedHandler (OnRowActivated);
+		}
+
+		public virtual void DoPopUp()
+		{
+/*
+			Menu popup = new Menu();
+
+			MenuItem mailItem = new MenuItem ("Send email");
+			mailItem.Activated += new EventHandler (OnEmailActivate);
+			mailItem.Show ();
+
+			popup.Append (mailItem);
+
+			MenuItem exportItem = new MenuItem ("Export");
+			exportItem.Activated += new EventHandler (OnExportActivate);
+			exportItem.Show ();
+
+			popup.Append (exportItem);
+
+			ImageMenuItem deleteItem = new ImageMenuItem (Stock.Delete, new Gtk.AccelGroup(IntPtr.Zero));
+			deleteItem.Activated += new EventHandler (OnDeleteActivate);
+			deleteItem.Show ();
+
+			popup.Append (deleteItem);
+
+			popup.Popup(null, null, null, IntPtr.Zero, 3,
+					Gtk.Global.CurrentEventTime);
+*/
+		}
+
+		[ConnectBefore]
+		public void OnEntryRightClick (object o, ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 3)
+			{
+				DoPopUp ();
+			}
 		}
 
 		public void setupColumns (string[] cols)
@@ -296,6 +334,7 @@ namespace lat
 		public void removeHandlers ()
 		{
 			_tv.RowActivated -= new RowActivatedHandler (OnRowActivated);
+			_tv.ButtonPressEvent -= new ButtonPressEventHandler (OnEntryRightClick);
 		}
 
 		public abstract void Populate ();
