@@ -63,24 +63,5 @@ namespace lat
 			popup.Popup(null, null, null, IntPtr.Zero, 3,
 					Gtk.Global.CurrentEventTime);
 		}
-
-		private void OnEmailActivate (object o, EventArgs args) 
-		{
-			Gtk.TreeModel model;
-
-			TreePath[] tp = this._tv.Selection.GetSelectedRows (out model);
-
-			LdapEntry le = this.lookupEntry (tp[0]);
-
-			if (le == null)
-				return;
-
-			LdapAttribute la = le.getAttribute ("mail");
-
-			if (la.StringValue == null || la.StringValue == "")
-				return;
-
-			Gnome.Url.Show ("mailto:" + la.StringValue);
-		}
 	}
 }

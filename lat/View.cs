@@ -326,6 +326,25 @@ namespace lat
 			Populate ();
 		}
 
+		public virtual void OnEmailActivate (object o, EventArgs args) 
+		{
+			Gtk.TreeModel model;
+
+			TreePath[] tp = this._tv.Selection.GetSelectedRows (out model);
+
+			LdapEntry le = this.lookupEntry (tp[0]);
+
+			if (le == null)
+				return;
+
+			LdapAttribute la = le.getAttribute ("mail");
+
+			if (la.StringValue == null || la.StringValue == "")
+				return;
+
+			Gnome.Url.Show ("mailto:" + la.StringValue);
+		}
+
 		public virtual void OnRefreshActivate (object o, EventArgs args)
 		{
 			Populate ();
