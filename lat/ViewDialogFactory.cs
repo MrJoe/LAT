@@ -50,12 +50,23 @@ namespace lat
 					break;
 				
 				case "Hosts":
-					if (le == null)
-						new HostsViewDialog (cn);
+				{
+					if (cn.ServerType.ToLower() == "microsoft active directory")
+					{
+						if (le == null)
+							new adComputerViewDialog (cn);
+						else
+							new adComputerViewDialog (cn, le);
+					}
 					else
-						new HostsViewDialog (cn, le);
-
+					{
+						if (le == null)
+							new HostsViewDialog (cn);
+						else
+							new HostsViewDialog (cn, le);
+					}				
 					break;
+				}
 
 				case "Contacts":
 					if (le == null)

@@ -3,6 +3,7 @@ CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS)
 LAT_ASSEMBLY = lat.exe
 
 LAT_CSFILES = \
+	adComputerViewDialog.cs \
 	AboutDialog.cs \
 	AssemblyInfo.cs \
 	AddEntryDialog.cs \

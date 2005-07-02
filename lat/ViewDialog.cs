@@ -58,6 +58,18 @@ namespace lat
 			return ei;
 		}
 
+		public static string getAttribute (LdapEntry le, string attr)
+		{
+			LdapAttribute la = le.getAttribute (attr);
+
+			if (la != null)
+			{
+				return la.StringValue;
+			}
+
+			return "";
+		}
+
 		public static ArrayList getAttributes (string[] objClass, string[] attrs, Hashtable entryInfo)
 		{
 			ArrayList retVal = new ArrayList ();
