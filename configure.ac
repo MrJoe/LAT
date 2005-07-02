@@ -69,6 +69,7 @@ lat/AssemblyInfo.cs
 lat/Defines.cs
 lat/Makefile
 lat/lat
+libs/Makefile
 po/Makefile.in
 help/Makefile
 help/C/Makefile

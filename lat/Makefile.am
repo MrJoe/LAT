@@ -47,7 +47,8 @@ LAT_CSFILES = \
 LAT_SOURCES_BUILD = $(addprefix $(srcdir)/, $(LAT_CSFILES))
 
 LAT_REFERENCES = \
-	./Novell.Directory.Ldap.dll \
+	../libs/Novell.Directory.Ldap.dll \
+	../libs/gnome-keyring-sharp.dll \
 	Mono.Posix \
 	Mono.Security
 
@@ -62,7 +63,7 @@ $(LAT_ASSEMBLY): $(LAT_CSFILES)
 all: $(LAT_ASSEMBLY)
 
 LATlibdir = $(prefix)/lib/lat
-LATlib_DATA = $(LAT_ASSEMBLY) Novell.Directory.Ldap.dll
+LATlib_DATA = $(LAT_ASSEMBLY)
 
 man_MANS = \
 	lat.1
@@ -75,8 +76,7 @@ EXTRA_DIST = \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
 	lat.glade \
-	lat.in \
-	Novell.Directory.Ldap.dll
+	lat.in
 
 CLEANFILES = \
 	$(LAT_ASSEMBLY) \
