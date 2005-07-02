@@ -31,7 +31,7 @@ namespace lat
 	{
 		Glade.XML ui;
 
-		[Glade.Widget] Gtk.Dialog newContactDialog;
+		[Glade.Widget] Gtk.Dialog contactDialog;
 
 		[Glade.Widget] Gtk.Label gnNameLabel;
 		[Glade.Widget] Gtk.Entry gnFirstNameEntry;
@@ -71,21 +71,23 @@ namespace lat
 		private Hashtable _ci;
 		private ArrayList _modList;
 
-		private static string[] contactAttrs = { "givenName", "sn",
+		private static string[] contactAttrs = { "givenName", "sn", "initials",
 					       "physicalDeliveryOfficeName", "description",
-					       "mail", "postalAddress",
-					       "l", "st", "postalCode",
+					       "mail", "postalAddress", "displayName",
+					       "l", "st", "postalCode", "wWWHomePage", "co",
 					       "telephoneNumber", "facsimileTelephoneNumber",
-				               "pager", "mobile", "homePhone" };
+				               "pager", "mobile", "homePhone", "streetAddress",
+						"company", "department", "ipPhone", "info",
+						"title", "postOfficeBox" };
 
 		public ContactsViewDialog (lat.Connection conn) : base (conn)
 		{
 			Init ();
 
-			newContactDialog.Title = "LAT - Add Contact";
+			contactDialog.Title = "LAT - Add Contact";
 
-			newContactDialog.Run ();
-			newContactDialog.Destroy ();
+			contactDialog.Run ();
+			contactDialog.Destroy ();
 		}
 
 		public ContactsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
@@ -98,39 +100,48 @@ namespace lat
 			Init ();
 
 			_ci = getEntryInfo (contactAttrs, le);
-/*
-			firstNameEntry.Text = (string)_ci["givenName"];
-			lastNameEntry.Text = (string)_ci["sn"];
-			officeEntry.Text = (string)_ci["physicalDeliveryOfficeName"];
-			commentEntry.Text = (string)_ci["description"];
-			emailEntry.Text = (string)_ci["mail"];
-			addressEntry.Text = (string)_ci["postalAddress"];
-			cityEntry.Text = (string)_ci["l"];
-			stateEntry.Text = (string)_ci["st"];
-			postalEntry.Text = (string)_ci["postalCode"];
-			workNumberEntry.Text = (string)_ci["telephoneNumber"];
-			faxNumberEntry.Text = (string)_ci["facsimileTelephoneNumber"];
-			pagerNumberEntry.Text = (string)_ci["pager"];
-			mobileNumberEntry.Text = (string)_ci["mobile"];
-			homeNumberEntry.Text = (string)_ci["homePhone"];
 
-			string fullName = String.Format ("<span size=\"larger\" weight=\"bold\">{0} {1}</span>", firstNameEntry.Text, lastNameEntry.Text);
+//			gnNameLabel;
+			gnFirstNameEntry.Text = (string)_ci["givenName"];;
+			gnInitialsEntry.Text = (string)_ci["initials"];;
+			gnLastNameEntry.Text = (string)_ci["sn"];;
+			gnDisplayName.Text = (string)_ci["displayName"];;
+			gnDescriptionEntry.Text = (string)_ci["description"];
+			gnOfficeEntry.Text = (string)_ci["physicalDeliveryOfficeName"];
+			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
+			gnEmailEntry.Text = (string)_ci["mail"];
+			gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
 
-			fullNameLabel.Markup = fullName;
-			fullNameLabel.UseMarkup = true;
-*/
-			newContactDialog.Title = "LAT - Edit Contact";
+			adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];;
+			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
+			adCityEntry.Text = (string)_ci["l"];
+			adStateEntry.Text = (string)_ci["st"];
+			adZipEntry.Text = (string)_ci["postalCode"];
+			adCountryEntry.Text = (string)_ci["co"];
 
-			newContactDialog.Run ();
-			newContactDialog.Destroy ();
+			tnHomeEntry.Text = (string)_ci["homePhone"];
+			tnPagerEntry.Text = (string)_ci["pager"];
+			tnMobileEntry.Text = (string)_ci["mobile"];
+			tnFaxEntry.Text = (string)_ci["facsimileTelephoneNumber"];
+			tnIPPhoneEntry.Text = (string)_ci["ipPhone"];
+			tnNotesTextView.Buffer.Text = (string)_ci["info"];
+
+			ozTitleEntry.Text = (string)_ci["title"];
+			ozDeptEntry.Text = (string)_ci["department"];
+			ozCompanyEntry.Text = (string)_ci["company"];
+
+			contactDialog.Title = "LAT - Edit Contact";
+
+			contactDialog.Run ();
+			contactDialog.Destroy ();
 		}
 
 		private void Init ()
 		{
-			ui = new Glade.XML (null, "lat.glade", "newContactDialog", null);
+			ui = new Glade.XML (null, "lat.glade", "contactDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = newContactDialog;
+			_viewDialog = contactDialog;
 		
 //			firstNameEntry.Changed += new EventHandler (OnNameChanged);
 //			lastNameEntry.Changed += new EventHandler (OnNameChanged);
@@ -139,7 +150,7 @@ namespace lat
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
-			newContactDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+			contactDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private void OnNameChanged (object o, EventArgs args)
@@ -208,7 +219,7 @@ namespace lat
 				attrList.Add (attr);
 
 				SelectContainerDialog scd = 
-					new SelectContainerDialog (_conn, newContactDialog);
+					new SelectContainerDialog (_conn, contactDialog);
 
 				scd.Title = "Save Contact";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the contact\n{0}?", fullName);
@@ -223,7 +234,7 @@ namespace lat
 				Util.AddEntry (_conn, _viewDialog, userDN, attrList);
 			}
 
-			newContactDialog.HideAll ();
+			contactDialog.HideAll ();
 		}
 	}
 }
