@@ -1,5 +1,6 @@
 	* Active Directory support
-	* Added popup menu to views.
+	* Added right-click popup menu to views.
+	* Wrote start of help manual
 	* Upgraded to Gtk# 2.0
 	* BUGFIX: Make sure required attributes are present for users add/edit
 	* BUGFIX: Incorrect RDNs generated in copy/cut/paste code
