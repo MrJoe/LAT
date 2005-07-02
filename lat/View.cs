@@ -326,7 +326,7 @@ namespace lat
 			Populate ();
 		}
 
-		public virtual void OnEmailActivate (object o, EventArgs args) 
+		private string getSelectedAttribute (string attrName)
 		{
 			Gtk.TreeModel model;
 
@@ -335,15 +335,33 @@ namespace lat
 			LdapEntry le = this.lookupEntry (tp[0]);
 
 			if (le == null)
-				return;
+				return null;
 
-			LdapAttribute la = le.getAttribute ("mail");
+			LdapAttribute la = le.getAttribute (attrName);
 
-			if (la.StringValue == null || la.StringValue == "")
-				return;
-
-			Gnome.Url.Show ("mailto:" + la.StringValue);
+			return la.StringValue;
 		}
+
+		public virtual void OnEmailActivate (object o, EventArgs args) 
+		{
+			string url = getSelectedAttribute ("mail");
+
+			if (url == null || url == "")
+				return;
+
+			Gnome.Url.Show ("mailto:" + url);
+		}
+
+		public virtual void OnWWWActivate (object o, EventArgs args) 
+		{
+			string url = getSelectedAttribute ("wWWHomePage");
+
+			if (url == null || url == "")
+				return;
+
+			Gnome.Url.Show (url);
+		}
+
 
 		public virtual void OnRefreshActivate (object o, EventArgs args)
 		{

@@ -119,10 +119,24 @@ namespace lat
 
 			pb = mainWindow.RenderIcon (Stock.Open, IconSize.Menu, "");
 
-			viewsStore.AppendValues (viewRootIter, pb, "Users");
-			viewsStore.AppendValues (viewRootIter, pb, "Groups");
-			viewsStore.AppendValues (viewRootIter, pb, "Hosts");
-			viewsStore.AppendValues (viewRootIter, pb, "Contacts");
+			switch (conn.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					viewsStore.AppendValues (viewRootIter, pb, "Computers");
+					viewsStore.AppendValues (viewRootIter, pb, "Contacts");
+					viewsStore.AppendValues (viewRootIter, pb, "Groups");
+					viewsStore.AppendValues (viewRootIter, pb, "Users");
+					break;
+
+				case "generic ldap server":
+				case "openldap":
+				default:
+					viewsStore.AppendValues (viewRootIter, pb, "Users");
+					viewsStore.AppendValues (viewRootIter, pb, "Groups");
+					viewsStore.AppendValues (viewRootIter, pb, "Hosts");
+					viewsStore.AppendValues (viewRootIter, pb, "Contacts");
+					break;
+			}
 
 			viewCustomIter = viewsStore.AppendValues (viewRootIter, pb, 
 				"Custom Views");
@@ -401,6 +415,9 @@ namespace lat
 			valuesStore.AppendValues (
 				Mono.Unix.Catalog.GetString ("Protocol Version"),
 					 _conn.Protocol.ToString());
+
+			valuesStore.AppendValues (
+				Mono.Unix.Catalog.GetString ("Server Type"), _conn.ServerType);
 		}
 
 		private void showEntryAttributes (LdapEntry entry)

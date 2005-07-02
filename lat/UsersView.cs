@@ -30,7 +30,8 @@ namespace lat
 			Mono.Unix.Catalog.GetString ("Username"), 
 			Mono.Unix.Catalog.GetString ("Full Name") };
 
-		private static string[] _colAttrs = { "uid", "cn" };
+		private static string[] _adColAttrs = { "sAMAccountName", "cn" };
+		private static string[] _posixColAttrs = { "uid", "cn" };
 
 		public UsersView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
 				: base (conn, tv, parent)
@@ -39,7 +40,20 @@ namespace lat
 			this._tv.Model = this._store;
 
 			this._viewName = "Users";
-			this._filter = "posixAccount";
+
+			switch (conn.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					this._filter = "user";
+					break;
+
+				case "generic ldap server":
+				case "openldap":
+				default:
+					this._filter = "posixAccount";
+					break;
+			}		
+
 			this._lookupKeyCol = 0;
 
 			this.setupColumns (_cols);			
@@ -47,7 +61,18 @@ namespace lat
 
 		public override void Populate ()
 		{
-			this.insertData (_colAttrs);
+			switch (_conn.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					this.insertData (_adColAttrs);
+					break;
+
+				case "generic ldap server":
+				case "openldap":
+				default:
+					this.insertData (_posixColAttrs);
+					break;
+			}		
 		}
 
 		public override void DoPopUp ()

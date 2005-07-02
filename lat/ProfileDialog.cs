@@ -22,6 +22,7 @@ using Gtk;
 using GLib;
 using Glade;
 using System;
+using System.Collections;
 
 namespace lat
 {
@@ -39,6 +40,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry passEntry;
 		[Glade.Widget] Gtk.RadioButton encryptionRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
+		[Glade.Widget] Gtk.HBox stHBox;
 			
 		[Glade.Widget] Gtk.Button okButton;
 		[Glade.Widget] Gtk.Button cancelButton;
@@ -48,6 +50,8 @@ namespace lat
 		private ProfileManager _pm;
 	
 		private string _oldName = null;
+
+		private Combo serverTypeComboBox;
 
 		public ProfileDialog (ProfileManager pm)
 		{
@@ -89,12 +93,30 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "profileDialog", null);
 			ui.Autoconnect (this);		
 
+			createCombo ();
+
 			noEncryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			noEncryptionRadioButton.Active = true;
 			
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);	
 		}	
+
+		private void createCombo ()
+		{
+			ArrayList list = new ArrayList ();
+			list.Add ("Generic LDAP Server");
+			list.Add ("OpenLDAP");
+			list.Add ("Microsoft Active Directory");
+
+			serverTypeComboBox = new Combo ();
+			serverTypeComboBox.PopdownStrings = (string[])list.ToArray (typeof(string));
+			serverTypeComboBox.DisableActivate ();
+			serverTypeComboBox.Entry.IsEditable = false;
+			serverTypeComboBox.Show ();
+
+			stHBox.PackStart (serverTypeComboBox, true, true, 5);
+		}
 
 		private void OnEncryptionToggled (object obj, EventArgs args)
 		{
@@ -117,7 +139,8 @@ namespace lat
 					ldapBaseEntry.Text,
 					userEntry.Text,
 					passEntry.Text,
-					_useSSL);
+					_useSSL,
+					serverTypeComboBox.Entry.Text);
 					
 			if (_isEdit)
 			{

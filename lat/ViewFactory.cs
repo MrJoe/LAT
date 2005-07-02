@@ -70,6 +70,7 @@ namespace lat
 					retVal = new GroupsView (_cn, _tv, _pw);
 					break;
 				
+				case "Computers":
 				case "Hosts":
 					retVal = new HostsView (_cn, _tv, _pw);
 					break;

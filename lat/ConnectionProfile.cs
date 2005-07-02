@@ -31,8 +31,9 @@ namespace lat
 		public string User;
 		public string Pass;
 		public bool SSL;
+		public string ServerType;
 
-		public ConnectionProfile (string name, string host, int port, string ldapRoot, string user, string pass, bool ssl)
+		public ConnectionProfile (string name, string host, int port, string ldapRoot, string user, string pass, bool ssl, string serverType)
 		{
 			Name = name;
 			Host = host;
@@ -41,6 +42,7 @@ namespace lat
 			User = user;
 			Pass = pass;
 			SSL = ssl;
+			ServerType = serverType;
 		}
 	}
 }

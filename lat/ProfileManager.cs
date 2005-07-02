@@ -108,9 +108,10 @@ namespace lat
 							r.GetAttribute ("base"),
 							r.GetAttribute ("user"),
 							r.GetAttribute ("pass"),
-							bool.Parse (r.GetAttribute ("ssl")));
+							bool.Parse (r.GetAttribute ("ssl")),
+							r.GetAttribute ("server_type"));
 				
-						_profiles.Add (cp.Name, cp);									
+						_profiles.Add (cp.Name, cp);	
 					} 
 			 	}
 			 			
@@ -145,6 +146,7 @@ namespace lat
 				writer.WriteAttributeString ("user", cp.User);
 				writer.WriteAttributeString ("pass", cp.Pass);
 				writer.WriteAttributeString ("ssl", cp.SSL.ToString());
+				writer.WriteAttributeString ("server_type", cp.ServerType);
 				
 	        		writer.WriteEndElement();
 			}

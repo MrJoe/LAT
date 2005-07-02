@@ -25,11 +25,16 @@ namespace lat
 {
 	public class GroupsView : View
 	{
-		private static string[] _cols = { 
+		private static string[] _posixCols = { 
 			Mono.Unix.Catalog.GetString ("Group ID"), 
 			Mono.Unix.Catalog.GetString ("Name") };
 
-		private static string[] _colAttrs = { "gidNumber", "cn" };
+		private static string[] _adCols = { 
+			Mono.Unix.Catalog.GetString ("Name"), 
+			Mono.Unix.Catalog.GetString ("Description") };
+
+		private static string[] _adColAttrs = { "name", "description" };
+		private static string[] _posixColAttrs = { "gidNumber", "cn" };
 
 		public GroupsView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
 				: base (conn, tv, parent)
@@ -38,16 +43,40 @@ namespace lat
 			this._tv.Model = this._store;
 
 			this._viewName = "Groups";
-			this._filter = "posixGroup";
 
-			this._lookupKeyCol = 1;
+			switch (conn.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					this._lookupKeyCol = 0;
+					this._filter = "group";
+					this.setupColumns (_adCols);
+					break;
 
-			this.setupColumns (_cols);
+				case "generic ldap server":
+				case "openldap":
+				default:
+					this._lookupKeyCol = 1;
+					this._filter = "posixGroup";
+
+					this.setupColumns (_posixCols);
+					break;
+			}
 		}
 		
 		public override void Populate ()
 		{
-			this.insertData (_colAttrs);
+			switch (_conn.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					this.insertData (_adColAttrs);
+					break;
+
+				case "generic ldap server":
+				case "openldap":
+				default:
+					this.insertData (_posixColAttrs);
+					break;
+			}
 		}
 	}
 }

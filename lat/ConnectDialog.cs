@@ -22,6 +22,7 @@ using Gtk;
 using GLib;
 using Glade;
 using System;
+using System.Collections;
 
 namespace lat 
 {
@@ -37,6 +38,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry passEntry;
 		[Glade.Widget] Gtk.RadioButton encryptionRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
+		[Glade.Widget] Gtk.HBox stHBox;
 		
 		[Glade.Widget] Gtk.Notebook notebook1;
 
@@ -55,6 +57,8 @@ namespace lat
 
 		public lat.Connection UserConnection;
 
+		private Combo serverTypeComboBox;
+
 		public ConnectDialog ()
 		{
 			profileManager = new ProfileManager ();
@@ -63,7 +67,8 @@ namespace lat
 			ui.Autoconnect (this);
 
 			portEntry.Text = "389";
-			
+			createCombo ();			
+
 			profileListStore = new ListStore (typeof (string));
 			profileListview.Model = profileListStore;
 			
@@ -88,6 +93,22 @@ namespace lat
 			connectionDialog.DeleteEvent += new DeleteEventHandler (OnAppDelete);
 		}
 
+		private void createCombo ()
+		{
+			ArrayList list = new ArrayList ();
+			list.Add ("Generic LDAP Server");
+			list.Add ("OpenLDAP");
+			list.Add ("Microsoft Active Directory");
+
+			serverTypeComboBox = new Combo ();
+			serverTypeComboBox.PopdownStrings = (string[])list.ToArray (typeof(string));
+			serverTypeComboBox.DisableActivate ();
+			serverTypeComboBox.Entry.IsEditable = false;
+			serverTypeComboBox.Show ();
+
+			stHBox.PackStart (serverTypeComboBox, true, true, 5);
+		}
+
 		private Connection getSelectedProfile ()
 		{
 			TreeIter iter;
@@ -104,7 +125,8 @@ namespace lat
 					cp.User,
 					cp.Pass,
 					cp.LdapRoot,
-					cp.SSL);
+					cp.SSL,
+					cp.ServerType);
 
 				return conn;
 			}
@@ -273,7 +295,8 @@ namespace lat
 					userEntry.Text,
 					passEntry.Text,
 					ldapBaseEntry.Text,
-					useSSL);
+					useSSL,
+					serverTypeComboBox.Entry.Text);
 
 				if (useSSL)
 				{
