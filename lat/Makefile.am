@@ -4,6 +4,7 @@ LAT_ASSEMBLY = lat.exe
 
 LAT_CSFILES = \
 	adComputerViewDialog.cs \
+	adUserViewDialog.cs \
 	AboutDialog.cs \
 	AssemblyInfo.cs \
 	AddEntryDialog.cs \

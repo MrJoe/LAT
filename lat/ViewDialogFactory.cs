@@ -35,11 +35,24 @@ namespace lat
 			switch (name)
 			{
 				case "Users":
-					if (le == null)
-						new UsersViewDialog (cn);
+				{
+					if (cn.ServerType.ToLower() == "microsoft active directory")
+					{
+						if (le == null)
+							new adUserViewDialog (cn);
+						else
+							new adUserViewDialog (cn, le);
+					}
 					else
-						new UsersViewDialog (cn, le);
+					{
+						if (le == null)
+							new UsersViewDialog (cn);
+						else
+							new UsersViewDialog (cn, le);
+					}
+
 					break;
+				}
 
 				case "Groups":
 					if (le == null)
