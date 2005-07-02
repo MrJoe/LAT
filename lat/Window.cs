@@ -797,6 +797,22 @@ namespace lat
 			Application.Quit ();
 		}
 
+		public void OnHelpContentsActivate (object o, EventArgs args)
+		{
+			try
+			{
+				Gnome.Help.DisplayDesktopOnScreen (Global.latProgram, 
+					Defines.PACKAGE, 
+					"lat.xml", 
+					"", 
+					Gdk.Screen.Default);
+			}
+			catch (Exception e)
+			{
+				Util.MessageBox (mainWindow, e.Message, MessageType.Error);
+			}
+		}
+
 		public void OnAboutActivate (object o, EventArgs args) 
 		{
 			AboutDialog.Show ();

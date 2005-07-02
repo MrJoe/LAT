@@ -26,8 +26,8 @@ lat requires the following other packages:
 
 Simple installation procedure:
 
-	# tar zxvf lat-X.X.tar.gz
-	# cd lat-X.X
+	# tar zxvf lat-X.Y.Z.tar.gz
+	# cd lat-X.Y.Z
 	# ./configure
 	# make
 	# make install

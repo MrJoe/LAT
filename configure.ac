@@ -27,16 +27,16 @@ fi
 
 dnl Version dependencies
 MONO_REQUIRED=1.1
-GTKSHARP_REQUIRED=1.0
+GTKSHARP_REQUIRED=2.0
 
 dnl pkgconfig checks
 PKG_CHECK_MODULES(MONO,
 		  mono >= $MONO_REQUIRED)
 
 PKG_CHECK_MODULES(GTKSHARP,
-		  gtk-sharp >= $GTKSHARP_REQUIRED \
-		  gnome-sharp >= $GTKSHARP_REQUIRED \
-		  glade-sharp >= $GTKSHARP_REQUIRED)
+		  gtk-sharp-2.0 >= $GTKSHARP_REQUIRED \
+		  gnome-sharp-2.0 >= $GTKSHARP_REQUIRED \
+		  glade-sharp-2.0 >= $GTKSHARP_REQUIRED)
 
 AC_SUBST(GTKSHARP_LIBS)
 

@@ -30,11 +30,11 @@ namespace lat
 	{
 		public HBox hbox;
 		public Gtk.Entry attrEntry;
-		public Combo critCombo;
+		public ComboBox critCombo;
 		public Gtk.Entry valEntry;
-		public Combo boolCombo;
+		public ComboBox boolCombo;
 
-		public SearchCriteria (HBox aHbox, Gtk.Entry attr, Combo op, Gtk.Entry val, Combo bc)
+		public SearchCriteria (HBox aHbox, Gtk.Entry attr, ComboBox op, Gtk.Entry val, ComboBox bc)
 		{
 			hbox = aHbox;
 			attrEntry = attr;
@@ -57,8 +57,8 @@ namespace lat
 		[Glade.Widget] Button cancelButton;
 
 		private Glade.XML ui;
-		private Combo opComboBox;
-		private Combo firstCritCombo;
+		private ComboBox opComboBox;
+		private ComboBox firstCritCombo;
 		
 		private ArrayList _allCombos;
 
@@ -94,12 +94,29 @@ namespace lat
 			searchBuilderDialog.Destroy ();
 		}
 
-		private static Combo createCombo (string[] list)
+		private static void comboSetActive (ComboBox cb, string[] list, string name)
 		{		
-			Combo retVal = new Combo ();
-			retVal.PopdownStrings = list;
-			retVal.DisableActivate ();
-			retVal.Entry.IsEditable = false;
+			int count = 0;
+
+			foreach (string s in list)
+			{
+				if (s.Equals (name))
+					cb.Active = count;
+
+				count++;
+			}
+		}
+
+		private static ComboBox createCombo (string[] list)
+		{		
+			ComboBox retVal = ComboBox.NewText ();
+
+			foreach (string s in list)
+			{
+				retVal.AppendText (s);
+			}
+
+			retVal.Active = 0;
 			retVal.Show ();
 
 			return retVal;
@@ -132,8 +149,8 @@ namespace lat
 			vbox75.Show ();
 			hbox.PackStart (vbox75, true, true, 5);
 
-			Combo critCombo = createCombo (ops);
-			critCombo.Entry.Text = op;
+			ComboBox critCombo = createCombo (ops);
+			comboSetActive (critCombo, ops, op);
 			vbox75.PackStart (critCombo, false, true, 16);
 			
 			Gtk.Entry valEntry = new Gtk.Entry ();
@@ -145,14 +162,14 @@ namespace lat
 			vbox76.Show ();
 			hbox.PackStart (vbox76, true, true, 5);
 
-			Combo boolCombo = createCombo (boolOps);
+			ComboBox boolCombo = createCombo (boolOps);
 			boolCombo.Sensitive = false;
 			vbox76.PackStart (boolCombo, false, true, 16);
 
 			if (_numCriteria == 1)
 			{
 				firstCritCombo = boolCombo;
-				firstCritCombo.Entry.Changed += new EventHandler (OnBoolChanged);
+				firstCritCombo.Changed += new EventHandler (OnBoolChanged);
 			}
 			else if (_numCriteria > 1)
 			{
@@ -174,14 +191,14 @@ namespace lat
 
 		private void OnBoolChanged (object o, EventArgs args)
 		{
-			foreach (Combo c in _allCombos)
+			foreach (ComboBox c in _allCombos)
 			{
 				if (c == null)
 					continue;
 
 				if (c.Sensitive)
 				{
-					c.Entry.Text = firstCritCombo.Entry.Text;
+					comboSetActive (c, boolOps, firstCritCombo.ActiveText);
 				}
 			}
 		}
@@ -189,7 +206,7 @@ namespace lat
 		private void OnAddClicked (object o, EventArgs args)
 		{
 			createCritRow (attributeEntry.Text, 
-					opComboBox.Entry.Text, 
+					opComboBox.ActiveText, 
 					valueEntry.Text);
 
 			attributeEntry.Text = "";
@@ -225,11 +242,11 @@ namespace lat
 			
 				_ls.addCondition (
 					sc.attrEntry.Text,
-					sc.critCombo.Entry.Text,
+					sc.critCombo.ActiveText,
 					sc.valEntry.Text);
 		
-				if (!sc.boolCombo.Entry.Text.Equals (""))
-					boolOp = sc.boolCombo.Entry.Text;
+				if (!sc.boolCombo.ActiveText.Equals (""))
+					boolOp = sc.boolCombo.ActiveText;
 			}
 
 			_ls.addBool (boolOp);
@@ -243,7 +260,7 @@ namespace lat
 				// simple search; only one criteria
 				_ls.addCondition (
 					attributeEntry.Text,
-					opComboBox.Entry.Text,
+					opComboBox.ActiveText,
 					valueEntry.Text);
 			}
 			else

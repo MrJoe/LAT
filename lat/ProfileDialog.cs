@@ -51,7 +51,7 @@ namespace lat
 	
 		private string _oldName = null;
 
-		private Combo serverTypeComboBox;
+		private ComboBox serverTypeComboBox;
 
 		public ProfileDialog (ProfileManager pm)
 		{
@@ -81,6 +81,8 @@ namespace lat
 				encryptionRadioButton.Active = true;
 			}
 				
+			comboSetActive (serverTypeComboBox, cp.ServerType.ToLower());
+
 			_isEdit = true;
 
 			profileDialog.Run ();
@@ -102,17 +104,24 @@ namespace lat
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);	
 		}	
 
+		private static void comboSetActive (ComboBox cb, string name)
+		{		
+			if (name.Equals ("generic ldap server"))
+				cb.Active = 0;
+			else if (name.Equals ("openldap"))
+				cb.Active = 1;
+			else if (name.Equals ("microsoft active directory"))
+				cb.Active = 2;
+		}
+
 		private void createCombo ()
 		{
-			ArrayList list = new ArrayList ();
-			list.Add ("Generic LDAP Server");
-			list.Add ("OpenLDAP");
-			list.Add ("Microsoft Active Directory");
+			serverTypeComboBox = ComboBox.NewText ();
+			serverTypeComboBox.AppendText ("Generic LDAP Server");
+			serverTypeComboBox.AppendText ("OpenLDAP");
+			serverTypeComboBox.AppendText ("Microsoft Active Directory");
 
-			serverTypeComboBox = new Combo ();
-			serverTypeComboBox.PopdownStrings = (string[])list.ToArray (typeof(string));
-			serverTypeComboBox.DisableActivate ();
-			serverTypeComboBox.Entry.IsEditable = false;
+			serverTypeComboBox.Active = 0;
 			serverTypeComboBox.Show ();
 
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
@@ -140,7 +149,7 @@ namespace lat
 					userEntry.Text,
 					passEntry.Text,
 					_useSSL,
-					serverTypeComboBox.Entry.Text);
+					serverTypeComboBox.ActiveText);
 					
 			if (_isEdit)
 			{

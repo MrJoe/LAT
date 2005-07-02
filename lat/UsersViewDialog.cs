@@ -82,7 +82,7 @@ namespace lat
 		private ListStore _allGroupStore;
 		private ListStore _memberOfStore;
 
-		private Combo primaryGroupComboBox;
+		private ComboBox primaryGroupComboBox;
 
 		public UsersViewDialog (lat.Connection conn) : base (conn)
 		{
@@ -173,17 +173,16 @@ namespace lat
 
 		private void createCombo ()
 		{
-			ArrayList list = new ArrayList ();
+			primaryGroupComboBox = ComboBox.NewText ();
+
 			foreach (string key in _allGroups.Keys)
 			{
-				list.Add (key);
+				primaryGroupComboBox.AppendText (key);
 			}
 
-			primaryGroupComboBox = new Combo ();
-			primaryGroupComboBox.PopdownStrings = (string[])list.ToArray (typeof(string));
-			primaryGroupComboBox.DisableActivate ();
-			primaryGroupComboBox.Entry.IsEditable = false;
+			primaryGroupComboBox.Active = 0;
 			primaryGroupComboBox.Show ();
+
 			comboHbox.Add (primaryGroupComboBox);
 		}
 
@@ -416,7 +415,10 @@ namespace lat
 
 		private string getGidNumber (string name)
 		{
-			LdapEntry le = (LdapEntry) _allGroups [name];
+			if (name == null)
+				return null;
+
+			LdapEntry le = (LdapEntry) _allGroups [name];		
 			LdapAttribute attr = le.getAttribute ("gidNumber");
 
 			if (attr != null)
@@ -434,7 +436,7 @@ namespace lat
 			retVal.Add ("uid", usernameEntry.Text);
 			retVal.Add ("uidNumber", uidSpinButton.Value.ToString());
 			retVal.Add ("userPassword", passwordEntry.Text);
-			retVal.Add ("gidNumber", getGidNumber(primaryGroupComboBox.Entry.Text));
+			retVal.Add ("gidNumber", getGidNumber(primaryGroupComboBox.ActiveText));
 			retVal.Add ("mail", mailEntry.Text);
 			retVal.Add ("loginShell", shellEntry.Text);
 			retVal.Add ("homeDirectory", homeDirEntry.Text);
@@ -449,6 +451,16 @@ namespace lat
 		{
 			Hashtable cui = getUpdatedUserInfo ();
 
+			string[] objClass = {"posixaccount","inetorgperson", "person" };
+			string[] missing = null;
+
+			if (!checkReqAttrs (objClass, cui, out missing))
+			{
+				missingAlert (missing);
+				return;
+			}
+
+
 			if (_isEdit)
 			{
 				_modList = getMods (userAttrs, _ui, cui);
@@ -459,25 +471,13 @@ namespace lat
 			}
 			else
 			{
-				string[] objClass = {"posixaccount","inetorgperson", "person" };
-
-				ArrayList attrList = getAttributes (objClass, userAttrs, cui);
-
 				string fullName = String.Format ("{0} {1}", 
 					(string)cui["givenName"], (string)cui["sn"] );
 
 				cui["cn"] = fullName;
 				cui["gecos"] = fullName;
 
-				string[] missing = null;
-
-				if (!checkReqAttrs (objClass, cui, out missing))
-				{
-					attrList.Clear ();
-
-					missingAlert (missing);
-					return;
-				}
+				ArrayList attrList = getAttributes (objClass, userAttrs, cui);
 
 				LdapAttribute attr;
 

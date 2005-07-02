@@ -19,7 +19,6 @@
 //
 
 using Gtk;
-using Gnome;
 using System;
 
 namespace lat 
@@ -27,19 +26,28 @@ namespace lat
 	public class AboutDialog
 	{
 		private static string[] _author = { "Loren Bandiera" };
+		private static string[] _docs = { "Loren Bandiera" };
 		private static string _translators = "Pablo Borges (pt_BR)";
 		private static string _desc = "LDAP Administration Tool";
 		private static string _copy = "Copyright 2005 MMG Security Inc.";
 
 		public AboutDialog ()
 		{
-			About ab = new About (
+// FIXME: Need a way to specify the author
+//			Gtk.AboutDialog ab = new Gtk.AboutDialog ();
+//			ab.Copyright = _copy;
+//			ab.Comments = _desc;
+//			ab.Name = Defines.PACKAGE;
+//			ab.TranslatorCredits = _translators;
+//			ab.Version = Defines.VERSION;
+
+			Gnome.About ab = new Gnome.About (
 				Defines.PACKAGE,
 				Defines.VERSION,
 				_copy,
 				_desc,
 				_author,
-				null, 
+				_docs, 
 				_translators, 
 				null);
 

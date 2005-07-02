@@ -57,7 +57,8 @@ namespace lat
 
 		public lat.Connection UserConnection;
 
-		private Combo serverTypeComboBox;
+		private ComboBox serverTypeComboBox;
+//		private Combo serverTypeComboBox;
 
 		public ConnectDialog ()
 		{
@@ -95,15 +96,12 @@ namespace lat
 
 		private void createCombo ()
 		{
-			ArrayList list = new ArrayList ();
-			list.Add ("Generic LDAP Server");
-			list.Add ("OpenLDAP");
-			list.Add ("Microsoft Active Directory");
+			serverTypeComboBox = ComboBox.NewText ();
+			serverTypeComboBox.AppendText ("Generic LDAP Server");
+			serverTypeComboBox.AppendText ("OpenLDAP");
+			serverTypeComboBox.AppendText ("Microsoft Active Directory");
 
-			serverTypeComboBox = new Combo ();
-			serverTypeComboBox.PopdownStrings = (string[])list.ToArray (typeof(string));
-			serverTypeComboBox.DisableActivate ();
-			serverTypeComboBox.Entry.IsEditable = false;
+			serverTypeComboBox.Active = 0;
 			serverTypeComboBox.Show ();
 
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
@@ -296,7 +294,7 @@ namespace lat
 					passEntry.Text,
 					ldapBaseEntry.Text,
 					useSSL,
-					serverTypeComboBox.Entry.Text);
+					serverTypeComboBox.ActiveText);
 
 				if (useSSL)
 				{

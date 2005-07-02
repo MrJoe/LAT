@@ -9,6 +9,7 @@ lat/HostsView.cs
 lat/LoginDialog.cs
 lat/RenameEntryDialog.cs
 lat/UsersView.cs
+lat/UsersViewDialog.cs
 lat/Util.cs
 lat/ViewDialog.cs
 lat/Window.cs

@@ -25,6 +25,7 @@ using lat;
 
 public class Global
 {
+	public static Gnome.Program latProgram;
 	public static bool Debug = false;
 }
 
@@ -98,7 +99,7 @@ public class LdapAdministrationTool
 
 		Application.Init ();
 
-		Program program = new Program (
+		Global.latProgram = new Program (
 			Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 
 		Mono.Unix.Catalog.Init (
@@ -107,7 +108,7 @@ public class LdapAdministrationTool
 
 		new ConnectDialog ();
 		
-		program.Run ();
+		Global.latProgram.Run ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}
