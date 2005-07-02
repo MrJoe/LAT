@@ -1,4 +1,5 @@
 	* Active Directory support
+	* gnome-keyring support
 	* Added right-click popup menu to views.
 	* Wrote start of help manual
 	* Upgraded to Gtk# 2.0
