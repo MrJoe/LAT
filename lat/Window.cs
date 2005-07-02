@@ -624,19 +624,28 @@ namespace lat
 
 		public void OnImportActivate (object o, EventArgs args)
 		{
-			FileSelection fs = new FileSelection (
-				Mono.Unix.Catalog.GetString ("Choose a file"));
-			fs.Run ();
-			fs.Hide ();
+			FileChooserDialog fcd = new FileChooserDialog (
+				Mono.Unix.Catalog.GetString ("Choose an LDIF file to import"),
+				Gtk.Stock.Open, 
+				mainWindow, 
+				FileChooserAction.Open);
 
-			if (fs.Filename.Equals (""))
-				return;
+			fcd.AddButton (Gtk.Stock.Cancel, ResponseType.Cancel);
+			fcd.AddButton (Gtk.Stock.Open, ResponseType.Ok);
 
-			UriBuilder ub = new UriBuilder ();
-			ub.Scheme = "file";
-			ub.Path = fs.Filename;
+			fcd.SelectMultiple = false;
 
-			Util.ImportData (_conn, mainWindow, ub.Uri);
+			ResponseType response = (ResponseType) fcd.Run();
+			if (response == ResponseType.Ok) 
+			{
+				UriBuilder ub = new UriBuilder ();
+				ub.Scheme = "file";
+				ub.Path = fcd.Filename;
+
+				Util.ImportData (_conn, mainWindow, ub.Uri);
+			} 
+		
+			fcd.Destroy();
 		}
 
 		public void OnExportActivate (object o, EventArgs args)
@@ -652,7 +661,7 @@ namespace lat
 			if (scd.DN.Equals (""))
 				return;
 
-			Util.ExportData (_conn, scd.DN);
+			Util.ExportData (_conn, mainWindow, scd.DN);
 		}
 
 		public void OnCutActivate (object o, EventArgs args)

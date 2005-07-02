@@ -1860,7 +1860,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image165">
+			<widget class="GtkImage" id="image173">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1882,7 +1882,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image166">
+			<widget class="GtkImage" id="image174">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1910,7 +1910,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image167">
+			<widget class="GtkImage" id="image175">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1932,7 +1932,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image168">
+			<widget class="GtkImage" id="image176">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2029,7 +2029,7 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Groups</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:08 GMT"/>
 		      <accelerator key="2" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -2041,7 +2041,7 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Hosts</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:15 GMT"/>
 		      <accelerator key="3" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -2053,7 +2053,7 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Contacts</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:22 GMT"/>
 		      <accelerator key="4" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -2065,7 +2065,7 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Custom Views</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sat, 26 Mar 2005 14:32:03 GMT"/>
 		      <accelerator key="5" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -2083,7 +2083,7 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Browser</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:28 GMT"/>
 		      <accelerator key="b" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -2095,7 +2095,7 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Search</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:34 GMT"/>
 		      <accelerator key="f" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -2124,7 +2124,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image169">
+			<widget class="GtkImage" id="image177">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>

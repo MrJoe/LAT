@@ -332,7 +332,7 @@ namespace lat
 			if (dn.Equals (null))
 				return;
 
-			Util.ExportData (_conn, dn);
+			Util.ExportData (_conn, this._parent, dn);
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args) 

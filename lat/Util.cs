@@ -279,28 +279,35 @@ namespace lat
 			data = export (conn, dn);
 		}
 	
-		public static void ExportData (lat.Connection conn, string dn)
+		public static void ExportData (lat.Connection conn, Gtk.Window parent, string dn)
 		{
-			FileSelection fs = new FileSelection (
-				Mono.Unix.Catalog.GetString ("Save export as"));
+			FileChooserDialog fcd = new FileChooserDialog (
+				Mono.Unix.Catalog.GetString ("Save LDIF export as"),
+				Gtk.Stock.Save, 
+				parent, 
+				FileChooserAction.Save);
 
-			fs.Run ();
-			fs.Hide ();
+			fcd.AddButton (Gtk.Stock.Cancel, ResponseType.Cancel);
+			fcd.AddButton (Gtk.Stock.Save, ResponseType.Ok);
 
-			if (fs.Filename.Equals (null))
-				return;
+			fcd.SelectMultiple = false;
 
-			string data = export (conn, dn);
-
-			try 
+			ResponseType response = (ResponseType) fcd.Run();
+			if (response == ResponseType.Ok) 
 			{
-				using (StreamWriter sw = new StreamWriter(fs.Filename)) 
-				{
-					sw.Write (data);
-				}
-			}
-			catch {}
-		}
+				string data = export (conn, dn);
 
+				try 
+				{
+					using (StreamWriter sw = new StreamWriter(fcd.Filename)) 
+					{
+						sw.Write (data);
+					}
+				}
+				catch {}
+			} 
+		
+			fcd.Destroy();
+		}
 	}
 }
