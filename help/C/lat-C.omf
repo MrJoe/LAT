@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<omf>
+  <resource>
+    <creator>
+      lorenb@mmgsecurity.com (Loren Bandiera)
+    </creator>
+    <maintainer>
+      lorenb@mmgsecurity.com (Loren Bandiera)
+    </maintainer>
+    <title>
+      lat Manual V0.1
+    </title>
+    <date>
+      2005-07-01
+    </date>
+    <version identifier="0.1" date="2005-07-01" description="Initial release"/>
+    <subject category="GNOME|Applications|System Tools"/>
+    <description>
+      User manual for the LDAP Administration Tool. 
+    </description>
+    <type>
+      user's guide
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="lat.xml"/>
+    <language code="C"/>
+    <relation seriesid="99e67e0a-eaa4-11d9-91e9-f74bc4162b81"/>
+    <rights type="GNU FDL" license.version="1.1" holder="MMG Security, Inc."/>
+  </resource>        
+</omf>

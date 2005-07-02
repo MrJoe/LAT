@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "0.6">
+  <!ENTITY manrevision "0.1">
+  <!ENTITY date "July 2005">
+  <!ENTITY app "lat">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.GNOME.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Jan 30, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="en">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo> 
+	 <title>&app; Manual V&manrevision;</title>
+	 <copyright> 
+		<year>2005</year>
+		<holder>MMG Security, Inc.</holder> </copyright>
+
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2003</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+	 <publisher> 
+		<publishername> MMG Security, Inc. </publishername>
+	 </publisher>
+	 &legal; 
+	 <authorgroup> 
+		<author> 
+		  <firstname>Loren</firstname>
+		  <surname>Bandiera</surname> 
+		  <affiliation> 
+			 <orgname>MMG Security, Inc.</orgname>
+		  </affiliation>
+		</author>
+
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+	 </authorgroup>
+
+<!-- According to GNU FDL, revision history is mandatory if you are -->
+<!-- modifying/reusing someone else's document.  If not, you can omit it. -->
+	 <revhistory>
+<!-- Remember to remove the &manrevision; entity from the revision entries other
+   than the current revision. -->
+   		<revision> 
+		  <revnumber>&app; Manual V&manrevision;</revnumber>
+		  <date>&date;</date> 
+		  <revdescription> 
+			 <para role="author">Loren Bandiera</para>
+			 <para role="publisher">MMG Security, Inc.</para>
+		  </revdescription>
+		</revision>
+	 </revhistory>
+	 <releaseinfo> This manual describes version &appversion; of &app;.
+		</releaseinfo>
+	 <legalnotice> 
+		<title>Feedback</title>
+		<para>To report a bug or make a suggestion regarding the <application>&app;</application> application or this manual, follow the directions in the <ulink url="ghelp:gnome-feedback" type="help">FIXME</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+	 </legalnotice>
+  </articleinfo>
+  <indexterm><primary>lat</primary></indexterm>
+  <indexterm><primary>text editor</primary></indexterm>
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+  <sect1 id="lat-intro"> 
+	 <title>Introduction</title>
+	 <para>The <application>&app;</application> application enables you to create and edit text files. You can use <application>&app;</application> plugins to perform a variety of tasks related to text-editing from within the <application>&app;</application> window.</para>
+  </sect1>
+<!-- ============= Getting Started =========================== -->
+  <sect1 id="lat-getting-started"> 
+	 <title>Getting Started</title>
+
+<!-- ============= To Start lat ============================ -->
+	 <sect2 id="lat-to-start"> 
+		<title>To Start &app;</title>
+		<para>You can start <application>&app;</application> in the following ways:</para>
+		<variablelist>
+    		<varlistentry>
+    		<term><guimenu>Applications</guimenu> menu</term>
+    		<listitem>
+    		<para>Choose <menuchoice><guisubmenu>Accessories</guisubmenu><guimenuitem>Text Editor</guimenuitem></menuchoice>. </para>
+    		</listitem>
+    		</varlistentry>
+    		<varlistentry>
+    		<term>Command line</term>
+    		<listitem>
+    		<para>Execute the following command: <command>lat</command></para>
+    		</listitem>
+    		</varlistentry>
+    		</variablelist>
+	</sect2>
+	
+	<sect2 id="lat-when-you-start">
+	
+		<title>When You Start &app;</title>	
+		<para>When you start <application>&app;</application>, the following window is displayed:</para>
+	
+		<figure id="lat-window"> 
+		  <title>&app; Window</title>
+		  <screenshot> 
+			 <mediaobject> 
+				<imageobject> 
+				  <imagedata fileref="figures/lat_window.png" format="PNG"/>
+					 </imageobject>
+				<textobject> <phrase>Shows lat main window.</phrase>
+				</textobject> 
+			</mediaobject>
+		  </screenshot>
+		</figure>
+	
+		<para>The <application>&app;</application> window contains the following
+		  elements: </para>
+		<variablelist> 
+		  <varlistentry> <term>Menubar</term> 
+			 <listitem> 
+				<para>The menus on the menubar contain all of the commands you need to work with files in <application>&app;</application>.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term>Toolbar</term> 
+			 <listitem> 
+				<para> The toolbar contains a subset of the commands that you can access from the menubar.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term>Display area</term> 
+			 <listitem> 
+				<para> The display area contains the text of the file that you are editing. </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term>Output window</term> 
+			 <listitem> 
+				<para>The output window displays the output returned by the Shell command plugin. </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term>Statusbar</term> 
+			 <listitem> 
+				<para>The statusbar displays information about current <application>&app;</application> activity and contextual information about the menu items. The statusbar also displays the following information:</para>
+		  <itemizedlist>
+		  <listitem>
+		  <para>Cursor position: the line number and column number where the cursor is located.</para>
+		  </listitem>
+		  <listitem>
+		  <para>Edit mode: If the editor is in insert mode, the statusbar contains the text <guilabel>INS</guilabel>. If the editor is in overwrite mode, the statusbar contains the text <guilabel>OVR</guilabel>. Press the <keycap>Insert</keycap> key to change edit mode.</para>
+		  </listitem>
+		  </itemizedlist>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+		<para>When you right-click in the <application>&app;</application> window, the application displays a popup menu. The popup menu contains the most common text editing commands. </para>
+
+      <para>
+        In <application>&app;</application>, you can perform the same action in several ways. For example, you can open a file in the following ways:
+                  <informaltable frame="all">
+                    <tgroup cols="2" colsep="1" rowsep="1">
+                      <colspec colname="COLSPEC0" colwidth="50*"/>
+                      <colspec colname="COLSPEC1" colwidth="50*"/>
+                      <thead>
+                        <row valign="top">
+                          <entry colname="COLSPEC0">
+                            <para>UI Component</para></entry>
+                          <entry colname="COLSPEC1" align="left"> 
+                            <para>Action</para></entry>
+                        </row>
+                      </thead>
+                      <tbody>
+                        <row valign="top">               
+                          <entry><para>Window</para></entry>
+                          <entry><para>Drag a file into the <application>&app;</application> window from another application such as a file manager.</para></entry>
+                        </row>
+                        <row valign="top">               
+                          <entry><para>Menubar</para></entry>
+                          <entry><para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>Open</guimenuitem></menuchoice>.</para>
+           <para>If you have recently opened the file, choose <menuchoice><guimenu>File</guimenu><guimenuitem>Open Recent</guimenuitem></menuchoice>.</para> 
+</entry>
+                        </row>
+                        <row valign="top">               
+                          <entry><para>Toolbar</para></entry>
+                          <entry><para>Click on the <guibutton>Open</guibutton> toolbar button.</para></entry>
+                        </row>
+                        <row valign="top">               
+                          <entry><para>Right-click popup menu</para></entry>
+                          <entry><para>Right-click on the file in a file manager window, then choose <guilabel>Open With</guilabel> from the popup menu. </para></entry>
+                        </row>
+                        <row valign="top">               
+                          <entry><para>Shortcut keys</para></entry>
+                          <entry><para>Press <keycombo><keycap>Ctrl</keycap><keycap>O</keycap></keycombo>.</para></entry>
+                        </row>
+                      </tbody>
+                    </tgroup>
+                  </informaltable>
+      </para>
+   </sect2>
+</sect1>
+
+</article>

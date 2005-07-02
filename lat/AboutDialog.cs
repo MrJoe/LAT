@@ -33,7 +33,7 @@ namespace lat
 
 		public AboutDialog ()
 		{
-// FIXME: Need a way to specify the author
+// FIXME: Should use Gtk.AboutDialog; not sure how to specify author
 //			Gtk.AboutDialog ab = new Gtk.AboutDialog ();
 //			ab.Copyright = _copy;
 //			ab.Comments = _desc;

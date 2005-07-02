@@ -804,7 +804,7 @@ namespace lat
 				Gnome.Help.DisplayDesktopOnScreen (Global.latProgram, 
 					Defines.PACKAGE, 
 					"lat.xml", 
-					"", 
+					null, 
 					Gdk.Screen.Default);
 			}
 			catch (Exception e)

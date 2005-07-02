@@ -70,5 +70,7 @@ lat/Defines.cs
 lat/Makefile
 lat/lat
 po/Makefile.in
+help/Makefile
+help/C/Makefile
 ])
 

@@ -1,4 +1,4 @@
-SUBDIRS = debian desktop lat po
+SUBDIRS = debian lat po desktop help
 
 EXTRA_DIST = \
 	README \
@@ -13,7 +13,9 @@ EXTRA_DIST = \
 	mkinstalldirs \
 	intltool-extract.in \
 	intltool-merge.in \
-	intltool-update.in
+	intltool-update.in \
+	omf.make \
+	xmldocs.make
 
 DISTCLEANFILES = \
 	intltool-extract \
