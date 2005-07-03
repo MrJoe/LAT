@@ -77,7 +77,7 @@ namespace lat
 					       "mail", "postalAddress", "displayName",
 					       "l", "st", "postalCode", 
 					       "telephoneNumber", "facsimileTelephoneNumber",
-				               "pager", "mobile", "homePhone", "streetAddress",
+				               "pager", "mobile", "homePhone", "street",
 						"title", "postOfficeBox" };
 
 		private static string[] adContactAttrs = { "givenName", "sn", "initials", "cn",
@@ -129,7 +129,7 @@ namespace lat
 			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
 			gnEmailEntry.Text = (string)_ci["mail"];
 			
-
+			adStreetTextView.Buffer.Text = (string)_ci["street"];
 			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
 			adCityEntry.Text = (string)_ci["l"];
 			adStateEntry.Text = (string)_ci["st"];
@@ -150,8 +150,8 @@ namespace lat
 			{
 				gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
 
-				adCountryEntry.Text = (string)_ci["co"];
 				adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
+				adCountryEntry.Text = (string)_ci["co"];
 
 				tnIPPhoneEntry.Text = (string)_ci["ipPhone"];
 				tnNotesTextView.Buffer.Text = (string)_ci["info"];
@@ -213,7 +213,7 @@ namespace lat
 			retVal.Add ("physicalDeliveryOfficeName", gnOfficeEntry.Text);
 			retVal.Add ("mail", gnEmailEntry.Text);
 			retVal.Add ("description", gnDescriptionEntry.Text);
-			
+			retVal.Add ("street", adStreetTextView.Buffer.Text);			
 			retVal.Add ("l", adCityEntry.Text);
 			retVal.Add ("st", adStateEntry.Text);
 			retVal.Add ("postalCode", adZipEntry.Text);
