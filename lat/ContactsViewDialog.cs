@@ -132,7 +132,8 @@ namespace lat
 			ozDeptEntry.Text = (string)_ci["department"];
 			ozCompanyEntry.Text = (string)_ci["company"];
 
-			contactDialog.Title = (string)_ci["cn"] + " Properties";
+			string contactName = (string) _ci["cn"];
+			contactDialog.Title = contactName + " Properties";
 
 			contactDialog.Run ();
 			contactDialog.Destroy ();

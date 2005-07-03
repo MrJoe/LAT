@@ -95,6 +95,8 @@ namespace lat
 
 		public static ArrayList getMods (string[] attrs, Hashtable oldInfo, Hashtable newInfo)
 		{
+			Logger.Log.Debug ("START ViewDialog.getMods()");
+
 			ArrayList retVal = new ArrayList ();
 
 			foreach (string a in attrs)
@@ -102,13 +104,17 @@ namespace lat
 				string oldValue = (string) oldInfo[a];
 				string newValue = (string) newInfo[a];
 
-				if (!oldValue.Equals (newValue))
+				if (!oldValue.Equals (newValue) && newValue != null)
 				{
+					Logger.Log.Debug ("Modification: attribute: [{0}] - oldValue: [{1}] - newValue: [{2}]", a, oldValue, newValue);
+
 					LdapAttribute la = new LdapAttribute (a, newValue);
 					LdapModification lm = new LdapModification (LdapModification.REPLACE, la);
 					retVal.Add (lm);
 				}
 			}
+
+			Logger.Log.Debug ("END ViewDialog.getMods()");
 
 			return retVal;
 		}
@@ -158,6 +164,9 @@ namespace lat
 
 				foreach (string r in reqs)
 				{
+					if (r.Equals ("cn"))
+						continue;
+
 					if (!checkReq (r, entryInfo))
 					{
 						outMiss.Add (r);
