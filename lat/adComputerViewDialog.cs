@@ -87,12 +87,12 @@ namespace lat
 
 			_hi = getEntryInfo (hostAttrs, le);
 
-			adComputerDialog.Title = "LAT - Edit Host";
-
 			computerNameLabel.Text = (string) _hi["cn"];
 		
 			string cpName = (string) _hi["cn"];
 			computerNameEntry.Text = cpName.ToUpper();
+
+			adComputerDialog.Title = cpName + " Properties";
 
 			dnsNameEntry.Text = (string) _hi["dNSHostName"];
 			descriptionEntry.Text = (string) _hi["description"];

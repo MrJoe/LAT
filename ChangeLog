@@ -1,5 +1,6 @@
 	* Active Directory support
 	* gnome-keyring support
+	* Added new Contacts dialog
 	* Start of Samba support
 	* Added right-click popup menu to views.
 	* Wrote start of help manual

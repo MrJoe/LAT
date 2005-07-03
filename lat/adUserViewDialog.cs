@@ -71,6 +71,8 @@ namespace lat
 		private Hashtable _ci;
 		private ArrayList _modList;
 
+		// FIXME: "sAMAccountName"
+
 		private static string[] contactAttrs = { "givenName", "sn", "initials",
 					       "physicalDeliveryOfficeName", "description",
 					       "mail", "postalAddress", "displayName",
@@ -78,7 +80,8 @@ namespace lat
 					       "telephoneNumber", "facsimileTelephoneNumber",
 				               "pager", "mobile", "homePhone", "streetAddress",
 						"company", "department", "ipPhone", "info",
-						"title", "postOfficeBox" };
+						"title", "postOfficeBox", "homeDirectory",
+						"profilePath", "scriptPath", "userPrincipalName" };
 
 		public adUserViewDialog (lat.Connection conn) : base (conn)
 		{
