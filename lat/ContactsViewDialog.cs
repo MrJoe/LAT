@@ -65,13 +65,22 @@ namespace lat
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
 
+		private bool _isPosix;
 		private bool _isEdit;
 		
 		private LdapEntry _le;
 		private Hashtable _ci;
 		private ArrayList _modList;
 
-		private static string[] contactAttrs = { "givenName", "sn", "initials", "cn",
+		private static string[] posixContactAttrs = { "givenName", "sn", "initials", "cn",
+					       "physicalDeliveryOfficeName", "description",
+					       "mail", "postalAddress", "displayName",
+					       "l", "st", "postalCode", 
+					       "telephoneNumber", "facsimileTelephoneNumber",
+				               "pager", "mobile", "homePhone", "streetAddress",
+						"title", "postOfficeBox" };
+
+		private static string[] adContactAttrs = { "givenName", "sn", "initials", "cn",
 					       "physicalDeliveryOfficeName", "description",
 					       "mail", "postalAddress", "displayName",
 					       "l", "st", "postalCode", "wWWHomePage", "co",
@@ -79,6 +88,8 @@ namespace lat
 				               "pager", "mobile", "homePhone", "streetAddress",
 						"company", "department", "ipPhone", "info",
 						"title", "postOfficeBox" };
+
+		private static string[] contactAttrs;
 
 		public ContactsViewDialog (lat.Connection conn) : base (conn)
 		{
@@ -99,6 +110,11 @@ namespace lat
 
 			Init ();
 
+			if (!_isPosix)			
+				contactAttrs = adContactAttrs;
+			else
+				contactAttrs = posixContactAttrs;
+
 			_ci = getEntryInfo (contactAttrs, le);
 
 			string displayName = (string)_ci["displayName"];
@@ -112,28 +128,37 @@ namespace lat
 			gnOfficeEntry.Text = (string)_ci["physicalDeliveryOfficeName"];
 			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
 			gnEmailEntry.Text = (string)_ci["mail"];
-			gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
+			
 
-			adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
 			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
 			adCityEntry.Text = (string)_ci["l"];
 			adStateEntry.Text = (string)_ci["st"];
 			adZipEntry.Text = (string)_ci["postalCode"];
-			adCountryEntry.Text = (string)_ci["co"];
+			
 
 			tnHomeEntry.Text = (string)_ci["homePhone"];
 			tnPagerEntry.Text = (string)_ci["pager"];
 			tnMobileEntry.Text = (string)_ci["mobile"];
 			tnFaxEntry.Text = (string)_ci["facsimileTelephoneNumber"];
-			tnIPPhoneEntry.Text = (string)_ci["ipPhone"];
-			tnNotesTextView.Buffer.Text = (string)_ci["info"];
-
+			
 			ozTitleEntry.Text = (string)_ci["title"];
-			ozDeptEntry.Text = (string)_ci["department"];
-			ozCompanyEntry.Text = (string)_ci["company"];
 
 			string contactName = (string) _ci["cn"];
 			contactDialog.Title = contactName + " Properties";
+
+			if (!_isPosix)
+			{
+				gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
+
+				adCountryEntry.Text = (string)_ci["co"];
+				adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
+
+				tnIPPhoneEntry.Text = (string)_ci["ipPhone"];
+				tnNotesTextView.Buffer.Text = (string)_ci["info"];
+
+				ozDeptEntry.Text = (string)_ci["department"];
+				ozCompanyEntry.Text = (string)_ci["company"];
+			}
 
 			contactDialog.Run ();
 			contactDialog.Destroy ();
@@ -145,7 +170,25 @@ namespace lat
 			ui.Autoconnect (this);
 
 			_viewDialog = contactDialog;
-		
+
+			switch (_conn.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					_isPosix = false;
+					break;
+
+				case "generic ldap server":
+				default:
+					_isPosix = true;
+					tnNotesTextView.Sensitive = false;
+					ozDeptEntry.Sensitive = false;
+					ozCompanyEntry.Sensitive = false;
+					gnWebPageEntry.Sensitive = false;
+					tnIPPhoneEntry.Sensitive = false;
+					adCountryEntry.Sensitive = false;
+					break;
+			}
+
 			gnDisplayName.Changed += new EventHandler (OnNameChanged);
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
@@ -170,7 +213,7 @@ namespace lat
 			retVal.Add ("physicalDeliveryOfficeName", gnOfficeEntry.Text);
 			retVal.Add ("mail", gnEmailEntry.Text);
 			retVal.Add ("description", gnDescriptionEntry.Text);
-			retVal.Add ("streetAddress", adStreetTextView.Buffer.Text);
+			
 			retVal.Add ("l", adCityEntry.Text);
 			retVal.Add ("st", adStateEntry.Text);
 			retVal.Add ("postalCode", adZipEntry.Text);
@@ -182,10 +225,16 @@ namespace lat
 			retVal.Add ("mobile", tnMobileEntry.Text);
 			retVal.Add ("homePhone", tnHomeEntry.Text);
 			retVal.Add ("ipPhone", tnIPPhoneEntry.Text);
-			retVal.Add ("info", tnNotesTextView.Buffer.Text);
+			
 			retVal.Add ("title", ozTitleEntry.Text);
 			retVal.Add ("department", ozDeptEntry.Text);
 			retVal.Add ("company", ozCompanyEntry.Text);
+
+			if (!_isPosix)
+			{
+				retVal.Add ("streetAddress", adStreetTextView.Buffer.Text);
+				retVal.Add ("info", tnNotesTextView.Buffer.Text);
+			}
 
 			return retVal;
 		}
@@ -194,15 +243,25 @@ namespace lat
 		{
 			Hashtable cci = getCurrentContactInfo ();
 
-			string[] objClass = {"top", "person", "organizationalPerson", "contact" };
+			string[] objClass;
 			string[] missing = null;
+
+			if (!_isPosix)
+			{
+				objClass = new string[] {"top", "person", "organizationalPerson", "contact" };
+				contactAttrs = adContactAttrs;		
+			}
+			else
+			{
+				contactAttrs = posixContactAttrs;
+				objClass = new string[] {"top", "person", "inetOrgPerson" };
+			}
 
 			if (!checkReqAttrs (objClass, cci, out missing))
 			{
 				missingAlert (missing);
 				return;
 			}
-
 
 			if (_isEdit)
 			{
