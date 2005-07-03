@@ -700,33 +700,27 @@ namespace lat
 			DN dn = new DN (_cutDN);
 			RDN r = (RDN) dn.RDNs[0];
 
-			bool result = false;
-
-			if (_isCopy)
-			{
-				result = _conn.Copy (_cutDN, r.toString(false), _pasteDN);
-			}
-			else
-			{
-				result = _conn.Move (_cutDN, r.toString(false), _pasteDN);
-			}
-
-
-			if (result)
+			try
 			{
 				string msg = null;
 
 				if (_isCopy)
 				{
+					_conn.Copy (_cutDN, r.toString(false), _pasteDN);
+
 					msg = String.Format (
 						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
 						_cutDN, _pasteDN);
+
 				}
 				else
 				{
+					_conn.Move (_cutDN, r.toString(false), _pasteDN);
+
 					msg = String.Format (
 						Mono.Unix.Catalog.GetString ("Entry {0} moved to {1}"), 
 						_cutDN, _pasteDN);
+
 				}
 
 				Util.MessageBox (mainWindow, 
@@ -736,7 +730,7 @@ namespace lat
 				if (!_isCopy)
 					_ldapTreeview.RemoveRow (_cutIter);
 			}
-			else
+			catch (Exception e)
 			{
 				string msg = null;
 
@@ -750,6 +744,8 @@ namespace lat
 					string txt = Mono.Unix.Catalog.GetString ("Unable to move entry ");
 					msg = txt + _cutDN;
 				}
+
+				msg += "\nError: " + e.Message;
 
 				Util.MessageBox (mainWindow, 
 					msg, 

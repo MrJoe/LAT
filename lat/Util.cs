@@ -50,21 +50,23 @@ namespace lat
 
 		public static void AddEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList attrs)
 		{
-			string resMsg;
-
-			if (conn.Add (dn, attrs))
+			try
 			{
-				resMsg = String.Format (
+				conn.Add (dn, attrs);
+
+				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been added."), dn);
 	
 				MessageBox (parent, resMsg, MessageType.Info);
 			}
-			else
+			catch (Exception e)
 			{
-				resMsg = String.Format (
-					Mono.Unix.Catalog.GetString ("Unable to add entry {0}"), dn);
+				string errorMsg = 
+					Mono.Unix.Catalog.GetString ("Unable to add entry ") + dn;
 
-				MessageBox (parent, resMsg, MessageType.Error);
+				errorMsg += "\nError: " + e.Message;
+
+				MessageBox (parent, errorMsg, MessageType.Error);
 			}
 		}
 
@@ -79,30 +81,31 @@ namespace lat
 			mods = new LdapModification [modList.Count];
 			mods = (LdapModification[]) modList.ToArray(typeof(LdapModification));
 
-			string resMsg;
-
-			if (conn.Modify (dn, mods))
+			try
 			{
-				resMsg = String.Format (
+				conn.Modify (dn, mods);
+
+				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been modified."), dn);
 
 				MessageBox (parent, resMsg, MessageType.Info);
-			}
-			else
-			{
-				resMsg = String.Format (
-					Mono.Unix.Catalog.GetString ("Unable to modify entry {0}"), dn);
 
-				MessageBox (parent, resMsg, MessageType.Error);
+			}
+			catch (Exception e)
+			{
+				string errorMsg = 
+					Mono.Unix.Catalog.GetString ("Unable to modify entry ") + dn;
+
+				errorMsg += "\nError: " + e.Message;
+
+				MessageBox (parent, errorMsg, MessageType.Error);				
 			}
 
 			modList.Clear ();
 		}
 
-		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string[] dn)
+		public static void DeleteEntry (lat.Connection conn, Gtk.Window parent, string[] dn)
 		{
-			bool retVal = false;
-
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString ("Are you sure you want to delete:\n\n"));
 			
@@ -123,28 +126,33 @@ namespace lat
 			{
 				foreach (string d in dn)
 				{
-					retVal = conn.Delete (d);
-				}
+					try
+					{
+						conn.Delete (d);
 
-				if (retVal)
-					MessageBox (parent, 
-						Mono.Unix.Catalog.GetString ("Entries successfully deleted."), 
-						MessageType.Info);
-				else
-					MessageBox (parent, 
-					Mono.Unix.Catalog.GetString ("Unable to delete all entries."), 
-					MessageType.Error);
+						MessageBox (parent, 
+							Mono.Unix.Catalog.GetString (
+							"Entries successfully deleted."), 
+							MessageType.Info);
+					}
+					catch (Exception e)
+					{
+						string errorMsg =
+							Mono.Unix.Catalog.GetString (
+							"Unable to delete all entries.");
+
+						errorMsg += "\nError: " + e.Message;
+
+						MessageBox (parent, errorMsg, MessageType.Error);
+					}
+				}
 			}
 
 			md.Destroy ();
-
-			return retVal;
 		}
 
-		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string dn)
+		public static void DeleteEntry (lat.Connection conn, Gtk.Window parent, string dn)
 		{
-			bool retVal = false;
-
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString ("Are you sure you want to delete\n{0}"), dn);
 				
@@ -158,29 +166,27 @@ namespace lat
 
 			if (result == ResponseType.Yes)
 			{				
-				string resMsg;
-
-				if (conn.Delete (dn))
+				try
 				{
-					resMsg = String.Format (
+					conn.Delete (dn);
+
+					string resMsg = String.Format (
 						Mono.Unix.Catalog.GetString ("Entry {0} has been deleted."), dn);
 		
 					MessageBox (md, resMsg, MessageType.Info);
-
-					retVal = true;
 				}
-				else
+				catch (Exception e)
 				{
-					resMsg = String.Format (
-						Mono.Unix.Catalog.GetString ("Unable to delete entry {0}"), dn);
-	
-					MessageBox (md, resMsg, MessageType.Error);
+					string errorMsg =
+						Mono.Unix.Catalog.GetString ("Unable to delete entry ") + dn;
+
+					errorMsg += "\nError: " + e.Message;
+
+					MessageBox (md, errorMsg, MessageType.Error);
 				}
 			}
 				
 			md.Destroy ();
-
-			return retVal;
 		}
 
 		private static void import (lat.Connection conn, Gtk.Window parent, Uri uri)

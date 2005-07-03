@@ -434,12 +434,18 @@ namespace lat
 			if (groupEntry == null)
 				return;
 
-			if (!_conn.Modify (groupEntry.DN, mods))
+			try
 			{
-				string msg = String.Format (
-					"Unable to modify group {0}", groupEntry.DN);
+				_conn.Modify (groupEntry.DN, mods);
+			}
+			catch (Exception e)
+			{
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to modify group ") + groupEntry.DN;
 
-				Util.MessageBox (userDialog, msg, MessageType.Error);
+				errorMsg += "\nError: " + e.Message;
+
+				Util.MessageBox (userDialog, errorMsg, MessageType.Error);
 			}
 		}
 

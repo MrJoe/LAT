@@ -65,21 +65,24 @@ namespace lat
 			string newDN = newNameEntry.Text;
 			bool saveOld = saveOldNameCheckButton.Active;
 			
-			if (_conn.Rename (oldDN, newDN, saveOld))
+			try
 			{
+				_conn.Rename (oldDN, newDN, saveOld);
+
 				string msg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been renamed to {1}."),
 					oldDN, newDN);
 
 				Util.MessageBox (renameEntryDialog, msg, MessageType.Info);
 			}
-			else
+			catch (Exception e)
 			{
-				string msg = String.Format (
-					Mono.Unix.Catalog.GetString (
-					"Unable to rename entry {0}."), oldDN);
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to rename entry ") + oldDN;
 
-				Util.MessageBox (renameEntryDialog, msg, MessageType.Error);
+				errorMsg += "\nError: " + e.Message;
+
+				Util.MessageBox (renameEntryDialog, errorMsg, MessageType.Error);
 			}
 
 			renameEntryDialog.HideAll ();

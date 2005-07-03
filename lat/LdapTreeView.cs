@@ -345,10 +345,12 @@ namespace lat
 
 			string dn = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
-			if (Util.DeleteEntry (_conn, _parent, dn))
+			try
 			{
 				browserStore.Remove (ref iter);
+				Util.DeleteEntry (_conn, _parent, dn);
 			}
+			catch {}
 		}
 
 		private void DoPopUp()

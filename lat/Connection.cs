@@ -163,13 +163,10 @@ namespace lat
 			return Search (_ldapRoot, String.Format ("objectclass={0}", objectClass));
 		}
 
-		public bool Add (string dn, ArrayList attributes)
+		public void Add (string dn, ArrayList attributes)
 		{
 			Logger.Log.Debug ("START Connection.Add ()");
 			Logger.Log.Debug ("dn: {0}", dn);
-
-			if (!_conn.Connected)
-				return false;
 
 			LdapAttributeSet attributeSet = new LdapAttributeSet();
 
@@ -190,92 +187,70 @@ namespace lat
 				_conn.Add (newEntry);
 
 				Logger.Log.Debug ("END Connection.Add ()");
-				return true;
 			} 
 			catch 
 			{
-				Logger.Log.Debug ("END Connection.Add ()");
-				return false;
+				throw;
 			}		
 		}
 		
-		public bool Delete (string dn)
+		public void Delete (string dn)
 		{
-			if (!_conn.Connected)
-				return false;
-
 			try 
 			{
 				_conn.Delete (dn);
-				return true;
 			} 
 			catch 
 			{
-				return false;
+				throw;
 			}
 		}
 
-		public bool Copy (string oldDN, string newRDN, string parentDN)
+		public void Copy (string oldDN, string newRDN, string parentDN)
 		{
-			if (!_conn.Connected)
-				return false;
-
 			try
 			{
 				_conn.Rename (oldDN, newRDN, parentDN, false);
-				return true;
-			}
-			catch (LdapException e)
-			{
-				return false;
-			}
-		}
-
-		public bool Move (string oldDN, string newRDN, string parentDN)
-		{
-			if (!_conn.Connected)
-				return false;
-
-			try
-			{
-				_conn.Rename (oldDN, newRDN, parentDN, true);
-				return true;
-			}
-			catch (LdapException e)
-			{
-				return false;
-			}
-		}
-
-		public bool Rename (string oldDN, string newDN, bool saveOld)
-		{
-			if (!_conn.Connected)
-				return false;
-
-			try
-			{
-				_conn.Rename (oldDN, newDN, saveOld);
-				return true;
 			}
 			catch
 			{
-				return false;
+				throw;
 			}
 		}
 
-		public bool Modify (string dn, LdapModification[] mods)
+		public void Move (string oldDN, string newRDN, string parentDN)
 		{
-			if (!_conn.Connected)
-				return false;
+			try
+			{
+				_conn.Rename (oldDN, newRDN, parentDN, true);
+			}
+			catch
+			{
+				throw;
+			}
+		}
 
+		public void Rename (string oldDN, string newDN, bool saveOld)
+		{
+			try
+			{
+				_conn.Rename (oldDN, newDN, saveOld);
+			}
+			catch
+			{
+				throw;
+			}
+		}
+
+		public void Modify (string dn, LdapModification[] mods)
+		{
 			try 
 			{
 				_conn.Modify (dn, mods);
-				return true;
 			} 
 			catch 
 			{
-				return false;
+				throw;
 			}		
 		}
 
@@ -335,16 +310,15 @@ namespace lat
 			_conn.Disconnect ();
 		}
 
-		public bool Bind (string user, string pass)
+		public void Bind (string user, string pass)
 		{
 			try 
 			{
 				_conn.Bind (user, pass);
-				return true;
 			}
 			catch
 			{
-				return false;
+				throw;
 			}
 		}
 

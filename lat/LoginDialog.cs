@@ -55,11 +55,18 @@ namespace lat
 
 		private void OnOkClicked (object o, EventArgs args)
 		{	
-			if (!_conn.Bind (userEntry.Text, passEntry.Text))
+			try
 			{
-				Util.MessageBox (loginDialog,
-					Mono.Unix.Catalog.GetString ("Unable to re-login"),
-					MessageType.Error);
+				_conn.Bind (userEntry.Text, passEntry.Text);
+			}
+			catch (Exception e)
+			{
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to re-login");
+
+				errorMsg += "\nError: " + e.Message;
+
+				Util.MessageBox (loginDialog, errorMsg,	MessageType.Error);
 			}
 
 			loginDialog.HideAll ();

@@ -80,10 +80,12 @@ namespace lat
 					attrList.Add (attr);
 			}
 
-			if (_conn.Add (dn, attrList))
+			try
 			{
+				_conn.Add (dn, attrList);
 				_numEntries++;
 			}
+			catch {}
 		}
 
 		private void ldifParse (Hashtable ldap_info, string buf)
