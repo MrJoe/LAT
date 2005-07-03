@@ -83,7 +83,10 @@ namespace lat
 
 			showEntryAttributes (le);
 
-			dynamicDialog.Title = "LAT - Edit Entry";
+			LdapAttribute a = le.getAttribute ("cn");
+
+			if (a != null)
+				dynamicDialog.Title = a.StringValue + " Properties";
 
 			dynamicDialog.Run ();
 			dynamicDialog.Destroy ();

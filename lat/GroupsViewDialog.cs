@@ -77,8 +77,10 @@ namespace lat
 
 			_gi = getEntryInfo (groupAttrs, le);
 
-			groupDialog.Title = "LAT - Edit Group";
-			groupNameEntry.Text = (string) _gi ["cn"];
+			string groupName = (string) _gi ["cn"];
+
+			groupDialog.Title = groupName + " Properties";
+			groupNameEntry.Text = groupName;
 			groupIDSpinButton.Value = int.Parse ((string) _gi ["gidNumber"]);
 
 			LdapAttribute attr;
@@ -231,6 +233,16 @@ namespace lat
 		{
 			Hashtable cgi = getCurrentGroupInfo ();
 
+			string[] objClass = { "top", "posixGroup" };
+			string[] missing = null;
+
+			if (!checkReqAttrs (objClass, cgi, out missing))
+			{
+				missingAlert (missing);
+				return;
+			}
+
+
 			if (_isEdit)
 			{
 				_modList = getMods (groupAttrs, _gi, cgi);
@@ -239,15 +251,6 @@ namespace lat
 			}
 			else
 			{
-				string[] missing = null;
-				string[] objClass = {"top", "posixGroup"};
-
-				if (!checkReqAttrs (objClass, cgi, out missing))
-				{
-					missingAlert (missing);
-					return;
-				}
-
 				ArrayList attrList = getAttributes (objClass, groupAttrs, cgi);
 
 				foreach (string key in _currentMembers.Keys)

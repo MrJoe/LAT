@@ -5,7 +5,7 @@
 	* Added right-click popup menu to views.
 	* Wrote start of help manual
 	* Upgraded to Gtk# 2.0
-	* BUGFIX: Make sure required attributes are present for users add/edit
+	* BUGFIX: Make sure required attributes are present for add/edits
 	* BUGFIX: Incorrect RDNs generated in copy/cut/paste code
 	* BUGFIX: Insert line break into certificate dialog text
 

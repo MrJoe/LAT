@@ -67,9 +67,11 @@ namespace lat
 
 			_hi = getEntryInfo (hostAttrs, le);
 
-			hostDialog.Title = "LAT - Edit Host";
+			string hostName = (string) _hi["cn"];
 
-			hostNameEntry.Text = (string) _hi["cn"];
+			hostDialog.Title = hostName + " Properties";
+
+			hostNameEntry.Text = hostName;
 			ipEntry.Text = (string) _hi["ipHostNumber"];
 			descriptionEntry.Text = (string) _hi["description"];
 
@@ -105,6 +107,15 @@ namespace lat
 		{
 			Hashtable chi = getCurrentHostInfo ();
 
+			string[] missing = null;
+			string[] objClass = {"top", "ipHost", "device"};
+
+			if (!checkReqAttrs (objClass, chi, out missing))
+			{
+				missingAlert (missing);
+				return;
+			}
+
 			if (_isEdit)
 			{
 				_modList = getMods (hostAttrs, _hi, chi);
@@ -113,15 +124,6 @@ namespace lat
 			}
 			else
 			{
-				string[] missing = null;
-				string[] objClass = {"top", "ipHost", "device"};
-
-				if (!checkReqAttrs (objClass, chi, out missing))
-				{
-					missingAlert (missing);
-					return;
-				}
-
 				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
 
 				SelectContainerDialog scd = 

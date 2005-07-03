@@ -84,7 +84,7 @@ namespace lat
 		[Glade.Widget] Gtk.Button okButton;
 
 		private static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
-					      "userPassword", "mail", "loginShell",
+					      "userPassword", "mail", "loginShell", "cn",
 					      "homeDirectory", "description",
 				              "physicalDeliveryOfficeName",
 					      "telephoneNumber"};
@@ -227,7 +227,9 @@ namespace lat
 
 			createCombo ();			
 
-			userDialog.Title = "LAT - Edit User";
+			string userName = (string) _ui["cn"];
+
+			userDialog.Title = userName + " Properties";
 
 			usernameLabel.UseMarkup = true;
 			usernameLabel.Markup = 
@@ -367,7 +369,8 @@ namespace lat
 			}
 			else
 			{
-				Util.MessageBox (userDialog, "No group selected to add.",
+				Util.MessageBox (userDialog, 
+						Mono.Unix.Catalog.GetString ("No group selected to add."),
 						 MessageType.Error);
 			}
 		}
@@ -470,11 +473,6 @@ namespace lat
 
 			modifyGroup (groupEntry, mods);
 		}
-
-//		private string getGidName (int gid)
-//		{
-//			return (string) _allGroupGids [gid.ToString()];
-//		}
 
 		private string getGidNumber (string name)
 		{

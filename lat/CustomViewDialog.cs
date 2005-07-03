@@ -78,7 +78,7 @@ namespace lat
 
 			Init ();
 			
-			customViewDialog.Title = "LAT - Edit Custom View";
+			customViewDialog.Title = name + " Properties";
 
 			CustomViewData cvd = cvm.Lookup (name);
 

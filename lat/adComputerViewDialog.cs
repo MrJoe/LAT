@@ -159,6 +159,15 @@ namespace lat
 		{
 			Hashtable chi = getCurrentHostInfo ();
 
+			string[] missing = null;
+			string[] objClass = {"top", "computer"};
+
+			if (!checkReqAttrs (objClass, chi, out missing))
+			{
+				missingAlert (missing);
+				return;
+			}
+
 			if (_isEdit)
 			{
 				_modList = getMods (hostAttrs, _hi, chi);
@@ -167,15 +176,6 @@ namespace lat
 			}
 			else
 			{
-				string[] missing = null;
-				string[] objClass = {"top", "computer"};
-
-				if (!checkReqAttrs (objClass, chi, out missing))
-				{
-					missingAlert (missing);
-					return;
-				}
-
 				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
 
 				SelectContainerDialog scd = 

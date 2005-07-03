@@ -71,7 +71,7 @@ namespace lat
 		private Hashtable _ci;
 		private ArrayList _modList;
 
-		private static string[] contactAttrs = { "givenName", "sn", "initials",
+		private static string[] contactAttrs = { "givenName", "sn", "initials", "cn",
 					       "physicalDeliveryOfficeName", "description",
 					       "mail", "postalAddress", "displayName",
 					       "l", "st", "postalCode", "wWWHomePage", "co",
@@ -101,18 +101,20 @@ namespace lat
 
 			_ci = getEntryInfo (contactAttrs, le);
 
-//			gnNameLabel;
-			gnFirstNameEntry.Text = (string)_ci["givenName"];;
-			gnInitialsEntry.Text = (string)_ci["initials"];;
-			gnLastNameEntry.Text = (string)_ci["sn"];;
-			gnDisplayName.Text = (string)_ci["displayName"];;
+			string displayName = (string)_ci["displayName"];
+
+			gnNameLabel.Text = displayName;
+			gnFirstNameEntry.Text = (string)_ci["givenName"];
+			gnInitialsEntry.Text = (string)_ci["initials"];
+			gnLastNameEntry.Text = (string)_ci["sn"];
+			gnDisplayName.Text = displayName;
 			gnDescriptionEntry.Text = (string)_ci["description"];
 			gnOfficeEntry.Text = (string)_ci["physicalDeliveryOfficeName"];
 			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
 			gnEmailEntry.Text = (string)_ci["mail"];
 			gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
 
-			adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];;
+			adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
 			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
 			adCityEntry.Text = (string)_ci["l"];
 			adStateEntry.Text = (string)_ci["st"];
@@ -130,7 +132,7 @@ namespace lat
 			ozDeptEntry.Text = (string)_ci["department"];
 			ozCompanyEntry.Text = (string)_ci["company"];
 
-			contactDialog.Title = "LAT - Edit Contact";
+			contactDialog.Title = (string)_ci["cn"] + " Properties";
 
 			contactDialog.Run ();
 			contactDialog.Destroy ();
@@ -143,9 +145,7 @@ namespace lat
 
 			_viewDialog = contactDialog;
 		
-//			firstNameEntry.Changed += new EventHandler (OnNameChanged);
-//			lastNameEntry.Changed += new EventHandler (OnNameChanged);
-//			commentEntry.Changed += new EventHandler (OnNameChanged);
+			gnDisplayName.Changed += new EventHandler (OnNameChanged);
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
@@ -155,36 +155,53 @@ namespace lat
 
 		private void OnNameChanged (object o, EventArgs args)
 		{
-//			fullNameLabel.Markup = String.Format ("<span size=\"larger\" weight=\"bold\">{0} {1}</span>", firstNameEntry.Text, lastNameEntry.Text);
-			
-//			commentLabel.Text = commentEntry.Text;			
-		}
+			gnNameLabel.Text = gnDisplayName.Text;		}
 
 		private Hashtable getCurrentContactInfo ()
 		{
 			Hashtable retVal = new Hashtable ();
-/*
-			retVal.Add ("givenName", firstNameEntry.Text);
-			retVal.Add ("sn", lastNameEntry.Text);
-			retVal.Add ("physicalDeliveryOfficeName", officeEntry.Text);
-			retVal.Add ("mail", emailEntry.Text);
-			retVal.Add ("description", commentEntry.Text);
-			retVal.Add ("postalAddress", addressEntry.Text);
-			retVal.Add ("l", cityEntry.Text);
-			retVal.Add ("st", stateEntry.Text);
-			retVal.Add ("postalCode", postalEntry.Text);
-			retVal.Add ("telephoneNumber", workNumberEntry.Text);
-			retVal.Add ("facsimileTelephoneNumber", faxNumberEntry.Text);
-			retVal.Add ("pager", pagerNumberEntry.Text);
-			retVal.Add ("mobile", mobileNumberEntry.Text);
-			retVal.Add ("homePhone", homeNumberEntry.Text);
-*/
+
+			retVal.Add ("givenName", gnFirstNameEntry.Text);
+			retVal.Add ("initials", gnInitialsEntry.Text);
+			retVal.Add ("sn", gnLastNameEntry.Text);
+			retVal.Add ("displayName", gnDisplayName.Text);
+			retVal.Add ("wWWHomePage", gnWebPageEntry.Text);
+			retVal.Add ("physicalDeliveryOfficeName", gnOfficeEntry.Text);
+			retVal.Add ("mail", gnEmailEntry.Text);
+			retVal.Add ("description", gnDescriptionEntry.Text);
+			retVal.Add ("streetAddress", adStreetTextView.Buffer.Text);
+			retVal.Add ("l", adCityEntry.Text);
+			retVal.Add ("st", adStateEntry.Text);
+			retVal.Add ("postalCode", adZipEntry.Text);
+			retVal.Add ("postOfficeBox", adPOBoxEntry.Text);
+			retVal.Add ("co", adCountryEntry.Text);
+			retVal.Add ("telephoneNumber", gnTelephoneNumberEntry.Text);
+			retVal.Add ("facsimileTelephoneNumber", tnFaxEntry.Text);
+			retVal.Add ("pager", tnPagerEntry.Text);
+			retVal.Add ("mobile", tnMobileEntry.Text);
+			retVal.Add ("homePhone", tnHomeEntry.Text);
+			retVal.Add ("ipPhone", tnIPPhoneEntry.Text);
+			retVal.Add ("info", tnNotesTextView.Buffer.Text);
+			retVal.Add ("title", ozTitleEntry.Text);
+			retVal.Add ("department", ozDeptEntry.Text);
+			retVal.Add ("company", ozCompanyEntry.Text);
+
 			return retVal;
 		}
 
 		private void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cci = getCurrentContactInfo ();
+
+			string[] objClass = {"top", "person", "organizationalPerson", "contact" };
+			string[] missing = null;
+
+			if (!checkReqAttrs (objClass, cci, out missing))
+			{
+				missingAlert (missing);
+				return;
+			}
+
 
 			if (_isEdit)
 			{
@@ -194,24 +211,12 @@ namespace lat
 			}
 			else
 			{
-				string[] objClass = {"top", "inetOrgPerson", "person"};
-
 				ArrayList attrList = getAttributes (objClass, contactAttrs, cci);
 
 				string fullName = String.Format ("{0} {1}", 
 					(string)cci["givenName"], (string)cci["sn"] );
 
 				cci["cn"] = fullName;
-
-				string[] missing = null;
-
-				if (!checkReqAttrs (objClass, cci, out missing))
-				{
-					attrList.Clear ();
-
-					missingAlert (missing);
-					return;
-				}
 
 				LdapAttribute attr;
 
