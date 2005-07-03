@@ -83,7 +83,7 @@ namespace lat
 			{
 				string entryValue = (string) entryInfo[a];
 
-				if (entryValue.Equals (""))
+				if (entryValue == null || entryValue.Equals (""))
 					continue;
 
 				la = new LdapAttribute (a, entryValue);
