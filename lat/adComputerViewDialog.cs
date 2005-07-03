@@ -130,15 +130,18 @@ namespace lat
 
 			_viewDialog = adComputerDialog;
 		
-			computerNameEntry.IsEditable = false;
-			dnsNameEntry.IsEditable = false;
+			computerNameEntry.Sensitive = false;
+//			computerNameEntry.IsEditable = false;
 
-			osNameEntry.IsEditable = false;
-			osVersionEntry.IsEditable = false;
-			osServicePackEntry.IsEditable = false;
+			dnsNameEntry.Sensitive = false;
+//			dnsNameEntry.IsEditable = false;
+
+			osNameEntry.Sensitive = false;
+			osVersionEntry.Sensitive = false;
+			osServicePackEntry.Sensitive = false;
 			
-			manNameEntry.IsEditable = false;
-			manStreetTextView.Editable = false;
+			manNameEntry.Sensitive = false;
+			manStreetTextView.Sensitive = false;
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);

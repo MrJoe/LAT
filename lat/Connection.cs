@@ -165,6 +165,9 @@ namespace lat
 
 		public bool Add (string dn, ArrayList attributes)
 		{
+			Logger.Log.Debug ("START Connection.Add ()");
+			Logger.Log.Debug ("Adding dn: {0}", dn);
+
 			if (!_conn.Connected)
 				return false;
 
@@ -172,6 +175,7 @@ namespace lat
 
 			foreach (LdapAttribute attr in attributes)
 			{
+				Logger.Log.Debug ("attribute: {0} - value: {1}", attr.Name, attr.StringValue);
 				attributeSet.Add (attr);
 			}
 
@@ -180,10 +184,13 @@ namespace lat
 			try 
 			{
 				_conn.Add (newEntry);
+
+				Logger.Log.Debug ("END Connection.Add ()");
 				return true;
 			} 
 			catch 
 			{
+				Logger.Log.Debug ("END Connection.Add ()");
 				return false;
 			}		
 		}
