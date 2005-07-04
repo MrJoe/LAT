@@ -181,6 +181,7 @@ namespace lat
 					_isPosix = false;
 					break;
 
+				case "openldap":
 				case "generic ldap server":
 				default:
 					_isPosix = true;
