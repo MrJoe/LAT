@@ -64,21 +64,13 @@ namespace lat
 		[Glade.Widget] Gtk.TreeView memberOfTreeview;
 
 		// Samba
-		[Glade.Widget] Gtk.CheckButton enableSambaCheckbutton;
-		[Glade.Widget] Gtk.Entry smbPasswordEntry;
-		[Glade.Widget] Gtk.Entry smbHomeDriveEntry;
-
-		[Glade.Widget] Gtk.Entry smbHomePathEntry;
-		[Glade.Widget] Gtk.Button smbHomePathButton;
-
-		[Glade.Widget] Gtk.Entry smbProfilePathEntry;
-		[Glade.Widget] Gtk.Button smbProfilePathButton;
-
+		[Glade.Widget] Gtk.Button smbChangePasswordButton;
+		[Glade.Widget] Gtk.Label smbSIDLabel;
+		[Glade.Widget] Gtk.Label smbGSIDLabel;
 		[Glade.Widget] Gtk.Entry smbLoginScriptEntry;
-		[Glade.Widget] Gtk.Button smbLoginScriptButton;
-
-		[Glade.Widget] Gtk.CheckButton smbExpirePasswordCheckbutton;
-		[Glade.Widget] Gtk.CheckButton smbAccountDisableCheckbutton;
+		[Glade.Widget] Gtk.Entry smbProfilePathEntry;
+		[Glade.Widget] Gtk.Entry smbHomePathEntry;
+		[Glade.Widget] Gtk.Entry smbHomeDriveEntry;
 
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
@@ -90,10 +82,10 @@ namespace lat
 					      "telephoneNumber"};
 
 		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath", "sambaHomeDrive",
-						"sambaLMPassword", "sambaAcctFlags", "sambaNTPassword",
-						"sambaPwdCanChange" };
+						"sambaSID", "sambaPrimaryGroupSID", "sambaLogonScript" };
 
 		private bool _isEdit = false;
+		private bool _isSamba = false;
 		
 		private LdapEntry _le;
 		private Hashtable _ui;
@@ -118,6 +110,8 @@ namespace lat
 
 			createCombo ();
 
+			toggleSambaWidgets (false);
+
 			userDialog.Title = "LAT - Add User";
 
 			userDialog.Run ();
@@ -140,6 +134,24 @@ namespace lat
 				else
 				{
 					ui.Add (a, attr.StringValue);
+				}
+			}
+
+			if (_isSamba)
+			{
+				foreach (string a in sambaAttrs)
+				{
+					LdapAttribute attr;
+					attr = le.getAttribute (a);
+
+					if (attr == null)
+					{
+						ui.Add (a, "");
+					}
+					else
+					{
+						ui.Add (a, attr.StringValue);
+					}
 				}
 			}
 
@@ -212,6 +224,24 @@ namespace lat
 			comboHbox.Add (primaryGroupComboBox);
 		}
 
+		private bool checkSamba (LdapEntry le)
+		{
+			bool retVal = false;
+			
+			LdapAttribute la = le.getAttribute ("objectClass");
+			
+			if (la == null)
+				return retVal;
+
+			foreach (string s in la.StringValueArray)
+			{
+				if (s.ToLower() == "sambasamaccount")
+					retVal = true;
+			}
+
+			return retVal;
+		}
+
 		public UsersViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
 		{
 			_le = le;
@@ -221,11 +251,13 @@ namespace lat
 
 			Init ();
 
+			_isSamba = checkSamba (le);
+
 			_ui = getUserInfo (le);
 
 			getGroups (le);
 
-			createCombo ();			
+			createCombo ();		
 
 			string userName = (string) _ui["cn"];
 
@@ -248,6 +280,22 @@ namespace lat
 			descriptionEntry.Text = (string)_ui["description"];
 			officeEntry.Text = (string)_ui["physicalDeliveryOfficeName"];
 			phoneEntry.Text = (string)_ui["telephoneNumber"];
+
+			if (_isSamba)
+			{
+				toggleSambaWidgets (true);
+
+				smbSIDLabel.Text = (string)_ui["sambaSID"];
+				smbGSIDLabel.Text = (string)_ui["sambaPrimaryGroupSID"];
+				smbLoginScriptEntry.Text = (string)_ui["sambaLogonScript"];
+				smbProfilePathEntry.Text = (string)_ui["sambaProfilePath"];
+				smbHomePathEntry.Text = (string)_ui["sambaHomePath"];
+				smbHomeDriveEntry.Text = (string)_ui["sambaHomeDrive"];
+			}
+			else
+			{
+				toggleSambaWidgets (false);
+			}
 
 			userDialog.Run ();
 			userDialog.Destroy ();
@@ -294,13 +342,6 @@ namespace lat
 			addGroupButton.Clicked += new EventHandler (OnAddGroupClicked);
 			removeGroupButton.Clicked += new EventHandler (OnRemoveGroupClicked);
 
-			// samba
-			smbPasswordEntry.Visibility = false;
-			smbPasswordEntry.IsEditable = false;
-			toggleSambaWidgets (false);
-
-			enableSambaCheckbutton.Toggled += new EventHandler (OnSambaAttrChanged);
-
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
@@ -309,32 +350,11 @@ namespace lat
 
 		private void toggleSambaWidgets (bool state)
 		{
-			smbPasswordEntry.Sensitive = state;
-			smbHomeDriveEntry.Sensitive = state;
-
-			smbHomePathEntry.Sensitive = state;
-			smbHomePathButton.Sensitive = state;
-
-			smbProfilePathEntry.Sensitive = state;
-			smbProfilePathButton.Sensitive = state;
-
+			smbChangePasswordButton.Sensitive = state;
 			smbLoginScriptEntry.Sensitive = state;
-			smbLoginScriptButton.Sensitive = state;
-
-			smbExpirePasswordCheckbutton.Sensitive = state;
-			smbAccountDisableCheckbutton.Sensitive = state;
-		}
-
-		private void OnSambaAttrChanged (object o, EventArgs args)
-		{
-			if (enableSambaCheckbutton.Active)
-			{
-				toggleSambaWidgets (true);
-			}
-			else
-			{
-				toggleSambaWidgets (false);
-			}
+			smbProfilePathEntry.Sensitive = state;
+			smbHomePathEntry.Sensitive = state;
+			smbHomeDriveEntry.Sensitive = state;
 		}
 
 		private void OnAddGroupClicked (object o, EventArgs args)
@@ -511,21 +531,14 @@ namespace lat
 			retVal.Add ("physicalDeliveryOfficeName", officeEntry.Text);
 			retVal.Add ("telephoneNumber", phoneEntry.Text);
 
-			if (enableSambaCheckbutton.Active)
+			if (_isSamba)
 			{
-				byte[] SrvNonce = new byte [8] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-				ChallengeResponse cs = new ChallengeResponse (smbPasswordEntry.Text, SrvNonce);
-
 				retVal.Add ("sambaProfilePath", smbProfilePathEntry.Text);
 				retVal.Add ("sambaHomePath", smbHomePathEntry.Text);
 				retVal.Add ("sambaHomeDrive", smbHomeDriveEntry.Text);
-				retVal.Add ("sambaLMPassword", BitConverter.ToString (cs.LM));
-				retVal.Add ("sambaNTPassword", BitConverter.ToString (cs.NT));
-		
-				if (smbExpirePasswordCheckbutton.Active)
-				{
-					retVal.Add ("sambaPwdCanChange", "0");
-				}
+				retVal.Add ("sambaLogonScript", smbLoginScriptEntry.Text);
+				retVal.Add ("sambaSID", smbSIDLabel.Text);
+				retVal.Add ("sambaPrimaryGroupSID", smbGSIDLabel.Text);
 			}
 
 			return retVal;
@@ -549,7 +562,7 @@ namespace lat
 			{
 				_modList = getMods (userAttrs, _ui, cui);
 
-				if (enableSambaCheckbutton.Active)
+				if (_isSamba)
 				{
 					ArrayList smbMods = getMods (sambaAttrs, _ui, cui);
 
@@ -580,11 +593,6 @@ namespace lat
 
 				attr = new LdapAttribute ("gecos", fullName);
 				attrList.Add (attr);
-
-				if (enableSambaCheckbutton.Active)
-				{
-					// FIXME: do something
-				}
 
 				SelectContainerDialog scd = 
 					new SelectContainerDialog (_conn, userDialog);
