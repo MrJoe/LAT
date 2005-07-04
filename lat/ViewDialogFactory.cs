@@ -55,13 +55,24 @@ namespace lat
 				}
 
 				case "Groups":
-					if (le == null)
-						new GroupsViewDialog (cn);
+				{
+					if (cn.ServerType.ToLower() == "microsoft active directory")
+					{
+//						if (le == null)
+//							new adGroupViewDialog (cn);
+//						else
+//							new adGroupViewDialog (cn, le);
+					}
 					else
-						new GroupsViewDialog (cn, le);
-
+					{
+						if (le == null)
+							new GroupsViewDialog (cn);
+						else
+							new GroupsViewDialog (cn, le);
+					}
 					break;
-				
+				}
+
 				case "Hosts":
 				{
 					if (cn.ServerType.ToLower() == "microsoft active directory")
