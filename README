@@ -21,8 +21,8 @@ Installation
 
 lat requires the following other packages:
 
-	* Mono >= 1.1.5
-	* Gtk# >= 1.0.4
+	* Mono >= 1.1
+	* Gtk# >= 2.5
 
 Simple installation procedure:
 
