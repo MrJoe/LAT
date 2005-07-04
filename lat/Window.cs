@@ -119,25 +119,20 @@ namespace lat
 
 			pb = mainWindow.RenderIcon (Stock.Open, IconSize.Menu, "");
 
-			switch (conn.ServerType.ToLower())
+			if (conn.ServerType.ToLower() == "microsoft active directory")
 			{
-				case "microsoft active directory":
-					viewsStore.AppendValues (viewRootIter, pb, "Computers");
-					viewsStore.AppendValues (viewRootIter, pb, "Contacts");
-					viewsStore.AppendValues (viewRootIter, pb, "Groups");
-					viewsStore.AppendValues (viewRootIter, pb, "Users");
-					break;
-
-				case "generic ldap server":
-				case "openldap":
-					viewsStore.AppendValues (viewRootIter, pb, "Computers");
-					viewsStore.AppendValues (viewRootIter, pb, "Contacts");
-					viewsStore.AppendValues (viewRootIter, pb, "Groups");
-					viewsStore.AppendValues (viewRootIter, pb, "Users");
-					break;
-
-				default:
-					break;
+				viewsStore.AppendValues (viewRootIter, pb, "Computers");
+				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
+				viewsStore.AppendValues (viewRootIter, pb, "Groups");
+				viewsStore.AppendValues (viewRootIter, pb, "Users");
+			}
+			else if (conn.ServerType.ToLower() == "generic ldap server" ||
+				 conn.ServerType.ToLower() == "openldap")
+			{
+				viewsStore.AppendValues (viewRootIter, pb, "Computers");
+				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
+				viewsStore.AppendValues (viewRootIter, pb, "Groups");
+				viewsStore.AppendValues (viewRootIter, pb, "Users");
 			}
 
 			viewCustomIter = viewsStore.AppendValues (viewRootIter, pb, 
