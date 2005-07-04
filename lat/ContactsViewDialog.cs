@@ -129,7 +129,7 @@ namespace lat
 			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
 			gnEmailEntry.Text = (string)_ci["mail"];
 			
-			adStreetTextView.Buffer.Text = (string)_ci["street"];
+//			
 			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
 			adCityEntry.Text = (string)_ci["l"];
 			adStateEntry.Text = (string)_ci["st"];
@@ -158,6 +158,10 @@ namespace lat
 
 				ozDeptEntry.Text = (string)_ci["department"];
 				ozCompanyEntry.Text = (string)_ci["company"];
+			}
+			else
+			{
+				adStreetTextView.Buffer.Text = (string)_ci["street"];
 			}
 
 			contactDialog.Run ();
