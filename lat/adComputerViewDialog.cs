@@ -51,6 +51,8 @@ namespace lat
 		[Glade.Widget] Gtk.Label manCountryLabel;
 		[Glade.Widget] Gtk.Label manTelephoneNumberLabel;
 		[Glade.Widget] Gtk.Label manFaxNumberLabel;
+		[Glade.Widget] Gtk.Button manClearButton;
+		[Glade.Widget] Gtk.Button manChangeButton;
 
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
@@ -108,7 +110,18 @@ namespace lat
 
 			if (manName != "" || manName != null)
 			{
-				LdapEntry leMan = conn.getEntry (manName);
+				updateManagedBy (manName);
+			}
+
+			adComputerDialog.Run ();
+			adComputerDialog.Destroy ();
+		}
+
+		private void updateManagedBy (string dn)
+		{
+			try
+			{
+				LdapEntry leMan = _conn.getEntry (dn);
 
 				manOfficeLabel.Text = getAttribute (leMan, "physicalDeliveryOfficeName");
 				manStreetTextView.Buffer.Text = getAttribute (leMan, "streetAddress");
@@ -118,9 +131,16 @@ namespace lat
 				manTelephoneNumberLabel.Text = getAttribute (leMan, "telephoneNumber");
 				manFaxNumberLabel.Text = getAttribute (leMan, "facsimileTelephoneNumber");
 			}
-
-			adComputerDialog.Run ();
-			adComputerDialog.Destroy ();
+			catch 
+			{
+				manOfficeLabel.Text = "";
+				manStreetTextView.Buffer.Text = "";
+				manCityLabel.Text = "";
+				manStateLabel.Text = "";
+				manCountryLabel.Text = "";
+				manTelephoneNumberLabel.Text = "";
+				manFaxNumberLabel.Text = "";
+			}
 		}
 
 		private void Init ()
@@ -143,6 +163,9 @@ namespace lat
 			manNameEntry.Sensitive = false;
 			manStreetTextView.Sensitive = false;
 
+			manClearButton.Clicked += new EventHandler (OnManClearClicked);
+			manChangeButton.Clicked += new EventHandler (OnManChangeClicked);
+
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
@@ -154,8 +177,38 @@ namespace lat
 			Hashtable retVal = new Hashtable ();
 
 			retVal.Add ("description", descriptionEntry.Text);
+			retVal.Add ("managedBy", manNameEntry.Text);
 
 			return retVal;
+		}
+
+		private void OnManClearClicked (object o, EventArgs args)
+		{
+			manNameEntry.Text = "";
+			updateManagedBy ("none");
+		}
+
+		private void OnManChangeClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (_conn, adComputerDialog);
+
+			scd.Title = "Save Computer";
+			scd.Message = Mono.Unix.Catalog.GetString (
+					"Select a user who will manage ") + 
+				(string) _hi["cn"];
+
+			scd.Run ();
+
+			if (scd.DN == "")
+			{
+				return;
+			}
+			else
+			{
+				manNameEntry.Text = scd.DN;
+				updateManagedBy (scd.DN);
+			}
 		}
 
 		private void OnOkClicked (object o, EventArgs args)

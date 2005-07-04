@@ -108,8 +108,20 @@ namespace lat
 				{
 					Logger.Log.Debug ("Modification: attribute: [{0}] - oldValue: [{1}] - newValue: [{2}]", a, oldValue, newValue);
 
-					LdapAttribute la = new LdapAttribute (a, newValue);
-					LdapModification lm = new LdapModification (LdapModification.REPLACE, la);
+					LdapAttribute la; 
+					LdapModification lm;
+
+					if (newValue == "")
+					{
+						la = new LdapAttribute (a);
+						lm = new LdapModification (LdapModification.DELETE, la);
+					}
+					else
+					{
+						la = new LdapAttribute (a, newValue);
+						lm = new LdapModification (LdapModification.REPLACE, la);
+					}
+
 					retVal.Add (lm);
 				}
 			}

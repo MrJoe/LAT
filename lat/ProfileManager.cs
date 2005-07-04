@@ -124,17 +124,9 @@ namespace lat
 						
 						foreach (NetworkPasswordData i in list) 
 						{
-							Logger.Log.Debug ("Keyring:\t" + i.Keyring);
-							Logger.Log.Debug ("ItemId:\t\t" + i.ItemId);
-							Logger.Log.Debug ("Protocol:\t" + i.Protocol);
-							Logger.Log.Debug ("Server:\t\t" + i.Server);
-							Logger.Log.Debug ("Object:\t\t" + i.Object);
-							Logger.Log.Debug ("Authtype:\t" + i.Authtype);
-							Logger.Log.Debug ("Port:\t\t" + i.Port);
-							Logger.Log.Debug ("User:\t\t" + i.User);
-							Logger.Log.Debug ("Domain:\t" + i.Domain);
-							Logger.Log.Debug ("Password:\t" + i.Password);
-							Logger.Log.Debug ("======================");
+							Logger.Log.Debug (
+							  "Got password for: {0}://{1}:{2}/",
+							  i.Protocol, i.Server, i.Port);
 
 							cp.Pass = i.Password;
 						}
