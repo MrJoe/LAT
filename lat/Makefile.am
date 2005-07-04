@@ -3,7 +3,6 @@ CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS)
 LAT_ASSEMBLY = lat.exe
 
 LAT_CSFILES = \
-	adComputerViewDialog.cs \
 	adUserViewDialog.cs \
 	AboutDialog.cs \
 	AssemblyInfo.cs \
@@ -20,6 +19,7 @@ LAT_CSFILES = \
 	Defines.cs \
 	DynamicView.cs \
 	DynamicViewDialog.cs \
+	EditAdComputerViewDialog.cs \
 	EditContactsViewDialog.cs \
 	GroupsView.cs \
 	GroupsViewDialog.cs \
@@ -31,6 +31,7 @@ LAT_CSFILES = \
 	Logger.cs \
 	LoginDialog.cs \
 	Main.cs \
+	NewAdComputerViewDialog.cs \
 	NewContactsViewDialog.cs \
 	PasswordDialog.cs \
 	ProfileDialog.cs \

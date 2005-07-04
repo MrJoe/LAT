@@ -1,5 +1,5 @@
 // 
-// lat - adComputerViewDialog.cs
+// lat - EditAdComputerViewDialog.cs
 // Author: Loren Bandiera
 // Copyright 2005 MMG Security, Inc.
 //
@@ -27,11 +27,11 @@ using Novell.Directory.Ldap;
 
 namespace lat
 {
-	public class adComputerViewDialog : ViewDialog
+	public class EditAdComputerViewDialog : ViewDialog
 	{
 		Glade.XML ui;
 
-		[Glade.Widget] Gtk.Dialog adComputerDialog;
+		[Glade.Widget] Gtk.Dialog editAdComputerDialog;
 		[Glade.Widget] Gtk.Label computerNameLabel;
 		[Glade.Widget] Gtk.Entry computerNameEntry;
 		[Glade.Widget] Gtk.Entry dnsNameEntry;
@@ -56,9 +56,7 @@ namespace lat
 
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
-
-		private bool _isEdit;
-		
+	
 		private LdapEntry _le;
 		private ArrayList _modList;
 		private Hashtable _hi;
@@ -68,22 +66,10 @@ namespace lat
 						"operatingSystemServicePack", "location", 
 						"managedBy"};
 
-		public adComputerViewDialog (lat.Connection conn) : base (conn)
-		{
-			Init ();
-
-			adComputerDialog.Title = "LAT - Add Host";
-
-			adComputerDialog.Run ();
-			adComputerDialog.Destroy ();
-		}
-
-		public adComputerViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public EditAdComputerViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
 		{
 			_le = le;
 			_modList = new ArrayList ();
-
-			_isEdit = true;
 
 			Init ();
 
@@ -94,7 +80,7 @@ namespace lat
 			string cpName = (string) _hi["cn"];
 			computerNameEntry.Text = cpName.ToUpper();
 
-			adComputerDialog.Title = cpName + " Properties";
+			editAdComputerDialog.Title = cpName + " Properties";
 
 			dnsNameEntry.Text = (string) _hi["dNSHostName"];
 			descriptionEntry.Text = (string) _hi["description"];
@@ -113,8 +99,8 @@ namespace lat
 				updateManagedBy (manName);
 			}
 
-			adComputerDialog.Run ();
-			adComputerDialog.Destroy ();
+			editAdComputerDialog.Run ();
+			editAdComputerDialog.Destroy ();
 		}
 
 		private void updateManagedBy (string dn)
@@ -145,10 +131,10 @@ namespace lat
 
 		private void Init ()
 		{
-			ui = new Glade.XML (null, "lat.glade", "adComputerDialog", null);
+			ui = new Glade.XML (null, "lat.glade", "editAdComputerDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = adComputerDialog;
+			_viewDialog = editAdComputerDialog;
 		
 			computerNameEntry.Sensitive = false;
 //			computerNameEntry.IsEditable = false;
@@ -169,7 +155,7 @@ namespace lat
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
-			adComputerDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+			editAdComputerDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private Hashtable getCurrentHostInfo ()
@@ -191,7 +177,7 @@ namespace lat
 		private void OnManChangeClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, adComputerDialog);
+				new SelectContainerDialog (_conn, editAdComputerDialog);
 
 			scd.Title = "Save Computer";
 			scd.Message = Mono.Unix.Catalog.GetString (
@@ -224,33 +210,11 @@ namespace lat
 				return;
 			}
 
-			if (_isEdit)
-			{
-				_modList = getMods (hostAttrs, _hi, chi);
+			_modList = getMods (hostAttrs, _hi, chi);
 
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
-			}
-			else
-			{
-				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
+			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
 
-				SelectContainerDialog scd = 
-					new SelectContainerDialog (_conn, adComputerDialog);
-
-				scd.Title = "Save Computer";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the computer\n{0}?", (string)chi["cn"]);
-
-				scd.Run ();
-
-				if (scd.DN == "")
-					return;
-
-				string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
-
-				Util.AddEntry (_conn, _viewDialog, userDN, attrList);
-			}
-
-			adComputerDialog.HideAll ();
+			editAdComputerDialog.HideAll ();
 		}
 	}
 }
