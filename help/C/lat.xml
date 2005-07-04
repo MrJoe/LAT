@@ -90,7 +90,7 @@
 <!-- ============= Introduction ============================== -->
   <sect1 id="lat-intro"> 
 	 <title>Introduction</title>
-	 <para>The <application>&app;</application> application enables you to create and edit text files. You can use <application>&app;</application> plugins to perform a variety of tasks related to text-editing from within the <application>&app;</application> window.</para>
+	 <para>The <application>&app;</application> application allows you to browse LDAP-based directories and add/edit/delete entries contained within. It can store profiles for quick access to different servers. There are also different views available such as Users, Groups and Hosts which allow you to easily manage objects without having to deal with the intricacies of LDAP.</para>
   </sect1>
 <!-- ============= Getting Started =========================== -->
   <sect1 id="lat-getting-started"> 
@@ -104,7 +104,7 @@
     		<varlistentry>
     		<term><guimenu>Applications</guimenu> menu</term>
     		<listitem>
-    		<para>Choose <menuchoice><guisubmenu>Accessories</guisubmenu><guimenuitem>Text Editor</guimenuitem></menuchoice>. </para>
+    		<para>Choose <menuchoice><guisubmenu>System Tools</guisubmenu><guimenuitem>LDAP Administration Tool</guimenuitem></menuchoice>. </para>
     		</listitem>
     		</varlistentry>
     		<varlistentry>
@@ -139,7 +139,7 @@
 		<variablelist> 
 		  <varlistentry> <term>Menubar</term> 
 			 <listitem> 
-				<para>The menus on the menubar contain all of the commands you need to work with files in <application>&app;</application>.</para>
+				<para>The menus on the menubar contain all of the commands you need to work with the LDAP server in <application>&app;</application>.</para>
 			 </listitem>
 		  </varlistentry>
 		  <varlistentry> <term>Toolbar</term> 
@@ -147,34 +147,26 @@
 				<para> The toolbar contains a subset of the commands that you can access from the menubar.</para>
 			 </listitem>
 		  </varlistentry>
-		  <varlistentry> <term>Display area</term> 
+		  <varlistentry> <term>View area</term> 
 			 <listitem> 
-				<para> The display area contains the text of the file that you are editing. </para>
+				<para> The view area contains the different views of the data on the LDAP server. </para>
 			 </listitem>
 		  </varlistentry>
 		  <varlistentry> <term>Output window</term> 
 			 <listitem> 
-				<para>The output window displays the output returned by the Shell command plugin. </para>
+				<para>The output window displays the information about entries found in the directory. </para>
 			 </listitem>
 		  </varlistentry>
 		  <varlistentry> <term>Statusbar</term> 
 			 <listitem> 
-				<para>The statusbar displays information about current <application>&app;</application> activity and contextual information about the menu items. The statusbar also displays the following information:</para>
-		  <itemizedlist>
-		  <listitem>
-		  <para>Cursor position: the line number and column number where the cursor is located.</para>
-		  </listitem>
-		  <listitem>
-		  <para>Edit mode: If the editor is in insert mode, the statusbar contains the text <guilabel>INS</guilabel>. If the editor is in overwrite mode, the statusbar contains the text <guilabel>OVR</guilabel>. Press the <keycap>Insert</keycap> key to change edit mode.</para>
-		  </listitem>
-		  </itemizedlist>
+				<para>The statusbar displays the username that was used to login to the LDAP server</para>
 			 </listitem>
 		  </varlistentry>
 		</variablelist>
-		<para>When you right-click in the <application>&app;</application> window, the application displays a popup menu. The popup menu contains the most common text editing commands. </para>
+		<para>When you right-click in the output window, the application displays a popup menu. The popup menu contains the most common commands. </para>
 
       <para>
-        In <application>&app;</application>, you can perform the same action in several ways. For example, you can open a file in the following ways:
+        In <application>&app;</application>, you can perform the same action in different ways. For example, you can import an LDIF file in the following ways:
                   <informaltable frame="all">
                     <tgroup cols="2" colsep="1" rowsep="1">
                       <colspec colname="COLSPEC0" colwidth="50*"/>
@@ -194,21 +186,9 @@
                         </row>
                         <row valign="top">               
                           <entry><para>Menubar</para></entry>
-                          <entry><para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>Open</guimenuitem></menuchoice>.</para>
-           <para>If you have recently opened the file, choose <menuchoice><guimenu>File</guimenu><guimenuitem>Open Recent</guimenuitem></menuchoice>.</para> 
+                          <entry><para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>Import LDIF...</guimenuitem></menuchoice>.</para>
+
 </entry>
-                        </row>
-                        <row valign="top">               
-                          <entry><para>Toolbar</para></entry>
-                          <entry><para>Click on the <guibutton>Open</guibutton> toolbar button.</para></entry>
-                        </row>
-                        <row valign="top">               
-                          <entry><para>Right-click popup menu</para></entry>
-                          <entry><para>Right-click on the file in a file manager window, then choose <guilabel>Open With</guilabel> from the popup menu. </para></entry>
-                        </row>
-                        <row valign="top">               
-                          <entry><para>Shortcut keys</para></entry>
-                          <entry><para>Press <keycombo><keycap>Ctrl</keycap><keycap>O</keycap></keycombo>.</para></entry>
                         </row>
                       </tbody>
                     </tgroup>
