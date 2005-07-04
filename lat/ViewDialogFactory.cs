@@ -94,9 +94,9 @@ namespace lat
 
 				case "Contacts":
 					if (le == null)
-						new ContactsViewDialog (cn);
+						new NewContactsViewDialog (cn);
 					else
-						new ContactsViewDialog (cn, le);
+						new EditContactsViewDialog (cn, le);
 
 					break;
 

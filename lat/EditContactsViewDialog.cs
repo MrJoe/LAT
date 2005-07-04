@@ -1,5 +1,5 @@
 // 
-// lat - ContactsViewDialog.cs
+// lat - EditContactsViewDialog.cs
 // Author: Loren Bandiera
 // Copyright 2005 MMG Security, Inc.
 //
@@ -27,11 +27,11 @@ using Novell.Directory.Ldap;
 
 namespace lat
 {
-	public class ContactsViewDialog : ViewDialog
+	public class EditContactsViewDialog : ViewDialog
 	{
 		Glade.XML ui;
 
-		[Glade.Widget] Gtk.Dialog contactDialog;
+		[Glade.Widget] Gtk.Dialog editContactDialog;
 
 		[Glade.Widget] Gtk.Label gnNameLabel;
 		[Glade.Widget] Gtk.Entry gnFirstNameEntry;
@@ -66,7 +66,6 @@ namespace lat
 		[Glade.Widget] Gtk.Button okButton;
 
 		private bool _isPosix;
-		private bool _isEdit;
 		
 		private LdapEntry _le;
 		private Hashtable _ci;
@@ -91,22 +90,10 @@ namespace lat
 
 		private static string[] contactAttrs;
 
-		public ContactsViewDialog (lat.Connection conn) : base (conn)
-		{
-			Init ();
-
-			contactDialog.Title = "LAT - Add Contact";
-
-			contactDialog.Run ();
-			contactDialog.Destroy ();
-		}
-
-		public ContactsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public EditContactsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
 		{
 			_le = le;
 			_modList = new ArrayList ();
-
-			_isEdit = true;
 
 			Init ();
 
@@ -144,7 +131,7 @@ namespace lat
 			ozTitleEntry.Text = (string)_ci["title"];
 
 			string contactName = (string) _ci["cn"];
-			contactDialog.Title = contactName + " Properties";
+			editContactDialog.Title = contactName + " Properties";
 
 			if (!_isPosix)
 			{
@@ -164,16 +151,16 @@ namespace lat
 				adStreetTextView.Buffer.Text = (string)_ci["street"];
 			}
 
-			contactDialog.Run ();
-			contactDialog.Destroy ();
+			editContactDialog.Run ();
+			editContactDialog.Destroy ();
 		}
 
 		private void Init ()
 		{
-			ui = new Glade.XML (null, "lat.glade", "contactDialog", null);
+			ui = new Glade.XML (null, "lat.glade", "editContactDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = contactDialog;
+			_viewDialog = editContactDialog;
 
 			switch (_conn.ServerType.ToLower())
 			{
@@ -199,7 +186,7 @@ namespace lat
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
-			contactDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+			editContactDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private void OnNameChanged (object o, EventArgs args)
@@ -268,43 +255,10 @@ namespace lat
 				return;
 			}
 
-			if (_isEdit)
-			{
-				_modList = getMods (contactAttrs, _ci, cci);
+			_modList = getMods (contactAttrs, _ci, cci);
+			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
 
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
-			}
-			else
-			{
-				ArrayList attrList = getAttributes (objClass, contactAttrs, cci);
-
-				string fullName = String.Format ("{0} {1}", 
-					(string)cci["givenName"], (string)cci["sn"] );
-
-				cci["cn"] = fullName;
-
-				LdapAttribute attr;
-
-				attr = new LdapAttribute ("cn", fullName);
-				attrList.Add (attr);
-
-				SelectContainerDialog scd = 
-					new SelectContainerDialog (_conn, contactDialog);
-
-				scd.Title = "Save Contact";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the contact\n{0}?", fullName);
-
-				scd.Run ();
-
-				if (scd.DN == "")
-					return;
-
-				string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
-
-				Util.AddEntry (_conn, _viewDialog, userDN, attrList);
-			}
-
-			contactDialog.HideAll ();
+			editContactDialog.HideAll ();
 		}
 	}
 }

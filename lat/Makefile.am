@@ -14,13 +14,13 @@ LAT_CSFILES = \
 	Connection.cs \
 	ConnectionProfile.cs \
 	ContactsView.cs \
-	ContactsViewDialog.cs \
 	CustomView.cs \
 	CustomViewDialog.cs \
 	CustomViewManager.cs \
 	Defines.cs \
 	DynamicView.cs \
 	DynamicViewDialog.cs \
+	EditContactsViewDialog.cs \
 	GroupsView.cs \
 	GroupsViewDialog.cs \
 	HostsView.cs \
@@ -31,6 +31,7 @@ LAT_CSFILES = \
 	Logger.cs \
 	LoginDialog.cs \
 	Main.cs \
+	NewContactsViewDialog.cs \
 	PasswordDialog.cs \
 	ProfileDialog.cs \
 	ProfileManager.cs \
