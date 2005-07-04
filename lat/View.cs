@@ -349,7 +349,19 @@ namespace lat
 			if (url == null || url == "")
 				return;
 
-			Gnome.Url.Show ("mailto:" + url);
+			try
+			{
+				Gnome.Url.Show ("mailto:" + url);
+			}
+			catch (Exception e)
+			{
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to send mail to ") + url;
+
+				errorMsg += "\nError: " + e.Message;
+
+				Util.MessageBox (_parent, errorMsg, MessageType.Error);
+			}
 		}
 
 		public virtual void OnWWWActivate (object o, EventArgs args) 
@@ -359,7 +371,19 @@ namespace lat
 			if (url == null || url == "")
 				return;
 
-			Gnome.Url.Show (url);
+			try
+			{
+				Gnome.Url.Show (url);
+			}
+			catch (Exception e)
+			{
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to open page ") + url;
+
+				errorMsg += "\nError: " + e.Message;
+
+				Util.MessageBox (_parent, errorMsg, MessageType.Error);
+			}
 		}
 
 
