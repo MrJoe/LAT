@@ -130,11 +130,13 @@ namespace lat
 
 				case "generic ldap server":
 				case "openldap":
-				default:
 					viewsStore.AppendValues (viewRootIter, pb, "Computers");
 					viewsStore.AppendValues (viewRootIter, pb, "Contacts");
 					viewsStore.AppendValues (viewRootIter, pb, "Groups");
 					viewsStore.AppendValues (viewRootIter, pb, "Users");
+					break;
+
+				default:
 					break;
 			}
 
