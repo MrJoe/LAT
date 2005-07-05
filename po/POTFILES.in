@@ -4,13 +4,15 @@ lat/CertMgr.cs
 lat/ConnectDialog.cs
 lat/ContactsView.cs
 lat/CustomView.cs
+lat/EditAdComputerViewDialog.cs
+lat/EditUserViewDialog.cs
 lat/GroupsView.cs
 lat/HostsView.cs
 lat/LoginDialog.cs
 lat/RenameEntryDialog.cs
 lat/UsersView.cs
-lat/UsersViewDialog.cs
 lat/Util.cs
+lat/View.cs
 lat/ViewDialog.cs
 lat/Window.cs
 lat/lat.glade
