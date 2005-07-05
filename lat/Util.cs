@@ -130,22 +130,25 @@ namespace lat
 					{
 						conn.Delete (d);
 
-						MessageBox (parent, 
-							Mono.Unix.Catalog.GetString (
-							"Entries successfully deleted."), 
-							MessageType.Info);
 					}
 					catch (Exception e)
 					{
 						string errorMsg =
 							Mono.Unix.Catalog.GetString (
-							"Unable to delete all entries.");
+							"Unable to delete all entry " + d);
 
 						errorMsg += "\nError: " + e.Message;
 
 						MessageBox (parent, errorMsg, MessageType.Error);
+
+						break;
 					}
 				}
+
+				MessageBox (parent, 
+					Mono.Unix.Catalog.GetString (
+					"Entries successfully deleted."), 
+					MessageType.Info);
 			}
 
 			md.Destroy ();
