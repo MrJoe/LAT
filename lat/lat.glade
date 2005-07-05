@@ -2158,57 +2158,67 @@ you wish to connect to.</property>
       </child>
 
       <child>
-	<widget class="GtkHButtonBox" id="hbuttonbox4">
+	<widget class="GtkToolbar" id="toolbar1">
 	  <property name="visible">True</property>
-	  <property name="layout_style">GTK_BUTTONBOX_START</property>
-	  <property name="spacing">5</property>
+	  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+	  <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
+	  <property name="tooltips">True</property>
+	  <property name="show_arrow">True</property>
 
 	  <child>
-	    <widget class="GtkButton" id="newButton">
+	    <widget class="GtkToolButton" id="newToolButton">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-new</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
+	      <property name="stock_id">gtk-new</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
 	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="editButton">
+	    <widget class="GtkToolButton" id="propertiesToolButton">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-edit</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
+	      <property name="stock_id">gtk-properties</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
 	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="deleteButton">
+	    <widget class="GtkToolButton" id="deleteToolButton">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-delete</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
+	      <property name="stock_id">gtk-delete</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
 	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="refreshButton">
+	    <widget class="GtkToolButton" id="refreshToolButton">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-refresh</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
+	      <property name="stock_id">gtk-refresh</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
 	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
 	  </child>
 	</widget>
 	<packing>

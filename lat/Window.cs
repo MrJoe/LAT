@@ -44,10 +44,10 @@ namespace lat
 		[Glade.Widget] TreeView valuesListview;
 		[Glade.Widget] Notebook viewNotebook;
 		[Glade.Widget] HPaned hpaned1;
-		[Glade.Widget] Gtk.Button newButton;
-		[Glade.Widget] Gtk.Button editButton;
-		[Glade.Widget] Gtk.Button deleteButton;
-		[Glade.Widget] Gtk.Button refreshButton;
+		[Glade.Widget] Gtk.ToolButton newToolButton;
+		[Glade.Widget] Gtk.ToolButton propertiesToolButton;
+		[Glade.Widget] Gtk.ToolButton deleteToolButton;
+		[Glade.Widget] Gtk.ToolButton refreshToolButton;
 		[Glade.Widget] Gtk.RadioMenuItem userView;
 		[Glade.Widget] Gtk.RadioMenuItem groupView;
 		[Glade.Widget] Gtk.RadioMenuItem hostView;
@@ -240,13 +240,13 @@ namespace lat
 	
 		private void toggleButtons (bool btnState)
 		{
-			newButton.Sensitive = btnState;
-			editButton.Sensitive = btnState;
-			deleteButton.Sensitive = btnState;
-			refreshButton.Sensitive = btnState;
+			newToolButton.Sensitive = btnState;
+			propertiesToolButton.Sensitive = btnState;
+			deleteToolButton.Sensitive = btnState;
+			refreshToolButton.Sensitive = btnState;
 
-			editButton.Show ();
-			refreshButton.Show ();
+			propertiesToolButton.Show ();
+			refreshToolButton.Show ();
 		}
 
 		private void ldapDNSelected (object o, dnSelectedEventArgs args)
@@ -462,10 +462,10 @@ namespace lat
 
 		private void removeButtonHandlers ()
 		{
-			newButton.Clicked -= new EventHandler (_currentView.OnNewEntryActivate);
-			editButton.Clicked -= new EventHandler (_currentView.OnEditActivate);
-			deleteButton.Clicked -= new EventHandler (_currentView.OnDeleteActivate);
-			refreshButton.Clicked -= new EventHandler (_currentView.OnRefreshActivate);
+			newToolButton.Clicked -= new EventHandler (_currentView.OnNewEntryActivate);
+			propertiesToolButton.Clicked -= new EventHandler (_currentView.OnEditActivate);
+			deleteToolButton.Clicked -= new EventHandler (_currentView.OnDeleteActivate);
+			refreshToolButton.Clicked -= new EventHandler (_currentView.OnRefreshActivate);
 		}
 
 		private void changeView (string name)
@@ -486,10 +486,10 @@ namespace lat
 				_view.Populate ();
 			}
 
-			newButton.Clicked += new EventHandler (_currentView.OnNewEntryActivate);
-			editButton.Clicked += new EventHandler (_currentView.OnEditActivate);
-			deleteButton.Clicked += new EventHandler (_currentView.OnDeleteActivate);
-			refreshButton.Clicked += new EventHandler (_currentView.OnRefreshActivate);
+			newToolButton.Clicked += new EventHandler (_currentView.OnNewEntryActivate);
+			propertiesToolButton.Clicked += new EventHandler (_currentView.OnEditActivate);
+			deleteToolButton.Clicked += new EventHandler (_currentView.OnDeleteActivate);
+			refreshToolButton.Clicked += new EventHandler (_currentView.OnRefreshActivate);
 
 			toggleButtons (true);
 		}
@@ -577,12 +577,12 @@ namespace lat
 				}
 
 				toggleButtons (true);
-				editButton.Hide ();
-				refreshButton.Hide ();
+				propertiesToolButton.Hide ();
+				refreshToolButton.Hide ();
 
 				setNameValueView ();
 
-				_ldapTreeview.setToolbarHandlers (newButton, deleteButton);
+				_ldapTreeview.setToolbarHandlers (newToolButton, deleteToolButton);
 			}
 			else if (args.PageNum == 2)
 			{

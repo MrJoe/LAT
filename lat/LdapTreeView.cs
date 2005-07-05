@@ -64,8 +64,8 @@ namespace lat
 		private Gtk.Window _parent;
 
 		private bool _handlersSet = false;
-		private Gtk.Button _newButton = null;
-		private Gtk.Button _deleteButton = null;
+		private Gtk.ToolButton _newButton = null;
+		private Gtk.ToolButton _deleteButton = null;
 
 		private enum TreeCols { Icon, DN };
 
@@ -302,7 +302,7 @@ namespace lat
 			}
 		}
 
-		public void setToolbarHandlers (Gtk.Button newButton, Gtk.Button deleteButton)
+		public void setToolbarHandlers (Gtk.ToolButton newButton, Gtk.ToolButton deleteButton)
 		{
 			_newButton = newButton;
 			_deleteButton = deleteButton;
