@@ -56,6 +56,8 @@ namespace lat
 
 		private string _name = null;
 
+		private ResponseType _result;
+
 		public CustomViewDialog (lat.Connection conn, CustomViewManager cvm)
 		{
 			_conn = conn;
@@ -100,7 +102,7 @@ namespace lat
 
 		public void Run ()
 		{
-			customViewDialog.Run ();
+			_result = (ResponseType) customViewDialog.Run ();
 			customViewDialog.Destroy ();
 		}
 
@@ -294,5 +296,10 @@ namespace lat
 		{
 			get { return _name; }
 		}	
+
+		public ResponseType Result
+		{
+			get { return _result; }
+		}
 	}
 }

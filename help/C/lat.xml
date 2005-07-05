@@ -197,4 +197,130 @@
    </sect2>
 </sect1>
 
+<!-- ================ Usage ================================ -->
+  <sect1 id="lat-usage"> 
+	 <title>Usage</title>
+
+<!-- ============= To Create a New Entry ======================== -->
+	 <sect2 id="lat-server-new-entry"> 
+		<title>To Create a New Entry</title>
+		<para>To create a new entry, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>New</guimenuitem></menuchoice>. Depending on the current view selected (Computers,Contacts,Groups,Users), the application displays a new entry dialog.</para>
+	 </sect2>
+
+<!-- ============= To Delete an Entry ======================== -->
+	 <sect2 id="lat-server-delete-entry"> 
+		<title>To Delete an Entry</title>
+		<para>To delete an entry, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Delete</guimenuitem></menuchoice>. The application will display a confirmation dialog before proceeding.</para>
+	 </sect2>
+
+<!-- ============= To Re-login to a Server  ======================== -->
+	 <sect2 id="lat-server-relogin"> 
+		<title>To Re-Login to a Server</title>
+		<para>At any time you can re-login to the server.  Say for example you logged in with anonymous access and now need to do something which requires privileges.  To re-login, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Re-login...</guimenuitem></menuchoice>. The application will display a dialog to get the new login information.  The status bar will show who you are currently logged in as.</para>
+	 </sect2>
+
+<!-- ============= To Disconnect from a Server ======================== -->
+	 <sect2 id="lat-server-disconnect"> 
+		<title>To Disconnect from a Server</title>
+		<para>To disconnect from a server, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Disconnect</guimenuitem></menuchoice>. The application will display a confirmation dialog before proceeding.</para>
+	 </sect2>
+
+<!-- ============= To Import Entries from an LDIF file ======================== -->
+	 <sect2 id="lat-server-import-ldif"> 
+		<title>To Import Entries from an LDIF file</title>
+		<para>To import some entries from an LDIF file, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Import LDIF...</guimenuitem></menuchoice>. The application will display a file chooser dialog to select the file.</para>
+		<para>You could also just drag and drop the file from your file manager into the
+		output window.  This also works with plain text blocks.</para>
+	 </sect2>
+
+<!-- ============= To Export an entry to an LDIF file ======================== -->
+	 <sect2 id="lat-server-export-ldif"> 
+		<title>To Export an entry to an LDIF file</title>
+		<para>To export an entry to an LDIF file, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Export LDIF...</guimenuitem></menuchoice>. The application will display a file chooser dialog to select the file to save as.</para>
+		<para>You could also right click on the entry and choose <menuchoice>Export</menuchoice>.</para>
+	 </sect2>
+
+<!-- ============= To Quit LAT ======================== -->
+	 <sect2 id="lat-server-quit"> 
+		<title>To Quit LAT</title>
+		<para>To quit LAT, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Quit</guimenuitem></menuchoice>.</para>
+	 </sect2>
+
+  </sect1>
+
+<!-- ================ Views ================================ -->
+  <sect1 id="lat-views"> 
+	 <title>Views</title>
+
+<!-- ============= Pre-defined Views  ======================== -->
+	 <sect2 id="lat-view-default"> 
+		<title>Pre-defined Views</title>
+		<para><application>&app;</application> comes with the following pre-defined views:</para>
+
+		<itemizedlist> 
+		  <listitem><para>Computers</para></listitem>
+ 		<listitem><para>Contacts</para></listitem>
+		<listitem><para>Groups</para></listitem>
+		<listitem><para>Users</para></listitem>
+		</itemizedlist>
+	 </sect2>
+
+<!-- ============= To create a custom view  ======================== -->
+	 <sect2 id="lat-view-custom-view"> 
+		<title>To create a custom view</title>
+		<para>To create your own view click on "Custom Views" in the View window and then choose <menuchoice><guimenu>Server</guimenu><guimenuitem>New</guimenuitem></menuchoice>.</para>
+		<para>A view is just a saved search which display certain attributes.  The fields for filter and base are where you define the search.  You can click on the help button to use the search builder.</para>
+		<para>Once you have a search defined, click on "Test Search" and then select the attributes you wish to have displayed. Then save the view.</para>
+		<para>After it's been saved you can access your view just like any of the pre-defined ones.</para>
+	 </sect2>
+
+<!-- ============= To browse and LDAP server  ======================== -->
+	 <sect2 id="lat-view-browser"> 
+		<title>To browse and LDAP server</title>
+		<para>If you want to just browse an LDAP directory, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Browser</guimenuitem></menuchoice>.</para>
+		<para>You will switch to the browser view where you can collapse/expand different parts of the tree.  Clicking on an entry will show it's attributes.  You can double click and make edits to different attributes.  To save any chances click on the Apply button in the Output window.</para>
+	 </sect2>
+
+<!-- ============= To search an LDAP server  ======================== -->
+	 <sect2 id="lat-view-search"> 
+		<title>To search an LDAP server</title>
+		<para>To search for an entry contained in an LDAP directory, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Search</guimenuitem></menuchoice>.</para>
+		<para>In the search view you can enter a search filter or click on the help button andu use the search builder.  Select where you would like to start the search and then click on the Start Search button. The results will appear below</para>
+	 </sect2>
+
+<!-- ============= To view/edit an entry's properties  ======================== -->
+	 <sect2 id="lat-view-properties"> 
+		<title>To view/edit an entry's properties</title>
+		<para>To view and/or edit and entry's properties, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Properties</guimenuitem></menuchoice>.</para>
+		<para>You can also right click on an entry and select properties or just double click on it.</para>
+	 </sect2>
+
+<!-- ============= To refresh a view  ======================== -->
+	 <sect2 id="lat-view-refresh"> 
+		<title>To refresh a view</title>
+		<para>To refresh your view, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Refresh</guimenuitem></menuchoice>.</para>
+	 </sect2>
+
+  </sect1>
+
+<!-- ================ Files ================================ -->
+  <sect1 id="lat-files"> 
+	 <title>Files</title>
+
+<!-- ============= profiles.xml  ======================== -->
+	 <sect2 id="lat-files-profiles"> 
+		<title>profiles.xml</title>
+		<para>$HOME/.lat/profiles.xml</para>
+		<para>Contains the users saved connection profiles.  There is no password
+information held in the files;   Passwords  are  stored  in  the users GNOME keyring database.</para>
+	</sect2>
+
+<!-- ============= views.xml  ======================== -->
+	 <sect2 id="lat-files-views"> 
+		<title>To refresh a view</title>
+		<para>$HOME/.lat/views.xml</para>
+		<para>Contains information on the users custom views.</para>
+	</sect2>
+  </sect1>
+
 </article>

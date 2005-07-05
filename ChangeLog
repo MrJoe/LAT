@@ -6,6 +6,8 @@
 	* Added right-click context menus to views.
 	* Wrote start of help manual
 	* Upgraded to Gtk# 2.0
+	* BUGFIX: Confirm with user before disconnecting
+	* BUGFIX: Don't crash if user cancels creation of custom view
 	* BUGFIX: Remove toolbar button handlers when changing views
 	* BUGFIX: Make sure toolbar items are accessible via normal menus
 	* BUGFIX: Don't remove entries from LdapTreeView if user cancels a delete

@@ -62,19 +62,26 @@ namespace lat
 
 		public override void OnNewEntryActivate (object o, EventArgs args) 
 		{
-			CustomViewDialog cvd = new CustomViewDialog (_conn, cvm);
-			cvd.Run ();
+			try
+			{
+				CustomViewDialog cvd = new CustomViewDialog (_conn, cvm);
+				cvd.Run ();
 
-			cvm.reloadViews ();
-			Populate ();
+				if (cvd.Result != ResponseType.Ok)
+					return;
 
-			TreeIter iter = (TreeIter) _ti ["root"];
-			
-			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Open, IconSize.Menu, "");
+				cvm.reloadViews ();
+				Populate ();
 
-			TreeIter newIter = _vs.AppendValues (iter, pb, cvd.Name);
+				TreeIter iter = (TreeIter) _ti ["root"];
+				
+				Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Open, IconSize.Menu, "");
 
-			_ti.Add (cvd.Name, newIter);
+				TreeIter newIter = _vs.AppendValues (iter, pb, cvd.Name);
+
+				_ti.Add (cvd.Name, newIter);
+			}
+			catch {}
 		}
 
 		public override void OnEditActivate (object o, EventArgs args) 

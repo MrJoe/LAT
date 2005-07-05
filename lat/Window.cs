@@ -657,12 +657,28 @@ namespace lat
 
 		public void OnDisconnectActivate (object o, EventArgs args) 
 		{
-			_conn.Disconnect ();
+			string msg = Mono.Unix.Catalog.GetString (
+				"Are you sure you want to disconnect from\nserver: ") + _conn.Host;
 
-			mainWindow.Hide ();
-			mainWindow = null;
+			MessageDialog md = new MessageDialog (mainWindow, 
+					DialogFlags.DestroyWithParent,
+					MessageType.Question, 
+					ButtonsType.YesNo, 
+					msg);
+	     
+			ResponseType result = (ResponseType)md.Run ();
 
-			new ConnectDialog ();
+			if (result == ResponseType.Yes)
+			{
+				_conn.Disconnect ();
+
+				mainWindow.Hide ();
+				mainWindow = null;
+
+				new ConnectDialog ();
+			}
+
+			md.Destroy ();
 		}
 
 		public void OnImportActivate (object o, EventArgs args)
