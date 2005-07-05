@@ -34,7 +34,8 @@ namespace lat
 		protected TreeView _tv;
 		protected Gtk.Window _parent;
 		protected lat.Connection _conn;
-		
+		protected Menu _popup;
+
 		protected string _viewName = null;
 		protected string _filter = null;
 
@@ -77,32 +78,44 @@ namespace lat
 			_tv.RowActivated += new RowActivatedHandler (OnRowActivated);
 		}
 
-		public virtual void DoPopUp()
+		public void DoPopUp()
 		{
-/*
-			Menu popup = new Menu();
+			_popup = new Menu();
 
-			MenuItem mailItem = new MenuItem ("Send email");
-			mailItem.Activated += new EventHandler (OnEmailActivate);
-			mailItem.Show ();
+			 AccelGroup ag = new AccelGroup ();
 
-			popup.Append (mailItem);
+			ImageMenuItem newItem = new ImageMenuItem (Stock.New, ag);
+			newItem.Activated += new EventHandler (OnNewEntryActivate);
+			newItem.Show ();
+
+			_popup.Append (newItem);
 
 			MenuItem exportItem = new MenuItem ("Export");
 			exportItem.Activated += new EventHandler (OnExportActivate);
 			exportItem.Show ();
 
-			popup.Append (exportItem);
+			_popup.Append (exportItem);
 
-			ImageMenuItem deleteItem = new ImageMenuItem (Stock.Delete, new Gtk.AccelGroup(IntPtr.Zero));
+			ImageMenuItem deleteItem = new ImageMenuItem (Stock.Delete, ag);
 			deleteItem.Activated += new EventHandler (OnDeleteActivate);
 			deleteItem.Show ();
 
-			popup.Append (deleteItem);
+			_popup.Append (deleteItem);
 
-			popup.Popup(null, null, null, IntPtr.Zero, 3,
+			ImageMenuItem propItem = new ImageMenuItem (Stock.Properties, ag);
+			propItem.Activated += new EventHandler (OnEditActivate);
+			propItem.Show ();
+
+			_popup.Append (propItem);
+
+			customPopUp ();
+
+			_popup.Popup(null, null, null, IntPtr.Zero, 3,
 					Gtk.Global.CurrentEventTime);
-*/
+		}
+
+		public virtual void customPopUp ()
+		{
 		}
 
 		[ConnectBefore]
@@ -294,26 +307,30 @@ namespace lat
 
 		private void deleteEntry (TreePath[] path)
 		{
-			if (!(path.Length > 1))
+			try
 			{
-				LdapEntry le = lookupEntry (path[0]);
+				if (!(path.Length > 1))
+				{
+					LdapEntry le = lookupEntry (path[0]);
 
-				Util.DeleteEntry (_conn, _parent, le.DN);
+					Util.DeleteEntry (_conn, _parent, le.DN);
 
-				return;
+					return;
+				}
+
+				ArrayList dnList = new ArrayList ();
+
+				foreach (TreePath tp in path)
+				{
+					LdapEntry le = lookupEntry (tp);
+					dnList.Add (le.DN);
+				}
+
+				string[] dns = (string[]) dnList.ToArray (typeof(string));
+
+				Util.DeleteEntry (_conn, _parent, dns);
 			}
-
-			ArrayList dnList = new ArrayList ();
-
-			foreach (TreePath tp in path)
-			{
-				LdapEntry le = lookupEntry (tp);
-				dnList.Add (le.DN);
-			}
-
-			string[] dns = (string[]) dnList.ToArray (typeof(string));
-
-			Util.DeleteEntry (_conn, _parent, dns);
+			catch {}
 		}
 
 		public virtual void OnDeleteActivate (object o, EventArgs args) 
@@ -326,20 +343,35 @@ namespace lat
 			Populate ();
 		}
 
+		public virtual void OnExportActivate (object o, EventArgs args)
+		{
+			TreeModel model;
+			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+
+			try
+			{
+				LdapEntry le = lookupEntry (tp[0]);
+				Util.ExportData (_conn, _parent, le.DN);
+			}
+			catch {}
+		}
+
 		private string getSelectedAttribute (string attrName)
 		{
 			Gtk.TreeModel model;
 
 			TreePath[] tp = this._tv.Selection.GetSelectedRows (out model);
 
-			LdapEntry le = this.lookupEntry (tp[0]);
+			try
+			{
+				LdapEntry le = this.lookupEntry (tp[0]);
+				LdapAttribute la = le.getAttribute (attrName);
 
-			if (le == null)
-				return null;
+				return la.StringValue;
+			}
+			catch {}
 
-			LdapAttribute la = le.getAttribute (attrName);
-
-			return la.StringValue;
+			return "";
 		}
 
 		public virtual void OnEmailActivate (object o, EventArgs args) 
@@ -347,7 +379,14 @@ namespace lat
 			string url = getSelectedAttribute ("mail");
 
 			if (url == null || url == "")
+			{
+				string msg = Mono.Unix.Catalog.GetString (
+					"Invalid or empty email address");
+				
+				Util.MessageBox (_parent, msg, MessageType.Error);
+
 				return;
+			}
 
 			try
 			{
@@ -367,9 +406,6 @@ namespace lat
 		public virtual void OnWWWActivate (object o, EventArgs args) 
 		{
 			string url = getSelectedAttribute ("wWWHomePage");
-
-			if (url == null || url == "")
-				return;
 
 			try
 			{

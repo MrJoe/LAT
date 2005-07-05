@@ -75,18 +75,24 @@ namespace lat
 			}		
 		}
 
-		public override void DoPopUp ()
+		public override void customPopUp  ()
 		{
-			Menu popup = new Menu();
+			SeparatorMenuItem sm = new SeparatorMenuItem ();
+			sm.Show ();
+		
+			_popup.Append (sm);
 
 			MenuItem mailItem = new MenuItem ("Send email");
 			mailItem.Activated += new EventHandler (OnEmailActivate);
 			mailItem.Show ();
 
-			popup.Append (mailItem);
+			_popup.Append (mailItem);
 
-			popup.Popup(null, null, null, IntPtr.Zero, 3,
-					Gtk.Global.CurrentEventTime);
+			MenuItem wwwItem = new MenuItem ("Open Home Page");
+			wwwItem.Activated += new EventHandler (OnWWWActivate);
+			wwwItem.Show ();
+
+			_popup.Append (wwwItem);
 		}
 	}
 }
