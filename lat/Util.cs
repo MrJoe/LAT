@@ -124,8 +124,10 @@ namespace lat
 
 			if (result == ResponseType.Yes)
 			{
+				bool allGood = true;
+
 				foreach (string d in dn)
-				{
+				{					
 					try
 					{
 						conn.Delete (d);
@@ -133,6 +135,8 @@ namespace lat
 					}
 					catch (Exception e)
 					{
+						allGood = false;
+
 						string errorMsg =
 							Mono.Unix.Catalog.GetString (
 							"Unable to delete all entry " + d);
@@ -145,10 +149,13 @@ namespace lat
 					}
 				}
 
-				MessageBox (parent, 
-					Mono.Unix.Catalog.GetString (
-					"Entries successfully deleted."), 
-					MessageType.Info);
+				if (allGood)
+				{
+					MessageBox (parent, 
+						Mono.Unix.Catalog.GetString (
+						"Entries successfully deleted."), 
+						MessageType.Info);
+				}
 			}
 
 			md.Destroy ();
