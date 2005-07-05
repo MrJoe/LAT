@@ -104,7 +104,7 @@ namespace lat
 			modList.Clear ();
 		}
 
-		public static void DeleteEntry (lat.Connection conn, Gtk.Window parent, string[] dn)
+		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string[] dn)
 		{
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString ("Are you sure you want to delete:\n\n"));
@@ -122,10 +122,10 @@ namespace lat
 	     
 			ResponseType result = (ResponseType)md.Run ();
 
+			bool allGood = true;
+
 			if (result == ResponseType.Yes)
 			{
-				bool allGood = true;
-
 				foreach (string d in dn)
 				{					
 					try
@@ -157,11 +157,17 @@ namespace lat
 						MessageType.Info);
 				}
 			}
+			else
+			{
+				allGood = false;
+			}
 
 			md.Destroy ();
+
+			return allGood;
 		}
 
-		public static void DeleteEntry (lat.Connection conn, Gtk.Window parent, string dn)
+		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string dn)
 		{
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString ("Are you sure you want to delete\n{0}"), dn);
@@ -174,6 +180,8 @@ namespace lat
 	     
 			ResponseType result = (ResponseType)md.Run ();
 
+			bool retVal = false;
+
 			if (result == ResponseType.Yes)
 			{				
 				try
@@ -184,6 +192,8 @@ namespace lat
 						Mono.Unix.Catalog.GetString ("Entry {0} has been deleted."), dn);
 		
 					MessageBox (md, resMsg, MessageType.Info);
+
+					retVal = true;
 				}
 				catch (Exception e)
 				{
@@ -197,6 +207,8 @@ namespace lat
 			}
 				
 			md.Destroy ();
+
+			return retVal;
 		}
 
 		private static void import (lat.Connection conn, Gtk.Window parent, Uri uri)

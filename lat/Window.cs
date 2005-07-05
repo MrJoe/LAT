@@ -571,6 +571,7 @@ namespace lat
 			{
 				if (_currentView != null)
 				{
+					removeButtonHandlers ();
 					_currentView.removeHandlers ();
 					_currentView.removeDndHandlers ();
 					_currentView = null;
@@ -588,6 +589,7 @@ namespace lat
 			{
 				if (_currentView != null)
 				{
+					removeButtonHandlers ();
 					_currentView.removeHandlers ();
 					_currentView.removeDndHandlers ();
 					_currentView = null;
@@ -600,7 +602,49 @@ namespace lat
 			}
 		}
 
+		public void OnNewActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+			{
+				if (_currentView != null)
+					_currentView.OnNewEntryActivate (o, args);
+			}
+			else if (viewNotebook.CurrentPage == 1)
+			{
+				_ldapTreeview.OnNewEntryActivate (o, args);
+			}
+		}
 
+		public void OnDeleteActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+			{
+				if (_currentView != null)
+					_currentView.OnDeleteActivate (o, args);
+			}
+			else if (viewNotebook.CurrentPage == 1)
+			{
+				_ldapTreeview.OnDeleteActivate (o, args);
+			}
+		}
+
+		public void OnPropertiesActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+			{
+				if (_currentView != null)
+					_currentView.OnEditActivate (o, args);
+			}
+		}
+
+		public void OnRefreshActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+			{
+				if (_currentView != null)
+					_currentView.OnRefreshActivate (o, args);
+			}
+		}
 
 		public void OnReloginActivate (object o, EventArgs args)
 		{

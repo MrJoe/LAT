@@ -347,8 +347,8 @@ namespace lat
 
 			try
 			{
-				browserStore.Remove (ref iter);
-				Util.DeleteEntry (_conn, _parent, dn);
+				if (Util.DeleteEntry (_conn, _parent, dn))
+					browserStore.Remove (ref iter);
 			}
 			catch {}
 		}
