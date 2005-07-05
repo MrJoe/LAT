@@ -1,4 +1,6 @@
+- Implement Samba 'change password' button functionality
+- Find a way to change a AD users password
+- Find a way to create new AD users and groups
 - SASL support
 - Write help manual
 - Cleanup code
-- Drag and Drop moves (?? - possible conflict with dnd LDIF import/export)
