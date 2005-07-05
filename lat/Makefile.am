@@ -21,6 +21,7 @@ LAT_CSFILES = \
 	DynamicViewDialog.cs \
 	EditAdComputerViewDialog.cs \
 	EditContactsViewDialog.cs \
+	EditUserViewDialog.cs \
 	GroupsView.cs \
 	GroupsViewDialog.cs \
 	HostsView.cs \
@@ -33,6 +34,7 @@ LAT_CSFILES = \
 	Main.cs \
 	NewAdComputerViewDialog.cs \
 	NewContactsViewDialog.cs \
+	NewUserViewDialog.cs \
 	PasswordDialog.cs \
 	ProfileDialog.cs \
 	ProfileManager.cs \
@@ -40,7 +42,6 @@ LAT_CSFILES = \
 	SearchBuilderDialog.cs \
 	SelectContainerDialog.cs \
 	UsersView.cs \
-	UsersViewDialog.cs \
 	Util.cs \
 	View.cs \
 	ViewDialog.cs \

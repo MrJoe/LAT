@@ -1,5 +1,5 @@
 // 
-// lat - UsersViewDialog.cs
+// lat - EditUserViewDialog.cs
 // Author: Loren Bandiera
 // Copyright 2005 MMG Security, Inc.
 //
@@ -30,11 +30,11 @@ using Novell.Directory.Ldap;
 
 namespace lat
 {
-	public class UsersViewDialog : ViewDialog
+	public class EditUserViewDialog : ViewDialog
 	{
 		Glade.XML ui;
 
-		[Glade.Widget] Gtk.Dialog userDialog;
+		[Glade.Widget] Gtk.Dialog editUserDialog;
 
 		// General 
 		[Glade.Widget] Gtk.Label usernameLabel;
@@ -84,7 +84,6 @@ namespace lat
 		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath", "sambaHomeDrive",
 						"sambaSID", "sambaPrimaryGroupSID", "sambaLogonScript" };
 
-		private bool _isEdit = false;
 		private bool _isSamba = false;
 		
 		private LdapEntry _le;
@@ -102,22 +101,63 @@ namespace lat
 
 		private ComboBox primaryGroupComboBox;
 
-		public UsersViewDialog (lat.Connection conn) : base (conn)
+		public EditUserViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
 		{
-			Init ();		
+			_le = le;
+			_modList = new ArrayList ();
 
-			getGroups (null);
+			Init ();
 
-			createCombo ();
+			_isSamba = checkSamba (le);
 
-			toggleSambaWidgets (false);
+			_ui = getUserInfo (le);
 
-			userDialog.Title = "LAT - Add User";
+			getGroups (le);
 
-			userDialog.Run ();
-			userDialog.Destroy ();
+			createCombo ();		
+
+			string userName = (string) _ui["cn"];
+
+			editUserDialog.Title = userName + " Properties";
+
+			usernameLabel.UseMarkup = true;
+			usernameLabel.Markup = 
+				String.Format ("<span size=\"larger\"><b>{0}</b></span>", _ui["uid"]);
+
+			fullnameLabel.Text = String.Format ("{0} {1}", _ui["givenName"], _ui["sn"]);
+
+			firstNameEntry.Text = (string)_ui["givenName"];
+			lastNameEntry.Text = (string)_ui["sn"];
+			usernameEntry.Text = (string)_ui["uid"];
+			uidSpinButton.Value = int.Parse ((string)_ui["uidNumber"]);
+			passwordEntry.Text = (string)_ui["userPassword"];
+			mailEntry.Text = (string)_ui["mail"];
+			shellEntry.Text = (string)_ui["loginShell"];
+			homeDirEntry.Text = (string)_ui["homeDirectory"];
+			descriptionEntry.Text = (string)_ui["description"];
+			officeEntry.Text = (string)_ui["physicalDeliveryOfficeName"];
+			phoneEntry.Text = (string)_ui["telephoneNumber"];
+
+			if (_isSamba)
+			{
+				toggleSambaWidgets (true);
+
+				smbSIDLabel.Text = (string)_ui["sambaSID"];
+				smbGSIDLabel.Text = (string)_ui["sambaPrimaryGroupSID"];
+				smbLoginScriptEntry.Text = (string)_ui["sambaLogonScript"];
+				smbProfilePathEntry.Text = (string)_ui["sambaProfilePath"];
+				smbHomePathEntry.Text = (string)_ui["sambaHomePath"];
+				smbHomeDriveEntry.Text = (string)_ui["sambaHomeDrive"];
+			}
+			else
+			{
+				toggleSambaWidgets (false);
+			}
+
+			editUserDialog.Run ();
+			editUserDialog.Destroy ();
 		}
-		
+	
 		private Hashtable getUserInfo (LdapEntry le)
 		{
 			Hashtable ui = new Hashtable ();
@@ -242,65 +282,6 @@ namespace lat
 			return retVal;
 		}
 
-		public UsersViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
-		{
-			_le = le;
-			_modList = new ArrayList ();
-
-			_isEdit = true;
-
-			Init ();
-
-			_isSamba = checkSamba (le);
-
-			_ui = getUserInfo (le);
-
-			getGroups (le);
-
-			createCombo ();		
-
-			string userName = (string) _ui["cn"];
-
-			userDialog.Title = userName + " Properties";
-
-			usernameLabel.UseMarkup = true;
-			usernameLabel.Markup = 
-				String.Format ("<span size=\"larger\"><b>{0}</b></span>", _ui["uid"]);
-
-			fullnameLabel.Text = String.Format ("{0} {1}", _ui["givenName"], _ui["sn"]);
-
-			firstNameEntry.Text = (string)_ui["givenName"];
-			lastNameEntry.Text = (string)_ui["sn"];
-			usernameEntry.Text = (string)_ui["uid"];
-			uidSpinButton.Value = int.Parse ((string)_ui["uidNumber"]);
-			passwordEntry.Text = (string)_ui["userPassword"];
-			mailEntry.Text = (string)_ui["mail"];
-			shellEntry.Text = (string)_ui["loginShell"];
-			homeDirEntry.Text = (string)_ui["homeDirectory"];
-			descriptionEntry.Text = (string)_ui["description"];
-			officeEntry.Text = (string)_ui["physicalDeliveryOfficeName"];
-			phoneEntry.Text = (string)_ui["telephoneNumber"];
-
-			if (_isSamba)
-			{
-				toggleSambaWidgets (true);
-
-				smbSIDLabel.Text = (string)_ui["sambaSID"];
-				smbGSIDLabel.Text = (string)_ui["sambaPrimaryGroupSID"];
-				smbLoginScriptEntry.Text = (string)_ui["sambaLogonScript"];
-				smbProfilePathEntry.Text = (string)_ui["sambaProfilePath"];
-				smbHomePathEntry.Text = (string)_ui["sambaHomePath"];
-				smbHomeDriveEntry.Text = (string)_ui["sambaHomeDrive"];
-			}
-			else
-			{
-				toggleSambaWidgets (false);
-			}
-
-			userDialog.Run ();
-			userDialog.Destroy ();
-		}
-
 		private void Init ()
 		{
 			_memberOfGroups = new Hashtable ();
@@ -308,10 +289,10 @@ namespace lat
 			_allGroupGids = new Hashtable ();
 			_modsGroup = new Hashtable ();
 
-			ui = new Glade.XML (null, "lat.glade", "userDialog", null);
+			ui = new Glade.XML (null, "lat.glade", "editUserDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = userDialog;
+			_viewDialog = editUserDialog;
 
 			TreeViewColumn col;
 
@@ -345,7 +326,7 @@ namespace lat
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
-			userDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+			editUserDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private void toggleSambaWidgets (bool state)
@@ -373,23 +354,19 @@ namespace lat
 
 				_allGroupStore.Remove (ref iter);
 
-				if (_isEdit)
+				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
+				LdapModification lm = new LdapModification (LdapModification.ADD, attr);
+
+				if (!_modsGroup.ContainsKey (name))
+					_modsGroup.Add (name, lm);
+				else
 				{
-					LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
-					LdapModification lm = new LdapModification (LdapModification.ADD, attr);
-
-					if (!_modsGroup.ContainsKey (name))
-						_modsGroup.Add (name, lm);
-					else
-					{
-						_modsGroup.Remove (name);
-					}
-				}		
-
+					_modsGroup.Remove (name);
+				}
 			}
 			else
 			{
-				Util.MessageBox (userDialog, 
+				Util.MessageBox (editUserDialog, 
 						Mono.Unix.Catalog.GetString ("No group selected to add."),
 						 MessageType.Error);
 			}
@@ -411,22 +388,19 @@ namespace lat
 
 				_allGroupStore.AppendValues (name);
 
-				if (_isEdit)
-				{
-					LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
-					LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
+				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
+				LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
 
-					if (!_modsGroup.ContainsKey (name))
-						_modsGroup.Add (name, lm);
-					else
-					{
-						_modsGroup.Remove (name);
-					}
+				if (!_modsGroup.ContainsKey (name))
+					_modsGroup.Add (name, lm);
+				else
+				{
+					_modsGroup.Remove (name);
 				}
 			}
 			else
 			{
-				Util.MessageBox (userDialog, "No group selected to remove.",
+				Util.MessageBox (editUserDialog, "No group selected to remove.",
 						 MessageType.Error);
 			}			
 		}
@@ -465,7 +439,7 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (userDialog, errorMsg, MessageType.Error);
+				Util.MessageBox (editUserDialog, errorMsg, MessageType.Error);
 			}
 		}
 
@@ -474,27 +448,12 @@ namespace lat
 			LdapEntry groupEntry = null;
 			LdapModification[] mods = new LdapModification [1];
 
-			if (_isEdit)
+			foreach (string key in _modsGroup.Keys)
 			{
-				foreach (string key in _modsGroup.Keys)
-				{
-					LdapModification lm = (LdapModification) _modsGroup[key];
-					groupEntry = (LdapEntry) _allGroups [key];
+				LdapModification lm = (LdapModification) _modsGroup[key];
+				groupEntry = (LdapEntry) _allGroups [key];
 
-					mods[0] = lm;
-				}
-			}
-			else
-			{
-				foreach (string key in _memberOfGroups.Keys)
-				{
-					LdapAttribute attr = new LdapAttribute ("memberUid", usernameEntry.Text);
-					LdapModification lm = new LdapModification (LdapModification.ADD, attr);
-
-					groupEntry = (LdapEntry) _allGroups[key];
-
-					mods[0] = lm;
-				}
+				mods[0] = lm;
 			}
 
 			modifyGroup (groupEntry, mods);
@@ -558,61 +517,23 @@ namespace lat
 			}
 
 
-			if (_isEdit)
-			{
-				_modList = getMods (userAttrs, _ui, cui);
+			_modList = getMods (userAttrs, _ui, cui);
 
-				if (_isSamba)
+			if (_isSamba)
+			{
+				ArrayList smbMods = getMods (sambaAttrs, _ui, cui);
+
+				foreach (LdapModification l in smbMods)
 				{
-					ArrayList smbMods = getMods (sambaAttrs, _ui, cui);
-
-					foreach (LdapModification l in smbMods)
-					{
-						_modList.Add (l);
-					}
+					_modList.Add (l);
 				}
-
-				updateGroupMembership ();
-
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
-			}
-			else
-			{
-				string fullName = String.Format ("{0} {1}", 
-					(string)cui["givenName"], (string)cui["sn"] );
-
-				cui["cn"] = fullName;
-				cui["gecos"] = fullName;
-
-				ArrayList attrList = getAttributes (objClass, userAttrs, cui);
-
-				LdapAttribute attr;
-
-				attr = new LdapAttribute ("cn", fullName);
-				attrList.Add (attr);
-
-				attr = new LdapAttribute ("gecos", fullName);
-				attrList.Add (attr);
-
-				SelectContainerDialog scd = 
-					new SelectContainerDialog (_conn, userDialog);
-
-				scd.Title = "Save User";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", fullName);
-
-				scd.Run ();
-
-				if (scd.DN == "")
-					return;
-
-				string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
-
-				updateGroupMembership ();
-
-				Util.AddEntry (_conn, _viewDialog, userDN, attrList);
 			}
 
-			userDialog.HideAll ();
+			updateGroupMembership ();
+
+			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
+
+			editUserDialog.HideAll ();
 		}
 	}
 }

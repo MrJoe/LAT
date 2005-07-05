@@ -47,9 +47,9 @@ namespace lat
 					else
 					{
 						if (le == null)
-							new UsersViewDialog (cn);
+							new NewUserViewDialog (cn);
 						else
-							new UsersViewDialog (cn, le);
+							new EditUserViewDialog (cn, le);
 					}
 
 					break;
