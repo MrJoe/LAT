@@ -50,7 +50,7 @@ namespace lat
 		{
 			Init ();
 
-			hostDialog.Title = "LAT - Add Host";
+			hostDialog.Title = "Add Computer";
 
 			hostDialog.Run ();
 			hostDialog.Destroy ();

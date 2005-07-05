@@ -60,7 +60,7 @@ namespace lat
 
 			populateUsers ();
 
-			groupDialog.Title = "LAT - Add Group";
+			groupDialog.Title = "Add Group";
 
 			groupDialog.Run ();
 			groupDialog.Destroy ();
