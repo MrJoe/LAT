@@ -604,8 +604,10 @@ namespace lat
 
 		public void OnReloginActivate (object o, EventArgs args)
 		{
+			string msg = Mono.Unix.Catalog.GetString (
+				"Enter the new username and password\nyou wish to re-login with");
 
-			new LoginDialog (_conn);
+			new LoginDialog (_conn, msg);
 			updateStatusBar ();
 		}
 

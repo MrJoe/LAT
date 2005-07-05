@@ -30,6 +30,7 @@ namespace lat
 	public class LoginDialog
 	{
 		[Glade.Widget] Gtk.Dialog loginDialog;
+		[Glade.Widget] Gtk.Label msgLabel;
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
 		[Glade.Widget] Button okButton;
@@ -39,12 +40,14 @@ namespace lat
 
 		private lat.Connection _conn;
 
-		public LoginDialog (lat.Connection conn)
+		public LoginDialog (lat.Connection conn, string msg)
 		{
 			_conn = conn;
 
 			ui = new Glade.XML (null, "lat.glade", "loginDialog", null);
 			ui.Autoconnect (this);
+
+			msgLabel.Text = msg;
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);

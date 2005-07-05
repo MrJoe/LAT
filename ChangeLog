@@ -1,8 +1,9 @@
 	* Active Directory support
 	* gnome-keyring support
-	* Added new Contacts dialog
+	* New Login dialog 
+	* New Contacts dialog
 	* Start of Samba support
-	* Added right-click popup menu to views.
+	* Added right-click context menus to views.
 	* Wrote start of help manual
 	* Upgraded to Gtk# 2.0
 	* BUGFIX: Include LDAP error code in error dialog messages
