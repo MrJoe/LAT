@@ -1,8 +1,8 @@
 	* Active Directory support
-	* gnome-keyring support
+	* Start of Samba support
+	* GNOME Keyring support
 	* New Login dialog 
 	* New Contacts dialog
-	* Start of Samba support
 	* Added right-click context menus to views.
 	* Wrote start of help manual
 	* Upgraded to Gtk# 2.0
