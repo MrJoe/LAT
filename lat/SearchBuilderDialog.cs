@@ -198,15 +198,29 @@ namespace lat
 
 				if (c.Sensitive)
 				{
-					comboSetActive (c, boolOps, firstCritCombo.ActiveText);
+					TreeIter iter;
+						
+					if (!firstCritCombo.GetActiveIter (out iter))
+						return;
+
+					string s = (string) firstCritCombo.Model.GetValue (iter, 0);
+
+					comboSetActive (c, boolOps, s);
 				}
 			}
 		}
 
 		private void OnAddClicked (object o, EventArgs args)
 		{
+			TreeIter iter;
+						
+			if (!opComboBox.GetActiveIter (out iter))
+				return;
+
+			string s = (string) opComboBox.Model.GetValue (iter, 0);
+
 			createCritRow (attributeEntry.Text, 
-					opComboBox.ActiveText, 
+					s, 
 					valueEntry.Text);
 
 			attributeEntry.Text = "";
@@ -239,14 +253,26 @@ namespace lat
 			foreach (string key in _critTable.Keys)
 			{
 				SearchCriteria sc = (SearchCriteria) _critTable [key];
+
+				TreeIter iter;
+							
+				if (!sc.critCombo.GetActiveIter (out iter))
+					return;
+
+				string s = (string) sc.critCombo.Model.GetValue (iter, 0);
 			
 				_ls.addCondition (
 					sc.attrEntry.Text,
-					sc.critCombo.ActiveText,
+					s,
 					sc.valEntry.Text);
+
+				if (!sc.boolCombo.GetActiveIter (out iter))
+					return;
+
+				string bc = (string) sc.boolCombo.Model.GetValue (iter, 0);
 		
-				if (!sc.boolCombo.ActiveText.Equals (""))
-					boolOp = sc.boolCombo.ActiveText;
+				if (!bc.Equals (""))
+					boolOp = bc;
 			}
 
 			_ls.addBool (boolOp);
@@ -257,10 +283,17 @@ namespace lat
 		{
 			if (!attributeEntry.Text.Equals (""))
 			{
+				TreeIter iter;
+							
+				if (!opComboBox.GetActiveIter (out iter))
+					return;
+
+				string s = (string) opComboBox.Model.GetValue (iter, 0);
+
 				// simple search; only one criteria
 				_ls.addCondition (
 					attributeEntry.Text,
-					opComboBox.ActiveText,
+					s,
 					valueEntry.Text);
 			}
 			else

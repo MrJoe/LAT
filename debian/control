@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Guido Trotter <ultrotter@debian.org>
 Uploaders: Loren Bandiera <lorenb@mmgsecurity.com>
-Build-Depends: debhelper (>= 4.0.0), mono (>= 1.0.4), libgtk-cil (>= 1.0.4), libglade-cil (>= 1.0.4)
+Build-Depends: debhelper (>= 4.0.0), mono (>= 1.1.5), gtk-sharp2 (>= 1.9.5)
 Standards-Version: 3.6.0
 
 Package: lat

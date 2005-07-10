@@ -288,13 +288,20 @@ namespace lat
 
 			if (notebook1.CurrentPage == 0)
 			{
+				TreeIter iter;
+				
+				if (!serverTypeComboBox.GetActiveIter (out iter))
+					return;
+
+				string serverType = (string) serverTypeComboBox.Model.GetValue (iter, 0);
+
 				conn = new Connection (hostEntry.Text, 
 					int.Parse (portEntry.Text),
 					userEntry.Text,
 					passEntry.Text,
 					ldapBaseEntry.Text,
 					useSSL,
-					serverTypeComboBox.ActiveText);
+					serverType);
 
 				if (useSSL)
 				{

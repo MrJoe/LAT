@@ -141,6 +141,13 @@ namespace lat
 			
 		private void OnOkClicked (object o, EventArgs args)
 		{
+			TreeIter iter;
+				
+			if (!serverTypeComboBox.GetActiveIter (out iter))
+				return;
+
+			string st = (string) serverTypeComboBox.Model.GetValue (iter, 0);
+
 			ConnectionProfile profile = new ConnectionProfile (
 					profileNameEntry.Text,
 					hostEntry.Text,
@@ -149,7 +156,7 @@ namespace lat
 					userEntry.Text,
 					passEntry.Text,
 					_useSSL,
-					serverTypeComboBox.ActiveText);
+					st);
 					
 			if (_isEdit)
 			{

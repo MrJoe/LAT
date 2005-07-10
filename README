@@ -21,8 +21,9 @@ Installation
 
 lat requires the following other packages:
 
-	* Mono >= 1.1
-	* Gtk# >= 2.5
+	* Mono 1.1.8
+	* Gtk# 1.9.5
+	* GNOME Keyring 0.4.2
 
 Simple installation procedure:
 

@@ -10,7 +10,7 @@ BuildRoot: 	%{_tmppath}/%{name}-root
 Source: 	%{name}-%{version}.tar.gz
 
 Requires: mono, gtk-sharp
-BuildRequires: mono-core, mono-devel, gtk-sharp
+BuildRequires: mono-core, mono-devel, gtk-sharp, autoconf, automake, intltool, pkgconfig, scrollkeeper
 
 %description
 LAT stands for LDAP Administration Tool. The tool allows you to browse LDAP-based directories and add/edit/delete entries contained within. It can store profiles for quick access to different servers. There are also different views available such as Users, Groups and Hosts which allow you to easily manage objects without having to deal with the intricacies of LDAP.
@@ -31,6 +31,7 @@ make %{?_smp_mflags}
 
 %post
 /sbin/ldconfig 2>/dev/null
+%{_bindir}/scrollkeeper-update
 
 %postun
 /sbin/ldconfig 2>/dev/null
@@ -42,8 +43,11 @@ make %{?_smp_mflags}
 %{_libdir}/%{name}/*
 %{_mandir}/man1/lat.1.gz
 %{_datadir}/locale/*
+%{_datadir}/gnome/help/*
+%{_datadir}/omf/*
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/application-registry/%{name}.applications
+/var/scrollkeeper/*
 
 %changelog
 * Thu Feb 03 2005 Loren Bandiera <lorenb@mmgsecurity.com>

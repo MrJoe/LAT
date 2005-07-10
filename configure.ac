@@ -1,4 +1,4 @@
-AC_INIT(lat, 0.5.99, lorenb@mmgsecurity.com)
+AC_INIT(lat, 0.6, lorenb@mmgsecurity.com)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
