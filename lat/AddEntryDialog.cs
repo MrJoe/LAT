@@ -33,7 +33,8 @@ namespace lat
 
 		[Glade.Widget] Gtk.Dialog addEntryDialog;
 		[Glade.Widget] Gtk.Entry dnNameEntry;
-		[Glade.Widget] Gtk.Entry attrNameEntry;
+		[Glade.Widget] Gtk.HBox attrNameHBox;
+		[Glade.Widget] Gtk.HBox attrClassHBox;
 		[Glade.Widget] Gtk.Entry attrValueEntry;
 		[Glade.Widget] TreeView attrListview; 
 		[Glade.Widget] Gtk.Button addAttributeButton;
@@ -49,6 +50,9 @@ namespace lat
 
 		private string _dn;
 
+		private ComboBox attrClassComboBox;
+		private static ComboBox attrNameComboBox;
+
 		public AddEntryDialog (Connection conn)
 		{
 			_attributes = new ArrayList ();
@@ -57,6 +61,8 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "addEntryDialog", null);
 			ui.Autoconnect (this);
 			
+			createCombos ();
+
 			attrListStore = new ListStore (typeof (string), typeof (string));
 			attrListview.Model = attrListStore;
 			
@@ -83,11 +89,90 @@ namespace lat
 			addEntryDialog.Destroy ();
 		}
 
+		private void createCombos ()
+		{
+			// class
+			attrClassComboBox = ComboBox.NewText ();
+			attrClassComboBox.AppendText ("inetOrgPerson");
+			attrClassComboBox.AppendText ("ipHost");
+			attrClassComboBox.AppendText ("organizationalUnit");
+			attrClassComboBox.AppendText ("person");
+			attrClassComboBox.AppendText ("posixAccount");
+			attrClassComboBox.AppendText ("posixGroup");
+			attrClassComboBox.AppendText ("sambaSamAccount");
+			attrClassComboBox.AppendText ("shadowAccount");
+
+			attrClassComboBox.Changed += new EventHandler (OnClassChanged);
+
+			attrClassComboBox.Active = 0;
+			attrClassComboBox.Show ();
+
+			attrClassHBox.PackStart (attrClassComboBox, true, true, 5);
+
+			// name
+			attrNameComboBox = ComboBox.NewText ();
+			attrNameComboBox.AppendText ("(none)");
+			attrNameComboBox.Active = 0;
+			attrNameComboBox.Show ();
+
+			attrNameHBox.PackStart (attrNameComboBox, true, true, 5);
+		}
+
+		private void OnClassChanged (object o, EventArgs args)
+		{
+			TreeIter iter;
+				
+			if (!attrClassComboBox.GetActiveIter (out iter))
+				return;
+
+			string objClass = (string) attrClassComboBox.Model.GetValue (iter, 0);
+
+			string [] attrs = _conn.getAllAttrs (objClass);
+
+			if (attrNameComboBox == null)
+			{
+				// don't know why this happens
+
+				return;
+			}
+			else
+			{
+// FIXME: causes list to go blank
+//				attrNameComboBox.Clear ();
+
+				foreach (string s in attrs)
+				{				
+					attrNameComboBox.AppendText (s);
+				}
+			}		
+		}
+
 		private void OnAddAttributeClicked (object o, EventArgs args)
 		{
-			attrListStore.AppendValues (attrNameEntry.Text, attrValueEntry.Text);
-			attrNameEntry.Text = "";
-			attrValueEntry.Text = "";
+			TreeIter iter;
+				
+			if (!attrNameComboBox.GetActiveIter (out iter))
+				return;
+
+			string attrName = (string) attrNameComboBox.Model.GetValue (iter, 0);
+
+			if (attrName.Equals ("(none)"))
+			{
+				// add object class
+				TreeIter cnIter;
+					
+				if (!attrClassComboBox.GetActiveIter (out cnIter))
+					return;
+
+				string objClass = (string) attrClassComboBox.Model.GetValue (cnIter, 0);
+
+				attrListStore.AppendValues ("objectClass", objClass);
+			}
+			else
+			{
+				attrListStore.AppendValues (attrName, attrValueEntry.Text);
+				attrValueEntry.Text = "";
+			}
 		}
 
 		private void OnRemoveAttributeClicked (object o, EventArgs args)

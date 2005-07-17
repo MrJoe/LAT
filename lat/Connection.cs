@@ -286,6 +286,46 @@ namespace lat
 			return (string[]) retVal.ToArray (typeof (string));
 		}
 
+		public string[] getAllAttrs (string objClass)
+		{
+			try
+			{
+				LdapSchema schema;
+				LdapObjectClassSchema ocs;
+				
+				ArrayList attrs = new ArrayList ();
+
+				schema = _conn.FetchSchema ( _conn.GetSchemaDN() );	
+				ocs = schema.getObjectClassSchema ( objClass );
+
+				if (ocs.RequiredAttributes != null)
+				{
+					foreach (string r in ocs.RequiredAttributes)
+					{
+						if (!attrs.Contains (r))
+							attrs.Add (r);
+					}
+				}
+
+				if (ocs.OptionalAttributes != null)
+				{
+					foreach (string o in ocs.OptionalAttributes)
+					{
+						if (!attrs.Contains (o))
+							attrs.Add (o);
+					}
+				}
+
+				attrs.Sort ();
+
+				return (string[]) attrs.ToArray (typeof (string));
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
 		public string[] getRequiredAttrs (string objClass)
 		{
 			if (!_conn.Connected || objClass == null)

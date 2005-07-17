@@ -159,6 +159,7 @@ namespace lat
 			// Setup browser			
 			_ldapTreeview = new LdapTreeView (_conn, mainWindow);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
+			_ldapTreeview.AttributeAdded += new AttributeAddedHandler (ldapAttrAdded);
 
 			browserScrolledWindow.AddWithViewport (_ldapTreeview);
 			browserScrolledWindow.Show ();
@@ -247,6 +248,18 @@ namespace lat
 
 			propertiesToolButton.Show ();
 			refreshToolButton.Show ();
+		}
+
+		private void ldapAttrAdded (object o, AddAttributeEventArgs args)
+		{
+			valuesStore.AppendValues (args.Name, args.Value);
+
+			LdapAttribute attribute = new LdapAttribute (args.Name, args.Value);
+			LdapModification lm = new LdapModification (LdapModification.ADD, attribute);
+
+			_modList.Add (lm);
+
+			applyButton.Sensitive = true;
 		}
 
 		private void ldapDNSelected (object o, dnSelectedEventArgs args)

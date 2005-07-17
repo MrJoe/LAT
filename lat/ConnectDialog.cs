@@ -58,7 +58,6 @@ namespace lat
 		public lat.Connection UserConnection;
 
 		private ComboBox serverTypeComboBox;
-//		private Combo serverTypeComboBox;
 
 		public ConnectDialog ()
 		{
