@@ -96,7 +96,16 @@ namespace lat
 			adUserDialog.Title = "LAT - Add Contact";
 
 			adUserDialog.Run ();
-			adUserDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				adUserDialog.Run ();				
+			}
+			else
+			{
+				adUserDialog.Destroy ();
+			}
 		}
 
 		public adUserViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
@@ -150,7 +159,16 @@ namespace lat
 			adUserDialog.Title = (string)_ci["cn"] + " Properties";
 
 			adUserDialog.Run ();
-			adUserDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				adUserDialog.Run ();				
+			}
+			else
+			{
+				adUserDialog.Destroy ();
+			}
 		}
 
 		private void Init ()
@@ -220,6 +238,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, cci, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

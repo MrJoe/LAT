@@ -1,3 +1,4 @@
+	* BUGFIX [#3]: Dialog should not close (adding user,group, etc.)
 	* BUGFIX [#2]: Adding more than one member to a group does not work
 
 Version 0.6

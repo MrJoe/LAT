@@ -155,7 +155,16 @@ namespace lat
 			}
 
 			editUserDialog.Run ();
-			editUserDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				editUserDialog.Run ();				
+			}
+			else
+			{
+				editUserDialog.Destroy ();
+			}
 		}
 	
 		private Hashtable getUserInfo (LdapEntry le)
@@ -519,6 +528,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, cui, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

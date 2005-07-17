@@ -53,7 +53,17 @@ namespace lat
 			newContactDialog.Title = "New Contact";
 
 			newContactDialog.Run ();
-			newContactDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				newContactDialog.Run ();				
+			}
+			else
+			{
+				newContactDialog.Destroy ();
+			}
+
 		}
 
 
@@ -121,6 +131,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, cci, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

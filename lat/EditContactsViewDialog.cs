@@ -152,7 +152,16 @@ namespace lat
 			}
 
 			editContactDialog.Run ();
-			editContactDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				editContactDialog.Run ();				
+			}
+			else
+			{
+				editContactDialog.Destroy ();
+			}
 		}
 
 		private void Init ()
@@ -252,6 +261,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, cci, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

@@ -30,6 +30,7 @@ namespace lat
 	{
 		protected lat.Connection _conn;
 		protected Gtk.Dialog _viewDialog;
+		protected bool missingValues = false;
 
 		public ViewDialog (lat.Connection conn)
 		{

@@ -100,7 +100,16 @@ namespace lat
 			}
 
 			editAdComputerDialog.Run ();
-			editAdComputerDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				editAdComputerDialog.Run ();				
+			}
+			else
+			{
+				editAdComputerDialog.Destroy ();
+			}
 		}
 
 		private void updateManagedBy (string dn)
@@ -207,6 +216,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, chi, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

@@ -63,7 +63,16 @@ namespace lat
 			groupDialog.Title = "Add Group";
 
 			groupDialog.Run ();
-			groupDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				groupDialog.Run ();				
+			}
+			else
+			{
+				groupDialog.Destroy ();
+			}
 		}
 
 		public GroupsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
@@ -104,7 +113,16 @@ namespace lat
 			populateUsers ();
 
 			groupDialog.Run ();
-			groupDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				groupDialog.Run ();				
+			}
+			else
+			{
+				groupDialog.Destroy ();
+			}
 		}
 
 		private void populateUsers ()
@@ -247,6 +265,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, cgi, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

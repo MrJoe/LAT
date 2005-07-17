@@ -48,7 +48,16 @@ namespace lat
 			newAdComputerDialog.Title = "Add Computer";
 
 			newAdComputerDialog.Run ();
-			newAdComputerDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				newAdComputerDialog.Run ();				
+			}
+			else
+			{
+				newAdComputerDialog.Destroy ();
+			}
 		}
 
 		private void Init ()

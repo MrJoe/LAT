@@ -53,7 +53,16 @@ namespace lat
 			hostDialog.Title = "Add Computer";
 
 			hostDialog.Run ();
-			hostDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				hostDialog.Run ();				
+			}
+			else
+			{
+				hostDialog.Destroy ();
+			}
 		}
 
 		public HostsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
@@ -113,6 +122,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, chi, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 

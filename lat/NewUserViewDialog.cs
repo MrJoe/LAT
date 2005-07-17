@@ -74,7 +74,16 @@ namespace lat
 			createCombo ();
 
 			newUserDialog.Run ();
-			newUserDialog.Destroy ();
+
+			if (missingValues)
+			{
+				missingValues = false;
+				newUserDialog.Run ();				
+			}
+			else
+			{
+				newUserDialog.Destroy ();
+			}
 		}
 		
 		private void getGroups ()
@@ -237,6 +246,8 @@ namespace lat
 			if (!checkReqAttrs (objClass, cui, out missing))
 			{
 				missingAlert (missing);
+				missingValues = true;
+
 				return;
 			}
 
