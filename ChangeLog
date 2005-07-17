@@ -1,3 +1,5 @@
+	* BUGFIX [#2]: Adding more than one member to a group does not work
+
 Version 0.6
 
 	* Active Directory support

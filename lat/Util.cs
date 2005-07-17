@@ -74,6 +74,7 @@ namespace lat
 		{
 			if (modList.Count == 0)
 			{
+				Logger.Log.Debug ("ModifyEntry: modList.Count == 0");
 				return;
 			}
 

@@ -71,6 +71,8 @@ namespace lat
 			_le = le;
 			_modList = new ArrayList ();
 
+			Logger.Log.Debug ("GroupsViewDialog: _modList == {0}", _modList.Count);
+
 			_isEdit = true;
 
 			Init ();
@@ -174,11 +176,15 @@ namespace lat
 
 				allUserStore.Remove (ref iter);
 
+				Logger.Log.Debug ("Adding {0} to group", user);
+
 				if (_isEdit)
 				{
 					LdapAttribute attr = new LdapAttribute ("memberuid", user);
 					LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 					_modList.Add (lm);
+
+					Logger.Log.Debug ("OnAddClicked: _modList == {0}", _modList.Count);
 				}
 
 			}
@@ -202,6 +208,8 @@ namespace lat
 		
 				if (_currentMembers.ContainsKey (user))
 					_currentMembers.Remove (user);
+
+				Logger.Log.Debug ("Removing user {0} from group", user);
 
 				allUserStore.AppendValues (user);
 
@@ -245,7 +253,18 @@ namespace lat
 
 			if (_isEdit)
 			{
-				_modList = getMods (groupAttrs, _gi, cgi);
+				if (_modList.Count == 0)
+				{
+					_modList = getMods (groupAttrs, _gi, cgi);
+				}
+				else
+				{
+					ArrayList tmp = getMods (groupAttrs, _gi, cgi);
+					foreach (LdapModification lm in tmp)
+					{
+						_modList.Add (lm);
+					}
+				}
 	
 				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
 			}
