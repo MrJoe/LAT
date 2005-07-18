@@ -44,13 +44,13 @@ namespace lat
 			switch (conn.ServerType.ToLower())
 			{
 				case "microsoft active directory":
-					this._filter = "user";
+					this._filter = "(&(objectclass=user)(objectcategory=Person))";
 					break;
 
 				case "generic ldap server":
 				case "openldap":
 				default:
-					this._filter = "posixAccount";
+					this._filter = "objectclass=posixAccount";
 					break;
 			}		
 

@@ -55,7 +55,7 @@ namespace lat
 			{
 				case "microsoft active directory":
 					this._lookupKeyCol = 0;
-					this._filter = "contact";
+					this._filter = "objectclass=contact";
 					this.setupColumns (_adCols);
 					break;
 
@@ -63,7 +63,7 @@ namespace lat
 				case "openldap":
 				default:
 					this._lookupKeyCol = 0;
-					this._filter = "inetOrgPerson";
+					this._filter = "objectclass=inetOrgPerson";
 
 					this.setupColumns (_posixCols);
 					break;

@@ -158,6 +158,11 @@ namespace lat
 			}
 		}
 
+		public ArrayList Search (string filter)
+		{
+			return Search (_ldapRoot, filter);
+		}
+
 		public ArrayList SearchByClass (string objectClass)
 		{
 			return Search (_ldapRoot, String.Format ("objectclass={0}", objectClass));

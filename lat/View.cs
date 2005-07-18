@@ -184,7 +184,7 @@ namespace lat
 
 		public void insertData (string[] attributes)
 		{
-			ArrayList objs = _conn.SearchByClass (_filter);
+			ArrayList objs = _conn.Search (_filter);
 			doInsert (objs, attributes);
 		}
 

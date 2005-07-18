@@ -50,7 +50,7 @@ namespace lat
 			{
 				case "microsoft active directory":
 					this._lookupKeyCol = 0;
-					this._filter = "computer";
+					this._filter = "(&(objectclass=user)(objectcategory=Computer))";
 					this.setupColumns (_adCols);
 					break;
 
@@ -58,7 +58,7 @@ namespace lat
 				case "openldap":
 				default:
 					this._lookupKeyCol = 0;
-					this._filter = "ipHost";
+					this._filter = "objectclass=ipHost";
 
 					this.setupColumns (_posixCols);
 					break;
