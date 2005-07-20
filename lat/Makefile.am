@@ -52,9 +52,15 @@ LAT_CSFILES = \
 
 LAT_SOURCES_BUILD = $(addprefix $(srcdir)/, $(LAT_CSFILES))
 
+if USE_SYSTEM_KEYRING
+KEYRING_DLL = $(KEYRING_LIBS)
+else
+KEYRING_DLL = ../libs/gnome-keyring-sharp.dll
+endif
+
 LAT_REFERENCES = \
 	../libs/Novell.Directory.Ldap.dll \
-	../libs/gnome-keyring-sharp.dll \
+	$(KEYRING_DLL) \
 	Mono.Posix \
 	Mono.Security
 

@@ -28,6 +28,7 @@ fi
 dnl Version dependencies
 MONO_REQUIRED=1.1
 GTKSHARP_REQUIRED=1.9
+KEYRING_REQUIRED=0.0.1
 
 dnl pkgconfig checks
 PKG_CHECK_MODULES(MONO,
@@ -39,6 +40,22 @@ PKG_CHECK_MODULES(GTKSHARP,
 		  glade-sharp-2.0 >= $GTKSHARP_REQUIRED)
 
 AC_SUBST(GTKSHARP_LIBS)
+
+dnl Check for gnome-keyring-sharp
+AC_ARG_ENABLE(system-gnome-keyring,
+  AC_HELP_STRING([--enable-system-gnome-keyring],[Use the gnome-keyring-sharp.dll from a system package]),
+[case "${enableval}" in
+  yes) 
+   USE_SYSTEM_KEYRING=yes 
+   PKG_CHECK_MODULES(KEYRING, gnome-keyring-sharp >= $KEYRING_REQUIRED)
+   AC_SUBST(KEYRING_LIBS)
+   ;;
+  no)  USE_SYSTEM_KEYRING=no ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-system-gnome-keyring) ;;
+esac],
+[USE_SYSTEM_KEYRING=no]) dnl Default value
+
+AM_CONDITIONAL(USE_SYSTEM_KEYRING, test "x$USE_SYSTEM_KEYRING" == "xyes")
 
 dnl Check for Mono
 AC_PATH_PROG(MCS, mcs)
@@ -74,4 +91,3 @@ po/Makefile.in
 help/Makefile
 help/C/Makefile
 ])
-
