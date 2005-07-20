@@ -1,7 +1,12 @@
+if USE_SYSTEM_KEYRING
+KEYRING_DLL =
+else
+KEYRING_DLL = ../libs/gnome-keyring-sharp.dll
+endif
 
 LAT_DLLS = \
 	Novell.Directory.Ldap.dll \
-	gnome-keyring-sharp.dll
+	$(KEYRING_DLL)
 
 LATlibdir = $(prefix)/lib/lat
 LATlib_DATA = $(LAT_DLLS)
