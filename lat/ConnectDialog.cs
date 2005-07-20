@@ -66,6 +66,8 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
 			ui.Autoconnect (this);
 
+			connectionDialog.Resizable = false;
+
 			portEntry.Text = "389";
 			createCombo ();			
 
@@ -87,6 +89,8 @@ namespace lat
 			encryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			noEncryptionRadioButton.Active = true;
 		
+			notebook1.SwitchPage += new SwitchPageHandler (OnPageSwitch);
+
 			connectButton.Clicked += new EventHandler (OnConnectClicked);
 			closeButton.Clicked += new EventHandler (OnCloseClicked);
 
@@ -129,6 +133,18 @@ namespace lat
 			}
 
 			return null;	
+		}
+
+		private void OnPageSwitch (object o, SwitchPageArgs args)
+		{
+			if (args.PageNum == 0)
+			{
+				connectionDialog.Resizable = false;
+			}
+			else if (args.PageNum == 1)
+			{
+				connectionDialog.Resizable = true;
+			}
 		}
 
 		private void OnRowDoubleClicked (object o, RowActivatedArgs args) 
@@ -314,6 +330,25 @@ namespace lat
 			{
 				// Profile
 				conn = getSelectedProfile ();
+
+				if (conn == null)
+				{
+					string	msg = Mono.Unix.Catalog.GetString (
+						"No profile selected");
+
+					MessageDialog md = new MessageDialog (connectionDialog, 
+							DialogFlags.DestroyWithParent,
+							MessageType.Error, 
+							ButtonsType.Close, 
+							msg);
+
+					md.Run ();
+					md.Destroy();
+
+					md = null;
+
+					return;
+				}
 
 				Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
 				Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
