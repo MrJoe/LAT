@@ -35,6 +35,22 @@ Simple installation procedure:
 
 See the file 'INSTALL' for more detailed information.
 
+NOTE: LAT has two (2) pre-built assemblies included in the archive.  One
+is gnome-keyring-sharp.dll and the other is a custom Novell.Directory.Ldap.dll.
+If you don't wish to use these .dlls you can 'configure' that with the 
+following options:
+
+--enable-system-gnome-keyring
+
+	Uses pkg-config to find the system installed copy of the 
+	gnome-keyring-sharp.dll.
+
+--enable-system-ldap
+
+	Uses the standard Novell.Directory.Ldap.dll distributed with Mono.  
+	Be aware that using this option will break SSL support in LAT!
+
+
 Hacking
 =======
 

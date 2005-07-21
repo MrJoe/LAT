@@ -290,35 +290,54 @@ namespace lat
 			if (childName == "")
 				firstPass = true;
 
-	 		ArrayList ldapEntries = _conn.getChildren (name);
-
-			if (ldapEntries.Count == 0)
+			try
 			{
-				browserStore.Remove (ref child);
+		 		ArrayList ldapEntries = _conn.getChildren (name);
+
+				if (ldapEntries.Count == 0)
+				{
+					browserStore.Remove (ref child);
+				}
+
+				Logger.Log.Debug ("expanded row: {0}", name);
+
+				foreach (LdapEntry le in ldapEntries)
+				{
+					Logger.Log.Debug ("\tchild: {0}", le.DN);
+
+					TreeIter _newChild;
+
+					if (firstPass)
+					{
+						browserStore.SetValue (child, (int)TreeCols.Icon, pb);
+						browserStore.SetValue (child, (int)TreeCols.DN, le.DN);
+
+						browserStore.AppendValues (child, pb, "");
+					
+						firstPass = false;
+					}
+					else
+					{
+						_newChild = browserStore.AppendValues (args.Iter, pb, le.DN);
+						browserStore.AppendValues (_newChild, pb, "");
+					}
+				}
 			}
-
-			Logger.Log.Debug ("expanded row: {0}", name);
-
-			foreach (LdapEntry le in ldapEntries)
+			catch
 			{
-				Logger.Log.Debug ("\tchild: {0}", le.DN);
+				string	msg = Mono.Unix.Catalog.GetString (
+					"Unable to read data from server");
 
-				TreeIter _newChild;
+				Gtk.MessageDialog md = new Gtk.MessageDialog (_parent, 
+					Gtk.DialogFlags.DestroyWithParent,
+					Gtk.MessageType.Info, 
+					Gtk.ButtonsType.Close, 
+					msg);
 
-				if (firstPass)
-				{
-					browserStore.SetValue (child, (int)TreeCols.Icon, pb);
-					browserStore.SetValue (child, (int)TreeCols.DN, le.DN);
+				md.Run ();
+				md.Destroy();
 
-					browserStore.AppendValues (child, pb, "");
-				
-					firstPass = false;
-				}
-				else
-				{
-					_newChild = browserStore.AppendValues (args.Iter, pb, le.DN);
-					browserStore.AppendValues (_newChild, pb, "");
-				}
+				md = null;
 			}
 
 			Logger.Log.Debug ("END ldapRowExpanded");

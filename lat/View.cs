@@ -167,18 +167,37 @@ namespace lat
 
 		private void doInsert (ArrayList objs, string[] attributes)
 		{
-			if (_store != null)
-				_store.Clear ();
-
-			foreach (LdapEntry le in objs)
+			try
 			{
-				string[] values = getAttrValues (le, attributes);
-				_store.AppendValues (values);
+				if (_store != null)
+					_store.Clear ();
 
-				if (_lookupTable.ContainsKey (values [_lookupKeyCol]))
-					_lookupTable.Remove (values [_lookupKeyCol]);
+				foreach (LdapEntry le in objs)
+				{
+					string[] values = getAttrValues (le, attributes);
+					_store.AppendValues (values);
 
-				_lookupTable.Add (values [_lookupKeyCol], le);
+					if (_lookupTable.ContainsKey (values [_lookupKeyCol]))
+						_lookupTable.Remove (values [_lookupKeyCol]);
+
+					_lookupTable.Add (values [_lookupKeyCol], le);
+				}
+			}
+			catch 
+			{
+				string	msg = Mono.Unix.Catalog.GetString (
+					"Unable to read data from server");
+
+				Gtk.MessageDialog md = new Gtk.MessageDialog (_parent, 
+					Gtk.DialogFlags.DestroyWithParent,
+					Gtk.MessageType.Info, 
+					Gtk.ButtonsType.Close, 
+					msg);
+
+				md.Run ();
+				md.Destroy();
+
+				md = null;
 			}
 		}
 

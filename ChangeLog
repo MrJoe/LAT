@@ -2,6 +2,7 @@
 	  users/computers (New filter from Vladimir Stojiljkovic)
 	* Added "Add Attribute" to browser popup menu
 	* Show list of known attributes when adding entry in the browser view
+	* BUGFIX [#7]: Should be buildable without shipping .dll
 	* BUGFIX [#6]: small interface error
 	* BUGFIX [#5]: lat crash on the profiles window
 	* BUGFIX [#3]: Dialog should not close (adding user,group, etc.)

@@ -1,4 +1,18 @@
-CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS)
+if USE_SYSTEM_KEYRING
+KEYRING_DLL = $(KEYRING_LIBS)
+else
+KEYRING_DLL = ../libs/gnome-keyring-sharp.dll
+endif
+
+if USE_SYSTEM_LDAP
+LDAP_DLL = Novell.Directory.Ldap.dll
+LDAP_DEFINE = /d:SYSTEM_LDAP
+else
+LDAP_DLL = ../libs/Novell.Directory.Ldap.dll
+LDAP_DEFINE =
+endif
+
+CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(LDAP_DEFINE)
 
 LAT_ASSEMBLY = lat.exe
 
@@ -52,14 +66,8 @@ LAT_CSFILES = \
 
 LAT_SOURCES_BUILD = $(addprefix $(srcdir)/, $(LAT_CSFILES))
 
-if USE_SYSTEM_KEYRING
-KEYRING_DLL = $(KEYRING_LIBS)
-else
-KEYRING_DLL = ../libs/gnome-keyring-sharp.dll
-endif
-
 LAT_REFERENCES = \
-	../libs/Novell.Directory.Ldap.dll \
+	$(LDAP_DLL) \
 	$(KEYRING_DLL) \
 	Mono.Posix \
 	Mono.Security

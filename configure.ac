@@ -55,7 +55,18 @@ AC_ARG_ENABLE(system-gnome-keyring,
 esac],
 [USE_SYSTEM_KEYRING=no]) dnl Default value
 
+dnl Check to see if we use system or LAT pre-build Novell.Directory.Ldap.dll
+AC_ARG_ENABLE(system-ldap,
+  AC_HELP_STRING([--enable-system-ldap],[Use the Novell.Directory.Ldap.dll from a system package]),
+[case "${enableval}" in
+  yes) USE_SYSTEM_LDAP=yes ;;
+  no)  USE_SYSTEM_LDAP=no ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-system-ldap) ;;
+esac],
+[USE_SYSTEM_LDAP=no]) dnl Default value
+
 AM_CONDITIONAL(USE_SYSTEM_KEYRING, test "x$USE_SYSTEM_KEYRING" == "xyes")
+AM_CONDITIONAL(USE_SYSTEM_LDAP, test "x$USE_SYSTEM_LDAP" == "xyes")
 
 dnl Check for Mono
 AC_PATH_PROG(MCS, mcs)

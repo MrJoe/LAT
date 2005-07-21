@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -89,6 +90,46 @@ namespace lat
 				return null;
 			}
 			return (X509CertificateCollection) pi.GetValue (ssl, null);
+		}
+
+		[Conditional("SYSTEM_LDAP")]
+		public static void ShowRestartMessage (Gtk.Window parent)
+		{
+			string	msg = Mono.Unix.Catalog.GetString (
+				"LAT must be restarted after a certificate import");
+
+			Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
+				Gtk.DialogFlags.DestroyWithParent,
+				Gtk.MessageType.Info, 
+				Gtk.ButtonsType.Close, 
+				msg);
+
+			md.Run ();
+			md.Destroy();
+
+			md = null;
+
+			Gtk.Application.Quit ();
+		}
+
+		[Conditional("SYSTEM_LDAP")]
+		public static void ShowNotSupportedMessage (Gtk.Window parent)
+		{
+			string	msg = Mono.Unix.Catalog.GetString (
+				"Operation not supported with current Novell.Directory.Ldap.dll");
+
+			Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
+				Gtk.DialogFlags.DestroyWithParent,
+				Gtk.MessageType.Info, 
+				Gtk.ButtonsType.Close, 
+				msg);
+
+			md.Run ();
+			md.Destroy();
+
+			md = null;
+
+//			Gtk.Application.Quit ();
 		}
 
 		public static bool Ssl (string host, Gtk.Window parent)
@@ -188,7 +229,13 @@ namespace lat
 					{
 						store.Import (x509);
 						Logger.Log.Debug ("Certificate successfully imported.");
+
+						ShowRestartMessage (parent);
 					} 
+					else if (cd.UserResponse == CertDialogResponse.NoImport)
+					{
+						ShowNotSupportedMessage (parent);
+					}
 					else if (cd.UserResponse == CertDialogResponse.Cancel)
 					{
 						retVal = false;
