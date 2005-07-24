@@ -265,16 +265,8 @@ namespace lat
 
 			if (msg != null)
 			{
-				MessageDialog md = new MessageDialog (connectionDialog, 
-						DialogFlags.DestroyWithParent,
-						MessageType.Error, 
-						ButtonsType.Close, 
-						msg);
+				Util.MessageBox (connectionDialog, msg, MessageType.Error);
 
-				md.Run ();
-				md.Destroy();
-
-				md = null;
 				conn = null;
 				
 				return false;
@@ -336,16 +328,7 @@ namespace lat
 					string	msg = Mono.Unix.Catalog.GetString (
 						"No profile selected");
 
-					MessageDialog md = new MessageDialog (connectionDialog, 
-							DialogFlags.DestroyWithParent,
-							MessageType.Error, 
-							ButtonsType.Close, 
-							msg);
-
-					md.Run ();
-					md.Destroy();
-
-					md = null;
+					Util.MessageBox (connectionDialog, msg, MessageType.Error);
 
 					return;
 				}

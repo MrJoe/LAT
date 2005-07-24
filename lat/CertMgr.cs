@@ -98,16 +98,7 @@ namespace lat
 			string	msg = Mono.Unix.Catalog.GetString (
 				"LAT must be restarted after a certificate import");
 
-			Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
-				Gtk.DialogFlags.DestroyWithParent,
-				Gtk.MessageType.Info, 
-				Gtk.ButtonsType.Close, 
-				msg);
-
-			md.Run ();
-			md.Destroy();
-
-			md = null;
+			Util.MessageBox (parent, msg, Gtk.MessageType.Info);
 
 			Gtk.Application.Quit ();
 		}
@@ -118,18 +109,7 @@ namespace lat
 			string	msg = Mono.Unix.Catalog.GetString (
 				"Operation not supported with current Novell.Directory.Ldap.dll");
 
-			Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
-				Gtk.DialogFlags.DestroyWithParent,
-				Gtk.MessageType.Info, 
-				Gtk.ButtonsType.Close, 
-				msg);
-
-			md.Run ();
-			md.Destroy();
-
-			md = null;
-
-//			Gtk.Application.Quit ();
+			Util.MessageBox (parent, msg, Gtk.MessageType.Info);
 		}
 
 		public static bool Ssl (string host, Gtk.Window parent)
@@ -206,16 +186,11 @@ namespace lat
 					}
 					if (failed) {
 
-						Gtk.MessageDialog ed = new Gtk.MessageDialog (parent, 
-							Gtk.DialogFlags.DestroyWithParent,
-							Gtk.MessageType.Error, 
-							Gtk.ButtonsType.Close, 
+						Util.MessageBox (parent,
 							Mono.Unix.Catalog.GetString (
-							"Couldn't decode certificate properly"));
-
-						ed.Run ();
-						ed.Destroy();
-		
+							"Couldn't decode certificate properly"),
+							Gtk.MessageType.Error);
+	
 						retVal = false;
 
 						break;
