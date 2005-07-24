@@ -291,7 +291,7 @@
 <!-- ============= To view/edit an entry's properties  ======================== -->
 	 <sect2 id="lat-view-properties"> 
 		<title>To view/edit an entry's properties</title>
-		<para>To view and/or edit and entry's properties, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Properties</guimenuitem></menuchoice>.</para>
+		<para>To view and/or edit and entry's properties, choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Properties</guimenuitem></menuchoice>.</para>
 		<para>You can also right click on an entry and select properties or just double click on it.</para>
 	 </sect2>
 
