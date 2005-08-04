@@ -9,8 +9,18 @@ URL: 		http://people.mmgsecurity.com/~lorenb/lat
 BuildRoot: 	%{_tmppath}/%{name}-root
 Source: 	%{name}-%{version}.tar.gz
 
-Requires: mono, gtk-sharp2
-BuildRequires: mono-core, mono-devel, gtk-sharp2, autoconf, automake, intltool, pkgconfig, scrollkeeper
+Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
+
+Requires: mono
+Requires: gtk-sharp2
+BuildRequires: mono-core
+BuildRequires: mono-devel
+BuildRequires: gtk-sharp2
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: intltool
+BuildRequires: pkgconfig
+BuildRequires: scrollkeeper
 
 %description
 LAT stands for LDAP Administration Tool. The tool allows you to browse LDAP-based directories and add/edit/delete entries contained within. It can store profiles for quick access to different servers. There are also different views available such as Users, Groups and Hosts which allow you to easily manage objects without having to deal with the intricacies of LDAP.
@@ -26,15 +36,18 @@ make %{?_smp_mflags}
 %{__rm} -rf %{buildroot}
 %makeinstall
 
+rm -r $RPM_BUILD_ROOT/var/scrollkeeper
+
 %clean
 %{__rm} -rf %{buildroot}
 
 %post
 /sbin/ldconfig 2>/dev/null
-%{_bindir}/scrollkeeper-update
+scrollkeeper-update -p /var/scrollkeeper
 
 %postun
 /sbin/ldconfig 2>/dev/null
+scrollkeeper-update -p /var/scrollkeeper
 
 %files
 %defattr(-, root, root)
@@ -47,7 +60,6 @@ make %{?_smp_mflags}
 %{_datadir}/omf/*
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/application-registry/%{name}.applications
-/var/scrollkeeper/*
 
 %changelog
 * Thu Feb 03 2005 Loren Bandiera <lorenb@mmgsecurity.com>
