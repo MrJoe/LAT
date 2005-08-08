@@ -387,7 +387,6 @@ namespace lat
 			}
 			else if (args.Parent == "Attribute Types")
 			{
-Console.WriteLine ("HERE");
 				setInfoNotePage (1);
 
 				SchemaParser sp = _conn.getAttrTypeSchema (args.Name);
