@@ -22,6 +22,7 @@ using Gtk;
 using Gdk;
 using GLib;
 using Glade;
+using Gnome;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
@@ -83,7 +84,7 @@ namespace lat
 
 		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
 		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
-		[Glade.Widget] Gtk.Statusbar statusBar;
+		[Glade.Widget] Gnome.AppBar appBar;
 
 		private LdapTreeView _ldapTreeview;
 		private SchemaTreeView _schemaTreeview;
@@ -113,8 +114,6 @@ namespace lat
 		private string _pasteDN = null;
 		private bool _isCopy = false;
 		
-		private const int _id = 1;
-
 		private static TargetEntry[] searchSourceTable = new TargetEntry[]
 		{
 			new TargetEntry ("text/plain", 0, 1),
@@ -144,11 +143,11 @@ namespace lat
 			viewsTreeview.AppendColumn ("viewsIcon", new CellRendererPixbuf (), "pixbuf", 0);
 			viewsTreeview.AppendColumn ("viewsRoot", new CellRendererText (), "text", 1);
 
-			Gdk.Pixbuf pb = mainWindow.RenderIcon (Stock.Convert, IconSize.Menu, "");
+			Gdk.Pixbuf pb = mainWindow.RenderIcon (Gtk.Stock.Convert, IconSize.Menu, "");
 
 			viewRootIter = viewsStore.AppendValues (pb, _conn.Host);
 
-			pb = mainWindow.RenderIcon (Stock.Open, IconSize.Menu, "");
+			pb = mainWindow.RenderIcon (Gtk.Stock.Open, IconSize.Menu, "");
 
 			if (conn.ServerType.ToLower() == "microsoft active directory")
 			{
@@ -225,7 +224,6 @@ namespace lat
 			resultsTreeview.DragDataGet += new DragDataGetHandler (OnSearchDragDataGet);
 
 			// status bar
-			statusBar.HasResizeGrip = false;
 			updateStatusBar ();
 
 			// handlers		
@@ -291,8 +289,8 @@ namespace lat
 				msg = String.Format("Bind DN: {0}", _conn.AuthDN);
 			}
 
-			statusBar.Pop (_id);
-			statusBar.Push (_id, msg);
+			appBar.Pop ();
+			appBar.Push (msg);
 		}
 
 		private void toggleInfoNotebook (bool show)

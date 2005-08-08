@@ -2,6 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
+<requires lib="gnome"/>
 
 <widget class="GtkDialog" id="connectionDialog">
   <property name="visible">True</property>
@@ -1884,7 +1885,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image536">
+			<widget class="GtkImage" id="image540">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1906,7 +1907,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image537">
+			<widget class="GtkImage" id="image541">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1934,7 +1935,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image538">
+			<widget class="GtkImage" id="image542">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1956,7 +1957,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image539">
+			<widget class="GtkImage" id="image543">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2190,7 +2191,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image540">
+			<widget class="GtkImage" id="image544">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -4318,12 +4319,13 @@ you wish to connect to.</property>
       </child>
 
       <child>
-	<widget class="GtkStatusbar" id="statusBar">
+	<widget class="GnomeAppBar" id="appBar">
 	  <property name="visible">True</property>
-	  <property name="has_resize_grip">True</property>
+	  <property name="has_progress">False</property>
+	  <property name="has_status">True</property>
 	</widget>
 	<packing>
-	  <property name="padding">0</property>
+	  <property name="padding">2</property>
 	  <property name="expand">False</property>
 	  <property name="fill">False</property>
 	</packing>
