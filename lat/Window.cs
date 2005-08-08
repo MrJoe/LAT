@@ -590,10 +590,14 @@ Console.WriteLine ("HERE");
 				attrIDEntry.Text = sp.ID;
 				attrDescriptionEntry.Text = sp.Description;
 
+				string tmp = "";
+
 				foreach (string a in sp.Names)
 				{
-					attrNameTextview.Buffer.Text = a;
+					tmp += String.Format ("{0}\n", a);
 				}
+
+				attrNameTextview.Buffer.Text = tmp;
 
 				attrEqualityEntry.Text = sp.Equality;
 				attrOrderingEntry.Text = sp.Ordering;
@@ -604,11 +608,15 @@ Console.WriteLine ("HERE");
 				attrSingleCheckbutton.Active = sp.Single;
 				attrCollectiveCheckbutton.Active = sp.Collective;
 				attrUserModCheckbutton.Active = sp.UserMod;
+		
+				tmp = "";
 
 				foreach (string b in sp.Superiors)
 				{
-					attrSuperiorTextview.Buffer.Text = b;
+					tmp += String.Format ("{0}\n", b);
 				}
+
+				attrSuperiorTextview.Buffer.Text = tmp;
 			}
 			catch {}
 		}
@@ -623,15 +631,23 @@ Console.WriteLine ("HERE");
 				objIDEntry.Text = sp.ID;
 				objDescriptionEntry.Text = sp.Description;
 
+				string tmp = "";
+
 				foreach (string a in sp.Names)
 				{
-					objNameTextview.Buffer.Text = a;
+					tmp += String.Format ("{0}\n", a);
 				}
+
+				objNameTextview.Buffer.Text = tmp;
+
+				tmp = "";
 
 				foreach (string b in sp.Superiors)
 				{
-					objSuperiorTextview.Buffer.Text = b;
+					tmp += String.Format ("{0}\n", b);
 				}
+
+				objSuperiorTextview.Buffer.Text = tmp;
 
 				foreach (string c in sp.Required)
 				{
