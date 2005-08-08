@@ -41,6 +41,7 @@ namespace lat
 		[Glade.Widget] Gtk.Button searchButton;
 		[Glade.Widget] TreeView resultsTreeview;
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
+		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
 		[Glade.Widget] TreeView valuesListview;
 		[Glade.Widget] Notebook viewNotebook;
 		[Glade.Widget] HPaned hpaned1;
@@ -55,10 +56,37 @@ namespace lat
 		[Glade.Widget] Gtk.RadioMenuItem customView;
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
+		[Glade.Widget] Gtk.RadioMenuItem schemaView;
 		[Glade.Widget] Gtk.Button applyButton;
+		[Glade.Widget] Notebook infoNotebook;
+		[Glade.Widget] Gtk.TextView objNameTextview;
+		[Glade.Widget] Gtk.Entry objDescriptionEntry;
+		[Glade.Widget] Gtk.Entry objIDEntry;
+		[Glade.Widget] Gtk.TextView objSuperiorTextview;
+		[Glade.Widget] TreeView objRequiredTreeview;
+		[Glade.Widget] TreeView objOptionalTreeview;
+		[Glade.Widget] Gtk.CheckButton objObsoleteCheckbutton;
+		[Glade.Widget] VPaned infoVpaned1;
+
+		[Glade.Widget] Gtk.TextView attrNameTextview;
+		[Glade.Widget] Gtk.Entry attrDescriptionEntry;
+		[Glade.Widget] Gtk.Entry attrIDEntry;
+		[Glade.Widget] Gtk.TextView attrSuperiorTextview;
+		[Glade.Widget] Gtk.CheckButton attrObsoleteCheckbutton;
+		[Glade.Widget] Gtk.CheckButton attrSingleCheckbutton;
+		[Glade.Widget] Gtk.CheckButton attrCollectiveCheckbutton;
+		[Glade.Widget] Gtk.CheckButton attrUserModCheckbutton;
+		[Glade.Widget] Gtk.Entry attrEqualityEntry;
+		[Glade.Widget] Gtk.Entry attrOrderingEntry;
+		[Glade.Widget] Gtk.Entry attrSubstringEntry;
+		[Glade.Widget] Gtk.Entry attrSyntaxEntry;		
+
+		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
+		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
 		[Glade.Widget] Gtk.Statusbar statusBar;
 
 		private LdapTreeView _ldapTreeview;
+		private SchemaTreeView _schemaTreeview;
 
 		private Connection _conn;
 		private ArrayList _modList;
@@ -67,6 +95,9 @@ namespace lat
 		private TreeStore viewsStore;
 		private ListStore valuesStore;
 		private ListStore resultsStore;
+
+		private ListStore objRequiredStore;
+		private ListStore objOptionalStore;
 
 		private TreeIter viewRootIter;
 		private TreeIter viewCustomIter;
@@ -164,6 +195,13 @@ namespace lat
 			browserScrolledWindow.AddWithViewport (_ldapTreeview);
 			browserScrolledWindow.Show ();
 
+			// Setup schema browser
+			_schemaTreeview = new SchemaTreeView (_conn, mainWindow);
+			_schemaTreeview.schemaSelected += new schemaSelectedHandler (schemaDNSelected);
+
+			schemaScrolledWindow.AddWithViewport (_schemaTreeview);
+			schemaScrolledWindow.Show ();
+
 			// Setup search
 			searchBaseButton.Label = _conn.LdapRoot;
 
@@ -195,6 +233,24 @@ namespace lat
 
 			applyButton.Sensitive = false;
 			applyButton.Clicked += new EventHandler (OnApplyClicked);
+
+			// setup schema
+
+			objRequiredStore = new ListStore (typeof (string));
+			objRequiredTreeview.Model = objRequiredStore;
+
+			objOptionalStore = new ListStore (typeof (string));
+			objOptionalTreeview.Model = objOptionalStore;
+
+			objRequiredTreeview.AppendColumn ("Required Attributes", new CellRendererText (), "text", 0);
+			objOptionalTreeview.AppendColumn ("Optional Attributes", new CellRendererText (), "text", 0);
+
+			objNameTextview.Editable = false;
+			objSuperiorTextview.Editable = false;
+
+			infoVpaned1.Position = 150;
+
+			toggleInfoNotebook (false);
 		}
 
 		public void OnSearchDragBegin (object o, DragBeginArgs args)
@@ -238,6 +294,50 @@ namespace lat
 			statusBar.Pop (_id);
 			statusBar.Push (_id, msg);
 		}
+
+		private void toggleInfoNotebook (bool show)
+		{
+			if (show)
+			{
+				infoNotebook.Show ();
+				hbuttonbox3.Hide ();
+				valuesScrolledWindow.Hide ();
+			}
+			else
+			{
+				infoNotebook.Hide ();
+				hbuttonbox3.Show ();
+				valuesScrolledWindow.Show ();
+			}
+		}
+
+		private void setInfoNotePage (int page)
+		{
+			if (page == 0)
+			{
+				Gtk.Widget w = infoNotebook.GetNthPage (1);
+				w.HideAll ();
+
+				w = infoNotebook.GetNthPage (0);
+				w.ShowAll ();
+
+				infoNotebook.Show ();
+			}
+			else if (page == 1)
+			{
+				Gtk.Widget w = infoNotebook.GetNthPage (1);
+				w.ShowAll ();
+
+				w = infoNotebook.GetNthPage (0);
+				w.HideAll ();
+
+				infoNotebook.Show ();
+			}
+			else
+			{
+				infoNotebook.HideAll ();
+			}
+		}
 	
 		private void toggleButtons (bool btnState)
 		{
@@ -260,6 +360,30 @@ namespace lat
 			_modList.Add (lm);
 
 			applyButton.Sensitive = true;
+		}
+
+		private void schemaDNSelected (object o, schemaSelectedEventArgs args)
+		{
+			if (args.Name == "Object Classes" || args.Name == "Attribute Types")
+			{
+				return;
+			}
+
+			if (args.Parent == "Object Classes")
+			{
+				setInfoNotePage (0);
+
+				SchemaParser sp = _conn.getObjClassSchema (args.Name);
+				showEntrySchema (sp);
+			}
+			else if (args.Parent == "Attribute Types")
+			{
+Console.WriteLine ("HERE");
+				setInfoNotePage (1);
+
+				SchemaParser sp = _conn.getAttrTypeSchema (args.Name);
+				showAttrTypeSchema (sp);
+			}
 		}
 
 		private void ldapDNSelected (object o, dnSelectedEventArgs args)
@@ -450,6 +574,71 @@ namespace lat
 			
 		}
 
+		private void showAttrTypeSchema (SchemaParser sp)
+		{
+			try
+			{
+				attrIDEntry.Text = sp.ID;
+				attrDescriptionEntry.Text = sp.Description;
+
+				foreach (string a in sp.Names)
+				{
+					attrNameTextview.Buffer.Text = a;
+				}
+
+				attrEqualityEntry.Text = sp.Equality;
+				attrOrderingEntry.Text = sp.Ordering;
+				attrSubstringEntry.Text = sp.Substring;
+				attrSyntaxEntry.Text = sp.Syntax;
+
+				attrObsoleteCheckbutton.Active = sp.Obsolete;
+				attrSingleCheckbutton.Active = sp.Single;
+				attrCollectiveCheckbutton.Active = sp.Collective;
+				attrUserModCheckbutton.Active = sp.UserMod;
+
+				foreach (string b in sp.Superiors)
+				{
+					attrSuperiorTextview.Buffer.Text = b;
+				}
+			}
+			catch {}
+		}
+
+		private void showEntrySchema (SchemaParser sp)
+		{
+			try
+			{
+				objRequiredStore.Clear ();
+				objOptionalStore.Clear ();
+
+				objIDEntry.Text = sp.ID;
+				objDescriptionEntry.Text = sp.Description;
+
+				foreach (string a in sp.Names)
+				{
+					objNameTextview.Buffer.Text = a;
+				}
+
+				foreach (string b in sp.Superiors)
+				{
+					objSuperiorTextview.Buffer.Text = b;
+				}
+
+				foreach (string c in sp.Required)
+				{
+					objRequiredStore.AppendValues (c);
+				}
+
+				foreach (string d in sp.Optional)
+				{
+					objOptionalStore.AppendValues (d);
+				}
+
+				objObsoleteCheckbutton.Active = sp.Obsolete;
+			}
+			catch {}
+		}
+
 		private void setNameValueView ()
 		{
 			TreeViewColumn col;
@@ -580,7 +769,7 @@ namespace lat
 				_ldapTreeview.removeToolbarHandlers ();
 				toggleButtons (false);
 			}
-			if (args.PageNum == 1)
+			else if (args.PageNum == 1)
 			{
 				if (_currentView != null)
 				{
@@ -591,6 +780,8 @@ namespace lat
 				}
 
 				toggleButtons (true);
+				toggleInfoNotebook (false);
+
 				propertiesToolButton.Hide ();
 				refreshToolButton.Hide ();
 
@@ -612,6 +803,23 @@ namespace lat
 
 				setNameValueView ();	
 				toggleButtons (false);
+				toggleInfoNotebook (false);
+			}
+			else if (args.PageNum == 3)
+			{
+				if (_currentView != null)
+				{
+					removeButtonHandlers ();
+					_currentView.removeHandlers ();
+					_currentView.removeDndHandlers ();
+					_currentView = null;
+				}
+
+				toggleButtons (false);
+
+				toggleInfoNotebook (true);
+
+				setInfoNotePage (-1);
 			}
 		}
 
@@ -837,35 +1045,48 @@ namespace lat
 			if (userView.Active)
 			{
 				viewNotebook.Page = 0;
+				toggleInfoNotebook (false);
 				changeView ("Users");
 			}
 			else if (groupView.Active)
 			{
 				viewNotebook.Page = 0;
+				toggleInfoNotebook (false);
 				changeView ("Groups");
 			}
 			else if (hostView.Active)
 			{
 				viewNotebook.Page = 0;
+				toggleInfoNotebook (false);
 				changeView ("Hosts");
 			}
 			else if (contactView.Active)
 			{
 				viewNotebook.Page = 0;
+				toggleInfoNotebook (false);
 				changeView ("Contacts");
 			}
 			else if (customView.Active)
 			{
 				viewNotebook.Page = 0;
+				toggleInfoNotebook (false);
 				changeView ("Custom Views");
 			}
 			else if (browserView.Active)
 			{
 				viewNotebook.Page = 1;
+				toggleInfoNotebook (false);
 			}
 			else if (searchView.Active)
 			{
 				viewNotebook.Page = 2;
+				toggleInfoNotebook (false);
+			}
+			else if (schemaView.Active)
+			{
+				viewNotebook.Page = 3;
+				toggleInfoNotebook (true);
+				setInfoNotePage (-1);
 			}
 		}
 

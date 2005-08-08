@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Utilclass;
 
 namespace lat
 {
@@ -331,6 +332,154 @@ namespace lat
 			}
 		}
 
+		public SchemaParser getAttrTypeSchema (string attrType)
+		{
+			if (!_conn.Connected)
+				return null;
+
+			string[] attrs = new string[] { "attributetypes" };
+
+			LdapSearchQueue queue = _conn.Search ("cn=subschema",
+						LdapConnection.SCOPE_BASE,
+						"objectclass=*",
+						attrs,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+			LdapMessage msg;
+
+			while ((msg = queue.getResponse ()) != null)
+			{		
+				if (msg is LdapSearchResult)
+				{			
+					LdapEntry entry = ((LdapSearchResult) msg).Entry;
+					LdapAttribute la = entry.getAttribute ("attributetypes");
+
+					foreach (string s in la.StringValueArray)
+					{
+						SchemaParser sp = new SchemaParser (s);
+
+						foreach (string a in sp.Names)
+						{
+							if (attrType.Equals (a))
+								return sp;
+						}
+					}
+				}
+			}		
+			
+			return null;
+		}
+
+		public SchemaParser getObjClassSchema (string objClass)
+		{
+			if (!_conn.Connected)
+				return null;
+
+			string[] attrs = new string[] { "objectclasses" };
+
+			LdapSearchQueue queue = _conn.Search ("cn=subschema",
+						LdapConnection.SCOPE_BASE,
+						"objectclass=*",
+						attrs,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+			LdapMessage msg;
+
+			while ((msg = queue.getResponse ()) != null)
+			{		
+				if (msg is LdapSearchResult)
+				{			
+					LdapEntry entry = ((LdapSearchResult) msg).Entry;
+					LdapAttribute la = entry.getAttribute ("objectclasses");
+
+					foreach (string s in la.StringValueArray)
+					{
+						SchemaParser sp = new SchemaParser (s);
+
+						foreach (string a in sp.Names)
+						{
+							if (objClass.Equals (a))
+								return sp;
+						}
+					}
+				}
+			}		
+			
+			return null;
+		}
+
+		public ArrayList getAttrTypes ()
+		{
+			try
+			{
+				ArrayList retVal = new ArrayList ();
+				string[] attrs = new string[] { "attributetypes" };
+
+				LdapSearchQueue queue = _conn.Search ("cn=subschema",
+						LdapConnection.SCOPE_BASE,
+						"objectclass=*",
+						attrs,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+				LdapMessage msg;
+
+				while ((msg = queue.getResponse ()) != null)
+				{
+					if (msg is LdapSearchResult)
+					{
+						LdapEntry entry = ((LdapSearchResult) msg).Entry;
+						retVal.Add (entry);
+					}
+				}
+
+				return retVal;
+			}
+			catch 
+			{
+				return null;
+			}
+		}
+
+		public ArrayList getObjClasses ()
+		{
+			try
+			{
+				ArrayList retVal = new ArrayList ();
+				string[] attrs = new string[] { "objectclasses" };
+
+				LdapSearchQueue queue = _conn.Search ("cn=subschema",
+						LdapConnection.SCOPE_BASE,
+						"objectclass=*",
+						attrs,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+				LdapMessage msg;
+
+				while ((msg = queue.getResponse ()) != null)
+				{
+					if (msg is LdapSearchResult)
+					{
+						LdapEntry entry = ((LdapSearchResult) msg).Entry;
+						retVal.Add (entry);
+					}
+				}
+
+				return retVal;
+			}
+			catch 
+			{
+				return null;
+			}
+		}
+
 		public string[] getRequiredAttrs (string objClass)
 		{
 			if (!_conn.Connected || objClass == null)
@@ -365,6 +514,11 @@ namespace lat
 			{
 				throw;
 			}
+		}
+
+		public LdapSchema Schema
+		{
+			get { return _conn.FetchSchema ( _conn.GetSchemaDN() ); }
 		}
 
 		public string Host
