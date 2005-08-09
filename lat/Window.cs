@@ -792,6 +792,7 @@ namespace lat
 			{
 				_ldapTreeview.removeToolbarHandlers ();
 				toggleButtons (false);
+				toggleInfoNotebook (false);
 			}
 			else if (args.PageNum == 1)
 			{
