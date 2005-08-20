@@ -78,6 +78,7 @@ namespace lat
 
 			createCombo ();
 
+			uidSpinButton.Value = _conn.GetNextUID ();
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
 			newUserDialog.Run ();

@@ -195,6 +195,36 @@ namespace lat
 			return null;			
 		}
 
+		public int GetNextUID ()
+		{
+			ArrayList uids = new ArrayList ();
+
+			LdapSearchQueue queue = _conn.Search (_ldapRoot,
+						LdapConnection.SCOPE_SUB,
+						"uidNumber=*",
+						null,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+			LdapMessage msg;
+
+			while ((msg = queue.getResponse ()) != null)
+			{		
+				if (msg is LdapSearchResult)
+				{			
+					LdapEntry entry = ((LdapSearchResult) msg).Entry;
+					LdapAttribute a = entry.getAttribute ("uidNumber");
+
+					uids.Add (int.Parse(a.StringValue));
+				}
+			}
+
+			uids.Sort ();
+
+			return (int) (uids [uids.Count - 1]) + 1;			
+		}
+
 		public void Add (string dn, ArrayList attributes)
 		{
 			Logger.Log.Debug ("START Connection.Add ()");
