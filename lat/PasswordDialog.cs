@@ -40,7 +40,9 @@ namespace lat
 
 		Glade.XML ui;
 
-		private string _password;
+		private string _unix;
+		private string _lm;
+		private string _nt;
 
 		public PasswordDialog ()
 		{
@@ -136,7 +138,7 @@ namespace lat
 
 			ASCIIEncoding enc = new ASCIIEncoding();
 
-			byte[] buffer = enc.GetBytes (_password);
+			byte[] buffer = enc.GetBytes (_unix);
 
 			if (salted)
 			{
@@ -158,7 +160,7 @@ namespace lat
 
 		private void updateOutput ()
 		{
-			_password = passwordEntry.Text;
+			_unix = passwordEntry.Text;
 			bool salt = false;
 
 			if (useSaltCheckButton.Active)
@@ -166,12 +168,16 @@ namespace lat
 	
 			if (md5RadioButton.Active)
 			{
-				outputEntry.Text = doEncryption (_password, "MD5", salt);
+				outputEntry.Text = doEncryption (_unix, "MD5", salt);
 			}
 			else if (shaRadioButton.Active)
 			{
-				outputEntry.Text = doEncryption (_password, "SHA", salt);
+				outputEntry.Text = doEncryption (_unix, "SHA", salt);
 			}
+
+			SMBPassword smbpass = new SMBPassword (passwordEntry.Text);
+			_lm = smbpass.LM;
+			_nt = smbpass.NT;
 		}
 
 		private void OnEncryptionChanged (object o, EventArgs args)
@@ -194,14 +200,19 @@ namespace lat
 			passwordDialog.HideAll ();
 		}
 
-//		private void OnDlgDelete (object o, DeleteEventArgs args)
-//		{
-//			passwordDialog.HideAll ();
-//		}
-
-		public string Password 
+		public string UnixPassword 
 		{
 			get { return outputEntry.Text; }
+		}
+
+		public string LMPassword
+		{
+			get { return _lm; }
+		}
+
+		public string NTPassword
+		{
+			get { return _nt; }
 		}
 	}
 }

@@ -25,7 +25,6 @@ using System;
 using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
-using Mono.Security.Protocol.Ntlm;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -64,9 +63,8 @@ namespace lat
 		[Glade.Widget] Gtk.TreeView memberOfTreeview;
 
 		// Samba
-		[Glade.Widget] Gtk.Button smbChangePasswordButton;
-		[Glade.Widget] Gtk.Label smbSIDLabel;
-		[Glade.Widget] Gtk.Label smbGSIDLabel;
+		[Glade.Widget] Gtk.CheckButton smbEnableSambaButton;
+		[Glade.Widget] Gtk.Label smbNoteLabel;
 		[Glade.Widget] Gtk.Entry smbLoginScriptEntry;
 		[Glade.Widget] Gtk.Entry smbProfilePathEntry;
 		[Glade.Widget] Gtk.Entry smbHomePathEntry;
@@ -81,10 +79,11 @@ namespace lat
 				              "physicalDeliveryOfficeName",
 					      "telephoneNumber"};
 
-		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath", "sambaHomeDrive",
-						"sambaSID", "sambaPrimaryGroupSID", "sambaLogonScript" };
+		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath", "sambaHomeDrive", "sambaLogonScript" };
 
 		private bool _isSamba = false;
+		private string _smbLM = "";
+		private string _smbNT = "";
 		
 		private LdapEntry _le;
 		private Hashtable _ui;
@@ -141,9 +140,8 @@ namespace lat
 			if (_isSamba)
 			{
 				toggleSambaWidgets (true);
+				smbEnableSambaButton.Hide ();
 
-				smbSIDLabel.Text = (string)_ui["sambaSID"];
-				smbGSIDLabel.Text = (string)_ui["sambaPrimaryGroupSID"];
 				smbLoginScriptEntry.Text = (string)_ui["sambaLogonScript"];
 				smbProfilePathEntry.Text = (string)_ui["sambaProfilePath"];
 				smbHomePathEntry.Text = (string)_ui["sambaHomePath"];
@@ -151,6 +149,7 @@ namespace lat
 			}
 			else
 			{
+				smbEnableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 				toggleSambaWidgets (false);
 			}
 
@@ -167,6 +166,20 @@ namespace lat
 			}
 		}
 	
+		private void OnSambaChanged (object o, EventArgs args)
+		{
+			if (smbEnableSambaButton.Active)
+			{
+				toggleSambaWidgets (true);
+				smbNoteLabel.Text = "Note: You must now reset your password.";
+			}
+			else
+			{
+				toggleSambaWidgets (false);
+				smbNoteLabel.Markup = "";
+			}
+		}
+
 		private Hashtable getUserInfo (LdapEntry le)
 		{
 			Hashtable ui = new Hashtable ();
@@ -340,7 +353,6 @@ namespace lat
 
 		private void toggleSambaWidgets (bool state)
 		{
-			smbChangePasswordButton.Sensitive = state;
 			smbLoginScriptEntry.Sensitive = state;
 			smbProfilePathEntry.Sensitive = state;
 			smbHomePathEntry.Sensitive = state;
@@ -426,10 +438,12 @@ namespace lat
 		{
 			PasswordDialog pd = new PasswordDialog ();
 
-			if (!passwordEntry.Text.Equals ("") && pd.Password.Equals (""))
+			if (!passwordEntry.Text.Equals ("") && pd.UnixPassword.Equals (""))
 				return;
 
-			passwordEntry.Text = pd.Password;
+			passwordEntry.Text = pd.UnixPassword;
+			_smbLM = pd.LMPassword;
+			_smbNT = pd.NTPassword;
 		}
 
 		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
@@ -511,11 +525,40 @@ namespace lat
 				retVal.Add ("sambaHomePath", smbHomePathEntry.Text);
 				retVal.Add ("sambaHomeDrive", smbHomeDriveEntry.Text);
 				retVal.Add ("sambaLogonScript", smbLoginScriptEntry.Text);
-				retVal.Add ("sambaSID", smbSIDLabel.Text);
-				retVal.Add ("sambaPrimaryGroupSID", smbGSIDLabel.Text);
 			}
 
 			return retVal;
+		}
+
+		private LdapModification createMod (string name, string val)
+		{
+			LdapAttribute la; 
+			LdapModification lm;
+
+			la = new LdapAttribute (name, val);
+			lm = new LdapModification (LdapModification.ADD, la);
+
+			return lm;
+		}
+
+		private ArrayList createSambaMods ()
+		{
+			ArrayList mods = new ArrayList ();
+
+			mods.Add (createMod ("objectclass", "sambaSAMAccount"));
+			mods.Add (createMod ("sambaLogonTime", "0"));
+			mods.Add (createMod ("sambaLogoffTime", "2147483647"));
+			mods.Add (createMod ("sambaKickoffTime", "2147483647"));
+			mods.Add (createMod ("sambaPwdCanChange", "0"));
+			mods.Add (createMod ("sambaPwdMustChange", "2147483647"));
+			mods.Add (createMod ("sambaLogonTime", "0"));
+			mods.Add (createMod ("sambaLMPassword", _smbLM));
+			mods.Add (createMod ("sambaNTPassword", _smbNT));
+			mods.Add (createMod ("sambaAcctFlags", "[U          ]"));
+
+//			double user_rid = (uidSpinButton.Value * 2) + 1000;
+			
+			return mods;
 		}
 	
 		private void OnOkClicked (object o, EventArgs args)
@@ -533,8 +576,14 @@ namespace lat
 				return;
 			}
 
-
 			_modList = getMods (userAttrs, _ui, cui);
+
+			if (smbEnableSambaButton.Active)
+			{
+				
+
+				
+			}
 
 			if (_isSamba)
 			{

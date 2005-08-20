@@ -54,6 +54,8 @@ LAT_CSFILES = \
 	ProfileDialog.cs \
 	ProfileManager.cs \
 	RenameEntryDialog.cs \
+	SIDDialog.cs \
+	SMBPassword.cs \
 	SchemaTreeView.cs \
 	SearchBuilderDialog.cs \
 	SelectContainerDialog.cs \

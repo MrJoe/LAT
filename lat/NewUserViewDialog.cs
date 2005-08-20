@@ -154,10 +154,10 @@ namespace lat
 		{
 			PasswordDialog pd = new PasswordDialog ();
 
-			if (!passwordEntry.Text.Equals ("") && pd.Password.Equals (""))
+			if (!passwordEntry.Text.Equals ("") && pd.UnixPassword.Equals (""))
 				return;
 
-			passwordEntry.Text = pd.Password;
+			passwordEntry.Text = pd.UnixPassword;
 		}
 
 		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
