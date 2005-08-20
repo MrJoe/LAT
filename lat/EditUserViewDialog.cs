@@ -279,12 +279,22 @@ namespace lat
 		{
 			primaryGroupComboBox = ComboBox.NewText ();
 
+			string pgid = (string) _ui["gidNumber"];
+			string name = (string) _allGroupGids [pgid];
+			int index = 0;
+			int pindex = 0;
+
 			foreach (string key in _allGroups.Keys)
 			{
 				primaryGroupComboBox.AppendText (key);
-			}
+			
+				if (key.Equals (name))
+					pindex = index;
 
-			primaryGroupComboBox.Active = 0;
+				index++;
+			}		
+
+			primaryGroupComboBox.Active = pindex;
 			primaryGroupComboBox.Show ();
 
 			comboHbox.Add (primaryGroupComboBox);
