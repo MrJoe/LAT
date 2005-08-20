@@ -110,7 +110,7 @@ namespace lat
 
 			customPopUp ();
 
-			_popup.Popup(null, null, null, IntPtr.Zero, 3,
+			_popup.Popup(null, null, null, 3,
 					Gtk.Global.CurrentEventTime);
 		}
 

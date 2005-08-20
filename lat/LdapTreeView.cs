@@ -444,7 +444,7 @@ namespace lat
 
 			popup.Append (deleteItem);
 
-			popup.Popup(null, null, null, IntPtr.Zero, 3,
+			popup.Popup(null, null, null, 3,
 					Gtk.Global.CurrentEventTime);
 		}
 

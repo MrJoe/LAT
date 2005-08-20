@@ -225,6 +225,36 @@ namespace lat
 			return (int) (uids [uids.Count - 1]) + 1;			
 		}
 
+		public int GetNextGID ()
+		{
+			ArrayList gids = new ArrayList ();
+
+			LdapSearchQueue queue = _conn.Search (_ldapRoot,
+						LdapConnection.SCOPE_SUB,
+						"gidNumber=*",
+						null,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+			LdapMessage msg;
+
+			while ((msg = queue.getResponse ()) != null)
+			{		
+				if (msg is LdapSearchResult)
+				{			
+					LdapEntry entry = ((LdapSearchResult) msg).Entry;
+					LdapAttribute a = entry.getAttribute ("gidNumber");
+
+					gids.Add (int.Parse(a.StringValue));
+				}
+			}
+
+			gids.Sort ();
+
+			return (int) (gids [gids.Count - 1]) + 1;			
+		}
+
 		public void Add (string dn, ArrayList attributes)
 		{
 			Logger.Log.Debug ("START Connection.Add ()");

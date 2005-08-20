@@ -27,19 +27,20 @@ namespace lat
 	{
 		private static string[] _posixCols = { 
 			Mono.Unix.Catalog.GetString ("Group ID"), 
-			Mono.Unix.Catalog.GetString ("Name") };
+			Mono.Unix.Catalog.GetString ("Name"),
+			Mono.Unix.Catalog.GetString ("Description") };
 
 		private static string[] _adCols = { 
 			Mono.Unix.Catalog.GetString ("Name"), 
 			Mono.Unix.Catalog.GetString ("Description") };
 
 		private static string[] _adColAttrs = { "name", "description" };
-		private static string[] _posixColAttrs = { "gidNumber", "cn" };
+		private static string[] _posixColAttrs = { "gidNumber", "cn", "description" };
 
 		public GroupsView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
 				: base (conn, tv, parent)
 		{
-			this._store = new ListStore (typeof (string), typeof (string));
+			this._store = new ListStore (typeof (string), typeof (string), typeof (string));
 			this._tv.Model = this._store;
 
 			this._viewName = "Groups";

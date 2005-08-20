@@ -33,11 +33,13 @@ namespace lat
 
 		[Glade.Widget] Gtk.Dialog groupDialog;
 		[Glade.Widget] Gtk.Entry groupNameEntry;
+		[Glade.Widget] Gtk.Entry descriptionEntry;
 		[Glade.Widget] Gtk.SpinButton groupIDSpinButton;
 		[Glade.Widget] Gtk.TreeView allUsersTreeview;
 		[Glade.Widget] Gtk.TreeView currentMembersTreeview;
 		[Glade.Widget] Gtk.Button addButton;
 		[Glade.Widget] Gtk.Button removeButton;
+		[Glade.Widget] Gtk.CheckButton enableSambaButton;
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
 
@@ -52,7 +54,10 @@ namespace lat
 		private LdapEntry _le;
 		private ArrayList _modList;
 
-		private static string[] groupAttrs = { "cn", "gidNumber" };
+		private static string[] groupAttrs = { "cn", "gidNumber", "description" };
+
+		private bool _isSamba = false;
+		private string _smbSID = "";
 
 		public GroupsViewDialog (lat.Connection conn) : base (conn)
 		{
@@ -61,6 +66,9 @@ namespace lat
 			populateUsers ();
 
 			groupDialog.Title = "Add Group";
+			groupIDSpinButton.Value = _conn.GetNextGID ();
+
+			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
 			groupDialog.Run ();
 
@@ -80,6 +88,8 @@ namespace lat
 			_le = le;
 			_modList = new ArrayList ();
 
+			_isSamba = checkSamba (le);
+
 			Logger.Log.Debug ("GroupsViewDialog: _modList == {0}", _modList.Count);
 
 			_isEdit = true;
@@ -92,6 +102,7 @@ namespace lat
 
 			groupDialog.Title = groupName + " Properties";
 			groupNameEntry.Text = groupName;
+			descriptionEntry.Text = (string) _gi ["description"];
 			groupIDSpinButton.Value = int.Parse ((string) _gi ["gidNumber"]);
 
 			LdapAttribute attr;
@@ -122,6 +133,14 @@ namespace lat
 			else
 			{
 				groupDialog.Destroy ();
+			}
+		}
+
+		private void OnSambaChanged (object o, EventArgs args)
+		{
+			if (enableSambaButton.Active)
+			{
+				_smbSID = _conn.GetLocalSID ();
 			}
 		}
 
@@ -166,6 +185,11 @@ namespace lat
 			col.SortColumnId = 0;
 	
 			currentMemberStore.SetSortColumnId (0, SortType.Ascending);
+
+			if (_isSamba)
+			{
+				enableSambaButton.Hide ();
+			}
 
 			addButton.Clicked += new EventHandler (OnAddClicked);
 			removeButton.Clicked += new EventHandler (OnRemoveClicked);
@@ -245,11 +269,30 @@ namespace lat
 			}			
 		}
 
+		private bool checkSamba (LdapEntry le)
+		{
+			bool retVal = false;
+			
+			LdapAttribute la = le.getAttribute ("objectClass");
+			
+			if (la == null)
+				return retVal;
+
+			foreach (string s in la.StringValueArray)
+			{
+				if (s.ToLower() == "sambagroupmapping")
+					retVal = true;
+			}
+
+			return retVal;
+		}
+
 		private Hashtable getCurrentGroupInfo ()
 		{
 			Hashtable retVal = new Hashtable ();
 
 			retVal.Add ("cn", groupNameEntry.Text);
+			retVal.Add ("description", descriptionEntry.Text);
 			retVal.Add ("gidNumber", groupIDSpinButton.Value.ToString());
 
 			return retVal;
@@ -285,12 +328,43 @@ namespace lat
 						_modList.Add (lm);
 					}
 				}
+
+				if (enableSambaButton.Active)
+				{
+					LdapAttribute a = new LdapAttribute ("objectclass", "sambaGroupMapping");
+					LdapModification lm = new LdapModification (LdapModification.ADD, a);
+
+					_modList.Add (lm);
+
+					a = new LdapAttribute ("sambaGroupType", "2");
+					lm = new LdapModification (LdapModification.ADD, a);
+					_modList.Add (lm);
+
+					int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
+
+					a = new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", _smbSID, grid));
+					lm = new LdapModification (LdapModification.ADD, a);
+					_modList.Add (lm);
+				}
 	
 				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
 			}
 			else
 			{
 				ArrayList attrList = getAttributes (objClass, groupAttrs, cgi);
+
+				if (enableSambaButton.Active)
+				{
+					LdapAttribute a = (LdapAttribute) attrList[0];
+					a.addValue ("sambaGroupMapping");
+
+					a = new LdapAttribute ("sambaGroupType", "2");
+					attrList.Add (a);
+
+					int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
+
+					a = new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", _smbSID, grid));
+				}
 
 				foreach (string key in _currentMembers.Keys)
 				{

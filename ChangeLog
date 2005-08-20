@@ -1,6 +1,6 @@
+	* Support adding Samba attributes to new/existing users and groups
 	* Password changes update Samba NTLM passwords (if applicable)
 	* Added schema browser
-	* BUGFIX [#4]: Support adding Samba attributes to existing posixAccount
 
 Version 0.6.1
 
