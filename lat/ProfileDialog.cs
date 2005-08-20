@@ -156,8 +156,7 @@ namespace lat
 					userEntry.Text,
 					passEntry.Text,
 					_useSSL,
-					st,
-					"");
+					st);
 					
 			if (_isEdit)
 			{

@@ -35,9 +35,8 @@ namespace lat
 		private bool _ssl;
 		private string _serverType = null;
 		private LdapConnection _conn;
-		private string _name;
 
-		public Connection (string host, int port, string user, string pass, string baseDN, bool ssl, string serverType, string name)
+		public Connection (string host, int port, string user, string pass, string baseDN, bool ssl, string serverType)
 		{
 			_host = host;
 			_port = port;
@@ -46,7 +45,6 @@ namespace lat
 			_ldapRoot = baseDN;
 			_ssl = ssl;
 			_serverType = serverType;
-			_name = name;
 		}
 
 		public void Bind ()
@@ -169,6 +167,32 @@ namespace lat
 		public ArrayList SearchByClass (string objectClass)
 		{
 			return Search (_ldapRoot, String.Format ("objectclass={0}", objectClass));
+		}
+
+		public string GetLocalSID ()
+		{
+			LdapSearchQueue queue = _conn.Search (_ldapRoot,
+						LdapConnection.SCOPE_ONE,
+						"objectclass=sambaDomain",
+						null,
+						false,
+						(LdapSearchQueue) null,
+						(LdapSearchConstraints) null );
+
+			LdapMessage msg;
+
+			while ((msg = queue.getResponse ()) != null)
+			{		
+				if (msg is LdapSearchResult)
+				{			
+					LdapEntry entry = ((LdapSearchResult) msg).Entry;
+					LdapAttribute a = entry.getAttribute ("sambaSID");
+
+					return a.StringValue;
+				}
+			}
+
+			return null;			
 		}
 
 		public void Add (string dn, ArrayList attributes)
@@ -572,11 +596,6 @@ namespace lat
 		public int Protocol
 		{
 			get { return _conn.ProtocolVersion; }
-		}	
-
-		public string Name
-		{
-			get { return _name; }
 		}
 	}
 }

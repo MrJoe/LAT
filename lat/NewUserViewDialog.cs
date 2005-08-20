@@ -97,40 +97,7 @@ namespace lat
 		{
 			if (enableSambaButton.Active)
 			{
-				bool needSID = true;
-				bool useProfile = false;
-
-				ProfileManager pm = new ProfileManager ();
-
-				if (!_conn.Name.Equals ("(none)"))
-				{
-					ConnectionProfile cp = pm.Lookup (_conn.Name);
-
-					if (cp.SID != null)
-					{
-						needSID = false;
-						_smbSID = cp.SID;
-					}
-
-					useProfile = true;
-				}
-
-				if (needSID)
-				{
-					SIDDialog sd = new SIDDialog (newUserDialog);
-					sd.Run ();
-
-					if (sd.SID != "" && useProfile)
-					{
-						ConnectionProfile cp = pm.Lookup (_conn.Name);
-						cp.SID = sd.SID;
-
-						pm.updateProfile (cp);
-						pm.saveProfiles ();
-					}
-
-					_smbSID = sd.SID;
-				}
+				_smbSID = _conn.GetLocalSID ();
 			}
 		}
 		
