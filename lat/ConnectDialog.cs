@@ -127,7 +127,8 @@ namespace lat
 					cp.Pass,
 					cp.LdapRoot,
 					cp.SSL,
-					cp.ServerType);
+					cp.ServerType,
+					cp.Name);
 
 				return conn;
 			}
@@ -308,7 +309,8 @@ namespace lat
 					passEntry.Text,
 					ldapBaseEntry.Text,
 					useSSL,
-					serverType);
+					serverType,
+					"(none)");
 
 				if (useSSL)
 				{

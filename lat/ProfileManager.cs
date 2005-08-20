@@ -109,9 +109,9 @@ namespace lat
 							r.GetAttribute ("base"),
 							r.GetAttribute ("user"),
 							"",
-//							r.GetAttribute ("pass"),
 							bool.Parse (r.GetAttribute ("ssl")),
-							r.GetAttribute ("server_type"));
+							r.GetAttribute ("server_type"),
+							r.GetAttribute ("sid"));
 
 						GnomeKeyring.Result gkr;
 						NetworkPasswordData[] list;
@@ -169,9 +169,9 @@ namespace lat
 				writer.WriteAttributeString ("port", cp.Port.ToString());
 				writer.WriteAttributeString ("base", cp.LdapRoot);
 				writer.WriteAttributeString ("user", cp.User);
-//				writer.WriteAttributeString ("pass", cp.Pass);
 				writer.WriteAttributeString ("ssl", cp.SSL.ToString());
 				writer.WriteAttributeString ("server_type", cp.ServerType);
+				writer.WriteAttributeString ("sid", cp.SID);
 				
 	        		writer.WriteEndElement();
 

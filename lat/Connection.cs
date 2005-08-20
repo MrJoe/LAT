@@ -35,8 +35,9 @@ namespace lat
 		private bool _ssl;
 		private string _serverType = null;
 		private LdapConnection _conn;
+		private string _name;
 
-		public Connection (string host, int port, string user, string pass, string baseDN, bool ssl, string serverType)
+		public Connection (string host, int port, string user, string pass, string baseDN, bool ssl, string serverType, string name)
 		{
 			_host = host;
 			_port = port;
@@ -45,6 +46,7 @@ namespace lat
 			_ldapRoot = baseDN;
 			_ssl = ssl;
 			_serverType = serverType;
+			_name = name;
 		}
 
 		public void Bind ()
@@ -571,5 +573,10 @@ namespace lat
 		{
 			get { return _conn.ProtocolVersion; }
 		}	
+
+		public string Name
+		{
+			get { return _name; }
+		}
 	}
 }
