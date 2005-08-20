@@ -34,6 +34,39 @@ namespace lat
 		{
 		}
 
+		private static LdapModification createMod (string name, string val)
+		{
+			LdapAttribute la; 
+			LdapModification lm;
+
+			la = new LdapAttribute (name, val);
+			lm = new LdapModification (LdapModification.ADD, la);
+
+			return lm;
+		}
+
+		public static ArrayList CreateSambaMods (int uid, string sid, string lm, string nt)
+		{
+			ArrayList mods = new ArrayList ();
+
+			mods.Add (createMod ("objectclass", "sambaSAMAccount"));
+			mods.Add (createMod ("sambaLogonTime", "0"));
+			mods.Add (createMod ("sambaLogoffTime", "2147483647"));
+			mods.Add (createMod ("sambaKickoffTime", "2147483647"));
+			mods.Add (createMod ("sambaPwdCanChange", "0"));
+			mods.Add (createMod ("sambaPwdMustChange", "2147483647"));
+			mods.Add (createMod ("sambaLMPassword", lm));
+			mods.Add (createMod ("sambaNTPassword", nt));
+			mods.Add (createMod ("sambaAcctFlags", "[U          ]"));
+
+			int user_rid = Convert.ToInt32 (uid) * 2 + 1000;
+
+			mods.Add (createMod ("sambaSID", String.Format ("{0}-{1}", sid, user_rid)));
+			mods.Add (createMod ("sambaPrimaryGroupSID", String.Format ("{0}-513", sid)));
+			
+			return mods;
+		}
+
 		public static void MessageBox (Gtk.Window parent, string msg, MessageType mType)
 		{
 			MessageDialog resMd;

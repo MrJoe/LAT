@@ -51,6 +51,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry passwordEntry;
 		[Glade.Widget] Gtk.Button passwordButton;
 		[Glade.Widget] Gtk.HBox comboHbox;
+		[Glade.Widget] Gtk.CheckButton enableSambaButton;
 
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
@@ -63,6 +64,10 @@ namespace lat
 		private Hashtable _allGroupGids;
 		private Hashtable _memberOfGroups;
 
+		private string _smbSID = "";
+		private string _smbLM = "";
+		private string _smbNT = "";
+
 		private ComboBox primaryGroupComboBox;
 
 		public NewUserViewDialog (lat.Connection conn) : base (conn)
@@ -72,6 +77,8 @@ namespace lat
 			getGroups ();
 
 			createCombo ();
+
+			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
 			newUserDialog.Run ();
 
@@ -83,6 +90,47 @@ namespace lat
 			else
 			{
 				newUserDialog.Destroy ();
+			}
+		}
+
+		private void OnSambaChanged (object o, EventArgs args)
+		{
+			if (enableSambaButton.Active)
+			{
+				bool needSID = true;
+				bool useProfile = false;
+
+				ProfileManager pm = new ProfileManager ();
+
+				if (!_conn.Name.Equals ("(none)"))
+				{
+					ConnectionProfile cp = pm.Lookup (_conn.Name);
+
+					if (cp.SID != null)
+					{
+						needSID = false;
+						_smbSID = cp.SID;
+					}
+
+					useProfile = true;
+				}
+
+				if (needSID)
+				{
+					SIDDialog sd = new SIDDialog (newUserDialog);
+					sd.Run ();
+
+					if (sd.SID != "" && useProfile)
+					{
+						ConnectionProfile cp = pm.Lookup (_conn.Name);
+						cp.SID = sd.SID;
+
+						pm.updateProfile (cp);
+						pm.saveProfiles ();
+					}
+
+					_smbSID = sd.SID;
+				}
 			}
 		}
 		
@@ -158,6 +206,8 @@ namespace lat
 				return;
 
 			passwordEntry.Text = pd.UnixPassword;
+			_smbLM = pd.LMPassword;
+			_smbNT = pd.NTPassword;
 		}
 
 		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
@@ -251,7 +301,6 @@ namespace lat
 				return;
 			}
 
-
 			string fullName = (string)cui["displayName"];
 
 			cui["cn"] = fullName;
@@ -266,6 +315,30 @@ namespace lat
 
 			attr = new LdapAttribute ("gecos", fullName);
 			attrList.Add (attr);
+
+			if (enableSambaButton.Active)
+			{
+				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
+
+				ArrayList smbMods = Util.CreateSambaMods (
+							user_rid, 
+							_smbSID,
+							_smbLM,
+							_smbNT);
+
+				foreach (LdapModification l in smbMods)
+				{
+					if (l.Attribute.Name.Equals ("objectclass"))
+					{
+						LdapAttribute a = (LdapAttribute) attrList[0];
+						a.addValue ("sambaSAMAccount");
+
+						attrList[0] = a;
+					}
+					else
+						attrList.Add (l.Attribute);
+				}
+			}
 
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, newUserDialog);

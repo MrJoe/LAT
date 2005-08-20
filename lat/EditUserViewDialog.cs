@@ -573,39 +573,6 @@ namespace lat
 			return retVal;
 		}
 
-		private LdapModification createMod (string name, string val)
-		{
-			LdapAttribute la; 
-			LdapModification lm;
-
-			la = new LdapAttribute (name, val);
-			lm = new LdapModification (LdapModification.ADD, la);
-
-			return lm;
-		}
-
-		private ArrayList createSambaMods ()
-		{
-			ArrayList mods = new ArrayList ();
-
-			mods.Add (createMod ("objectclass", "sambaSAMAccount"));
-			mods.Add (createMod ("sambaLogonTime", "0"));
-			mods.Add (createMod ("sambaLogoffTime", "2147483647"));
-			mods.Add (createMod ("sambaKickoffTime", "2147483647"));
-			mods.Add (createMod ("sambaPwdCanChange", "0"));
-			mods.Add (createMod ("sambaPwdMustChange", "2147483647"));
-			mods.Add (createMod ("sambaLMPassword", _smbLM));
-			mods.Add (createMod ("sambaNTPassword", _smbNT));
-			mods.Add (createMod ("sambaAcctFlags", "[U          ]"));
-
-			int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
-
-			mods.Add (createMod ("sambaSID", String.Format ("{0}-{1}",_smbSID, user_rid)));
-			mods.Add (createMod ("sambaPrimaryGroupSID", String.Format ("{0}-513",_smbSID)));
-			
-			return mods;
-		}
-	
 		private void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cui = getUpdatedUserInfo ();
@@ -625,7 +592,13 @@ namespace lat
 
 			if (smbEnableSambaButton.Active)
 			{
-				ArrayList smbMods = createSambaMods ();
+				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
+
+				ArrayList smbMods = Util.CreateSambaMods (
+							user_rid, 
+							_smbSID,
+							_smbLM,
+							_smbNT);
 
 				foreach (LdapModification l in smbMods)
 				{
