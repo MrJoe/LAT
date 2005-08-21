@@ -1,4 +1,4 @@
-AC_INIT(lat, 0.6.1, lorenb@mmgsecurity.com)
+AC_INIT(lat, 0.7, lorenb@mmgsecurity.com)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
@@ -28,7 +28,6 @@ fi
 dnl Version dependencies
 MONO_REQUIRED=1.1
 GTKSHARP_REQUIRED=1.9
-KEYRING_REQUIRED=0.0.1
 
 dnl pkgconfig checks
 PKG_CHECK_MODULES(MONO,
@@ -47,7 +46,7 @@ AC_ARG_ENABLE(system-gnome-keyring,
 [case "${enableval}" in
   yes) 
    USE_SYSTEM_KEYRING=yes 
-   PKG_CHECK_MODULES(KEYRING, gnome-keyring-sharp >= $KEYRING_REQUIRED)
+   PKG_CHECK_MODULES(KEYRING, gnome-keyring-sharp)
    AC_SUBST(KEYRING_LIBS)
    ;;
   no)  USE_SYSTEM_KEYRING=no ;;
