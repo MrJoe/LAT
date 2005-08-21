@@ -1,14 +1,14 @@
 if USE_SYSTEM_KEYRING
 KEYRING_DLL = $(KEYRING_LIBS)
 else
-KEYRING_DLL = ../libs/gnome-keyring-sharp.dll
+KEYRING_DLL = -r:../libs/gnome-keyring-sharp.dll
 endif
 
 if USE_SYSTEM_LDAP
-LDAP_DLL = Novell.Directory.Ldap.dll
+LDAP_DLL = -r:Novell.Directory.Ldap.dll
 LDAP_DEFINE = /d:SYSTEM_LDAP
 else
-LDAP_DLL = ../libs/Novell.Directory.Ldap.dll
+LDAP_DLL = -r:../libs/Novell.Directory.Ldap.dll
 LDAP_DEFINE =
 endif
 
@@ -73,16 +73,14 @@ LAT_SOURCES_BUILD = $(addprefix $(srcdir)/, $(LAT_CSFILES))
 LAT_REFERENCES = \
 	$(LDAP_DLL) \
 	$(KEYRING_DLL) \
-	Mono.Posix \
-	Mono.Security
-
-LAT_REFERENCES_BUILD = $(addprefix -r:, $(LAT_REFERENCES))
+	-r:Mono.Posix \
+	-r:Mono.Security
 
 RESOURCES = \
 	/resource:$(srcdir)/lat.glade,lat.glade
 
 $(LAT_ASSEMBLY): $(LAT_CSFILES)
-	$(CSC) -out:$@ $(LAT_SOURCES_BUILD) $(LAT_REFERENCES_BUILD) $(RESOURCES) $(GTKSHARP_LIBS)
+	$(CSC) -out:$@ $(LAT_SOURCES_BUILD) $(LAT_REFERENCES) $(RESOURCES) $(GTKSHARP_LIBS)
 
 all: $(LAT_ASSEMBLY)
 
