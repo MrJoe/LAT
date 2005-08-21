@@ -247,7 +247,7 @@ namespace lat
 			{
 				_modList = getMods (contactAttrs, _ci, cci);
 
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
+				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
 			}
 			else
 			{

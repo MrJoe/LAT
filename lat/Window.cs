@@ -524,7 +524,7 @@ namespace lat
 		{
 			string dn = _ldapTreeview.getSelectedDN ();
 
-			Util.ModifyEntry (_conn, mainWindow, dn, _modList);
+			Util.ModifyEntry (_conn, mainWindow, dn, _modList, true);
 
 			applyButton.Sensitive = false;
 		}
@@ -1107,6 +1107,11 @@ namespace lat
 			{
 				_isCopy = false;
 			}
+		}
+
+		public void OnMassEditActivate (object o, EventArgs args)
+		{
+			new MassEditDialog (_conn);
 		}
 
 		public void OnViewChanged (object o, EventArgs args)

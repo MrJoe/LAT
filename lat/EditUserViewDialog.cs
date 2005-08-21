@@ -610,7 +610,7 @@ namespace lat
 
 			updateGroupMembership ();
 
-			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
+			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
 
 			editUserDialog.HideAll ();
 		}

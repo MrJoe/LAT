@@ -154,7 +154,7 @@ namespace lat
 		{
 			if (_isEdit)
 			{
-				Util.ModifyEntry (_conn, dynamicDialog, _le.DN, _modList);
+				Util.ModifyEntry (_conn, dynamicDialog, _le.DN, _modList, true);
 			}
 			else
 			{

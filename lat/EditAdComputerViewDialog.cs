@@ -223,7 +223,7 @@ namespace lat
 
 			_modList = getMods (hostAttrs, _hi, chi);
 
-			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList);
+			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
 
 			editAdComputerDialog.HideAll ();
 		}

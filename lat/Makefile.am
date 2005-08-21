@@ -47,6 +47,7 @@ LAT_CSFILES = \
 	Logger.cs \
 	LoginDialog.cs \
 	Main.cs \
+	MassEditDialog.cs \
 	NewAdComputerViewDialog.cs \
 	NewContactsViewDialog.cs \
 	NewUserViewDialog.cs \

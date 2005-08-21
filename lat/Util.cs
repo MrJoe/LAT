@@ -104,7 +104,7 @@ namespace lat
 			}
 		}
 
-		public static void ModifyEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList modList)
+		public static void ModifyEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList modList, bool msgBox)
 		{
 			if (modList.Count == 0)
 			{
@@ -123,7 +123,8 @@ namespace lat
 				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been modified."), dn);
 
-				MessageBox (parent, resMsg, MessageType.Info);
+				if (msgBox)
+					MessageBox (parent, resMsg, MessageType.Info);
 
 			}
 			catch (Exception e)
@@ -136,6 +137,7 @@ namespace lat
 				MessageBox (parent, errorMsg, MessageType.Error);				
 			}
 
+			// FIXME: Do I really need to do this?
 			modList.Clear ();
 		}
 
