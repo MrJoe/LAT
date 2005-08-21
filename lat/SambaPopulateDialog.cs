@@ -1,0 +1,388 @@
+// 
+// lat - SambaPopulateDialog.cs
+// Author: Loren Bandiera
+// Copyright 2005 MMG Security, Inc.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; Version 2 
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+//
+
+using Gtk;
+using GLib;
+using Glade;
+using System;
+using System.Collections;
+using Novell.Directory.Ldap;
+
+namespace lat 
+{
+	public class SambaPopulateDialog
+	{
+		[Glade.Widget] Gtk.Dialog sambaPopulateDialog;
+		[Glade.Widget] Gtk.Entry sidEntry;
+		[Glade.Widget] Gtk.Entry domainEntry;
+		[Glade.Widget] Gtk.Entry adminEntry;
+		[Glade.Widget] Gtk.Entry guestEntry;
+		[Glade.Widget] Gtk.Entry userOUEntry;
+		[Glade.Widget] Gtk.Entry groupOUEntry;
+		[Glade.Widget] Gtk.Entry computerOUEntry;
+		[Glade.Widget] Gtk.Entry idmapOUEntry;
+		[Glade.Widget] Button userBrowseButton;
+		[Glade.Widget] Button groupBrowseButton;
+		[Glade.Widget] Button computerBrowseButton;
+		[Glade.Widget] Button idmapBrowseButton;
+		[Glade.Widget] Button okButton;
+		[Glade.Widget] Button cancelButton;
+
+		private Connection _conn;
+		private Glade.XML ui;
+
+		public SambaPopulateDialog (Connection conn)
+		{
+			_conn = conn;
+
+			ui = new Glade.XML (null, "lat.glade", "sambaPopulateDialog", null);
+			ui.Autoconnect (this);
+
+			adminEntry.Text = "root";
+			guestEntry.Text = "nobody";
+
+			userOUEntry.Text = "ou=Users," + _conn.LdapRoot;
+			groupOUEntry.Text = "ou=Groups," + _conn.LdapRoot;
+			computerOUEntry.Text = "ou=Computers," + _conn.LdapRoot;
+			idmapOUEntry.Text = "ou=Idmap," + _conn.LdapRoot;
+
+			userBrowseButton.Clicked += new EventHandler (OnUserBrowseClicked);
+			groupBrowseButton.Clicked += new EventHandler (OnGroupBrowseClicked);
+			computerBrowseButton.Clicked += new EventHandler (OnComputerBrowseClicked);
+			idmapBrowseButton.Clicked += new EventHandler (OnIdmapBrowseClicked);
+
+			okButton.Clicked += new EventHandler (OnOkClicked);
+			cancelButton.Clicked += new EventHandler (OnCancelClicked);
+
+			sambaPopulateDialog.Run ();
+			sambaPopulateDialog.Destroy ();
+		}
+
+		private void OnUserBrowseClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (_conn, sambaPopulateDialog);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString (
+				"Where in the directory would\nyou like to store users?"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select a user container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+				userOUEntry.Text = scd.DN;
+		}
+
+		private void OnGroupBrowseClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (_conn, sambaPopulateDialog);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString (
+				"Where in the directory would\nyou like to store groups?"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select a group container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+				groupOUEntry.Text = scd.DN;
+		}
+
+		private void OnComputerBrowseClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (_conn, sambaPopulateDialog);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString (
+				"Where in the directory would\nyou like to store computers?"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select a computer container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+				computerOUEntry.Text = scd.DN;
+		}
+
+		private void OnIdmapBrowseClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (_conn, sambaPopulateDialog);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString (
+				"Where in the directory would\nyou like to store the ID map?"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select an ID map container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+				idmapOUEntry.Text = scd.DN;
+		}
+		
+		private static string getCN (string dn)
+		{
+			string delimStr = ",";
+			char[] delim = delimStr.ToCharArray ();
+
+			string [] split = null;
+
+			split = dn.Split (delim);
+
+			string cn = split[0].Remove (0, 3);
+
+			return cn;
+		}
+
+		private bool checkDN (string dn)
+		{
+			LdapEntry le = _conn.getEntry (dn);
+
+			if (le == null)
+				return false;
+
+			return true;
+		}
+
+		private void createOU (string dn)
+		{
+			ArrayList attrList = new ArrayList ();
+			LdapAttribute a = new LdapAttribute ("objectclass", "organizationalUnit");
+
+			attrList.Add (a);
+
+			a = new LdapAttribute ("ou", getCN (dn));
+			attrList.Add (a);
+			
+			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+		}
+
+		private void createUser (string dn, string name, string pass, string sid, string flags, string uid, string gid, string urid, string grid, string gecos)
+		{
+			ArrayList attrList = new ArrayList ();
+			LdapAttribute a = new LdapAttribute ("objectclass", "inetOrgPerson");
+			a.addValue ("sambaSAMAccount");
+			a.addValue ("posixAccount");
+			a.addValue ("shadowAccount");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("cn", name);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sn", name);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("gidNumber", gid);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("uid", name);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("uidNumber", uid);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("homeDirectory", "/dev/null");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaPwdLastSet", "0");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaLogonTime", "0");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaLogoffTime", "2147483647");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaKickoffTime", "2147483647");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaPwdCanChange", "0");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaPwdMustChange", "2147483647");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaPrimaryGroupSID", sid + "-" + grid);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaLMPassword", pass);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaNTPassword", pass);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaAcctFlags", flags);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaSID", sid + "-" + urid);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("loginShell", "/bin/false");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("gecos", gecos);
+			attrList.Add (a);
+
+			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+		}
+
+		private void createGroup (string dn, string gid, string desc, string sid, string grid, string gtype, string memberuid)
+		{
+			ArrayList attrList = new ArrayList ();
+			LdapAttribute a = new LdapAttribute ("objectclass", "posixGroup");
+			a.addValue ("sambaGroupMapping");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("gidNumber", gid);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("cn", getCN (dn));
+			attrList.Add (a);
+
+			a = new LdapAttribute ("description", desc);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaSID", sid + "-" + grid);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaGroupType", gtype);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("displayName", getCN (dn));
+			attrList.Add (a);
+		
+			if (memberuid != "")
+			{
+				a = new LdapAttribute ("memberUid", memberuid);
+				attrList.Add (a);
+			}
+	
+			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+		}
+
+		private void createDomain (string dn, string domain, string sid)
+		{
+			ArrayList attrList = new ArrayList ();
+			LdapAttribute a = new LdapAttribute ("objectclass", "sambaDomain");
+//			a.addValue ("sambaUnixIdPool");
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaDomainName", domain);
+			attrList.Add (a);
+
+			a = new LdapAttribute ("sambaSID", sid);
+			attrList.Add (a);
+
+			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+		}
+
+		private void OnOkClicked (object o, EventArgs args)
+		{
+			// containers
+
+			if (!checkDN (userOUEntry.Text))
+				createOU (userOUEntry.Text);
+
+			if (!checkDN (groupOUEntry.Text))
+				createOU (groupOUEntry.Text);
+
+			if (!checkDN (computerOUEntry.Text))
+				createOU (computerOUEntry.Text);
+
+			if (!checkDN (idmapOUEntry.Text))
+				createOU (idmapOUEntry.Text);
+
+			// users
+
+			string dn = String.Format ("cn={0},{1}",
+				adminEntry.Text, userOUEntry.Text);
+
+			createUser (dn, adminEntry.Text, "XXX", sidEntry.Text, "[U          ]", 
+				    "0", "0", "500", "512", "Netbios Domain Administrator");
+
+			dn = String.Format ("cn={0},{1}",
+				guestEntry.Text, userOUEntry.Text);
+
+			createUser (dn, guestEntry.Text, "NO PASSWORDXXXXXXXXXXXXXXXXXXXXX", 
+				    sidEntry.Text, "[NUD        ]", 
+				    "999", "514", "2998", "514", "Netbios Domain Administrator");
+
+			// groups
+
+			dn = String.Format ("cn=Domain Admins,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "512", "Netbios Domain Administrators", sidEntry.Text,
+				     "512", "2", adminEntry.Text);
+
+			dn = String.Format ("cn=Domain Users,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "513", "Netbios Domain Users", sidEntry.Text,
+				     "513", "2", "");
+
+			dn = String.Format ("cn=Domain Guests,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "514", "Netbios Domain Guests", sidEntry.Text,
+				     "514", "2", "");
+
+			dn = String.Format ("cn=Domain Computers,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "515", "Netbios Domain Computers", sidEntry.Text,
+				     "515", "2", "");
+
+			dn = String.Format ("cn=Administrators,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "544", "Netbios Domain Members can fully administer the computer/sambaDomainName", "S-1-5-32",
+				     "544", "5", "");
+
+			dn = String.Format ("cn=Account Operators,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "548", "Netbios Domain Users to manipulate users accounts", "S-1-5-32",
+				     "548", "5", "");
+
+			dn = String.Format ("cn=Print Operators,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "550", "Netbios Domain Print Operators", "S-1-5-32",
+				     "550", "5", "");
+
+			dn = String.Format ("cn=Backup Operators,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "551", "Netbios Domain Members can bypass file security to back up files", "S-1-5-32",
+				     "551", "5", "");
+
+			dn = String.Format ("cn=Replicators,{0}", groupOUEntry.Text);
+
+			createGroup (dn, "552", "Netbios Domain Supports file replication in a sambaDomainName", "S-1-5-32",
+				     "552", "5", "");
+
+			dn = String.Format ("sambaDomainName={0},{1}", domainEntry.Text, _conn.LdapRoot);
+
+			createDomain (dn, domainEntry.Text, sidEntry.Text);
+
+			sambaPopulateDialog.HideAll ();
+		}
+	
+		private void OnCancelClicked (object o, EventArgs args)
+		{
+			sambaPopulateDialog.HideAll ();
+		}
+	}
+}

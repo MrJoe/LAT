@@ -159,7 +159,7 @@ namespace lat
 
 			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
 
-			Util.AddEntry (_conn, _viewDialog, userDN, attrList);
+			Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
 
 			newContactDialog.HideAll ();
 		}

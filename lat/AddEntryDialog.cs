@@ -214,7 +214,7 @@ namespace lat
 			
 			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
 
-			Util.AddEntry (_conn, addEntryDialog, _dn, _attributes);
+			Util.AddEntry (_conn, addEntryDialog, _dn, _attributes, true);
 
 			addEntryDialog.HideAll ();
 		}

@@ -323,7 +323,7 @@ namespace lat
 
 			updateGroupMembership ();
 
-			Util.AddEntry (_conn, _viewDialog, userDN, attrList);
+			Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
 
 			newUserDialog.HideAll ();
 		}

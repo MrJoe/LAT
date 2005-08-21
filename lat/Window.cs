@@ -969,6 +969,11 @@ namespace lat
 			Util.ExportData (_conn, mainWindow, scd.DN);
 		}
 
+		public void OnPopulateActivate (object o, EventArgs args)
+		{
+			new SambaPopulateDialog (_conn);
+		}
+
 		public void OnCutActivate (object o, EventArgs args)
 		{
 			if (!(viewNotebook.Page == 1))

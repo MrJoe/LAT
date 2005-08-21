@@ -81,7 +81,7 @@ namespace lat
 			resMd.Destroy();
 		}
 
-		public static void AddEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList attrs)
+		public static void AddEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList attrs, bool msgBox)
 		{
 			try
 			{
@@ -90,7 +90,8 @@ namespace lat
 				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been added."), dn);
 	
-				MessageBox (parent, resMsg, MessageType.Info);
+				if (msgBox)
+					MessageBox (parent, resMsg, MessageType.Info);
 			}
 			catch (Exception e)
 			{

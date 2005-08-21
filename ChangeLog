@@ -1,3 +1,4 @@
+	* Added ability to populate a directory for Samba
 	* Support adding Samba attributes to new/existing users and groups
 	* Password changes update Samba NTLM passwords (if applicable)
 	* Added schema browser
