@@ -240,10 +240,47 @@
 		<para>You could also right click on the entry and choose <menuchoice>Export</menuchoice>.</para>
 	 </sect2>
 
+<!-- ============= To setup your directory for Samba ======================== -->
+	 <sect2 id="lat-samba-setup"> 
+		<title>To setup your directory for Samba</title>
+		<para>To setup your directory for Samba, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Populate for Samba...</guimenuitem></menuchoice>. You need to provide the
+following information and then click on the ok button.</para>
+
+		<note>
+	              <para>
+                       You have the Samba schema installed on your directory in order for this to work. 
+	              </para>
+	        </note>
+
+		<itemizedlist> 
+		<listitem><para>SID - This is the Security Identifier for your domain. You can obtain it by running the command net getlocalsid</para></listitem>
+ 		<listitem><para>Domain - Name of your Samba domain</para></listitem>
+		<listitem><para>Administrator - The user name of the system administrator</para></listitem>
+		<listitem><para>Guest - The user name of the system guest user</para></listitem>
+		<listitem><para>Users - Where to store user objects</para></listitem>
+		<listitem><para>Groups - Where to store group objects</para></listitem>
+		<listitem><para>Computers - Where to store computer objects</para></listitem>
+		<listitem><para>ID Map - Where to store ID map (only needed if your server is a domain member server)</para></listitem>
+		</itemizedlist>
+	 </sect2>
+
 <!-- ============= To Quit LAT ======================== -->
 	 <sect2 id="lat-server-quit"> 
 		<title>To Quit LAT</title>
 		<para>To quit LAT, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Quit</guimenuitem></menuchoice>.</para>
+	 </sect2>
+
+  </sect1>
+
+<!-- ================ Edit ================================ -->
+  <sect1 id="lat-edit"> 
+	 <title>Edit</title>
+
+<!-- ============= Mass Edit ======================== -->
+	 <sect2 id="lat-edit-mass"> 
+		<title>Mass edit of directory entries</title>
+		<para>To mass edit some entries, choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Mas Edit...</guimenuitem></menuchoice>. You will need to provide a search filter and provide the edits you
+wish to make.</para>
 	 </sect2>
 
   </sect1>
@@ -288,11 +325,23 @@
 		<para>In the search view you can enter a search filter or click on the help button andu use the search builder.  Select where you would like to start the search and then click on the Start Search button. The results will appear below</para>
 	 </sect2>
 
+<!-- ============= To broswe an LDAP server schema  ======================== -->
+	 <sect2 id="lat-view-schema"> 
+		<title>To broswe an LDAP server schema</title>
+		<para>To browse the LDAP directory's schema, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Schema</guimenuitem></menuchoice>.</para>
+	 </sect2>
+
 <!-- ============= To view/edit an entry's properties  ======================== -->
 	 <sect2 id="lat-view-properties"> 
 		<title>To view/edit an entry's properties</title>
 		<para>To view and/or edit and entry's properties, choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Properties</guimenuitem></menuchoice>.</para>
 		<para>You can also right click on an entry and select properties or just double click on it.</para>
+	 </sect2>
+
+<!-- ============= Show all attributes  ======================== -->
+	 <sect2 id="lat-view-all-attributes"> 
+		<title>To show all attributes</title>
+		<para>In the browser view, to see all possible attributes for an entry, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Show all attributes</guimenuitem></menuchoice>.</para>
 	 </sect2>
 
 <!-- ============= To refresh a view  ======================== -->
@@ -317,7 +366,7 @@ information held in the files;   Passwords  are  stored  in  the users GNOME key
 
 <!-- ============= views.xml  ======================== -->
 	 <sect2 id="lat-files-views"> 
-		<title>To refresh a view</title>
+		<title>views.xml</title>
 		<para>$HOME/.lat/views.xml</para>
 		<para>Contains information on the users custom views.</para>
 	</sect2>
