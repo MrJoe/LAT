@@ -365,6 +365,9 @@ namespace lat
 		{
 			string dn = getSelectedDN ();
 
+			if (dn == _conn.Host)
+				return;
+
 			new RenameEntryDialog (_conn, dn);		
 		}
 
@@ -388,6 +391,9 @@ namespace lat
 
 			string dn = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
+			if (dn == _conn.Host)
+				return;
+
 			try
 			{
 				if (Util.DeleteEntry (_conn, _parent, dn))
@@ -399,6 +405,9 @@ namespace lat
 		public void OnAddAttrActivate (object o, EventArgs args)
 		{
 			string dn = getSelectedDN ();
+
+			if (dn == _conn.Host)
+				return;
 
 			DispatchDNSelectedEvent (dn, false);
 

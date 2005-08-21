@@ -1,3 +1,4 @@
+	* Added View->Show all attributes menu option
 	* Fixed attribute list in Browser->New Entry dialog 
 	* Added ability to populate a directory for Samba
 	* Support adding Samba attributes to new/existing users and groups
