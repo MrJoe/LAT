@@ -453,7 +453,8 @@ namespace lat
 
 			popup.Append (deleteItem);
 
-			popup.Popup(null, null, null, 3,
+			// FIXME: warning CS0618: 'Gtk.Menu.Popup(Gtk.Widget, Gtk.Widget, Gtk.MenuPositionFunc, System.IntPtr, uint, uint)' is obsolete: 'Replaced by overload without IntPtr argument'
+			popup.Popup(null, null, null, IntPtr.Zero, 3,
 					Gtk.Global.CurrentEventTime);
 		}
 
