@@ -1,8 +1,5 @@
-- Implement Samba 'change password' button functionality
-- Find a way to enable samba attributes for a user account
 - Find a way to change a AD users password
 - Find a way to create new AD users and groups
 - Mass edit support
-- SASL support
 - Write help manual
 - Cleanup code
