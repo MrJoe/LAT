@@ -1885,7 +1885,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image556">
+			<widget class="GtkImage" id="image568">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1907,7 +1907,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image557">
+			<widget class="GtkImage" id="image569">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1935,7 +1935,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image558">
+			<widget class="GtkImage" id="image570">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1957,7 +1957,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image559">
+			<widget class="GtkImage" id="image571">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2176,6 +2176,23 @@ you wish to connect to.</property>
 		  </child>
 
 		  <child>
+		    <widget class="GtkCheckMenuItem" id="showAllAttributes">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Show all attributes</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="OnShowAllAttributes" last_modification_time="Sun, 21 Aug 2005 13:40:19 GMT"/>
+		      <accelerator key="a" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator9">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkImageMenuItem" id="Refresh">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-refresh</property>
@@ -2206,7 +2223,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image560">
+			<widget class="GtkImage" id="image572">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -7632,7 +7649,7 @@ you wish to connect to.</property>
 	      <child>
 		<widget class="GtkLabel" id="label147">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">Entry name: </property>
+		  <property name="label" translatable="yes">Distinguished name:</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7655,7 +7672,7 @@ you wish to connect to.</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkEntry" id="dnNameEntry">
+		<widget class="GtkEntry" id="dnEntry">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="editable">True</property>
@@ -7667,7 +7684,7 @@ you wish to connect to.</property>
 		  <property name="activates_default">False</property>
 		</widget>
 		<packing>
-		  <property name="padding">0</property>
+		  <property name="padding">5</property>
 		  <property name="expand">True</property>
 		  <property name="fill">True</property>
 		</packing>
@@ -7695,7 +7712,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkLabel" id="label148">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">&lt;span weight=&quot;bold&quot;&gt;Attributes&lt;/span&gt;</property>
+		      <property name="label" translatable="yes">&lt;span weight=&quot;bold&quot;&gt;Object Class&lt;/span&gt;</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">True</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7711,7 +7728,7 @@ you wish to connect to.</property>
 		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
-		      <property name="padding">0</property>
+		      <property name="padding">5</property>
 		      <property name="expand">False</property>
 		      <property name="fill">False</property>
 		    </packing>
@@ -7756,31 +7773,6 @@ you wish to connect to.</property>
 		  <property name="spacing">0</property>
 
 		  <child>
-		    <widget class="GtkLabel" id="label149">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Class:            </property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
-		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-		      <property name="width_chars">-1</property>
-		      <property name="single_line_mode">False</property>
-		      <property name="angle">0</property>
-		    </widget>
-		    <packing>
-		      <property name="padding">10</property>
-		      <property name="expand">False</property>
-		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-
-		  <child>
 		    <widget class="GtkHBox" id="attrClassHBox">
 		      <property name="visible">True</property>
 		      <property name="homogeneous">False</property>
@@ -7796,59 +7788,33 @@ you wish to connect to.</property>
 		      <property name="fill">True</property>
 		    </packing>
 		  </child>
-		</widget>
-		<packing>
-		  <property name="padding">5</property>
-		  <property name="expand">True</property>
-		  <property name="fill">True</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkHBox" id="hbox126">
-		  <property name="visible">True</property>
-		  <property name="homogeneous">False</property>
-		  <property name="spacing">0</property>
 
 		  <child>
-		    <widget class="GtkLabel" id="label150">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Name:           </property>
-		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_LEFT</property>
-		      <property name="wrap">False</property>
-		      <property name="selectable">False</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
-		      <property name="ypad">0</property>
-		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-		      <property name="width_chars">-1</property>
-		      <property name="single_line_mode">False</property>
-		      <property name="angle">0</property>
-		    </widget>
-		    <packing>
-		      <property name="padding">10</property>
-		      <property name="expand">False</property>
-		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkHBox" id="attrNameHBox">
+		    <widget class="GtkHBox" id="hbox360">
 		      <property name="visible">True</property>
 		      <property name="homogeneous">False</property>
 		      <property name="spacing">0</property>
 
 		      <child>
-			<placeholder/>
+			<widget class="GtkButton" id="addButton">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label">gtk-add</property>
+			  <property name="use_stock">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			</widget>
+			<packing>
+			  <property name="padding">5</property>
+			  <property name="expand">False</property>
+			  <property name="fill">False</property>
+			</packing>
 		      </child>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
-		      <property name="expand">True</property>
-		      <property name="fill">True</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
 		    </packing>
 		  </child>
 		</widget>
@@ -7860,17 +7826,17 @@ you wish to connect to.</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkHBox" id="hbox297">
+		<widget class="GtkHBox" id="hbox361">
 		  <property name="visible">True</property>
 		  <property name="homogeneous">False</property>
 		  <property name="spacing">0</property>
 
 		  <child>
-		    <widget class="GtkLabel" id="label336">
+		    <widget class="GtkLabel" id="label375">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Value:           </property>
+		      <property name="label" translatable="yes">&lt;b&gt;Attributes&lt;/b&gt;</property>
 		      <property name="use_underline">False</property>
-		      <property name="use_markup">False</property>
+		      <property name="use_markup">True</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
 		      <property name="wrap">False</property>
 		      <property name="selectable">False</property>
@@ -7884,28 +7850,9 @@ you wish to connect to.</property>
 		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
-		      <property name="padding">10</property>
+		      <property name="padding">5</property>
 		      <property name="expand">False</property>
 		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkEntry" id="attrValueEntry">
-		      <property name="visible">True</property>
-		      <property name="can_focus">True</property>
-		      <property name="editable">True</property>
-		      <property name="visibility">True</property>
-		      <property name="max_length">0</property>
-		      <property name="text" translatable="yes"></property>
-		      <property name="has_frame">True</property>
-		      <property name="invisible_char">*</property>
-		      <property name="activates_default">False</property>
-		    </widget>
-		    <packing>
-		      <property name="padding">5</property>
-		      <property name="expand">True</property>
-		      <property name="fill">True</property>
 		    </packing>
 		  </child>
 		</widget>
@@ -7936,11 +7883,11 @@ you wish to connect to.</property>
 		  <property name="spacing">5</property>
 
 		  <child>
-		    <widget class="GtkButton" id="addAttributeButton">
+		    <widget class="GtkButton" id="removeButton">
 		      <property name="visible">True</property>
 		      <property name="can_default">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label">gtk-add</property>
+		      <property name="label">gtk-remove</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
@@ -7948,11 +7895,11 @@ you wish to connect to.</property>
 		  </child>
 
 		  <child>
-		    <widget class="GtkButton" id="removeAttributeButton">
+		    <widget class="GtkButton" id="clearButton">
 		      <property name="visible">True</property>
 		      <property name="can_default">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label">gtk-remove</property>
+		      <property name="label">gtk-clear</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>

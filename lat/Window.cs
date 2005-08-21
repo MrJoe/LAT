@@ -50,6 +50,7 @@ namespace lat
 		[Glade.Widget] Gtk.ToolButton propertiesToolButton;
 		[Glade.Widget] Gtk.ToolButton deleteToolButton;
 		[Glade.Widget] Gtk.ToolButton refreshToolButton;
+		[Glade.Widget] Gtk.CheckMenuItem showAllAttributes;
 		[Glade.Widget] Gtk.RadioMenuItem userView;
 		[Glade.Widget] Gtk.RadioMenuItem groupView;
 		[Glade.Widget] Gtk.RadioMenuItem hostView;
@@ -566,20 +567,60 @@ namespace lat
 		{
 			valuesStore.Clear ();
 			_modList.Clear ();
+
+			ArrayList allAttrs = new ArrayList ();
 		
+			LdapAttribute a = entry.getAttribute ("objectClass");
+
+			foreach (string o in a.StringValueArray)
+			{
+				string[] attrs = _conn.getAllAttrs (o);
+				
+				foreach (string at in attrs)
+				{
+					if (!allAttrs.Contains (at))
+						allAttrs.Add (at);
+				}
+			}
+
 			LdapAttributeSet attributeSet = entry.getAttributeSet ();
 
 			foreach (LdapAttribute attr in attributeSet)
 			{
-				string[] svalues;
-				svalues = attr.StringValueArray;
-							
-				foreach (string s in svalues)
+				if (allAttrs.Contains (attr.Name))
+				{
+					allAttrs.Remove (attr.Name);
+				}
+
+				foreach (string s in attr.StringValueArray)
 				{
 					valuesStore.AppendValues (attr.Name, s);
 				}
-			}		
-			
+			}
+
+			if (!showAllAttributes.Active)
+				return;
+
+			foreach (string n in allAttrs)
+			{
+				valuesStore.AppendValues (n, "");
+			}
+		}
+
+		public void OnShowAllAttributes (object o, EventArgs args)
+		{
+			string dn = null;
+
+			if (viewNotebook.CurrentPage == 1)
+			{
+				dn = _ldapTreeview.getSelectedDN ();
+
+				if (dn == null)
+					return;
+		
+				LdapEntry le = _conn.getEntry (dn);
+				showEntryAttributes (le);
+			}
 		}
 
 		private void showAttrTypeSchema (SchemaParser sp)

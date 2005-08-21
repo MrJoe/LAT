@@ -378,6 +378,53 @@ namespace lat
 			return (string[]) retVal.ToArray (typeof (string));
 		}
 
+		public void getAllAttrs (ArrayList objClass, out string[] required, out string[] optional)
+		{
+			try
+			{
+				LdapSchema schema;
+				LdapObjectClassSchema ocs;
+				
+				ArrayList r_attrs = new ArrayList ();
+				ArrayList o_attrs = new ArrayList ();
+
+				schema = _conn.FetchSchema ( _conn.GetSchemaDN() );
+		
+				foreach (string c in objClass)
+				{
+					ocs = schema.getObjectClassSchema ( c );
+
+					if (ocs.RequiredAttributes != null)
+					{
+						foreach (string r in ocs.RequiredAttributes)
+						{
+							if (!r_attrs.Contains (r))
+								r_attrs.Add (r);
+						}
+					}
+
+					if (ocs.OptionalAttributes != null)
+					{
+						foreach (string o in ocs.OptionalAttributes)
+						{
+							if (!o_attrs.Contains (o))
+								o_attrs.Add (o);
+						}
+					}
+
+
+				}
+
+				required = (string[]) r_attrs.ToArray (typeof (string));
+				optional = (string[]) o_attrs.ToArray (typeof (string));
+			}
+			catch
+			{
+				required = null;
+				optional = null;
+			}
+		}
+
 		public string[] getAllAttrs (string objClass)
 		{
 			try

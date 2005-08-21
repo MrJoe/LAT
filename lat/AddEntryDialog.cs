@@ -24,6 +24,7 @@ using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Utilclass;
 
 namespace lat
 {
@@ -32,18 +33,18 @@ namespace lat
 		Glade.XML ui;
 
 		[Glade.Widget] Gtk.Dialog addEntryDialog;
-		[Glade.Widget] Gtk.Entry dnNameEntry;
-		[Glade.Widget] Gtk.HBox attrNameHBox;
+		[Glade.Widget] Gtk.Entry dnEntry;
 		[Glade.Widget] Gtk.HBox attrClassHBox;
-		[Glade.Widget] Gtk.Entry attrValueEntry;
 		[Glade.Widget] TreeView attrListview; 
-		[Glade.Widget] Gtk.Button addAttributeButton;
-		[Glade.Widget] Gtk.Button removeAttributeButton;
+		[Glade.Widget] Gtk.Button addButton;
+		[Glade.Widget] Gtk.Button removeButton;
+		[Glade.Widget] Gtk.Button clearButton;
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
 
 		private ListStore attrListStore;
 
+		private ArrayList _objectClass;
 		private ArrayList _attributes;
 
 		private Connection _conn;
@@ -51,10 +52,11 @@ namespace lat
 		private string _dn;
 
 		private ComboBox attrClassComboBox;
-		private static ComboBox attrNameComboBox;
 
 		public AddEntryDialog (Connection conn)
 		{
+			_objectClass = new ArrayList ();
+
 			_attributes = new ArrayList ();
 			_conn = conn;
 
@@ -63,20 +65,28 @@ namespace lat
 			
 			createCombos ();
 
-			attrListStore = new ListStore (typeof (string), typeof (string));
+			attrListStore = new ListStore (typeof (string), typeof (string), typeof (string));
 			attrListview.Model = attrListStore;
 			
 			TreeViewColumn col;
 			col = attrListview.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
 
-			col = attrListview.AppendColumn ("Value", new CellRendererText (), "text", 1);
+			col = attrListview.AppendColumn ("Type", new CellRendererText (), "text", 1);
 			col.SortColumnId = 1;
+
+			CellRendererText cell = new CellRendererText ();
+			cell.Editable = true;
+			cell.Edited += new EditedHandler (OnAttributeEdit);
+
+			col = attrListview.AppendColumn ("Value", cell, "text", 2);
+			col.SortColumnId = 2;
 
 			attrListStore.SetSortColumnId (0, SortType.Ascending);
 		
-			addAttributeButton.Clicked += new EventHandler (OnAddAttributeClicked);
-			removeAttributeButton.Clicked += new EventHandler (OnRemoveAttributeClicked);
+			addButton.Clicked += new EventHandler (OnAddClicked);
+			clearButton.Clicked += new EventHandler (OnClearClicked);
+			removeButton.Clicked += new EventHandler (OnRemoveClicked);
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
@@ -93,89 +103,88 @@ namespace lat
 		{
 			// class
 			attrClassComboBox = ComboBox.NewText ();
-			attrClassComboBox.AppendText ("inetOrgPerson");
-			attrClassComboBox.AppendText ("ipHost");
-			attrClassComboBox.AppendText ("organizationalUnit");
-			attrClassComboBox.AppendText ("person");
-			attrClassComboBox.AppendText ("posixAccount");
-			attrClassComboBox.AppendText ("posixGroup");
-			attrClassComboBox.AppendText ("sambaSamAccount");
-			attrClassComboBox.AppendText ("shadowAccount");
+			
+			ArrayList ocs = _conn.getObjClasses ();			
+			ArrayList tmp = new ArrayList ();
 
-			attrClassComboBox.Changed += new EventHandler (OnClassChanged);
+			foreach (LdapEntry le in ocs)
+			{
+				LdapAttribute la = le.getAttribute ("objectclasses");
+						
+				foreach (string s in la.StringValueArray)
+				{
+					SchemaParser sp = new SchemaParser (s);
+					tmp.Add (sp.Names[0]);
+				}
+			}
+
+			tmp.Sort ();
+
+			foreach (string n in tmp)
+			{
+				attrClassComboBox.AppendText (n);
+			}
 
 			attrClassComboBox.Active = 0;
 			attrClassComboBox.Show ();
 
 			attrClassHBox.PackStart (attrClassComboBox, true, true, 5);
-
-			// name
-			attrNameComboBox = ComboBox.NewText ();
-			attrNameComboBox.AppendText ("(none)");
-			attrNameComboBox.Active = 0;
-			attrNameComboBox.Show ();
-
-			attrNameHBox.PackStart (attrNameComboBox, true, true, 5);
 		}
 
-		private void OnClassChanged (object o, EventArgs args)
+		private void OnAttributeEdit (object o, EditedArgs args)
+		{
+			TreeIter iter;
+
+			if (!attrListStore.GetIterFromString (out iter, args.Path))
+			{
+				return;
+			}
+
+			string oldText = (string) attrListStore.GetValue (iter, 2);
+
+			if (oldText.Equals (args.NewText))
+			{
+				// no modification
+				return;
+			}
+			
+			attrListStore.SetValue (iter, 2, args.NewText);		
+		}
+
+		private void OnAddClicked (object o, EventArgs args)
 		{
 			TreeIter iter;
 				
 			if (!attrClassComboBox.GetActiveIter (out iter))
 				return;
 
+			attrListStore.Clear ();
+
 			string objClass = (string) attrClassComboBox.Model.GetValue (iter, 0);
+			_objectClass.Add (objClass);
 
-			string [] attrs = _conn.getAllAttrs (objClass);
+			string[] required, optional;			
 
-			if (attrNameComboBox == null)
+			_conn.getAllAttrs (_objectClass, out required, out optional);
+
+			foreach (string s in required)
 			{
-				// don't know why this happens
-
-				return;
+				attrListStore.AppendValues (s, "Required", "");
 			}
-			else
-			{
-// FIXME: causes list to go blank
-//				attrNameComboBox.Clear ();
 
-				foreach (string s in attrs)
-				{				
-					attrNameComboBox.AppendText (s);
-				}
-			}		
+			foreach (string s in optional)
+			{
+				attrListStore.AppendValues (s, "Optional", "");
+			}
 		}
 
-		private void OnAddAttributeClicked (object o, EventArgs args)
+		private void OnClearClicked (object o, EventArgs args)
 		{
-			TreeIter iter;
-				
-			if (!attrNameComboBox.GetActiveIter (out iter))
-				return;
-
-			string attrName = (string) attrNameComboBox.Model.GetValue (iter, 0);
-
-			if (attrName.Equals ("(none)"))
-			{
-				// add object class
-				TreeIter cnIter;
-					
-				if (!attrClassComboBox.GetActiveIter (out cnIter))
-					return;
-
-				string objClass = (string) attrClassComboBox.Model.GetValue (cnIter, 0);
-
-				attrListStore.AppendValues ("objectClass", objClass);
-			}
-			else
-			{
-				attrListStore.AppendValues (attrName, attrValueEntry.Text);
-				attrValueEntry.Text = "";
-			}
+			attrListStore.Clear ();
+			_objectClass.Clear ();
 		}
 
-		private void OnRemoveAttributeClicked (object o, EventArgs args)
+		private void OnRemoveClicked (object o, EventArgs args)
 		{
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
@@ -184,7 +193,6 @@ namespace lat
 			{
 				attrListStore.Remove (ref iter);
 			}
-
 		}
 
 		private bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
@@ -196,9 +204,9 @@ namespace lat
 			string _value = null;
 
 			_name = (string) attrListStore.GetValue (iter, 0);
-			_value = (string) attrListStore.GetValue (iter, 1);
+			_value = (string) attrListStore.GetValue (iter, 2);
 
-			if (_name == null || _value == null)
+			if (_name == null || _value == null || _value == "")
 				return false;
 
 			LdapAttribute attr = new LdapAttribute (_name, _value);
@@ -210,8 +218,17 @@ namespace lat
 
 		private void OnOkClicked (object o, EventArgs args)
 		{
-			_dn = dnNameEntry.Text;
+			_dn = dnEntry.Text;
+
+			LdapAttribute a = new LdapAttribute ("objectClass", "top");
+
+			foreach (string s in _objectClass)
+			{
+				a.addValue (s);
+			}
 			
+			_attributes.Add (a);
+
 			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
 
 			Util.AddEntry (_conn, addEntryDialog, _dn, _attributes, true);
