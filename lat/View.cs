@@ -110,8 +110,7 @@ namespace lat
 
 			customPopUp ();
 
-			// FIXME: warning CS0618: 'Gtk.Menu.Popup(Gtk.Widget, Gtk.Widget, Gtk.MenuPositionFunc, System.IntPtr, uint, uint)' is obsolete: 'Replaced by overload without IntPtr argument'
-			_popup.Popup(null, null, null, IntPtr.Zero, 3,
+			_popup.Popup(null, null, null, 3,
 					Gtk.Global.CurrentEventTime);
 		}
 

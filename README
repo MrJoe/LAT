@@ -22,7 +22,7 @@ Installation
 lat requires the following other packages:
 
 	* Mono 1.1.8
-	* Gtk# 1.9.5
+	* Gtk# 2.3.90
 	* GNOME Keyring 0.4.2
 
 Simple installation procedure:
