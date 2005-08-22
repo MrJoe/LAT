@@ -50,7 +50,7 @@ namespace lat
 				case "generic ldap server":
 				case "openldap":
 				default:
-					this._filter = "objectclass=posixAccount";
+					this._filter = "(&(objectclass=posixAccount)(|(objectclass=person)(objectclass=shadowAccount)))";
 					break;
 			}		
 
