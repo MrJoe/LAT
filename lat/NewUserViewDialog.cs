@@ -258,7 +258,7 @@ namespace lat
 		{
 			Hashtable cui = getUpdatedUserInfo ();
 
-			string[] objClass = { "top", "posixaccount","inetorgperson", "person" };
+			string[] objClass = { "top", "posixaccount", "shadowaccount","inetorgperson", "person" };
 			string[] missing = null;
 
 			if (!checkReqAttrs (objClass, cui, out missing))
