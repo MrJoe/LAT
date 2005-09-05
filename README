@@ -23,7 +23,6 @@ lat requires the following other packages:
 
 	* Mono 1.1.8
 	* Gtk# 2.3.90
-	* GNOME Keyring 0.4.2
 
 Simple installation procedure:
 
@@ -34,30 +33,6 @@ Simple installation procedure:
 	# make install
 
 See the file 'INSTALL' for more detailed information.
-
-NOTE: LAT has two (2) pre-built assemblies included in the archive.  One
-is gnome-keyring-sharp.dll and the other is a custom Novell.Directory.Ldap.dll.
-
-The custom Novell.Directory.Ldap.dll contains a one line change to make
-SSL support work.  I've filed a bug with Novell so that in the future,
-I can just use the standard assembly that comes with Mono.  More
-details at: 
-
-http://forge.novell.com/modules/xfmod/tracker/index.php?func=detail&aid=1233&group_id=1318&atid=1362
-
-If you don't wish to use these .dlls you can 'configure' that with the 
-following options:
-
---enable-system-gnome-keyring
-
-	Uses pkg-config to find the system installed copy of the 
-	gnome-keyring-sharp.dll.
-
---enable-system-ldap
-
-	Uses the standard Novell.Directory.Ldap.dll distributed with Mono.  
-	Be aware that using this option will break SSL support in LAT!
-
 
 Hacking
 =======

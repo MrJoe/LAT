@@ -1,22 +1,8 @@
-if USE_SYSTEM_KEYRING
-KEYRING_DLL = $(KEYRING_LIBS)
-else
-KEYRING_DLL = -r:../libs/gnome-keyring-sharp.dll
-endif
+CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS)
 
-if USE_SYSTEM_LDAP
-LDAP_DLL = -r:Novell.Directory.Ldap.dll
-LDAP_DEFINE = /d:SYSTEM_LDAP
-else
-LDAP_DLL = -r:../libs/Novell.Directory.Ldap.dll
-LDAP_DEFINE =
-endif
+ASSEMBLY = lat
 
-CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(LDAP_DEFINE)
-
-LAT_ASSEMBLY = lat.exe
-
-LAT_CSFILES = \
+CSFILES = \
 	adUserViewDialog.cs \
 	AboutDialog.cs \
 	AssemblyInfo.cs \
@@ -68,43 +54,44 @@ LAT_CSFILES = \
 	ViewFactory.cs \
 	Window.cs
 
-LAT_SOURCES_BUILD = $(addprefix $(srcdir)/, $(LAT_CSFILES))
+SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
-LAT_REFERENCES = \
-	$(LDAP_DLL) \
-	$(KEYRING_DLL) \
-	-r:Mono.Posix \
-	-r:Mono.Security
+REFERENCES = \
+	Mono.Posix \
+	Mono.Security \
+	Novell.Directory.Ldap
+
+REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 RESOURCES = \
-	/resource:$(srcdir)/lat.glade,lat.glade
+	/resource:$(srcdir)/$(ASSEMBLY).glade,$(ASSEMBLY).glade
 
-$(LAT_ASSEMBLY): $(LAT_CSFILES)
-	$(CSC) -out:$@ $(LAT_SOURCES_BUILD) $(LAT_REFERENCES) $(RESOURCES) $(GTKSHARP_LIBS)
+$(ASSEMBLY).exe: $(CSFILES)
+	$(CSC) -out:$@ $(SOURCES_BUILD) $(REFERENCES_BUILD) $(RESOURCES) $(GTKSHARP_LIBS)
 
-all: $(LAT_ASSEMBLY)
+all: $(ASSEMBLY).exe
 
-LATlibdir = $(prefix)/lib/lat
-LATlib_DATA = $(LAT_ASSEMBLY)
+ASSEMBLYlibdir = $(prefix)/lib/lat
+ASSEMBLYlib_DATA = $(ASSEMBLY).exe
 
 man_MANS = \
-	lat.1
+	$(ASSEMBLY).1
 
-bin_SCRIPTS = lat
+bin_SCRIPTS = $(ASSEMBLY)
 
 EXTRA_DIST = \
-	$(LAT_CSFILES) \
+	$(CSFILES) \
 	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
-	lat.glade \
-	lat.in
+	$(ASSEMBLY).glade \
+	$(ASSEMBLY).in
 
 CLEANFILES = \
-	$(LAT_ASSEMBLY) \
-	lat.exe.mdb
+	$(ASSEMBLY).exe \
+	$(ASSEMBLY).exe.mdb
 
 DISTCLEANFILES = \
 	AssemblyInfo.cs \
 	Defines.cs \
-	lat
+	$(ASSEMBLY)

@@ -1,3 +1,9 @@
+Version 0.7.1
+
+	* Removed pre-built assemblies (Novell.Directory.Ldap.dll; gnome-keyring-sharp.dll). 
+	* SSL/TLS support disabled.
+	* Gnome Keyring support removed.
+
 Version 0.7
 
 	* Added mass edit feature

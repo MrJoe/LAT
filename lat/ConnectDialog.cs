@@ -86,8 +86,12 @@ namespace lat
 			profileEditButton.Clicked += new EventHandler (OnProfileEdit);
 			profileRemoveButton.Clicked += new EventHandler (OnProfileRemove);
 
-			encryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
-			noEncryptionRadioButton.Active = true;
+			// FIXME: SSL support
+//			encryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
+			encryptionRadioButton.Sensitive = false;
+			noEncryptionRadioButton.Sensitive = false;
+
+			noEncryptionRadioButton.Active = true;			
 		
 			notebook1.SwitchPage += new SwitchPageHandler (OnPageSwitch);
 
@@ -274,7 +278,7 @@ namespace lat
 		
 			return true;
 		}
-
+/* FIXME: SSL support
 		private void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (encryptionRadioButton.Active)
@@ -288,7 +292,7 @@ namespace lat
 				portEntry.Text = "389";
 			}
 		}
-
+*/
 		private void OnConnectClicked (object o, EventArgs args) 
 		{
 			Connection conn = null;

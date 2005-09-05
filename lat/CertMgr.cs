@@ -92,26 +92,6 @@ namespace lat
 			return (X509CertificateCollection) pi.GetValue (ssl, null);
 		}
 
-		[Conditional("SYSTEM_LDAP")]
-		public static void ShowRestartMessage (Gtk.Window parent)
-		{
-			string	msg = Mono.Unix.Catalog.GetString (
-				"LAT must be restarted after a certificate import");
-
-			Util.MessageBox (parent, msg, Gtk.MessageType.Info);
-
-			Gtk.Application.Quit ();
-		}
-
-		[Conditional("SYSTEM_LDAP")]
-		public static void ShowNotSupportedMessage (Gtk.Window parent)
-		{
-			string	msg = Mono.Unix.Catalog.GetString (
-				"Operation not supported with current Novell.Directory.Ldap.dll");
-
-			Util.MessageBox (parent, msg, Gtk.MessageType.Info);
-		}
-
 		public static bool Ssl (string host, Gtk.Window parent)
 		{
 			Logger.Log.Debug ("Importing certificates from '{0}' into the user's store.", host);
@@ -204,13 +184,7 @@ namespace lat
 					{
 						store.Import (x509);
 						Logger.Log.Debug ("Certificate successfully imported.");
-
-						ShowRestartMessage (parent);
 					} 
-					else if (cd.UserResponse == CertDialogResponse.NoImport)
-					{
-						ShowNotSupportedMessage (parent);
-					}
 					else if (cd.UserResponse == CertDialogResponse.Cancel)
 					{
 						retVal = false;

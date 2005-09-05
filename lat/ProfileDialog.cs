@@ -97,7 +97,11 @@ namespace lat
 
 			createCombo ();
 
-			noEncryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
+			// FIXME: SSL support
+			encryptionRadioButton.Sensitive = false;
+			noEncryptionRadioButton.Sensitive = false;
+
+//			noEncryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			noEncryptionRadioButton.Active = true;
 			
 			okButton.Clicked += new EventHandler (OnOkClicked);
@@ -126,7 +130,7 @@ namespace lat
 
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
-
+/* FIXME: SSL support
 		private void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (encryptionRadioButton.Active)
@@ -138,7 +142,7 @@ namespace lat
 				_useSSL = false;
 			}
 		}
-			
+*/			
 		private void OnOkClicked (object o, EventArgs args)
 		{
 			TreeIter iter;

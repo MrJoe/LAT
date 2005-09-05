@@ -22,7 +22,6 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Xml;
-using GnomeKeyring;
 
 namespace lat
 {
@@ -108,28 +107,10 @@ namespace lat
 							int.Parse (r.GetAttribute ("port")),
 							r.GetAttribute ("base"),
 							r.GetAttribute ("user"),
-							"",
+							r.GetAttribute ("pass"),
 							bool.Parse (r.GetAttribute ("ssl")),
 							r.GetAttribute ("server_type"));
-
-						GnomeKeyring.Result gkr;
-						NetworkPasswordData[] list;
-						gkr = GnomeKeyring.Global.FindNetworkPassword(
-						 cp.User,
-						 null, null, null, null, null, 0, out list
-						);
-
-						Logger.Log.Debug ("gnome-keyring-result: {0}", gkr);
-						
-						foreach (NetworkPasswordData i in list) 
-						{
-							Logger.Log.Debug (
-							  "Got password for: {0}://{1}:{2}/",
-							  i.Protocol, i.Server, i.Port);
-
-							cp.Pass = i.Password;
-						}
-				
+			
 						_profiles.Add (cp.Name, cp);	
 					} 
 			 	}
@@ -142,11 +123,6 @@ namespace lat
 			}
 		}
 		
-		static void myCallback (Result result, uint val) 
-		{
-			Logger.Log.Debug ("gnome-keyring-callback: result: {0} - ID: {1}", result, val);
-		}
-
 		public void saveProfiles ()	
 		{	
 			XmlTextWriter writer = new XmlTextWriter(_configFile,
@@ -168,25 +144,11 @@ namespace lat
 				writer.WriteAttributeString ("port", cp.Port.ToString());
 				writer.WriteAttributeString ("base", cp.LdapRoot);
 				writer.WriteAttributeString ("user", cp.User);
+				writer.WriteAttributeString ("pass", cp.Pass);
 				writer.WriteAttributeString ("ssl", cp.SSL.ToString());
 				writer.WriteAttributeString ("server_type", cp.ServerType);
 				
 	        		writer.WriteEndElement();
-
-				OperationGetIntCallback theCallback = new OperationGetIntCallback (myCallback);
-
-				GnomeKeyring.Global.SetNetworkPassword(
-					 null, 				// keyring
-					cp.User,			// user
-					 null, 				// domain
-					cp.Host,			// server 
-					null, 				// objekt
-					"ldap", 			// protocol
-					null, 				// authtype
-					(uint)cp.Port, 			// port
-					cp.Pass,	 		// password
-					theCallback 			// callback
-				);
 			}
 	    		
 			writer.WriteEndElement();

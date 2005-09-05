@@ -1,4 +1,4 @@
-SUBDIRS = debian lat libs po desktop help
+SUBDIRS = debian lat po desktop help
 
 EXTRA_DIST = \
 	README \
