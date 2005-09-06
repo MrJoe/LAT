@@ -76,7 +76,10 @@ public class LdapSearch
 
 	public void endBool ()
 	{
-		_filter += ")";
+		if (_filter.StartsWith("(&") || _filter.StartsWith("(|"))
+		{
+			_filter += ")";
+		}
 	}
 
 	public string Filter

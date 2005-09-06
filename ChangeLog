@@ -1,3 +1,5 @@
+	* BUGFIX [#11]: Parenthesis count in search filters. (Julian Oppermann)
+
 Version 0.7.1
 
 	* Removed pre-built assemblies (Novell.Directory.Ldap.dll; gnome-keyring-sharp.dll). 
