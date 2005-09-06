@@ -194,18 +194,14 @@ namespace lat
 		private void updateOutput ()
 		{
 			_unix = passwordEntry.Text;
-			bool salt = false;
-
-			if (useSaltCheckButton.Active)
-				salt = true;
 	
 			if (md5RadioButton.Active)
 			{
-				outputEntry.Text = doEncryption (_unix, "MD5", salt);
+				outputEntry.Text = doEncryption (_unix, "MD5", useSaltCheckButton.Active);
 			}
 			else if (shaRadioButton.Active)
 			{
-				outputEntry.Text = doEncryption (_unix, "SHA", salt);
+				outputEntry.Text = doEncryption (_unix, "SHA", useSaltCheckButton.Active);
 			}
 			else if (cryptRadioButton.Active)
 			{
