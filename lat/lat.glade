@@ -7038,10 +7038,10 @@ you wish to connect to.</property>
 		  </child>
 
 		  <child>
-		    <widget class="GtkRadioButton" id="md5RadioButton">
+		    <widget class="GtkRadioButton" id="cryptRadioButton">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">MD5</property>
+		      <property name="label" translatable="yes">Crypt</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
@@ -7057,6 +7057,26 @@ you wish to connect to.</property>
 		  </child>
 
 		  <child>
+		    <widget class="GtkRadioButton" id="md5RadioButton">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="label" translatable="yes">MD5</property>
+		      <property name="use_underline">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <property name="active">False</property>
+		      <property name="inconsistent">False</property>
+		      <property name="draw_indicator">True</property>
+		      <property name="group">cryptRadioButton</property>
+		    </widget>
+		    <packing>
+		      <property name="padding">10</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
 		    <widget class="GtkRadioButton" id="shaRadioButton">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
@@ -7064,10 +7084,10 @@ you wish to connect to.</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <property name="group">md5RadioButton</property>
+		      <property name="group">cryptRadioButton</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">5</property>
@@ -7102,7 +7122,7 @@ you wish to connect to.</property>
 		      <property name="draw_indicator">True</property>
 		    </widget>
 		    <packing>
-		      <property name="padding">25</property>
+		      <property name="padding">15</property>
 		      <property name="expand">False</property>
 		      <property name="fill">False</property>
 		    </packing>

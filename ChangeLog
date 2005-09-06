@@ -1,3 +1,4 @@
+	* Add support for crypt(3) passwords
 	* BUGFIX [#11]: Parenthesis count in search filters. (Julian Oppermann)
 
 Version 0.7.1
