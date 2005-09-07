@@ -215,6 +215,15 @@ namespace lat
 
 		private void OnEncryptionChanged (object o, EventArgs args)
 		{
+			if (cryptRadioButton.Active)
+			{
+				useSaltCheckButton.Sensitive = false;
+			}
+			else
+			{
+				useSaltCheckButton.Sensitive = true;
+			}
+
 			updateOutput ();
 		}
 
