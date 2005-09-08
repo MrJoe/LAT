@@ -50,6 +50,7 @@ namespace lat
 		[Glade.Widget] Gtk.Button connectButton;
 		[Glade.Widget] Gtk.Button closeButton;
 
+		private bool haveProfiles = false;
 		private bool useSSL = false;
 
 		private ProfileManager profileManager;
@@ -79,6 +80,12 @@ namespace lat
 			col.SortColumnId = 0;
 
 			updateProfileList ();
+
+			if (haveProfiles)
+			{
+				notebook1.CurrentPage = 1;
+				connectionDialog.Resizable = true;
+			}
 			
 			profileListview.RowActivated += new RowActivatedHandler (OnRowDoubleClicked);
 
@@ -181,6 +188,11 @@ namespace lat
 		{
 			string[] names = profileManager.getProfileNames ();
 			
+			if (names.Length > 1)
+			{
+				haveProfiles = true;
+			}
+
 			profileListStore.Clear ();
 			
 			foreach (string s in names)
