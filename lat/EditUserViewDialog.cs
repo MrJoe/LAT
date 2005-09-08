@@ -338,6 +338,7 @@ namespace lat
 
 			_allGroupStore = new ListStore (typeof (string));
 			allGroupsTreeview.Model = _allGroupStore;
+			allGroupsTreeview.Selection.Mode = SelectionMode.Multiple;
 
 			col = allGroupsTreeview.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
@@ -346,6 +347,7 @@ namespace lat
 
 			_memberOfStore = new ListStore (typeof (string));
 			memberOfTreeview.Model = _memberOfStore;
+			memberOfTreeview.Selection.Mode = SelectionMode.Multiple;
 
 			col = memberOfTreeview.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
@@ -382,10 +384,14 @@ namespace lat
 			TreeModel model;
 			TreeIter iter;
 
-			if (allGroupsTreeview.Selection.GetSelected (out model, out iter))
+			TreePath[] tp = allGroupsTreeview.Selection.GetSelectedRows (out model);
+
+			for (int i  = tp.Length; i > 0; i--)
 			{
+				_allGroupStore.GetIter (out iter, tp[(i - 1)]);
+
 				string name = (string) _allGroupStore.GetValue (iter, 0);
-				
+
 				_memberOfStore.AppendValues (name);
 		
 				if (!_memberOfGroups.ContainsKey (name))
@@ -396,28 +402,26 @@ namespace lat
 				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
 				LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 
-				if (!_modsGroup.ContainsKey (name))
-					_modsGroup.Add (name, lm);
-				else
-				{
-					_modsGroup.Remove (name);
-				}
+				_modsGroup.Add (name, lm);
+
+				updateGroupMembership ();
+
+				_modsGroup.Clear ();
 			}
-			else
-			{
-				Util.MessageBox (editUserDialog, 
-						Mono.Unix.Catalog.GetString ("No group selected to add."),
-						 MessageType.Error);
-			}
+
 		}
 
 		private void OnRemoveGroupClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
+			
+			TreePath[] tp = memberOfTreeview.Selection.GetSelectedRows (out model);
 
-			if (memberOfTreeview.Selection.GetSelected (out model, out iter))
+			for (int i  = tp.Length; i > 0; i--)
 			{
+				_memberOfStore.GetIter (out iter, tp[(i - 1)]);
+
 				string name = (string) _memberOfStore.GetValue (iter, 0);
 
 				_memberOfStore.Remove (ref iter);
@@ -430,18 +434,12 @@ namespace lat
 				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
 				LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
 
-				if (!_modsGroup.ContainsKey (name))
-					_modsGroup.Add (name, lm);
-				else
-				{
-					_modsGroup.Remove (name);
-				}
+				_modsGroup.Add (name, lm);
+			
+				updateGroupMembership ();
+
+				_modsGroup.Clear ();
 			}
-			else
-			{
-				Util.MessageBox (editUserDialog, "No group selected to remove.",
-						 MessageType.Error);
-			}			
 		}
 
 		private void OnNameChanged (object o, EventArgs args)
@@ -491,15 +489,21 @@ namespace lat
 			Logger.Log.Debug ("START updateGroupMembership ()");
 
 			LdapEntry groupEntry = null;
-			LdapModification[] mods = new LdapModification [1];
+			LdapModification[] mods = new LdapModification [_modsGroup.Count];
+
+			int count = 0;
 
 			foreach (string key in _modsGroup.Keys)
 			{
+				Logger.Log.Debug ("group: {0}", key);
+
 				LdapModification lm = (LdapModification) _modsGroup[key];
 				groupEntry = (LdapEntry) _allGroups [key];
 
-				mods[0] = lm;
-			}
+				mods[count] = lm;
+
+				count++;
+			}	
 
 			modifyGroup (groupEntry, mods);
 
@@ -611,8 +615,6 @@ namespace lat
 					_modList.Add (l);
 				}
 			}
-
-			updateGroupMembership ();
 
 			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
 

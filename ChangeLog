@@ -1,3 +1,6 @@
+	* If there are profiles, show profiles tab as default in connect dialog
+	* Allow multiple group add/remove in edit user dialog
+	* Fix logic error in add/remove group code
 	* Add support for crypt(3) passwords
 	* BUGFIX [#11]: Parenthesis count in search filters. (Julian Oppermann)
 
