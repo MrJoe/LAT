@@ -270,7 +270,7 @@ namespace lat
 					_allGroupStore.AppendValues (nameAttr.StringValue);
 				}
 
-				if (!_allGroupGids.ContainsKey (nameAttr.StringValue))
+				if (!_allGroups.ContainsKey (nameAttr.StringValue))
 					_allGroups.Add (nameAttr.StringValue, e);
 
 				if (!_allGroupGids.ContainsKey (nameAttr.StringValue))
