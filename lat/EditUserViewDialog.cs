@@ -254,7 +254,8 @@ namespace lat
 					
 					if (a != null)
 					{	
-						if (checkMemberOf ((string)_ui["uid"], a.StringValueArray))
+						if (checkMemberOf ((string)_ui["uid"], a.StringValueArray)
+						   && !_memberOfGroups.ContainsKey (nameAttr.StringValue))
 						{
 							_memberOfGroups.Add 	(nameAttr.StringValue,"memeberUid");
 							_memberOfStore.AppendValues (nameAttr.StringValue);
@@ -269,8 +270,11 @@ namespace lat
 					_allGroupStore.AppendValues (nameAttr.StringValue);
 				}
 
-				_allGroups.Add (nameAttr.StringValue, e);
-				_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
+				if (!_allGroupGids.ContainsKey (nameAttr.StringValue))
+					_allGroups.Add (nameAttr.StringValue, e);
+
+				if (!_allGroupGids.ContainsKey (nameAttr.StringValue))
+					_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
 			}
 				
 		}
