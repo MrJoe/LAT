@@ -172,6 +172,7 @@ namespace lat
 
 			allUserStore = new ListStore (typeof (string));
 			allUsersTreeview.Model = allUserStore;
+			allUsersTreeview.Selection.Mode = SelectionMode.Multiple;
 
 			col = allUsersTreeview.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
@@ -180,6 +181,7 @@ namespace lat
 			
 			currentMemberStore = new ListStore (typeof (string));
 			currentMembersTreeview.Model = currentMemberStore;
+			currentMembersTreeview.Selection.Mode = SelectionMode.Multiple;
 
 			col = currentMembersTreeview.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
@@ -207,8 +209,12 @@ namespace lat
 			TreeModel model;
 			TreeIter iter;
 
-			if (allUsersTreeview.Selection.GetSelected (out model, out iter))
+			TreePath[] tp = allUsersTreeview.Selection.GetSelectedRows (out model);
+
+			for (int i  = tp.Length; i > 0; i--)
 			{
+				allUserStore.GetIter (out iter, tp[(i - 1)]);
+
 				string user = (string) allUserStore.GetValue (iter, 0);
 				
 				currentMemberStore.AppendValues (user);
@@ -230,11 +236,6 @@ namespace lat
 				}
 
 			}
-			else
-			{
-				Util.MessageBox (groupDialog, "No user selected to add.",
-						 MessageType.Error);
-			}
 		}
 
 		private void OnRemoveClicked (object o, EventArgs args)
@@ -242,8 +243,12 @@ namespace lat
 			TreeModel model;
 			TreeIter iter;
 
-			if (currentMembersTreeview.Selection.GetSelected (out model, out iter))
+			TreePath[] tp = currentMembersTreeview.Selection.GetSelectedRows (out model);
+
+			for (int i  = tp.Length; i > 0; i--)
 			{
+				currentMemberStore.GetIter (out iter, tp[(i - 1)]);
+
 				string user = (string) currentMemberStore.GetValue (iter, 0);
 
 				currentMemberStore.Remove (ref iter);
@@ -262,11 +267,6 @@ namespace lat
 					_modList.Add (lm);
 				}
 			}
-			else
-			{
-				Util.MessageBox (groupDialog, "No user selected to remove.",
-						 MessageType.Error);
-			}			
 		}
 
 		private bool checkSamba (LdapEntry le)

@@ -257,7 +257,7 @@ namespace lat
 						if (checkMemberOf ((string)_ui["uid"], a.StringValueArray)
 						   && !_memberOfGroups.ContainsKey (nameAttr.StringValue))
 						{
-							_memberOfGroups.Add 	(nameAttr.StringValue,"memeberUid");
+							_memberOfGroups.Add (nameAttr.StringValue,"memeberUid");
 							_memberOfStore.AppendValues (nameAttr.StringValue);
 						}
 					}
