@@ -7,3 +7,4 @@
 	- set account deactivated
 	- set password to no expire
 - Support binary data in attributes
+- Obtain some icons (including a program icon for LAT)
