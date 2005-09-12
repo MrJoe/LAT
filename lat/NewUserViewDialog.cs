@@ -279,16 +279,17 @@ namespace lat
 
 			TreeIter iter;
 				
-			primaryGroupComboBox.GetActiveIter (out iter);
-
-			string pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
+			if (primaryGroupComboBox.GetActiveIter (out iter))
+			{
+				string pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
+				retVal.Add ("gidNumber", getGidNumber(pg));
+			}
 
 			retVal.Add ("givenName", firstNameEntry.Text);
 			retVal.Add ("sn", lastNameEntry.Text);
 			retVal.Add ("uid", usernameEntry.Text);
 			retVal.Add ("uidNumber", uidSpinButton.Value.ToString());
 			retVal.Add ("userPassword", passwordEntry.Text);
-			retVal.Add ("gidNumber", getGidNumber(pg));
 			retVal.Add ("loginShell", shellEntry.Text);
 			retVal.Add ("homeDirectory", homeDirEntry.Text);
 			retVal.Add ("displayName", displayNameEntry.Text);
