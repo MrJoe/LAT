@@ -150,6 +150,8 @@ namespace lat
 			firstNameEntry.Changed += new EventHandler (OnNameChanged);
 			lastNameEntry.Changed += new EventHandler (OnNameChanged);
 
+			displayNameEntry.FocusInEvent += new FocusInEventHandler (OnDisplayNameFocusIn);
+
 			passwordButton.Clicked += new EventHandler (OnPasswordClicked);
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
@@ -162,8 +164,8 @@ namespace lat
 		{
 			usernameLabel.Markup = 
 				String.Format ("<span size=\"larger\"><b>{0}</b></span>", usernameEntry.Text);
+
 			fullnameLabel.Text = String.Format ("{0} {1}", firstNameEntry.Text, lastNameEntry.Text);
-			
 		}
 
 		private void OnPasswordClicked (object o, EventArgs args)
@@ -177,7 +179,48 @@ namespace lat
 			_smbLM = pd.LMPassword;
 			_smbNT = pd.NTPassword;
 		}
+		
+		private void OnDisplayNameFocusIn (object o, EventArgs args)
+		{
+			string suid = Util.SuggestUserName (
+					firstNameEntry.Text, 
+					lastNameEntry.Text);
 
+			usernameEntry.Text = suid;
+
+			if (displayNameEntry.Text != "")
+				return;
+
+			if (initialsEntry.Text.Equals(""))
+			{
+				displayNameEntry.Text = String.Format ("{0} {1}", 
+					firstNameEntry.Text, 
+					lastNameEntry.Text);
+			}
+			else
+			{
+				String format = "";
+				if (initialsEntry.Text.EndsWith("."))
+				{
+					format = "{0} {1} {2}";
+				}
+				else
+				{
+					format = "{0} {1}. {2}";
+				}
+
+				displayNameEntry.Text = String.Format (format, 
+					firstNameEntry.Text, 
+					initialsEntry.Text, 
+					lastNameEntry.Text);
+			}
+
+			if (homeDirEntry.Text.Equals("") && !usernameEntry.Text.Equals(""))
+			{
+				homeDirEntry.Text = String.Format("/home/{0}", usernameEntry.Text);
+			}
+		}
+			
 		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
 		{
 			if (groupEntry == null)
@@ -269,6 +312,32 @@ namespace lat
 				return;
 			}
 
+			if (!Util.CheckUserName (_conn, usernameEntry.Text))
+			{
+				string format = Mono.Unix.Catalog.GetString (
+					"A user with the username '{0}' already exists!");
+
+				string msg = String.Format (format, usernameEntry.Text);
+
+				Util.MessageBox (newUserDialog, msg, MessageType.Warning);
+
+				missingValues = true;
+
+				return;
+			}
+
+			if (!Util.CheckUID (_conn, Convert.ToInt32 (uidSpinButton.Value)))
+			{
+				string msg = Mono.Unix.Catalog.GetString (
+					"The UID you have selected is already in use!");
+
+				Util.MessageBox (newUserDialog, msg, MessageType.Warning);
+
+				missingValues = true;
+
+				return;
+			}
+
 			string fullName = (string)cui["displayName"];
 
 			cui["cn"] = fullName;
@@ -319,7 +388,7 @@ namespace lat
 			if (scd.DN == "")
 				return;
 
-			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
+			string userDN = String.Format ("uid={0},{1}", (string)cui["uid"], scd.DN);
 
 			updateGroupMembership ();
 

@@ -67,6 +67,49 @@ namespace lat
 			return mods;
 		}
 
+		public static string SuggestUserName (string firstName, string lastName)
+		{
+			string retVal = "";
+
+			if (firstName.Length >= 1)
+			{
+				retVal += firstName.Substring (0,1);
+			}
+			
+			if (lastName.Length >= 6)
+			{
+				retVal += lastName.Substring (0,6);
+			}
+			else
+			{
+				retVal += lastName;
+			}
+			
+			retVal = retVal.ToLower();
+			
+			return retVal;
+		}
+
+		public static bool CheckUserName (lat.Connection conn, string name)
+		{
+			if (conn.Search(String.Format("(uid={0})", name)).Count == 0)
+			{
+				return true;
+			}
+		
+			return false;
+		}
+
+		public static bool CheckUID (lat.Connection conn, int uid)
+		{
+			if (conn.Search(String.Format("(uidNumber={0})", uid)).Count == 0)
+			{
+				return true;
+			}
+		
+			return false;
+		}
+
 		public static void MessageBox (Gtk.Window parent, string msg, MessageType mType)
 		{
 			MessageDialog resMd;

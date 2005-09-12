@@ -1,8 +1,11 @@
+	* Make sure username and UID are not in use when adding new user (Julian Oppermann)
+	* Suggest display name, username and home directory in new user dialog (Julian Oppermann)
 	* If there are profiles, show profiles tab as default in connect dialog
 	* Allow multiple group add/remove in edit user dialog
 	* Allow multiple user add/remove in group dialog
 	* Fix logic error in add/remove group code
 	* Add support for crypt(3) passwords
+	* BUGFIX [#12]: Don't crash if unable to determine next UID/GID (Julian Oppermann)
 	* BUGFIX [#11]: Parenthesis count in search filters. (Julian Oppermann)
 
 Version 0.7.1

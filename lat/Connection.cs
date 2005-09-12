@@ -221,8 +221,14 @@ namespace lat
 			}
 
 			uids.Sort ();
-
-			return (int) (uids [uids.Count - 1]) + 1;			
+			if (uids.Count == 0)
+			{
+				return 1000;
+			}
+			else
+			{
+				return (int) (uids [uids.Count - 1]) + 1;
+			}
 		}
 
 		public int GetNextGID ()
@@ -251,8 +257,14 @@ namespace lat
 			}
 
 			gids.Sort ();
-
-			return (int) (gids [gids.Count - 1]) + 1;			
+			if (gids.Count == 0)
+			{
+				return 1000;
+			}
+			else
+			{
+				return (int) (gids [gids.Count - 1]) + 1;
+			}			
 		}
 
 		public void Add (string dn, ArrayList attributes)

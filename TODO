@@ -1,4 +1,5 @@
 - Cleanup code
+- Add preferences dialog for setting directory structure
 - Find a way to change a AD users password
 - Find a way to create new AD users and groups
 - New entry templates
