@@ -1,3 +1,5 @@
+Version 0.7.2
+
 	* Make sure username and UID are not in use when adding new user (Julian Oppermann)
 	* Suggest display name, username and home directory in new user dialog (Julian Oppermann)
 	* If there are profiles, show profiles tab as default in connect dialog
