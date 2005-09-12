@@ -5,6 +5,7 @@
 	* Allow multiple user add/remove in group dialog
 	* Fix logic error in add/remove group code
 	* Add support for crypt(3) passwords
+	* BUGFIX [#13]: Add new user dialog crashes when clicking Ok
 	* BUGFIX [#12]: Don't crash if unable to determine next UID/GID (Julian Oppermann)
 	* BUGFIX [#11]: Parenthesis count in search filters. (Julian Oppermann)
 
