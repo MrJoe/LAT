@@ -331,7 +331,9 @@ namespace lat
 					string url = String.Format ("ldaps://{0}:{1}",
 						hostEntry.Text, portEntry.Text);
 
-					if (!CertificateManager.Ssl (url, connectionDialog));
+					if (!CertificateManager.Ssl (url, connectionDialog))
+					{
+					}
 				}
 			}
 			else if (notebook1.CurrentPage == 1)

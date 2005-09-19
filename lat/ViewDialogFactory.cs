@@ -38,10 +38,7 @@ namespace lat
 				{
 					if (cn.ServerType.ToLower() == "microsoft active directory")
 					{
-						if (le == null)
-							;
-//							new adUserViewDialog (cn);
-						else
+						if (le != null)
 							new adUserViewDialog (cn, le);
 					}
 					else

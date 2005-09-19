@@ -12,9 +12,11 @@ Source: 	%{name}-%{version}.tar.gz
 Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
 
 Requires: mono
+Requires: mono-data
 Requires: gtk-sharp2
 BuildRequires: mono-core
 BuildRequires: mono-devel
+BuildRequires: mono-data
 BuildRequires: gtk-sharp2
 BuildRequires: autoconf
 BuildRequires: automake
@@ -62,5 +64,8 @@ scrollkeeper-update -p /var/scrollkeeper
 %{_datadir}/application-registry/%{name}.applications
 
 %changelog
+* Mon Sep 19 2005 Loren Bandiera <lorenb@mmgsecurity.com>
+- Added depend on mono-data which contains the Novell.Directory.Ldap.dll
+	
 * Thu Feb 03 2005 Loren Bandiera <lorenb@mmgsecurity.com>
 - Initial RPM release
