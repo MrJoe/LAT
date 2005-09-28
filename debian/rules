@@ -6,6 +6,9 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# Set the shared directory to one the buildd can actually write to.
+# See Bug #324394 for reference.
+export MONO_SHARED_DIR=$(CURDIR)
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)

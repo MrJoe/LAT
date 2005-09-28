@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Guido Trotter <ultrotter@debian.org>
 Uploaders: Loren Bandiera <lorenb@mmgsecurity.com>
-Build-Depends: debhelper (>= 4.0.0), mono (>= 1.1.5), gtk-sharp2 (>= 1.9.5), scrollkeeper
+Build-Depends: debhelper (>= 4.0.0), mono (>= 1.1.5), libmono-dev (>= 1.1.5), gtk-sharp2 (>= 1.9.5), scrollkeeper, libxml-parser-perl, pkg-config
 Standards-Version: 3.6.0
 
 Package: lat
