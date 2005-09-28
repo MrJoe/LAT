@@ -8,7 +8,7 @@ Standards-Version: 3.6.0
 
 Package: lat
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: mono (>=1.1.5), gtk-sharp2, ${shlibs:Depends}, ${misc:Depends}
 Description: LDAP Administration Tool
  LAT stands for LDAP Administration Tool. The tool allows you to browse 
  LDAP-based directories and add/edit/delete entries contained within. It 

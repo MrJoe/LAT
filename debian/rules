@@ -68,7 +68,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/lat.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/lat localstatedir=/dev/null
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/lat
 
 
 # Build architecture-independent files here.
