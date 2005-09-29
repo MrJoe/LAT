@@ -33,14 +33,6 @@ namespace lat
 
 		public AboutDialog ()
 		{
-// FIXME: Should use Gtk.AboutDialog; not sure how to specify author
-//			Gtk.AboutDialog ab = new Gtk.AboutDialog ();
-//			ab.Copyright = _copy;
-//			ab.Comments = _desc;
-//			ab.Name = Defines.PACKAGE;
-//			ab.TranslatorCredits = _translators;
-//			ab.Version = Defines.VERSION;
-
 			Gnome.About ab = new Gnome.About (
 				Defines.PACKAGE,
 				Defines.VERSION,

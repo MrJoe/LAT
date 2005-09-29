@@ -38,18 +38,10 @@ namespace lat
 		[Glade.Widget] Gtk.Entry passEntry;
 		[Glade.Widget] Gtk.RadioButton encryptionRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
-		[Glade.Widget] Gtk.HBox stHBox;
-		
+		[Glade.Widget] Gtk.HBox stHBox;	
 		[Glade.Widget] Gtk.Notebook notebook1;
-
 		[Glade.Widget] TreeView profileListview; 
-		[Glade.Widget] Gtk.Button profileAddButton;
-		[Glade.Widget] Gtk.Button profileEditButton;
-		[Glade.Widget] Gtk.Button profileRemoveButton;
 		
-		[Glade.Widget] Gtk.Button connectButton;
-		[Glade.Widget] Gtk.Button closeButton;
-
 		private bool haveProfiles = false;
 		private bool useSSL = false;
 
@@ -87,25 +79,10 @@ namespace lat
 				connectionDialog.Resizable = true;
 			}
 			
-			profileListview.RowActivated += new RowActivatedHandler (OnRowDoubleClicked);
-
-			profileAddButton.Clicked += new EventHandler (OnProfileAdd);
-			profileEditButton.Clicked += new EventHandler (OnProfileEdit);
-			profileRemoveButton.Clicked += new EventHandler (OnProfileRemove);
-
 			// FIXME: SSL support
-//			encryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			encryptionRadioButton.Sensitive = false;
 			noEncryptionRadioButton.Sensitive = false;
-
-			noEncryptionRadioButton.Active = true;			
-		
-			notebook1.SwitchPage += new SwitchPageHandler (OnPageSwitch);
-
-			connectButton.Clicked += new EventHandler (OnConnectClicked);
-			closeButton.Clicked += new EventHandler (OnCloseClicked);
-
-			connectionDialog.DeleteEvent += new DeleteEventHandler (OnAppDelete);
+			noEncryptionRadioButton.Active = true;		
 		}
 
 		private void createCombo ()
@@ -146,7 +123,7 @@ namespace lat
 			return null;	
 		}
 
-		private void OnPageSwitch (object o, SwitchPageArgs args)
+		public void OnPageSwitch (object o, SwitchPageArgs args)
 		{
 			if (args.PageNum == 0)
 			{
@@ -158,7 +135,7 @@ namespace lat
 			}
 		}
 
-		private void OnRowDoubleClicked (object o, RowActivatedArgs args) 
+		public void OnRowDoubleClicked (object o, RowActivatedArgs args) 
 		{
 			Connection conn = getSelectedProfile ();
 
@@ -201,13 +178,13 @@ namespace lat
 			}
 		}
 
-		private void OnProfileAdd (object o, EventArgs args)
+		public void OnProfileAdd (object o, EventArgs args)
 		{
 			new ProfileDialog (profileManager);
 			updateProfileList ();		
 		}
 
-		private void OnProfileEdit (object o, EventArgs args)
+		public void OnProfileEdit (object o, EventArgs args)
 		{	
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
@@ -225,7 +202,7 @@ namespace lat
 		
 		}
 
-		private void OnProfileRemove (object o, EventArgs args)
+		public void OnProfileRemove (object o, EventArgs args)
 		{
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
@@ -290,8 +267,9 @@ namespace lat
 		
 			return true;
 		}
-/* FIXME: SSL support
-		private void OnEncryptionToggled (object obj, EventArgs args)
+
+/* FIXME: re-enable SSL support when Mono gets updated Novell.Directory.Ldap.dll */
+		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (encryptionRadioButton.Active)
 			{
@@ -304,8 +282,8 @@ namespace lat
 				portEntry.Text = "389";
 			}
 		}
-*/
-		private void OnConnectClicked (object o, EventArgs args) 
+
+		public void OnConnectClicked (object o, EventArgs args) 
 		{
 			Connection conn = null;
 
@@ -373,12 +351,12 @@ namespace lat
 			}
 		}
 
-		private void OnCloseClicked (object o, EventArgs args) 
+		public void OnCloseClicked (object o, EventArgs args) 
 		{
 			exitApp ();
 		}
 
-		private void OnAppDelete (object o, DeleteEventArgs args) 
+		public void OnAppDelete (object o, DeleteEventArgs args) 
 		{
 			exitApp ();
 		}

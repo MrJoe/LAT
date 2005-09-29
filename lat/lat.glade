@@ -19,6 +19,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
+  <signal name="delete_event" handler="OnAppDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox5">
@@ -41,6 +42,7 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-7</property>
+	      <signal name="clicked" handler="OnCloseClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -52,6 +54,7 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
+              <signal name="clicked" handler="OnConnectClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 
 	      <child>
 		<widget class="GtkAlignment" id="alignment2">
@@ -136,6 +139,7 @@
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
 	  <property name="enable_popup">False</property>
+          <signal name="switch_page" handler="OnPageSwitch" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 
 	  <child>
 	    <widget class="GtkVBox" id="vbox22">
@@ -553,6 +557,7 @@ you wish to connect to.</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
 			      <property name="draw_indicator">True</property>
+                              <signal name="toggled" handler="OnEncryptionToggled" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">5</property>
@@ -718,6 +723,7 @@ you wish to connect to.</property>
 		      <property name="fixed_height_mode">False</property>
 		      <property name="hover_selection">False</property>
 		      <property name="hover_expand">False</property>
+                      <signal name="row_activated" handler="OnRowDoubleClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
@@ -744,6 +750,7 @@ you wish to connect to.</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
+                      <signal name="clicked" handler="OnProfileAdd" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 
@@ -756,6 +763,7 @@ you wish to connect to.</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
+                      <signal name="clicked" handler="OnProfileEdit" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 
@@ -768,6 +776,7 @@ you wish to connect to.</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
+                      <signal name="clicked" handler="OnProfileRemove" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
@@ -7623,6 +7632,7 @@ you wish to connect to.</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
+  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox14">
@@ -7645,6 +7655,7 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+              <signal name="clicked" handler="OnCanelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -7658,6 +7669,7 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
+              <signal name="clicked" handler="OnOkClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -7838,6 +7850,7 @@ you wish to connect to.</property>
 			  <property name="use_stock">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
+                          <signal name="clicked" handler="OnAddClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">5</property>
@@ -7926,6 +7939,7 @@ you wish to connect to.</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
+                      <signal name="clicked" handler="OnRemovedClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 
@@ -7938,6 +7952,7 @@ you wish to connect to.</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
+                      <signal name="clicked" handler="OnClearClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 		</widget>

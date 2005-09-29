@@ -36,11 +36,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry dnEntry;
 		[Glade.Widget] Gtk.HBox attrClassHBox;
 		[Glade.Widget] TreeView attrListview; 
-		[Glade.Widget] Gtk.Button addButton;
-		[Glade.Widget] Gtk.Button removeButton;
-		[Glade.Widget] Gtk.Button clearButton;
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private ListStore attrListStore;
 
@@ -84,15 +79,6 @@ namespace lat
 
 			attrListStore.SetSortColumnId (0, SortType.Ascending);
 		
-			addButton.Clicked += new EventHandler (OnAddClicked);
-			clearButton.Clicked += new EventHandler (OnClearClicked);
-			removeButton.Clicked += new EventHandler (OnRemoveClicked);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			addEntryDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
-
 			addEntryDialog.Resize (300, 450);
 
 			addEntryDialog.Run ();
@@ -151,7 +137,7 @@ namespace lat
 			attrListStore.SetValue (iter, 2, args.NewText);		
 		}
 
-		private void OnAddClicked (object o, EventArgs args)
+		public void OnAddClicked (object o, EventArgs args)
 		{
 			TreeIter iter;
 				
@@ -178,13 +164,13 @@ namespace lat
 			}
 		}
 
-		private void OnClearClicked (object o, EventArgs args)
+		public void OnClearClicked (object o, EventArgs args)
 		{
 			attrListStore.Clear ();
 			_objectClass.Clear ();
 		}
 
-		private void OnRemoveClicked (object o, EventArgs args)
+		public void OnRemoveClicked (object o, EventArgs args)
 		{
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
@@ -216,7 +202,7 @@ namespace lat
 			return false;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			_dn = dnEntry.Text;
 
@@ -236,12 +222,12 @@ namespace lat
 			addEntryDialog.HideAll ();
 		}
 
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			addEntryDialog.HideAll ();
 		}
 
-		private void OnDlgDelete (object o, DeleteEventArgs args)
+		public void OnDlgDelete (object o, DeleteEventArgs args)
 		{
 			addEntryDialog.HideAll ();
 		}
