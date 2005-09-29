@@ -68,9 +68,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry proLogonScriptEntry;
 		[Glade.Widget] Gtk.Entry proLocalPathEntry;
 
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
-
 		private bool _isEdit;
 		
 		private LdapEntry _le;
@@ -177,16 +174,9 @@ namespace lat
 			ui.Autoconnect (this);
 
 			_viewDialog = adUserDialog;
-		
-			gnDisplayName.Changed += new EventHandler (OnNameChanged);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			adUserDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
-		private void OnNameChanged (object o, EventArgs args)
+		public void OnNameChanged (object o, EventArgs args)
 		{
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
@@ -228,7 +218,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cci = getCurrentContactInfo ();
 

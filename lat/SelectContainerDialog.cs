@@ -30,8 +30,6 @@ namespace lat
 		[Glade.Widget] Gtk.Dialog selectContainerDialog;
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] Gtk.Label msgLabel;
-		[Glade.Widget] Gtk.Button okButton;
-		[Glade.Widget] Gtk.Button cancelButton;
 
 		private Glade.XML ui;
 		private LdapTreeView _ldapTreeview;
@@ -48,9 +46,6 @@ namespace lat
 
 			browserScrolledWindow.AddWithViewport (_ldapTreeview);
 			browserScrolledWindow.Show ();
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
 			selectContainerDialog.Resize (350, 400);
 		}
@@ -91,14 +86,14 @@ namespace lat
 			selectContainerDialog.HideAll ();
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			_dn = _ldapTreeview.getSelectedDN ();
 
 			selectContainerDialog.HideAll ();
 		}
 	
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			selectContainerDialog.HideAll ();
 		}

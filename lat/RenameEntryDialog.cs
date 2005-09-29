@@ -34,8 +34,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry oldNameEntry;
 		[Glade.Widget] Gtk.Entry newNameEntry;
 		[Glade.Widget] Gtk.CheckButton saveOldNameCheckButton;
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private Connection _conn;
 		private string _selectedDN;
@@ -50,16 +48,11 @@ namespace lat
 
 			oldNameEntry.Text = _selectedDN;
 			
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			renameEntryDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
-
 			renameEntryDialog.Run ();
 			renameEntryDialog.Destroy ();
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			string oldDN = oldNameEntry.Text;
 			string newDN = newNameEntry.Text;
@@ -88,12 +81,12 @@ namespace lat
 			renameEntryDialog.HideAll ();
 		}
 
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			renameEntryDialog.HideAll ();
 		}
 
-		private void OnDlgDelete (object o, DeleteEventArgs args)
+		public void OnDlgDelete (object o, DeleteEventArgs args)
 		{
 			renameEntryDialog.HideAll ();
 		}

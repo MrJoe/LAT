@@ -38,12 +38,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry groupOUEntry;
 		[Glade.Widget] Gtk.Entry computerOUEntry;
 		[Glade.Widget] Gtk.Entry idmapOUEntry;
-		[Glade.Widget] Button userBrowseButton;
-		[Glade.Widget] Button groupBrowseButton;
-		[Glade.Widget] Button computerBrowseButton;
-		[Glade.Widget] Button idmapBrowseButton;
-		[Glade.Widget] Button okButton;
-		[Glade.Widget] Button cancelButton;
 
 		private Connection _conn;
 		private Glade.XML ui;
@@ -63,19 +57,11 @@ namespace lat
 			computerOUEntry.Text = "ou=Computers," + _conn.LdapRoot;
 			idmapOUEntry.Text = "ou=Idmap," + _conn.LdapRoot;
 
-			userBrowseButton.Clicked += new EventHandler (OnUserBrowseClicked);
-			groupBrowseButton.Clicked += new EventHandler (OnGroupBrowseClicked);
-			computerBrowseButton.Clicked += new EventHandler (OnComputerBrowseClicked);
-			idmapBrowseButton.Clicked += new EventHandler (OnIdmapBrowseClicked);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
 			sambaPopulateDialog.Run ();
 			sambaPopulateDialog.Destroy ();
 		}
 
-		private void OnUserBrowseClicked (object o, EventArgs args)
+		public void OnUserBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, sambaPopulateDialog);
@@ -91,7 +77,7 @@ namespace lat
 				userOUEntry.Text = scd.DN;
 		}
 
-		private void OnGroupBrowseClicked (object o, EventArgs args)
+		public void OnGroupBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, sambaPopulateDialog);
@@ -107,7 +93,7 @@ namespace lat
 				groupOUEntry.Text = scd.DN;
 		}
 
-		private void OnComputerBrowseClicked (object o, EventArgs args)
+		public void OnComputerBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, sambaPopulateDialog);
@@ -123,7 +109,7 @@ namespace lat
 				computerOUEntry.Text = scd.DN;
 		}
 
-		private void OnIdmapBrowseClicked (object o, EventArgs args)
+		public void OnIdmapBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, sambaPopulateDialog);
@@ -295,7 +281,7 @@ namespace lat
 			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			// containers
 
@@ -380,7 +366,7 @@ namespace lat
 			sambaPopulateDialog.HideAll ();
 		}
 	
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			sambaPopulateDialog.HideAll ();
 		}

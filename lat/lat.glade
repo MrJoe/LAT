@@ -1622,6 +1622,7 @@ you wish to connect to.</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
+  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox7">
@@ -1644,6 +1645,7 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+              <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -1657,6 +1659,7 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
+	      <signal name="clicked" handler="OnOkClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -7222,6 +7225,7 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -7235,6 +7239,7 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
+	      <signal name="clicked" handler="OnOkClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -12859,6 +12864,7 @@ the server.
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="has_separator">True</property>
+  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox25">
@@ -12881,6 +12887,7 @@ the server.
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -12894,6 +12901,7 @@ the server.
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
+	      <signal name="clicked" handler="OnOkClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -13200,6 +13208,7 @@ the server.
 		      <property name="has_frame">True</property>
 		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
+		      <signal name="changed" handler="OnNameChanged" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">5</property>
@@ -17385,6 +17394,7 @@ obtained by running the command 'net getlocalsid'.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -17398,6 +17408,7 @@ obtained by running the command 'net getlocalsid'.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
+	      <signal name="clicked" handler="OnOkClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -17871,6 +17882,7 @@ Make sure you are logged in as the administator.</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
+		  <signal name="clicked" handler="OnUserBrowseClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		</widget>
 	      </child>
 	    </widget>
@@ -17953,6 +17965,7 @@ Make sure you are logged in as the administator.</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
+	          <signal name="clicked" handler="OnGroupBrowseClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		</widget>
 	      </child>
 	    </widget>
@@ -18035,6 +18048,7 @@ Make sure you are logged in as the administator.</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
+		  <signal name="clicked" handler="OnComputerBrowseClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		</widget>
 	      </child>
 	    </widget>
@@ -18117,6 +18131,7 @@ Make sure you are logged in as the administator.</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
+		  <signal name="clicked" handler="OnIdmapBrowseClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		</widget>
 	      </child>
 	    </widget>
