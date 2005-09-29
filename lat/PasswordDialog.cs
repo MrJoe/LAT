@@ -38,8 +38,6 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton md5RadioButton;
 		[Glade.Widget] Gtk.RadioButton shaRadioButton;
 		[Glade.Widget] Gtk.CheckButton useSaltCheckButton;
-		[Glade.Widget] Gtk.Button okButton;
-		[Glade.Widget] Gtk.Button cancelButton;
 
 		Glade.XML ui;
 
@@ -54,19 +52,9 @@ namespace lat
 
 			outputEntry.Sensitive = false;
 
-			passwordEntry.Changed += new EventHandler (OnPasswordChanged);
-
 			// Use SSHA by default
 			shaRadioButton.Active = true;
 			useSaltCheckButton.Active = true;
-
-			useSaltCheckButton.Toggled += new EventHandler (OnEncryptionChanged);
-			cryptRadioButton.Toggled += new EventHandler (OnEncryptionChanged);
-			md5RadioButton.Toggled += new EventHandler (OnEncryptionChanged);
-			shaRadioButton.Toggled += new EventHandler (OnEncryptionChanged);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
 			passwordDialog.Run ();
 			passwordDialog.Destroy ();
@@ -213,7 +201,7 @@ namespace lat
 			_nt = smbpass.NT;
 		}
 
-		private void OnEncryptionChanged (object o, EventArgs args)
+		public void OnEncryptionChanged (object o, EventArgs args)
 		{
 			if (cryptRadioButton.Active)
 			{
@@ -227,17 +215,17 @@ namespace lat
 			updateOutput ();
 		}
 
-		private void OnPasswordChanged (object o, EventArgs args)
+		public void OnPasswordChanged (object o, EventArgs args)
 		{
 			updateOutput ();
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			passwordDialog.HideAll ();
 		}
 
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			passwordDialog.HideAll ();
 		}

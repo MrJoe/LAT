@@ -33,8 +33,6 @@ namespace lat
 		[Glade.Widget] Gtk.Label msgLabel;
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
-		[Glade.Widget] Button okButton;
-		[Glade.Widget] Button cancelButton;
 
 		Glade.XML ui;
 
@@ -49,14 +47,11 @@ namespace lat
 
 			msgLabel.Text = msg;
 
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
 			loginDialog.Run ();
 			loginDialog.Destroy ();
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{	
 			try
 			{
@@ -75,7 +70,7 @@ namespace lat
 			loginDialog.HideAll ();
 		}
 
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			loginDialog.HideAll ();
 		}
