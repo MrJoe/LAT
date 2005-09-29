@@ -51,12 +51,7 @@ namespace lat
 		[Glade.Widget] Gtk.Label manCountryLabel;
 		[Glade.Widget] Gtk.Label manTelephoneNumberLabel;
 		[Glade.Widget] Gtk.Label manFaxNumberLabel;
-		[Glade.Widget] Gtk.Button manClearButton;
-		[Glade.Widget] Gtk.Button manChangeButton;
 
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
-	
 		private LdapEntry _le;
 		private ArrayList _modList;
 		private Hashtable _hi;
@@ -157,14 +152,6 @@ namespace lat
 			
 			manNameEntry.Sensitive = false;
 			manStreetTextView.Sensitive = false;
-
-			manClearButton.Clicked += new EventHandler (OnManClearClicked);
-			manChangeButton.Clicked += new EventHandler (OnManChangeClicked);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			editAdComputerDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private Hashtable getCurrentHostInfo ()
@@ -177,13 +164,13 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnManClearClicked (object o, EventArgs args)
+		public void OnManClearClicked (object o, EventArgs args)
 		{
 			manNameEntry.Text = "";
 			updateManagedBy ("none");
 		}
 
-		private void OnManChangeClicked (object o, EventArgs args)
+		public void OnManChangeClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, editAdComputerDialog);
@@ -206,7 +193,7 @@ namespace lat
 			}
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable chi = getCurrentHostInfo ();
 

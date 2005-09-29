@@ -36,7 +36,6 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton yesAlwaysRadio;
 		[Glade.Widget] Gtk.RadioButton yesSessionRadio;
 		[Glade.Widget] Gtk.RadioButton noRadio;
-		[Glade.Widget] Gtk.Button okButton;
 
 		public CertDialogResponse UserResponse;
 
@@ -46,17 +45,13 @@ namespace lat
 			ui.Autoconnect (this);
 
 			certInfoLabel.Text = securityInfo;
-
 			noRadio.Active = true;
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			certDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 
 			certDialog.Run ();
 			certDialog.Destroy ();
 		}
 
-		private void OnOkClicked (object o, EventArgs args) 
+		public void OnOkClicked (object o, EventArgs args) 
 		{
 			if (yesAlwaysRadio.Active)
 			{
@@ -70,10 +65,6 @@ namespace lat
 			{
 				UserResponse = CertDialogResponse.Cancel;
 			}	
-		}
-
-		private void OnDlgDelete (object o, EventArgs args) 
-		{
 		}
 	}
 }

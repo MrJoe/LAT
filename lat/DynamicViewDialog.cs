@@ -33,8 +33,6 @@ namespace lat
 
 		[Glade.Widget] Gtk.Dialog dynamicDialog;
 		[Glade.Widget] TreeView attrTreeview;
-		[Glade.Widget] Button cancelButton;
-		[Glade.Widget] Button okButton;
 
 		private ListStore attrStore;
 		private bool _isEdit;
@@ -116,11 +114,6 @@ namespace lat
 			attrStore.SetSortColumnId (0, SortType.Ascending);
 		
 			dynamicDialog.Resize (350, 400);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			dynamicDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private void OnAttributeEdit (object o, EditedArgs args)
@@ -150,7 +143,7 @@ namespace lat
 			_modList.Add (lm);
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			if (_isEdit)
 			{

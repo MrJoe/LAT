@@ -32,15 +32,9 @@ namespace lat
 		[Glade.Widget] Gtk.Dialog customViewDialog;
 		[Glade.Widget] Gtk.Entry nameEntry;
 		[Glade.Widget] Gtk.Entry filterEntry;
-		[Glade.Widget] Button searchBuilderButton;
 		[Glade.Widget] Button searchBaseButton;
-		[Glade.Widget] Button testButton;
 		[Glade.Widget] TreeView allAttrTreeview;
 		[Glade.Widget] TreeView viewAttrTreeview;
-		[Glade.Widget] Button addButton;
-		[Glade.Widget] Button removeButton;
-		[Glade.Widget] Button saveButton;
-		[Glade.Widget] Button cancelButton;
 
 		Glade.XML ui;
 
@@ -129,18 +123,10 @@ namespace lat
 
 			viewStore.SetSortColumnId (0, SortType.Ascending);
 
-			testButton.Clicked += new EventHandler (OnTestClicked);
-			addButton.Clicked += new EventHandler (OnAddClicked);
-			removeButton.Clicked += new EventHandler (OnRemoveClicked);
-			saveButton.Clicked += new EventHandler (OnSaveClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-			searchBaseButton.Clicked += new EventHandler (OnSearchBaseClicked);
-			searchBuilderButton.Clicked += new EventHandler (OnSearchBuilderClicked);
-
 			customViewDialog.Resize (350, 400);
 		}
 
-		private void OnSearchBaseClicked (object o, EventArgs args)
+		public void OnSearchBaseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, customViewDialog);
@@ -186,12 +172,12 @@ namespace lat
 			}
 		}
 
-		private void OnTestClicked (object o, EventArgs args)
+		public void OnTestClicked (object o, EventArgs args)
 		{
 			checkFilter ();
 		}
 
-		private void OnAddClicked (object o, EventArgs args)
+		public void OnAddClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -215,7 +201,7 @@ namespace lat
 			}
 		}
 
-		private void OnRemoveClicked (object o, EventArgs args)
+		public void OnRemoveClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -239,7 +225,7 @@ namespace lat
 			}			
 		}
 
-		private void OnSaveClicked (object o, EventArgs args)
+		public void OnSaveClicked (object o, EventArgs args)
 		{
 			string cols = "";
 
@@ -281,12 +267,12 @@ namespace lat
 			customViewDialog.HideAll ();
 		}
 
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			customViewDialog.HideAll ();
 		}
 
-		private void OnSearchBuilderClicked (object o, EventArgs args)
+		public void OnSearchBuilderClicked (object o, EventArgs args)
 		{
 			SearchBuilderDialog sbd = new SearchBuilderDialog ();
 			filterEntry.Text = sbd.UserFilter;
