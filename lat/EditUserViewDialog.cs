@@ -49,16 +49,12 @@ namespace lat
 		[Glade.Widget] Gtk.Entry homeDirEntry;
 		[Glade.Widget] Gtk.Entry shellEntry;
 		[Glade.Widget] Gtk.Entry passwordEntry;
-		[Glade.Widget] Gtk.Button passwordButton;
 		[Glade.Widget] Gtk.HBox comboHbox;
 
 		[Glade.Widget] Gtk.Entry mailEntry;
 		[Glade.Widget] Gtk.Entry phoneEntry;
 
 		// Groups
-		[Glade.Widget] Gtk.Button addGroupButton;
-		[Glade.Widget] Gtk.Button removeGroupButton;
-
 		[Glade.Widget] Gtk.TreeView allGroupsTreeview;
 		[Glade.Widget] Gtk.TreeView memberOfTreeview;
 
@@ -69,9 +65,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry smbProfilePathEntry;
 		[Glade.Widget] Gtk.Entry smbHomePathEntry;
 		[Glade.Widget] Gtk.Entry smbHomeDriveEntry;
-
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
 					      "userPassword", "mail", "loginShell", "cn",
@@ -356,19 +349,19 @@ namespace lat
 
 			passwordEntry.Sensitive = false;
 
-			usernameEntry.Changed += new EventHandler (OnNameChanged);
-			firstNameEntry.Changed += new EventHandler (OnNameChanged);
-			lastNameEntry.Changed += new EventHandler (OnNameChanged);
+//			usernameEntry.Changed += new EventHandler (OnNameChanged);
+//			firstNameEntry.Changed += new EventHandler (OnNameChanged);
+//			lastNameEntry.Changed += new EventHandler (OnNameChanged);
 
-			passwordButton.Clicked += new EventHandler (OnPasswordClicked);
+//			passwordButton.Clicked += new EventHandler (OnPasswordClicked);
 
-			addGroupButton.Clicked += new EventHandler (OnAddGroupClicked);
-			removeGroupButton.Clicked += new EventHandler (OnRemoveGroupClicked);
+//			addGroupButton.Clicked += new EventHandler (OnAddGroupClicked);
+//			removeGroupButton.Clicked += new EventHandler (OnRemoveGroupClicked);
 
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
+//			okButton.Clicked += new EventHandler (OnOkClicked);
+//			cancelButton.Clicked += new EventHandler (OnCancelClicked);
 
-			editUserDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+//			editUserDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private void toggleSambaWidgets (bool state)
@@ -379,7 +372,7 @@ namespace lat
 			smbHomeDriveEntry.Sensitive = state;
 		}
 
-		private void OnAddGroupClicked (object o, EventArgs args)
+		public void OnAddGroupClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -411,7 +404,7 @@ namespace lat
 
 		}
 
-		private void OnRemoveGroupClicked (object o, EventArgs args)
+		public void OnRemoveGroupClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -442,7 +435,7 @@ namespace lat
 			}
 		}
 
-		private void OnNameChanged (object o, EventArgs args)
+		public void OnNameChanged (object o, EventArgs args)
 		{
 			usernameLabel.Markup = 
 				String.Format ("<span size=\"larger\"><b>{0}</b></span>", usernameEntry.Text);
@@ -450,7 +443,7 @@ namespace lat
 			
 		}
 
-		private void OnPasswordClicked (object o, EventArgs args)
+		public void OnPasswordClicked (object o, EventArgs args)
 		{
 			PasswordDialog pd = new PasswordDialog ();
 
@@ -558,7 +551,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cui = getUpdatedUserInfo ();
 

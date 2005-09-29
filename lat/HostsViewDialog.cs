@@ -35,8 +35,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry hostNameEntry;
 		[Glade.Widget] Gtk.Entry ipEntry;
 		[Glade.Widget] Gtk.Entry descriptionEntry;
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private bool _isEdit;
 		
@@ -93,12 +91,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "hostDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = hostDialog;
-		
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			hostDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+			_viewDialog = hostDialog;		
 		}
 
 		private Hashtable getCurrentHostInfo ()
@@ -112,7 +105,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable chi = getCurrentHostInfo ();
 

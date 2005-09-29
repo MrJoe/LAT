@@ -62,9 +62,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry ozDeptEntry;
 		[Glade.Widget] Gtk.Entry ozCompanyEntry;
 
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
-
 		private bool _isPosix;
 		
 		private LdapEntry _le;
@@ -116,7 +113,6 @@ namespace lat
 			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
 			gnEmailEntry.Text = (string)_ci["mail"];
 			
-//			
 			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
 			adCityEntry.Text = (string)_ci["l"];
 			adStateEntry.Text = (string)_ci["st"];
@@ -156,7 +152,7 @@ namespace lat
 			if (missingValues)
 			{
 				missingValues = false;
-				editContactDialog.Run ();				
+				editContactDialog.Run ();
 			}
 			else
 			{
@@ -189,16 +185,9 @@ namespace lat
 					adCountryEntry.Sensitive = false;
 					break;
 			}
-
-			gnDisplayName.Changed += new EventHandler (OnNameChanged);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			editContactDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
-		private void OnNameChanged (object o, EventArgs args)
+		public void OnNameChanged (object o, EventArgs args)
 		{
 			gnNameLabel.Text = gnDisplayName.Text;		}
 
@@ -240,7 +229,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cci = getCurrentContactInfo ();
 

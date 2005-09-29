@@ -37,11 +37,7 @@ namespace lat
 		[Glade.Widget] Gtk.SpinButton groupIDSpinButton;
 		[Glade.Widget] Gtk.TreeView allUsersTreeview;
 		[Glade.Widget] Gtk.TreeView currentMembersTreeview;
-		[Glade.Widget] Gtk.Button addButton;
-		[Glade.Widget] Gtk.Button removeButton;
 		[Glade.Widget] Gtk.CheckButton enableSambaButton;
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private ListStore allUserStore;
 		private ListStore currentMemberStore;
@@ -193,18 +189,10 @@ namespace lat
 				enableSambaButton.Hide ();
 			}
 
-			addButton.Clicked += new EventHandler (OnAddClicked);
-			removeButton.Clicked += new EventHandler (OnRemoveClicked);
-			
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			groupDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
-
 			groupDialog.Resize (350, 400);			
 		}
 
-		private void OnAddClicked (object o, EventArgs args)
+		public void OnAddClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -238,7 +226,7 @@ namespace lat
 			}
 		}
 
-		private void OnRemoveClicked (object o, EventArgs args)
+		public void OnRemoveClicked (object o, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -298,7 +286,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cgi = getCurrentGroupInfo ();
 
