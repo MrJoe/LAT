@@ -42,9 +42,6 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
 		[Glade.Widget] Gtk.HBox stHBox;
 			
-		[Glade.Widget] Gtk.Button okButton;
-		[Glade.Widget] Gtk.Button cancelButton;
-
 		private bool _useSSL = false;
 		private bool _isEdit = false;
 		private ProfileManager _pm;
@@ -100,12 +97,7 @@ namespace lat
 			// FIXME: SSL support
 			encryptionRadioButton.Sensitive = false;
 			noEncryptionRadioButton.Sensitive = false;
-
-//			noEncryptionRadioButton.Toggled += new EventHandler (OnEncryptionToggled);
 			noEncryptionRadioButton.Active = true;
-			
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);	
 		}	
 
 		private static void comboSetActive (ComboBox cb, string name)
@@ -130,8 +122,8 @@ namespace lat
 
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
-/* FIXME: SSL support
-		private void OnEncryptionToggled (object obj, EventArgs args)
+/* FIXME: SSL support */
+		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (encryptionRadioButton.Active)
 			{
@@ -142,8 +134,8 @@ namespace lat
 				_useSSL = false;
 			}
 		}
-*/			
-		private void OnOkClicked (object o, EventArgs args)
+		
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			TreeIter iter;
 				
@@ -184,7 +176,7 @@ namespace lat
 			profileDialog.HideAll ();
 		}
 		
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			profileDialog.HideAll ();		
 		}

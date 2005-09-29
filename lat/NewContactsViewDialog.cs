@@ -39,9 +39,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry gnLastNameEntry;
 		[Glade.Widget] Gtk.Entry gnDisplayName;
 
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
-
 		private bool _isPosix;
 
 		private static string[] contactAttrs = { "givenName", "sn", "initials", "cn", "displayName" };
@@ -86,16 +83,9 @@ namespace lat
 					_isPosix = true;
 					break;
 			}
-
-			gnDisplayName.Changed += new EventHandler (OnNameChanged);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			newContactDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
-		private void OnNameChanged (object o, EventArgs args)
+		public void OnNameChanged (object o, EventArgs args)
 		{
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
@@ -112,7 +102,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cci = getCurrentContactInfo ();
 

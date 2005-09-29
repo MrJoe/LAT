@@ -49,12 +49,8 @@ namespace lat
 		[Glade.Widget] Gtk.Entry homeDirEntry;
 		[Glade.Widget] Gtk.Entry shellEntry;
 		[Glade.Widget] Gtk.Entry passwordEntry;
-		[Glade.Widget] Gtk.Button passwordButton;
 		[Glade.Widget] Gtk.HBox comboHbox;
 		[Glade.Widget] Gtk.CheckButton enableSambaButton;
-
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
 					      "userPassword", "initials", "loginShell", "cn",
@@ -146,21 +142,10 @@ namespace lat
 
 			passwordEntry.Sensitive = false;
 
-			usernameEntry.Changed += new EventHandler (OnNameChanged);
-			firstNameEntry.Changed += new EventHandler (OnNameChanged);
-			lastNameEntry.Changed += new EventHandler (OnNameChanged);
-
 			displayNameEntry.FocusInEvent += new FocusInEventHandler (OnDisplayNameFocusIn);
-
-			passwordButton.Clicked += new EventHandler (OnPasswordClicked);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			newUserDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
-		private void OnNameChanged (object o, EventArgs args)
+		public void OnNameChanged (object o, EventArgs args)
 		{
 			usernameLabel.Markup = 
 				String.Format ("<span size=\"larger\"><b>{0}</b></span>", usernameEntry.Text);
@@ -168,7 +153,7 @@ namespace lat
 			fullnameLabel.Text = String.Format ("{0} {1}", firstNameEntry.Text, lastNameEntry.Text);
 		}
 
-		private void OnPasswordClicked (object o, EventArgs args)
+		public void OnPasswordClicked (object o, EventArgs args)
 		{
 			PasswordDialog pd = new PasswordDialog ();
 
@@ -298,7 +283,7 @@ namespace lat
 			return retVal;
 		}
 	
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable cui = getUpdatedUserInfo ();
 

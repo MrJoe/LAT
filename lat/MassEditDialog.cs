@@ -33,16 +33,10 @@ namespace lat
 
 		[Glade.Widget] Gtk.Dialog massEditDialog;
 		[Glade.Widget] Gtk.Entry searchEntry;
-		[Glade.Widget] Gtk.Button searchButton;
 		[Glade.Widget] Gtk.Entry nameEntry;
 		[Glade.Widget] Gtk.Entry valueEntry;
 		[Glade.Widget] Gtk.HBox actionHBox;
 		[Glade.Widget] TreeView modListView; 
-		[Glade.Widget] Gtk.Button addButton;
-		[Glade.Widget] Gtk.Button removeButton;
-		[Glade.Widget] Gtk.Button clearButton;
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
 
 		private ListStore modListStore;
 		private ArrayList _modList;
@@ -74,16 +68,6 @@ namespace lat
 			col.SortColumnId = 2;
 
 			modListStore.SetSortColumnId (0, SortType.Ascending);
-		
-			addButton.Clicked += new EventHandler (OnAddClicked);
-			searchButton.Clicked += new EventHandler (OnSearchClicked);
-			clearButton.Clicked += new EventHandler (OnClearClicked);
-			removeButton.Clicked += new EventHandler (OnRemoveClicked);
-
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			massEditDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 
 			massEditDialog.Resize (300, 450);
 
@@ -105,13 +89,13 @@ namespace lat
 			actionHBox.PackStart (actionComboBox, true, true, 5);
 		}
 
-		private void OnSearchClicked (object o, EventArgs args)
+		public void OnSearchClicked (object o, EventArgs args)
 		{
 			SearchBuilderDialog sbd = new SearchBuilderDialog ();
 			searchEntry.Text = sbd.UserFilter;
 		}
 
-		private void OnAddClicked (object o, EventArgs args)
+		public void OnAddClicked (object o, EventArgs args)
 		{
 			TreeIter iter;
 				
@@ -123,13 +107,13 @@ namespace lat
 			modListStore.AppendValues (action, nameEntry.Text, valueEntry.Text);
 		}
 
-		private void OnClearClicked (object o, EventArgs args)
+		public void OnClearClicked (object o, EventArgs args)
 		{
 			modListStore.Clear ();
 			_modList.Clear ();
 		}
 
-		private void OnRemoveClicked (object o, EventArgs args)
+		public void OnRemoveClicked (object o, EventArgs args)
 		{
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
@@ -179,7 +163,7 @@ namespace lat
 			return false;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			ArrayList sr = _conn.Search (_conn.LdapRoot, searchEntry.Text);
 
@@ -194,12 +178,12 @@ namespace lat
 			massEditDialog.HideAll ();
 		}
 
-		private void OnCancelClicked (object o, EventArgs args)
+		public void OnCancelClicked (object o, EventArgs args)
 		{
 			massEditDialog.HideAll ();
 		}
 
-		private void OnDlgDelete (object o, DeleteEventArgs args)
+		public void OnDlgDelete (object o, DeleteEventArgs args)
 		{
 			massEditDialog.HideAll ();
 		}

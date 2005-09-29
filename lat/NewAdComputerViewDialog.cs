@@ -36,9 +36,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry computerNameEntry;
 		[Glade.Widget] Gtk.Entry dnsNameEntry;
 
-		[Glade.Widget] Gtk.Button cancelButton;
-		[Glade.Widget] Gtk.Button okButton;
-
 		private static string[] hostAttrs = { "cn", "dNSHostName" };
 
 		public NewAdComputerViewDialog (lat.Connection conn) : base (conn)
@@ -65,12 +62,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "newAdComputerDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = newAdComputerDialog;
-		
-			okButton.Clicked += new EventHandler (OnOkClicked);
-			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-			newAdComputerDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
+			_viewDialog = newAdComputerDialog;		
 		}
 
 		private Hashtable getCurrentHostInfo ()
@@ -83,7 +75,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void OnOkClicked (object o, EventArgs args)
+		public void OnOkClicked (object o, EventArgs args)
 		{
 			Hashtable chi = getCurrentHostInfo ();
 
