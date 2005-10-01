@@ -91,6 +91,9 @@ namespace lat
 			}
 			else
 			{
+				if (_dn == _conn.Host)
+					return;
+
 				new CreateEntryDialog (_conn, _conn.getEntry (_dn));
 			}
 
