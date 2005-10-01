@@ -237,20 +237,6 @@ namespace lat
 			objRequiredTreeview.AppendColumn ("Required Attributes", new CellRendererText (), "text", 0);
 			objOptionalTreeview.AppendColumn ("Optional Attributes", new CellRendererText (), "text", 0);
 
-			objDescriptionEntry.Editable = false;
-			objIDEntry.Editable = false;
-			objNameTextview.Editable = false;
-			objSuperiorTextview.Editable = false;
-
-			attrNameTextview.Editable = false;
-			attrSuperiorTextview.Editable = false;
-			attrDescriptionEntry.Editable = false;
-			attrIDEntry.Editable = false;
-			attrEqualityEntry.Editable = false;
-			attrOrderingEntry.Editable = false;
-			attrSubstringEntry.Editable = false;
-			attrSyntaxEntry.Editable = false;
-
 			infoVpaned1.Position = 150;
 
 			toggleInfoNotebook (false);

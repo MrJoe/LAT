@@ -3173,7 +3173,7 @@ you wish to connect to.</property>
 					    <widget class="GtkTextView" id="objNameTextview">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="overwrite">False</property>
 					      <property name="accepts_tab">True</property>
 					      <property name="justification">GTK_JUSTIFY_LEFT</property>
@@ -3251,7 +3251,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="objDescriptionEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -3321,7 +3321,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="objIDEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -3400,7 +3400,7 @@ you wish to connect to.</property>
 					    <widget class="GtkTextView" id="objSuperiorTextview">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="overwrite">False</property>
 					      <property name="accepts_tab">True</property>
 					      <property name="justification">GTK_JUSTIFY_LEFT</property>
@@ -3664,7 +3664,7 @@ you wish to connect to.</property>
 					    <widget class="GtkTextView" id="attrNameTextview">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="overwrite">False</property>
 					      <property name="accepts_tab">True</property>
 					      <property name="justification">GTK_JUSTIFY_LEFT</property>
@@ -3742,7 +3742,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="attrDescriptionEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -3812,7 +3812,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="attrIDEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -3891,7 +3891,7 @@ you wish to connect to.</property>
 					    <widget class="GtkTextView" id="attrSuperiorTextview">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="overwrite">False</property>
 					      <property name="accepts_tab">True</property>
 					      <property name="justification">GTK_JUSTIFY_LEFT</property>
@@ -4110,7 +4110,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="attrEqualityEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -4180,7 +4180,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="attrOrderingEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -4250,7 +4250,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="attrSubstringEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
@@ -4320,7 +4320,7 @@ you wish to connect to.</property>
 					<widget class="GtkEntry" id="attrSyntaxEntry">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
+					  <property name="editable">False</property>
 					  <property name="visibility">True</property>
 					  <property name="max_length">0</property>
 					  <property name="text" translatable="yes"></property>
