@@ -13,6 +13,7 @@ CSFILES = \
 	Connection.cs \
 	ConnectionProfile.cs \
 	ContactsView.cs \
+	CreateEntryDialog.cs \
 	CustomView.cs \
 	CustomViewDialog.cs \
 	CustomViewManager.cs \
@@ -35,6 +36,7 @@ CSFILES = \
 	MassEditDialog.cs \
 	NewAdComputerViewDialog.cs \
 	NewContactsViewDialog.cs \
+	NewEntryDialog.cs \
 	NewUserViewDialog.cs \
 	PasswordDialog.cs \
 	ProfileDialog.cs \

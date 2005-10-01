@@ -1,3 +1,4 @@
+	* Added support for new entry templates
 	* Code cleanup
 	* BUGFIX [#15] - RPM dependancy should contain mono-data
 

@@ -358,7 +358,9 @@ namespace lat
 
 		public void OnNewEntryActivate (object o, EventArgs args) 
 		{
-//			new AddEntryDialog (_conn);		
+			string dn = getSelectedDN ();
+
+			new NewEntryDialog (_conn, dn);
 		}
 
 		private void OnRenameActivate (object o, EventArgs args) 
@@ -422,16 +424,10 @@ namespace lat
 		private void DoPopUp()
 		{
 			Menu popup = new Menu();
-			Menu newMenu = new Menu();
-
-			MenuItem aMenuItem = new MenuItem ("A");
-			MenuItem bMenuItem = new MenuItem ("B");
-			newMenu.Append (aMenuItem);
-			newMenu.Append (bMenuItem);
 
 			ImageMenuItem newItem = new ImageMenuItem (Stock.New, new Gtk.AccelGroup(IntPtr.Zero));
-			newItem.Submenu = newMenu;
-			newItem.ShowAll ();
+			newItem.Activated += new EventHandler (OnNewEntryActivate);
+			newItem.Show ();
 			popup.Append (newItem);
 
 			MenuItem addAttrItem = new MenuItem ("Add Attribute...");
