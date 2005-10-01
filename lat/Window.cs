@@ -217,7 +217,7 @@ namespace lat
 			searchButton.Clicked += new EventHandler (OnSearchClicked);
 			filterEntry.Activated += new EventHandler (delegate (object o, EventArgs args)
 			{
-				Console.WriteLine ("HERE");
+				OnSearchClicked (o, args);
 			});
 
 			toggleButtons (false);
