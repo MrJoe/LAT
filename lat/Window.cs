@@ -37,9 +37,7 @@ namespace lat
 		[Glade.Widget] Gtk.Window mainWindow;
 		[Glade.Widget] TreeView viewsTreeview;
 		[Glade.Widget] Gtk.Entry filterEntry;
-		[Glade.Widget] Gtk.Button searchBuilderButton;
 		[Glade.Widget] Gtk.Button searchBaseButton;
-		[Glade.Widget] Gtk.Button searchButton;
 		[Glade.Widget] TreeView resultsTreeview;
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
@@ -129,9 +127,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "mainWindow", null);
 			ui.Autoconnect (this);
 
-			mainWindow.DeleteEvent += new DeleteEventHandler (OnAppDelete);
 			mainWindow.Resize (640, 480);
-
 			hpaned1.Position = 250;
 
 			// Setup views
@@ -211,11 +207,6 @@ namespace lat
 
 			resultsTreeview.RowActivated += new RowActivatedHandler (resultsRowActivated);
 			resultsTreeview.AppendColumn ("resultDN", new CellRendererText (), "text", 0);
-
-			searchBuilderButton.Clicked += new EventHandler (OnSearchBuilderClicked);
-			searchBaseButton.Clicked += new EventHandler (OnSearchBaseClicked);
-			searchButton.Clicked += new EventHandler (OnSearchClicked);
-			filterEntry.Activated += new EventHandler (OnSearchClicked);
 
 			toggleButtons (false);
 
@@ -411,7 +402,7 @@ namespace lat
 			showEntryAttributes (entry);
 		}
 
-		private void OnAppDelete (object o, DeleteEventArgs args) 
+		public void OnAppDelete (object o, DeleteEventArgs args) 
 		{	
 			Application.Quit ();
 		}
@@ -480,13 +471,13 @@ namespace lat
 			}
 		}
 
-		private void OnSearchBuilderClicked (object o, EventArgs args)
+		public void OnSearchBuilderClicked (object o, EventArgs args)
 		{
 			SearchBuilderDialog sbd = new SearchBuilderDialog ();
 			filterEntry.Text = sbd.UserFilter;
 		}
 
-		private void OnSearchClicked (object o, EventArgs args)
+		public void OnSearchClicked (object o, EventArgs args)
 		{
 			if (_searchResults != null)
 			{
@@ -509,7 +500,7 @@ namespace lat
 			}			
 		}
 
-		private void OnSearchBaseClicked (object o, EventArgs args)
+		public void OnSearchBaseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (_conn, mainWindow);

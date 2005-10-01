@@ -1847,6 +1847,7 @@ you wish to connect to.</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <signal name="delete_event" handler="OnAppDelete" last_modification_time="Sat, 01 Oct 2005 21:06:26 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox31">
@@ -1900,7 +1901,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image602">
+			<widget class="GtkImage" id="image606">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1922,7 +1923,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image603">
+			<widget class="GtkImage" id="image607">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1950,7 +1951,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image604">
+			<widget class="GtkImage" id="image608">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1972,7 +1973,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image605">
+			<widget class="GtkImage" id="image609">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2253,7 +2254,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image606">
+			<widget class="GtkImage" id="image610">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -2601,6 +2602,7 @@ you wish to connect to.</property>
 			      <property name="has_frame">True</property>
 			      <property name="invisible_char">*</property>
 			      <property name="activates_default">False</property>
+			      <signal name="activate" handler="OnSearchClicked" last_modification_time="Sat, 01 Oct 2005 21:08:17 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">5</property>
@@ -2615,6 +2617,7 @@ you wish to connect to.</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
+			      <signal name="clicked" handler="OnSearchBuilderClicked" last_modification_time="Sat, 01 Oct 2005 21:07:20 GMT"/>
 
 			      <child>
 				<widget class="GtkImage" id="image115">
@@ -2685,6 +2688,7 @@ you wish to connect to.</property>
 				  <property name="can_focus">True</property>
 				  <property name="relief">GTK_RELIEF_NORMAL</property>
 				  <property name="focus_on_click">True</property>
+				  <signal name="clicked" handler="OnSearchBaseClicked" last_modification_time="Sat, 01 Oct 2005 21:07:46 GMT"/>
 
 				  <child>
 				    <widget class="GtkImage" id="image32">
@@ -2731,6 +2735,7 @@ you wish to connect to.</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
+			      <signal name="clicked" handler="OnSearchClicked" last_modification_time="Sat, 01 Oct 2005 21:07:58 GMT"/>
 
 			      <child>
 				<widget class="GtkAlignment" id="alignment3">
