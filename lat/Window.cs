@@ -50,6 +50,7 @@ namespace lat
 		[Glade.Widget] Gtk.ToolButton propertiesToolButton;
 		[Glade.Widget] Gtk.ToolButton deleteToolButton;
 		[Glade.Widget] Gtk.ToolButton refreshToolButton;
+		[Glade.Widget] Gtk.ToolButton templateToolButton;
 		[Glade.Widget] Gtk.CheckMenuItem showAllAttributes;
 		[Glade.Widget] Gtk.RadioMenuItem userView;
 		[Glade.Widget] Gtk.RadioMenuItem groupView;
@@ -265,6 +266,8 @@ namespace lat
 			infoVpaned1.Position = 150;
 
 			toggleInfoNotebook (false);
+
+			templateToolButton.Hide ();
 		}
 
 		public void OnSearchDragBegin (object o, DragBeginArgs args)
@@ -838,6 +841,8 @@ namespace lat
 				_ldapTreeview.removeToolbarHandlers ();
 				toggleButtons (false);
 				toggleInfoNotebook (false);
+
+				templateToolButton.Hide ();
 			}
 			else if (args.PageNum == 1)
 			{
@@ -852,6 +857,7 @@ namespace lat
 				toggleButtons (true);
 				toggleInfoNotebook (false);
 
+				templateToolButton.Show ();
 				propertiesToolButton.Hide ();
 				refreshToolButton.Hide ();
 
@@ -874,6 +880,8 @@ namespace lat
 				setNameValueView ();	
 				toggleButtons (false);
 				toggleInfoNotebook (false);
+
+				templateToolButton.Hide ();
 			}
 			else if (args.PageNum == 3)
 			{
@@ -890,8 +898,17 @@ namespace lat
 				toggleInfoNotebook (true);
 
 				setInfoNotePage (-1);
+
+				templateToolButton.Hide ();
 			}
 		}
+
+		public void OnTemplatesClicked (object o, EventArgs args)
+		{
+			new TemplatesDialog (_conn);
+		}
+
+		// Menu
 
 		public void OnNewActivate (object o, EventArgs args)
 		{

@@ -1,5 +1,5 @@
 // 
-// lat - AddEntryDialog.cs
+// lat - TemplateEditorDialog.cs
 // Author: Loren Bandiera
 // Copyright 2005 MMG Security, Inc.
 //
@@ -28,61 +28,71 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace lat
 {
-	public class AddEntryDialog
+	public class TemplateEditorDialog
 	{
 		Glade.XML ui;
 
-		[Glade.Widget] Gtk.Dialog addEntryDialog;
-		[Glade.Widget] Gtk.Entry dnEntry;
+		[Glade.Widget] Gtk.Dialog templateEditorDialog;
+		[Glade.Widget] Gtk.Entry nameEntry;
 		[Glade.Widget] Gtk.HBox attrClassHBox;
-		[Glade.Widget] TreeView attrListview; 
+		[Glade.Widget] TreeView objTreeView; 
+		[Glade.Widget] TreeView attrTreeView; 
 
+		private ListStore objListStore;
 		private ListStore attrListStore;
 
 		private ArrayList _objectClass;
 		private ArrayList _attributes;
 
 		private Connection _conn;
-
-		private string _dn;
-
 		private ComboBox attrClassComboBox;
 
-		public AddEntryDialog (Connection conn)
+		public TemplateEditorDialog (Connection conn)
 		{
-			_objectClass = new ArrayList ();
-
-			_attributes = new ArrayList ();
 			_conn = conn;
 
-			ui = new Glade.XML (null, "lat.glade", "addEntryDialog", null);
+			ui = new Glade.XML (null, "lat.glade", "templateEditorDialog", null);
 			ui.Autoconnect (this);
 			
 			createCombos ();
+			setupTreeViews ();
+	
+			templateEditorDialog.Resize (640, 480);
 
-			attrListStore = new ListStore (typeof (string), typeof (string), typeof (string));
-			attrListview.Model = attrListStore;
+			templateEditorDialog.Run ();
+			templateEditorDialog.Destroy ();
+		}
+
+		private void setupTreeViews ()
+		{
+			// Object class
+			objListStore = new ListStore (typeof (string), typeof (string), typeof (string));
+			objTreeView.Model = attrListStore;
 			
 			TreeViewColumn col;
-			col = attrListview.AppendColumn ("Name", new CellRendererText (), "text", 0);
+			col = objTreeView.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
 
-			col = attrListview.AppendColumn ("Type", new CellRendererText (), "text", 1);
+			objListStore.SetSortColumnId (0, SortType.Ascending);
+
+			// Attributes
+			attrListStore = new ListStore (typeof (string), typeof (string), typeof (string));
+			attrTreeView.Model = attrListStore;
+			
+			col = attrTreeView.AppendColumn ("Name", new CellRendererText (), "text", 0);
+			col.SortColumnId = 0;
+
+			col = attrTreeView.AppendColumn ("Type", new CellRendererText (), "text", 1);
 			col.SortColumnId = 1;
 
 			CellRendererText cell = new CellRendererText ();
 			cell.Editable = true;
 			cell.Edited += new EditedHandler (OnAttributeEdit);
 
-			col = attrListview.AppendColumn ("Value", cell, "text", 2);
+			col = attrTreeView.AppendColumn ("Value", cell, "text", 2);
 			col.SortColumnId = 2;
 
 			attrListStore.SetSortColumnId (0, SortType.Ascending);
-		
-			addEntryDialog.Resize (300, 450);
-
-			addEntryDialog.Run ();
-			addEntryDialog.Destroy ();
 		}
 
 		private void createCombos ()
@@ -164,18 +174,26 @@ namespace lat
 			}
 		}
 
-		public void OnClearClicked (object o, EventArgs args)
+		public void OnObjRemoveClicked (object o, EventArgs args)
+		{
+		}
+
+		public void OnObjClearClicked (object o, EventArgs args)
+		{
+		}
+
+		public void OnAttrClearClicked (object o, EventArgs args)
 		{
 			attrListStore.Clear ();
 			_objectClass.Clear ();
 		}
 
-		public void OnRemoveClicked (object o, EventArgs args)
+		public void OnAttrRemoveClicked (object o, EventArgs args)
 		{
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
 			
-			if (attrListview.Selection.GetSelected (out model, out iter)) 
+			if (attrTreeView.Selection.GetSelected (out model, out iter)) 
 			{
 				attrListStore.Remove (ref iter);
 			}
@@ -204,6 +222,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
+/*
 			_dn = dnEntry.Text;
 
 			LdapAttribute a = new LdapAttribute ("objectClass", "top");
@@ -218,18 +237,13 @@ namespace lat
 			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
 
 			Util.AddEntry (_conn, addEntryDialog, _dn, _attributes, true);
-
-			addEntryDialog.HideAll ();
+*/
+			templateEditorDialog.HideAll ();
 		}
 
 		public void OnCancelClicked (object o, EventArgs args)
 		{
-			addEntryDialog.HideAll ();
-		}
-
-		public void OnDlgDelete (object o, DeleteEventArgs args)
-		{
-			addEntryDialog.HideAll ();
+			templateEditorDialog.HideAll ();
 		}
 	}
 }

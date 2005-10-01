@@ -422,11 +422,16 @@ namespace lat
 		private void DoPopUp()
 		{
 			Menu popup = new Menu();
+			Menu newMenu = new Menu();
+
+			MenuItem aMenuItem = new MenuItem ("A");
+			MenuItem bMenuItem = new MenuItem ("B");
+			newMenu.Append (aMenuItem);
+			newMenu.Append (bMenuItem);
 
 			ImageMenuItem newItem = new ImageMenuItem (Stock.New, new Gtk.AccelGroup(IntPtr.Zero));
-			newItem.Activated += new EventHandler (OnNewEntryActivate);
-			newItem.Show ();
-
+			newItem.Submenu = newMenu;
+			newItem.ShowAll ();
 			popup.Append (newItem);
 
 			MenuItem addAttrItem = new MenuItem ("Add Attribute...");

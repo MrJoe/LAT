@@ -46,6 +46,9 @@ CSFILES = \
 	SchemaTreeView.cs \
 	SearchBuilderDialog.cs \
 	SelectContainerDialog.cs \
+	Templates.cs \
+	TemplatesDialog.cs \
+	TemplateEditorDialog.cs \
 	UsersView.cs \
 	Util.cs \
 	View.cs \
@@ -59,7 +62,8 @@ SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 REFERENCES = \
 	Mono.Posix \
 	Mono.Security \
-	Novell.Directory.Ldap
+	Novell.Directory.Ldap \
+	System.Runtime.Serialization.Formatters.Soap
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
