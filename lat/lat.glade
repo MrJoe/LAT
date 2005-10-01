@@ -18422,15 +18422,15 @@ Make sure you are logged in as the administator.</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="removeButton">
+		<widget class="GtkButton" id="deleteButton">
 		  <property name="visible">True</property>
 		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label">gtk-remove</property>
+		  <property name="label">gtk-delete</property>
 		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
-		  <signal name="clicked" handler="OnRemoveClicked" last_modification_time="Sat, 01 Oct 2005 16:05:35 GMT"/>
+		  <signal name="clicked" handler="OnDeleteClicked" last_modification_time="Sat, 01 Oct 2005 17:57:46 GMT"/>
 		</widget>
 	      </child>
 	    </widget>

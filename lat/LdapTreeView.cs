@@ -358,7 +358,7 @@ namespace lat
 
 		public void OnNewEntryActivate (object o, EventArgs args) 
 		{
-			new AddEntryDialog (_conn);		
+//			new AddEntryDialog (_conn);		
 		}
 
 		private void OnRenameActivate (object o, EventArgs args) 

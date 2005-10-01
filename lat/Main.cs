@@ -27,6 +27,7 @@ public class Global
 {
 	public static Gnome.Program latProgram;
 	public static bool Debug = false;
+	public static TemplateManager theTemplateManager;
 }
 
 public class LdapAdministrationTool
@@ -99,6 +100,9 @@ public class LdapAdministrationTool
 
 		Application.Init ();
 
+		Global.theTemplateManager = new TemplateManager ();
+		Global.theTemplateManager.Load ();
+
 		Global.latProgram = new Program (
 			Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 
@@ -109,6 +113,7 @@ public class LdapAdministrationTool
 		new ConnectDialog ();
 		
 		Global.latProgram.Run ();
+		Global.theTemplateManager.Save ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}

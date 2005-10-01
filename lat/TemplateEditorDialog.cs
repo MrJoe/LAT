@@ -42,14 +42,49 @@ namespace lat
 		private ListStore attrListStore;
 
 		private ArrayList _objectClass;
-		private ArrayList _attributes;
+		private Template t = null;
 
 		private Connection _conn;
 		private ComboBox attrClassComboBox;
+		private bool _isEdit = false;
 
 		public TemplateEditorDialog (Connection conn)
 		{
 			_conn = conn;
+		
+			Init ();
+
+			templateEditorDialog.Run ();
+			templateEditorDialog.Destroy ();
+		}
+
+		public TemplateEditorDialog (Connection conn, Template theTemplate)
+		{
+			_conn = conn;
+			_isEdit = true;
+
+			t = theTemplate;
+
+			Init ();
+
+			nameEntry.Text = t.Name;
+			nameEntry.Sensitive = false;
+
+			foreach (string s in t.Classes)
+			{
+				objListStore.AppendValues (s);
+				_objectClass.Add (s);
+			}
+
+			showAttributes ();
+
+			templateEditorDialog.Run ();
+			templateEditorDialog.Destroy ();
+		}
+
+		private void Init ()
+		{
+			_objectClass = new ArrayList ();
 
 			ui = new Glade.XML (null, "lat.glade", "templateEditorDialog", null);
 			ui.Autoconnect (this);
@@ -58,16 +93,13 @@ namespace lat
 			setupTreeViews ();
 	
 			templateEditorDialog.Resize (640, 480);
-
-			templateEditorDialog.Run ();
-			templateEditorDialog.Destroy ();
 		}
 
 		private void setupTreeViews ()
 		{
 			// Object class
-			objListStore = new ListStore (typeof (string), typeof (string), typeof (string));
-			objTreeView.Model = attrListStore;
+			objListStore = new ListStore (typeof (string));
+			objTreeView.Model = objListStore;
 			
 			TreeViewColumn col;
 			col = objTreeView.AppendColumn ("Name", new CellRendererText (), "text", 0);
@@ -89,7 +121,7 @@ namespace lat
 			cell.Editable = true;
 			cell.Edited += new EditedHandler (OnAttributeEdit);
 
-			col = attrTreeView.AppendColumn ("Value", cell, "text", 2);
+			col = attrTreeView.AppendColumn ("Default Value", cell, "text", 2);
 			col.SortColumnId = 2;
 
 			attrListStore.SetSortColumnId (0, SortType.Ascending);
@@ -147,6 +179,42 @@ namespace lat
 			attrListStore.SetValue (iter, 2, args.NewText);		
 		}
 
+		private void showAttributes ()
+		{
+			attrListStore.Clear ();
+
+			string[] required, optional;			
+			_conn.getAllAttrs (_objectClass, out required, out optional);
+
+			foreach (string s in required)
+			{
+				if (_isEdit)
+				{
+					attrListStore.AppendValues (s, 
+						"Required", 
+						t.GetAttributeDefaultValue (s));
+				}
+				else
+				{
+					attrListStore.AppendValues (s, "Required", "");
+				}
+			}
+
+			foreach (string s in optional)
+			{
+				if (_isEdit)
+				{
+					attrListStore.AppendValues (s, 
+						"Required", 
+						t.GetAttributeDefaultValue (s));
+				}
+				else
+				{
+					attrListStore.AppendValues (s, "Optional", "");
+				}
+			}
+		}
+
 		public void OnAddClicked (object o, EventArgs args)
 		{
 			TreeIter iter;
@@ -154,38 +222,46 @@ namespace lat
 			if (!attrClassComboBox.GetActiveIter (out iter))
 				return;
 
-			attrListStore.Clear ();
-
 			string objClass = (string) attrClassComboBox.Model.GetValue (iter, 0);
+
+			if (_objectClass.Contains (objClass))
+			{
+				return;
+			}
+
 			_objectClass.Add (objClass);
+			objListStore.AppendValues (objClass);
 
-			string[] required, optional;			
-
-			_conn.getAllAttrs (_objectClass, out required, out optional);
-
-			foreach (string s in required)
-			{
-				attrListStore.AppendValues (s, "Required", "");
-			}
-
-			foreach (string s in optional)
-			{
-				attrListStore.AppendValues (s, "Optional", "");
-			}
+			showAttributes ();
 		}
 
 		public void OnObjRemoveClicked (object o, EventArgs args)
 		{
+			Gtk.TreeIter iter;
+			Gtk.TreeModel model;
+			
+			if (objTreeView.Selection.GetSelected (out model, out iter)) 
+			{
+				string objClass = (string) model.GetValue (iter, 0);
+				_objectClass.Remove (objClass);
+
+				objListStore.Remove (ref iter);
+
+				showAttributes ();
+			}
 		}
 
 		public void OnObjClearClicked (object o, EventArgs args)
 		{
+			objListStore.Clear ();
+			_objectClass.Clear ();
+
+			attrListStore.Clear ();
 		}
 
 		public void OnAttrClearClicked (object o, EventArgs args)
 		{
 			attrListStore.Clear ();
-			_objectClass.Clear ();
 		}
 
 		public void OnAttrRemoveClicked (object o, EventArgs args)
@@ -213,37 +289,38 @@ namespace lat
 			if (_name == null || _value == null || _value == "")
 				return false;
 
-			LdapAttribute attr = new LdapAttribute (_name, _value);
-
-			_attributes.Add (attr);
+			t.AddAttribute (_name, _value);
 
 			return false;
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-/*
-			_dn = dnEntry.Text;
-
-			LdapAttribute a = new LdapAttribute ("objectClass", "top");
-
-			foreach (string s in _objectClass)
+			if (_isEdit)
 			{
-				a.addValue (s);
+				t.Name = nameEntry.Text;
+				t.ClearAttributes ();
 			}
-			
-			_attributes.Add (a);
+			else
+			{
+				t = new Template (nameEntry.Text);
+			}
+
+			t.AddClass (_objectClass);	
 
 			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
 
-			Util.AddEntry (_conn, addEntryDialog, _dn, _attributes, true);
-*/
 			templateEditorDialog.HideAll ();
 		}
 
 		public void OnCancelClicked (object o, EventArgs args)
 		{
 			templateEditorDialog.HideAll ();
+		}
+
+		public Template UserTemplate
+		{
+			get { return t; }
 		}
 	}
 }

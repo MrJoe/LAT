@@ -184,6 +184,25 @@ namespace lat
 			modList.Clear ();
 		}
 
+		public static bool AskYesNo (Gtk.Window parent, string msg)
+		{
+			MessageDialog md = new MessageDialog (parent, 
+					DialogFlags.DestroyWithParent,
+					MessageType.Question, 
+					ButtonsType.YesNo, 
+					msg);
+	     
+			ResponseType result = (ResponseType)md.Run ();
+			md.Destroy ();
+
+			if (result == ResponseType.Yes)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string[] dn)
 		{
 			string msg = String.Format (

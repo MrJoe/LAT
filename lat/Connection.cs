@@ -430,10 +430,12 @@ namespace lat
 				required = (string[]) r_attrs.ToArray (typeof (string));
 				optional = (string[]) o_attrs.ToArray (typeof (string));
 			}
-			catch
+			catch (Exception e)
 			{
 				required = null;
 				optional = null;
+
+				Logger.Log.Debug ("getAllAttrs: {0}", e.Message);
 			}
 		}
 

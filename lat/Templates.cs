@@ -20,7 +20,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
@@ -34,13 +33,19 @@ namespace lat
 	{
 		private string _name;
 		private ArrayList _objClasses;
-		private NameValueCollection _attributes;
+		private Hashtable _attributes;
 
 		public Template (string name)
 		{
 			_name = name;
 			_objClasses = new ArrayList ();
-			_attributes = new NameValueCollection ();
+			_attributes = new Hashtable ();
+		}
+
+		public void AddClass (ArrayList classes)
+		{
+			_objClasses.Clear ();
+			_objClasses = classes;
 		}
 
 		public void AddClass (string name)
@@ -48,19 +53,25 @@ namespace lat
 			_objClasses.Add (name);
 		}
 
+		public void ClearAttributes ()
+		{
+			_attributes.Clear ();
+		}
+
 		public void AddAttribute (string attrName, string attrValue)
 		{
 			_attributes.Add (attrName, attrValue);
 		}
 
-		public string[] GetAttributeDefaultValues (string attrName)
+		public string GetAttributeDefaultValue (string attrName)
 		{
-			return _attributes.GetValues (attrName); 
+			return (string) _attributes [attrName]; 
 		}
 
 		public string Name
 		{
 			get { return _name; }
+			set { _name = value; }
 		}
 
 		public string[] Classes
@@ -90,21 +101,51 @@ namespace lat
 			}
 		}
 
+		public string[] GetTemplateNames ()
+		{
+			ArrayList tmp = new ArrayList ();
+
+			foreach (Template t in _templates)
+			{
+				tmp.Add (t.Name);
+			}
+
+			return (string[]) tmp.ToArray (typeof (string));
+		}
+
 		public void Add (Template t)
 		{
 			_templates.Add (t);
 		}
 
-		public void Delete (string name)
+		public void Update (Template t)
 		{
-			foreach (Template t in _templates)
+			for (int i = 0; i < _templates.Count; i++)
 			{
-				if (t.Name.Equals (name))
+				Template p = (Template) _templates[i];
+				
+				if (t.Name.Equals (p.Name))
 				{
-					_templates.Remove (t);
+					_templates[i] = t;
 					break;
 				}
 			}
+		}
+
+		public void Delete (string name)
+		{
+			ArrayList tmp = new ArrayList ();
+
+			foreach (Template t in _templates)
+			{
+				if (!t.Name.Equals (name))
+				{
+					tmp.Add (t);
+				}
+			}
+
+			_templates.Clear ();
+			_templates = tmp;
 		}
 
 		public Template Lookup (string name)
@@ -135,14 +176,17 @@ namespace lat
 
 				Logger.Log.Debug ("Load templates count: " + _templates.Count);
 			} 
-			catch {}
+			catch (Exception e)
+			{
+				Logger.Log.Debug ("TemplateManager.Load: {0}", e.Message);
+			}
 		}
 		
 		public void Save ()
 		{	
 			try
 			{
-				Logger.Log.Debug ("Save scanners count: " + _templates.Count);
+				Logger.Log.Debug ("Save templates count: " + _templates.Count);
 
 				Stream stream = File.OpenWrite (_configFile);
 			
@@ -150,7 +194,10 @@ namespace lat
 				formatter.Serialize (stream, _templates); 
 				stream.Close ();
 			}
-			catch {}
+			catch (Exception e)
+			{
+				Logger.Log.Debug ("TemplateManager.Save: {0}", e.Message);
+			}
 		}
 	}
 }

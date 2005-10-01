@@ -46,13 +46,24 @@ namespace lat
 			ui.Autoconnect (this);
 
 			setupTreeViews ();
-		
+			listTemplates ();
+
 			templatesDialog.Resize (320, 300);
 
 			templatesDialog.Run ();
 			templatesDialog.Destroy ();
 		}
 
+		private void listTemplates ()
+		{
+			_store.Clear ();
+
+			string[] names = Global.theTemplateManager.GetTemplateNames ();
+			foreach (string n in names)
+			{
+				_store.AppendValues (n);
+			}
+		}
 
 		private void setupTreeViews ()
 		{
@@ -68,19 +79,76 @@ namespace lat
 
 		public void OnRowActivated (object o, RowActivatedArgs args)
 		{
+			TreePath path = args.Path;
+			TreeIter iter;
+			
+			if (_store.GetIter (out iter, path))
+			{
+				string name = null;
+				name = (string) _store.GetValue (iter, 0);
+
+				editTemplate (name);
+			} 	
 		}
 
 		public void OnAddClicked (object o, EventArgs args)
 		{
 			TemplateEditorDialog ted = new TemplateEditorDialog (_conn);
+
+			if (ted.UserTemplate == null)
+				return;
+
+			Global.theTemplateManager.Add (ted.UserTemplate);
+			listTemplates ();
+		}
+
+		private void editTemplate (string name)
+		{
+			Template t = Global.theTemplateManager.Lookup (name);
+
+			TemplateEditorDialog ted = new TemplateEditorDialog (_conn, t);
+
+			if (ted.UserTemplate == null)
+				return;
+
+			Global.theTemplateManager.Update (ted.UserTemplate);
+			listTemplates ();
 		}
 
 		public void OnEditClicked (object o, EventArgs args)
 		{
+			Gtk.TreeIter iter;
+			Gtk.TreeModel model;
+			
+			if (templateTreeView.Selection.GetSelected (out model, out iter)) 
+			{
+				string name = (string) model.GetValue (iter, 0);
+				editTemplate (name);
+			}
 		}
 
-		public void OnRemoveClicked (object o, EventArgs args)
+		public void OnDeleteClicked (object o, EventArgs args)
 		{
+			Gtk.TreeIter iter;
+			Gtk.TreeModel model;
+			
+			if (!templateTreeView.Selection.GetSelected (out model, out iter)) 
+			{
+				return;
+			}
+
+			string name = (string) model.GetValue (iter, 0);
+			
+			string tmp = String.Format (
+				Mono.Unix.Catalog.GetString ("Are you sure you want to delete:"));
+
+			string msg = String.Format ("{0}\n\n{1}", tmp, name);
+
+			if (Util.AskYesNo (templatesDialog, msg))
+			{
+				Global.theTemplateManager.Delete (name);
+				listTemplates ();
+			}
 		}
 
 		public void OnCloseClicked (object o, EventArgs args)
