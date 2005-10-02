@@ -46,6 +46,7 @@ CSFILES = \
 	SambaPopulateDialog.cs \
 	SchemaTreeView.cs \
 	SearchBuilderDialog.cs \
+	SearchResultsTreeView.cs \
 	SelectContainerDialog.cs \
 	Templates.cs \
 	TemplatesDialog.cs \

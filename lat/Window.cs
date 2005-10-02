@@ -35,10 +35,10 @@ namespace lat
 		Glade.XML ui;
 
 		[Glade.Widget] Gtk.Window mainWindow;
-		[Glade.Widget] Gtk.ScrolledWindow viewScrolledWindow;
 		[Glade.Widget] Gtk.Entry filterEntry;
 		[Glade.Widget] Gtk.Button searchBaseButton;
-		[Glade.Widget] TreeView resultsTreeview;
+		[Glade.Widget] Gtk.ScrolledWindow viewScrolledWindow;
+		[Glade.Widget] Gtk.ScrolledWindow resultsScrolledWindow;
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
 		[Glade.Widget] TreeView valuesListview;
@@ -89,13 +89,13 @@ namespace lat
 		private ViewsTreeView _viewsTreeView;
 		private LdapTreeView _ldapTreeview;
 		private SchemaTreeView _schemaTreeview;
+		private SearchResultsTreeView _searchTreeView;
 
 		private Connection _conn;
 		private ArrayList _modList;
 		private ArrayList _searchResults = null;
 
 		private ListStore valuesStore;
-		private ListStore resultsStore;
 
 		private ListStore objRequiredStore;
 		private ListStore objOptionalStore;
@@ -106,11 +106,6 @@ namespace lat
 		private string _pasteDN = null;
 		private bool _isCopy = false;
 		
-		private static TargetEntry[] searchSourceTable = new TargetEntry[]
-		{
-			new TargetEntry ("text/plain", 0, 1),
-		};
-
 		public latWindow (Connection conn) 
 		{
 			_conn = conn;
@@ -150,22 +145,15 @@ namespace lat
 			schemaScrolledWindow.Show ();
 
 			// Setup search
+			_searchTreeView = new SearchResultsTreeView (_conn);
+			_searchTreeView.SearchResultSelected += 
+				new SearchResultSelectedHandler (OnSearchSelected);
+
+			resultsScrolledWindow.AddWithViewport (_searchTreeView);
+			resultsScrolledWindow.Show ();
+
 			searchBaseButton.Label = _conn.LdapRoot;
-
-			resultsStore = new ListStore (typeof (string));
-			resultsTreeview.Model = resultsStore;
-
-			resultsTreeview.RowActivated += new RowActivatedHandler (resultsRowActivated);
-			resultsTreeview.AppendColumn ("resultDN", new CellRendererText (), "text", 0);
-
 			toggleButtons (false);
-
-			Gtk.Drag.SourceSet (resultsTreeview, 
-				Gdk.ModifierType.Button1Mask | Gdk.ModifierType.Button3Mask, 
-				searchSourceTable, Gdk.DragAction.Copy | DragAction.Move);
-
-			resultsTreeview.DragBegin += new DragBeginHandler (OnSearchDragBegin);
-			resultsTreeview.DragDataGet += new DragDataGetHandler (OnSearchDragDataGet);
 
 			// status bar
 			updateStatusBar ();
@@ -210,29 +198,12 @@ namespace lat
 			changeView (args.Name);
 		}
 
-		public void OnSearchDragBegin (object o, DragBeginArgs args)
+		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
 		{
-			// FIXME: change icon
-			// FIXME: Drag.SetIconPixbuf (args.Context, <obj>, 0, 0);
-		}
+			LdapEntry entry = _conn.getEntry (args.DN);
 
-		public void OnSearchDragDataGet (object o, DragDataGetArgs args)
-		{
-			Gtk.TreeModel model;
-			Gtk.TreeIter iter;
-
-			if (!resultsTreeview.Selection.GetSelected (out model, out iter))
-				return;
-
-			string dn = (string) model.GetValue (iter, 0);
-			string data = null;
-
-			Util.ExportData (_conn, dn, out data);
-
-			Atom[] targets = args.Context.Targets;
-
-			args.SelectionData.Set (targets[0], 8,
-				System.Text.Encoding.UTF8.GetBytes (data));
+			if (entry != null)
+				showEntryAttributes (entry);
 		}
 
 		private void updateStatusBar ()
@@ -386,7 +357,7 @@ namespace lat
 			}
 			else if (viewNotebook.CurrentPage == 2)
 			{
-				dn = getSelectedSearchResult ();
+				dn = _searchTreeView.SelectedResult;
 			}
 		
 			if (dn == null)
@@ -407,22 +378,6 @@ namespace lat
 			applyButton.Sensitive = true;		
 		}
 		
-		private void updateSearchResults ()
-		{
-			resultsStore.Clear ();
-
-			if (!(_searchResults.Count > 0))
-			{
-				resultsStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("No matches found."));
-			}
-			
-			foreach (LdapEntry le in _searchResults)
-			{
-				resultsStore.AppendValues (le.DN);
-			}
-		}
-
 		public void OnSearchBuilderClicked (object o, EventArgs args)
 		{
 			SearchBuilderDialog sbd = new SearchBuilderDialog ();
@@ -442,7 +397,7 @@ namespace lat
 
 			if (_searchResults != null)
 			{
-				updateSearchResults ();
+				_searchTreeView.UpdateSearchResults (_searchResults);
 			}
 			else
 			{
@@ -689,7 +644,7 @@ namespace lat
 				 (_viewsTreeView.CurrentView.OnRefreshActivate);
 		}
 
-		private void changeView (string name)
+		private void cleanupView ()
 		{
 			if (_viewsTreeView.CurrentView != null)
 			{
@@ -698,6 +653,11 @@ namespace lat
 				_viewsTreeView.CurrentView.removeHandlers ();
 				_viewsTreeView.CurrentView = null;
 			}
+		}
+
+		private void changeView (string name)
+		{
+			cleanupView ();
 
 			_viewsTreeView.CurrentView = 
 				_viewsTreeView.theViewFactory.Create (name);
@@ -705,7 +665,7 @@ namespace lat
 			if (_viewsTreeView.CurrentView != null)
 			{
 				_viewsTreeView.CurrentView.Populate ();
-		}
+			}
 
 			newToolButton.Clicked += new EventHandler
 				(_viewsTreeView.CurrentView.OnNewEntryActivate);
@@ -720,28 +680,6 @@ namespace lat
 				(_viewsTreeView.CurrentView.OnRefreshActivate);
 
 			toggleButtons (true);
-		}
-
-		private string getSelectedSearchResult ()
-		{
-			TreeModel model;
-			TreeIter iter;
-
-			if (!resultsTreeview.Selection.GetSelected (out model, out iter))
-				return null;
-			
-			string name = null;
-			name = (string) resultsStore.GetValue (iter, 0);
-
-			return name;
-		}
-
-		private void resultsRowActivated (object o, RowActivatedArgs args)
-		{
-			LdapEntry entry = _conn.getEntry (getSelectedSearchResult());
-
-			if (entry != null)
-				showEntryAttributes (entry);
 		}
 
 		private void clearValues ()
@@ -772,13 +710,7 @@ namespace lat
 			}
 			else if (args.PageNum == 1)
 			{
-				if (_viewsTreeView.CurrentView != null)
-				{
-					removeButtonHandlers ();
-					_viewsTreeView.CurrentView.removeHandlers ();
-					_viewsTreeView.CurrentView.removeDndHandlers ();
-					_viewsTreeView.CurrentView = null;
-				}
+				cleanupView ();
 
 				toggleButtons (true);
 				toggleInfoNotebook (false);
@@ -793,13 +725,7 @@ namespace lat
 			}
 			else if (args.PageNum == 2)
 			{
-				if (_viewsTreeView.CurrentView != null)
-				{
-					removeButtonHandlers ();
-					_viewsTreeView.CurrentView.removeHandlers ();
-					_viewsTreeView.CurrentView.removeDndHandlers ();
-					_viewsTreeView.CurrentView = null;
-				}
+				cleanupView ();
 
 				_ldapTreeview.removeToolbarHandlers ();
 
@@ -811,13 +737,7 @@ namespace lat
 			}
 			else if (args.PageNum == 3)
 			{
-				if (_viewsTreeView.CurrentView != null)
-				{
-					removeButtonHandlers ();
-					_viewsTreeView.CurrentView.removeHandlers ();
-					_viewsTreeView.CurrentView.removeDndHandlers ();
-					_viewsTreeView.CurrentView = null;
-				}
+				cleanupView ();
 
 				toggleButtons (false);
 
