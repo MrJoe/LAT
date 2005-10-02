@@ -1872,7 +1872,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="New">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-new</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnNewActivate" last_modification_time="Tue, 05 Jul 2005 10:28:28 GMT"/>
 		    </widget>
 		  </child>
@@ -1881,7 +1881,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="Delete">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-delete</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnDeleteActivate" last_modification_time="Tue, 05 Jul 2005 10:28:41 GMT"/>
 		    </widget>
 		  </child>
@@ -2011,7 +2011,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="quit">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-quit</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnQuitActivate" last_modification_time="Thu, 24 Feb 2005 15:40:49 GMT"/>
 		    </widget>
 		  </child>
@@ -2033,7 +2033,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="cut">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-cut</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnCutActivate" last_modification_time="Sun, 27 Feb 2005 17:31:44 GMT"/>
 		    </widget>
 		  </child>
@@ -2042,7 +2042,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="copy">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-copy</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnCopyActivate" last_modification_time="Sun, 27 Feb 2005 17:31:44 GMT"/>
 		    </widget>
 		  </child>
@@ -2051,7 +2051,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="paste">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-paste</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnPasteActivate" last_modification_time="Sun, 27 Feb 2005 17:32:05 GMT"/>
 		    </widget>
 		  </child>
@@ -2081,7 +2081,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="Properties">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-properties</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnPropertiesActivate" last_modification_time="Fri, 08 Jul 2005 20:08:04 GMT"/>
 		    </widget>
 		  </child>
@@ -2227,7 +2227,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="Refresh">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-refresh</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnRefreshActivate" last_modification_time="Tue, 05 Jul 2005 10:43:17 GMT"/>
 		    </widget>
 		  </child>
@@ -2271,7 +2271,7 @@ you wish to connect to.</property>
 		    <widget class="GtkImageMenuItem" id="about1">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-about</property>
-		      <property name="use_stock">True</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnAboutActivate" last_modification_time="Thu, 24 Feb 2005 15:41:47 GMT"/>
 		    </widget>
 		  </child>
@@ -11231,7 +11231,7 @@ the server.
 		      <property name="has_frame">True</property>
 		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
-		      <signal name="changed" handler="OnNameClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
+		      <signal name="changed" handler="OnNameChanged" last_modification_time="Sun, 02 Oct 2005 14:52:08 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">5</property>
@@ -15342,7 +15342,7 @@ the server.
 		  <property name="has_frame">True</property>
 		  <property name="invisible_char">*</property>
 		  <property name="activates_default">False</property>
-		  <signal name="changed" handler="OnNameClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
+		  <signal name="changed" handler="OnNameChanged" last_modification_time="Sun, 02 Oct 2005 14:50:09 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>

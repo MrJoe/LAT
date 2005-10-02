@@ -189,7 +189,8 @@ namespace lat
 
 		public void OnNameChanged (object o, EventArgs args)
 		{
-			gnNameLabel.Text = gnDisplayName.Text;		}
+			gnNameLabel.Text = gnDisplayName.Text;
+		}
 
 		private Hashtable getCurrentContactInfo ()
 		{
