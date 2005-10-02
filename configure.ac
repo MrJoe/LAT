@@ -1,4 +1,4 @@
-AC_INIT(lat, 0.7.2, lorenb@mmgsecurity.com)
+AC_INIT(lat, 0.7.3, lorenb@mmgsecurity.com)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
@@ -40,6 +40,9 @@ PKG_CHECK_MODULES(GTKSHARP,
 
 AC_SUBST(GTKSHARP_LIBS)
 
+dnl gnome-keyring is needed, but only at runtime. Oh well, good to check for it nonetheless
+PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
+
 dnl Check for Mono
 AC_PATH_PROG(MCS, mcs)
 AC_PATH_PROG(MONO, mono)
@@ -65,6 +68,7 @@ Makefile
 lat.spec
 debian/Makefile
 desktop/Makefile
+gnome-keyring-glue/Makefile
 lat/AssemblyInfo.cs
 lat/Defines.cs
 lat/Makefile

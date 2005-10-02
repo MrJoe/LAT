@@ -1,6 +1,10 @@
+Version 0.7.3
+
 	* Added New entry templates
 	* Added support for more Samba attributes in User view
+	* Re-enabled GNOME Keyring support
 	* Move signal definitions into .glade file where possible
+	* Code cleanup
 	* BUGFIX [#15] - RPM dependancy should contain mono-data
 
 Version 0.7.2

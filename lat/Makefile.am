@@ -11,7 +11,6 @@ CSFILES = \
 	CertMgr.cs \
 	ConnectDialog.cs \
 	Connection.cs \
-	ConnectionProfile.cs \
 	ContactsView.cs \
 	CreateEntryDialog.cs \
 	CustomView.cs \
@@ -64,6 +63,7 @@ CSFILES = \
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
 REFERENCES = \
+	../gnome-keyring-glue/gnome-keyring-glue.dll \
 	Mono.Posix \
 	Mono.Security \
 	Novell.Directory.Ldap \

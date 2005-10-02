@@ -360,8 +360,14 @@ wish to make.</para>
 	 <sect2 id="lat-files-profiles"> 
 		<title>profiles.xml</title>
 		<para>$HOME/.lat/profiles.xml</para>
-		<para>Contains the users saved connection profiles. This includes paswords which are
-saved in plaintext. Eventually passwords will be stored in the users' GNOME keyring database.
+		<para>Contains the users saved connection profiles. Passwords are stored in the users' GNOME keyring database.</para>
+	</sect2>
+
+<!-- ============= templates.xml  ======================== -->
+	 <sect2 id="lat-files-templates"> 
+		<title>templates.xml</title>
+		<para>$HOME/.lat/templates.xml</para>
+		<para>Contains information on the users new entry templates.</para>
 	</sect2>
 
 <!-- ============= views.xml  ======================== -->

@@ -22,9 +22,34 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Xml;
+using GnomeKeyring;
 
 namespace lat
 {
+	public struct ConnectionProfile 
+	{
+		public string Name;
+		public string Host;
+		public int Port;
+		public string LdapRoot;
+		public string User;
+		public string Pass;
+		public bool SSL;
+		public string ServerType;
+
+		public ConnectionProfile (string name, string host, int port, string ldapRoot, string user, string pass, bool ssl, string serverType)
+		{
+			Name = name;
+			Host = host;
+			Port = port;
+			LdapRoot = ldapRoot;
+			User = user;
+			Pass = pass;
+			SSL = ssl;
+			ServerType = serverType;
+		}
+	}
+
 	public class ProfileManager 
 	{
 		private string _configFile;
@@ -97,22 +122,38 @@ namespace lat
 				XmlTextReader r = new XmlTextReader (_configFile);
 				
 				while (r.Read()) 
-				{	
-							
-					if (r.Name == "profile") 
-					{								
-						ConnectionProfile cp = new ConnectionProfile (
-							r.GetAttribute ("name"),
-							r.GetAttribute ("host"),
-							int.Parse (r.GetAttribute ("port")),
-							r.GetAttribute ("base"),
-							r.GetAttribute ("user"),
-							r.GetAttribute ("pass"),
-							bool.Parse (r.GetAttribute ("ssl")),
-							r.GetAttribute ("server_type"));
+				{						
+					if (!(r.Name == "profile")) 
+						continue;
+
+					ConnectionProfile cp = new ConnectionProfile (
+						r.GetAttribute ("name"),
+						r.GetAttribute ("host"),
+						int.Parse (r.GetAttribute ("port")),
+						r.GetAttribute ("base"),
+						r.GetAttribute ("user"),
+						"",
+						bool.Parse (r.GetAttribute ("ssl")),
+						r.GetAttribute ("server_type"));
+
+					GnomeKeyring.Result gkr;
+					NetworkPasswordData[] list;
+
+					gkr = GnomeKeyring.Global.FindNetworkPassword (
+						cp.User, out list );
+
+					Logger.Log.Debug ("gnome-keyring-result: {0}", gkr);
+						
+					foreach (NetworkPasswordData i in list) 
+					{
+						Logger.Log.Debug (
+						  "Got password for: {0}://{1}:{2}/",
+						  i.Protocol, i.Server, i.Port);
+
+						cp.Pass = i.Password;
+					}
 			
-						_profiles.Add (cp.Name, cp);	
-					} 
+					_profiles.Add (cp.Name, cp);
 			 	}
 			 			
 			 	r.Close ();
@@ -123,6 +164,11 @@ namespace lat
 			}
 		}
 		
+		private static void myCallback (Result result, uint val) 
+		{
+			Logger.Log.Debug ("gnome-keyring-callback: result: {0} - ID: {1}", result, val);
+		}
+
 		public void saveProfiles ()	
 		{	
 			XmlTextWriter writer = new XmlTextWriter(_configFile,
@@ -144,11 +190,21 @@ namespace lat
 				writer.WriteAttributeString ("port", cp.Port.ToString());
 				writer.WriteAttributeString ("base", cp.LdapRoot);
 				writer.WriteAttributeString ("user", cp.User);
-				writer.WriteAttributeString ("pass", cp.Pass);
 				writer.WriteAttributeString ("ssl", cp.SSL.ToString());
 				writer.WriteAttributeString ("server_type", cp.ServerType);
 				
 	        		writer.WriteEndElement();
+
+				OperationGetIntCallback theCallback = new OperationGetIntCallback (myCallback);
+
+				GnomeKeyring.Global.SetNetworkPassword(
+					cp.User,			// user
+					cp.Host,			// server 
+					"ldap", 			// protocol
+					(uint)cp.Port, 			// port
+					cp.Pass,	 		// password
+					theCallback 			// callback
+				);
 			}
 	    		
 			writer.WriteEndElement();
