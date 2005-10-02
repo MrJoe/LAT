@@ -1,6 +1,6 @@
 	* Added New entry templates
 	* Added support for more Samba attributes in User view
-	* Code cleanup
+	* Move signal definitions into .glade file where possible
 	* BUGFIX [#15] - RPM dependancy should contain mono-data
 
 Version 0.7.2
