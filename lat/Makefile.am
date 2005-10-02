@@ -57,6 +57,7 @@ CSFILES = \
 	ViewDialog.cs \
 	ViewDialogFactory.cs \
 	ViewFactory.cs \
+	ViewsTreeView.cs \
 	Window.cs
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))

@@ -35,7 +35,7 @@ namespace lat
 		Glade.XML ui;
 
 		[Glade.Widget] Gtk.Window mainWindow;
-		[Glade.Widget] TreeView viewsTreeview;
+		[Glade.Widget] Gtk.ScrolledWindow viewScrolledWindow;
 		[Glade.Widget] Gtk.Entry filterEntry;
 		[Glade.Widget] Gtk.Button searchBaseButton;
 		[Glade.Widget] TreeView resultsTreeview;
@@ -86,6 +86,7 @@ namespace lat
 		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
 		[Glade.Widget] Gnome.AppBar appBar;
 
+		private ViewsTreeView _viewsTreeView;
 		private LdapTreeView _ldapTreeview;
 		private SchemaTreeView _schemaTreeview;
 
@@ -93,20 +94,11 @@ namespace lat
 		private ArrayList _modList;
 		private ArrayList _searchResults = null;
 
-		private TreeStore viewsStore;
 		private ListStore valuesStore;
 		private ListStore resultsStore;
 
 		private ListStore objRequiredStore;
 		private ListStore objOptionalStore;
-
-		private TreeIter viewRootIter;
-		private TreeIter viewCustomIter;
-
-		private Hashtable customIters = new Hashtable ();
-
-		private static ViewFactory viewFactory;
-		private lat.View _currentView = null;
 
 		private string _cutDN = null;
 		private TreeIter _cutIter;
@@ -131,58 +123,16 @@ namespace lat
 			hpaned1.Position = 250;
 
 			// Setup views
-			viewFactory = new ViewFactory (valuesStore, valuesListview, 
-							mainWindow, _conn);
-	
-			viewsStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
-			viewsTreeview.Model = viewsStore;
+			_viewsTreeView = new ViewsTreeView (
+				_conn, 
+				mainWindow, 
+				valuesStore, 
+				valuesListview);
 
-			viewsTreeview.RowActivated += new RowActivatedHandler (viewRowActivated);
-			viewsTreeview.AppendColumn ("viewsIcon", new CellRendererPixbuf (), "pixbuf", 0);
-			viewsTreeview.AppendColumn ("viewsRoot", new CellRendererText (), "text", 1);
+			_viewsTreeView.ViewSelected += new ViewSelectedHandler (OnViewSelected);
 
-			Gdk.Pixbuf pb = mainWindow.RenderIcon (Gtk.Stock.Convert, IconSize.Menu, "");
-
-			viewRootIter = viewsStore.AppendValues (pb, _conn.Host);
-
-			pb = mainWindow.RenderIcon (Gtk.Stock.Open, IconSize.Menu, "");
-
-			if (conn.ServerType.ToLower() == "microsoft active directory")
-			{
-				viewsStore.AppendValues (viewRootIter, pb, "Computers");
-				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
-				viewsStore.AppendValues (viewRootIter, pb, "Groups");
-				viewsStore.AppendValues (viewRootIter, pb, "Users");
-			}
-			else if (conn.ServerType.ToLower() == "generic ldap server" ||
-				 conn.ServerType.ToLower() == "openldap")
-			{
-				viewsStore.AppendValues (viewRootIter, pb, "Computers");
-				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
-				viewsStore.AppendValues (viewRootIter, pb, "Groups");
-				viewsStore.AppendValues (viewRootIter, pb, "Users");
-			}
-
-			viewCustomIter = viewsStore.AppendValues (viewRootIter, pb, 
-				"Custom Views");
-
-			CustomViewManager cvm = new CustomViewManager ();
-			string[] views = cvm.getViewNames ();
-
-			foreach (string v in views)
-			{
-				TreeIter citer;
-
-				citer = viewsStore.AppendValues (viewCustomIter, pb, v);
-				customIters.Add (v, citer);
-			}
-
-			customIters.Add ("root", viewCustomIter);
-
-			viewFactory._viewStore = viewsStore;
-			viewFactory._ti = customIters;
-			
-			viewsTreeview.ExpandAll ();
+			viewScrolledWindow.AddWithViewport (_viewsTreeView);
+			viewScrolledWindow.Show ();
 
 			// Setup browser			
 			_ldapTreeview = new LdapTreeView (_conn, mainWindow);
@@ -224,7 +174,6 @@ namespace lat
 			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
 
 			applyButton.Sensitive = false;
-			applyButton.Clicked += new EventHandler (OnApplyClicked);
 
 			// setup schema
 
@@ -242,6 +191,23 @@ namespace lat
 			toggleInfoNotebook (false);
 
 			templateToolButton.Hide ();
+		}
+
+		public void OnViewSelected (object o, ViewSelectedEventArgs args)
+		{
+			clearValues ();
+
+			if (args.Name.Equals (_conn.Host))
+			{
+				// FIXME: Need a way to remove the handlers
+
+				setNameValueView ();
+				showConnectionAttributes ();
+
+				return;
+			}
+
+			changeView (args.Name);
 		}
 
 		public void OnSearchDragBegin (object o, DragBeginArgs args)
@@ -501,7 +467,7 @@ namespace lat
 				searchBaseButton.Label = scd.DN;
 		}
 
-		private void OnApplyClicked (object o, EventArgs args)
+		public void OnApplyClicked (object o, EventArgs args)
 		{
 			string dn = _ldapTreeview.getSelectedDN ();
 
@@ -710,64 +676,50 @@ namespace lat
 
 		private void removeButtonHandlers ()
 		{
-			newToolButton.Clicked -= new EventHandler (_currentView.OnNewEntryActivate);
-			propertiesToolButton.Clicked -= new EventHandler (_currentView.OnEditActivate);
-			deleteToolButton.Clicked -= new EventHandler (_currentView.OnDeleteActivate);
-			refreshToolButton.Clicked -= new EventHandler (_currentView.OnRefreshActivate);
+			newToolButton.Clicked -= new EventHandler
+				 (_viewsTreeView.CurrentView.OnNewEntryActivate);
+
+			propertiesToolButton.Clicked -= new EventHandler
+				 (_viewsTreeView.CurrentView.OnEditActivate);
+
+			deleteToolButton.Clicked -= new EventHandler
+				 (_viewsTreeView.CurrentView.OnDeleteActivate);
+
+			refreshToolButton.Clicked -= new EventHandler
+				 (_viewsTreeView.CurrentView.OnRefreshActivate);
 		}
 
 		private void changeView (string name)
 		{
-			if (_currentView != null)
+			if (_viewsTreeView.CurrentView != null)
 			{
 				removeButtonHandlers ();
-				_currentView.removeDndHandlers ();
-				_currentView.removeHandlers ();
-				_currentView = null;
+				_viewsTreeView.CurrentView.removeDndHandlers ();
+				_viewsTreeView.CurrentView.removeHandlers ();
+				_viewsTreeView.CurrentView = null;
 			}
 
-			lat.View _view = viewFactory.Create (name);
-			_currentView = _view;
+			_viewsTreeView.CurrentView = 
+				_viewsTreeView.theViewFactory.Create (name);
 
-			if (_view != null)
+			if (_viewsTreeView.CurrentView != null)
 			{
-				_view.Populate ();
-			}
-
-			newToolButton.Clicked += new EventHandler (_currentView.OnNewEntryActivate);
-			propertiesToolButton.Clicked += new EventHandler (_currentView.OnEditActivate);
-			deleteToolButton.Clicked += new EventHandler (_currentView.OnDeleteActivate);
-			refreshToolButton.Clicked += new EventHandler (_currentView.OnRefreshActivate);
-
-			toggleButtons (true);
+				_viewsTreeView.CurrentView.Populate ();
 		}
 
-		private void viewRowActivated (object o, RowActivatedArgs args)
-		{
-			TreePath path = args.Path;
-			TreeIter iter;
-			
-			if (viewsStore.GetIter (out iter, path))
-			{
-				string name = null;
-				name = (string) viewsStore.GetValue (iter, 1);
+			newToolButton.Clicked += new EventHandler
+				(_viewsTreeView.CurrentView.OnNewEntryActivate);
 
-				if (name.Equals (_conn.Host))
-				{
-					clearValues ();
+			propertiesToolButton.Clicked += new EventHandler
+				(_viewsTreeView.CurrentView.OnEditActivate);
 
-					// FIXME: Need a way to remove the handlers
+			deleteToolButton.Clicked += new EventHandler
+				(_viewsTreeView.CurrentView.OnDeleteActivate);
 
-					setNameValueView ();
-					showConnectionAttributes ();
+			refreshToolButton.Clicked += new EventHandler
+				(_viewsTreeView.CurrentView.OnRefreshActivate);
 
-					return;
-				}
-
-				clearValues ();
-
-				changeView (name);
-			}
+			toggleButtons (true);
 		}
 
 		private string getSelectedSearchResult ()
@@ -820,12 +772,12 @@ namespace lat
 			}
 			else if (args.PageNum == 1)
 			{
-				if (_currentView != null)
+				if (_viewsTreeView.CurrentView != null)
 				{
 					removeButtonHandlers ();
-					_currentView.removeHandlers ();
-					_currentView.removeDndHandlers ();
-					_currentView = null;
+					_viewsTreeView.CurrentView.removeHandlers ();
+					_viewsTreeView.CurrentView.removeDndHandlers ();
+					_viewsTreeView.CurrentView = null;
 				}
 
 				toggleButtons (true);
@@ -841,12 +793,12 @@ namespace lat
 			}
 			else if (args.PageNum == 2)
 			{
-				if (_currentView != null)
+				if (_viewsTreeView.CurrentView != null)
 				{
 					removeButtonHandlers ();
-					_currentView.removeHandlers ();
-					_currentView.removeDndHandlers ();
-					_currentView = null;
+					_viewsTreeView.CurrentView.removeHandlers ();
+					_viewsTreeView.CurrentView.removeDndHandlers ();
+					_viewsTreeView.CurrentView = null;
 				}
 
 				_ldapTreeview.removeToolbarHandlers ();
@@ -859,12 +811,12 @@ namespace lat
 			}
 			else if (args.PageNum == 3)
 			{
-				if (_currentView != null)
+				if (_viewsTreeView.CurrentView != null)
 				{
 					removeButtonHandlers ();
-					_currentView.removeHandlers ();
-					_currentView.removeDndHandlers ();
-					_currentView = null;
+					_viewsTreeView.CurrentView.removeHandlers ();
+					_viewsTreeView.CurrentView.removeDndHandlers ();
+					_viewsTreeView.CurrentView = null;
 				}
 
 				toggleButtons (false);
@@ -888,8 +840,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_currentView != null)
-					_currentView.OnNewEntryActivate (o, args);
+				if (_viewsTreeView.CurrentView != null)
+					_viewsTreeView.CurrentView.OnNewEntryActivate (o, args);
 			}
 			else if (viewNotebook.CurrentPage == 1)
 			{
@@ -901,8 +853,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_currentView != null)
-					_currentView.OnDeleteActivate (o, args);
+				if (_viewsTreeView.CurrentView != null)
+					_viewsTreeView.CurrentView.OnDeleteActivate (o, args);
 			}
 			else if (viewNotebook.CurrentPage == 1)
 			{
@@ -914,8 +866,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_currentView != null)
-					_currentView.OnEditActivate (o, args);
+				if (_viewsTreeView.CurrentView != null)
+					_viewsTreeView.CurrentView.OnEditActivate (o, args);
 			}
 		}
 
@@ -923,8 +875,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_currentView != null)
-					_currentView.OnRefreshActivate (o, args);
+				if (_viewsTreeView.CurrentView != null)
+					_viewsTreeView.CurrentView.OnRefreshActivate (o, args);
 			}
 		}
 
