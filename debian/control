@@ -3,12 +3,12 @@ Section: net
 Priority: optional
 Maintainer: Loren Bandiera <lorenb@mmgsecurity.com>
 Uploaders: Loren Bandiera <lorenb@mmgsecurity.com>
-Build-Depends: debhelper (>= 4.0.0), mono (>= 1.1.5), libmono-dev (>= 1.1.5), gtk-sharp2 (>= 1.9.5), scrollkeeper, libxml-parser-perl, pkg-config
+Build-Depends: debhelper (>= 4.0.0), mono (>= 1.1.5), libmono-dev (>= 1.1.5), gtk-sharp2 (>= 1.9.5), libgnome-keyring-dev, scrollkeeper, libxml-parser-perl, pkg-config
 Standards-Version: 3.6.0
 
 Package: lat
 Architecture: any
-Depends: mono (>=1.1.5), gtk-sharp2, ${shlibs:Depends}, ${misc:Depends}
+Depends: mono (>=1.1.5), gtk-sharp2, libgnome-keyring-dev, ${shlibs:Depends}, ${misc:Depends}
 Description: LDAP Administration Tool
  LAT stands for LDAP Administration Tool. The tool allows you to browse 
  LDAP-based directories and add/edit/delete entries contained within. It 
