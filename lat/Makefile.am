@@ -50,6 +50,7 @@ CSFILES = \
 	Templates.cs \
 	TemplatesDialog.cs \
 	TemplateEditorDialog.cs \
+	TimeDateDialog.cs \
 	UsersView.cs \
 	Util.cs \
 	View.cs \

@@ -1,4 +1,5 @@
-	* Added support for new entry templates
+	* Added New entry templates
+	* Added support for more Samba attributes in User view
 	* Code cleanup
 	* BUGFIX [#15] - RPM dependancy should contain mono-data
 

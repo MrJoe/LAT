@@ -50,11 +50,6 @@ namespace lat
 			ArrayList mods = new ArrayList ();
 
 			mods.Add (createMod ("objectclass", "sambaSAMAccount"));
-			mods.Add (createMod ("sambaLogonTime", "0"));
-			mods.Add (createMod ("sambaLogoffTime", "2147483647"));
-			mods.Add (createMod ("sambaKickoffTime", "2147483647"));
-			mods.Add (createMod ("sambaPwdCanChange", "0"));
-			mods.Add (createMod ("sambaPwdMustChange", "2147483647"));
 			mods.Add (createMod ("sambaLMPassword", lm));
 			mods.Add (createMod ("sambaNTPassword", nt));
 			mods.Add (createMod ("sambaAcctFlags", "[U          ]"));

@@ -65,6 +65,12 @@ namespace lat
 		[Glade.Widget] Gtk.Entry smbProfilePathEntry;
 		[Glade.Widget] Gtk.Entry smbHomePathEntry;
 		[Glade.Widget] Gtk.Entry smbHomeDriveEntry;
+		[Glade.Widget] Gtk.Entry smbExpireEntry;
+		[Glade.Widget] Gtk.Entry smbCanChangePwdEntry;
+		[Glade.Widget] Gtk.Entry smbMustChangePwdEntry;
+		[Glade.Widget] Gtk.Button smbSetExpireButton;
+		[Glade.Widget] Gtk.Button smbSetCanButton;
+		[Glade.Widget] Gtk.Button smbSetMustButton;
 
 		private static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
 					      "userPassword", "mail", "loginShell", "cn",
@@ -72,7 +78,9 @@ namespace lat
 				              "physicalDeliveryOfficeName",
 					      "telephoneNumber"};
 
-		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath", "sambaHomeDrive", "sambaLogonScript" };
+		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath",
+			"sambaHomeDrive", "sambaLogonScript", "sambaKickoffTime", 
+			"sambaPwdCanChange", "sambaPwdMustChange" };
 
 		private bool _isSamba = false;
 		private string _smbLM = "";
@@ -141,6 +149,9 @@ namespace lat
 				smbProfilePathEntry.Text = (string)_ui["sambaProfilePath"];
 				smbHomePathEntry.Text = (string)_ui["sambaHomePath"];
 				smbHomeDriveEntry.Text = (string)_ui["sambaHomeDrive"];
+				smbExpireEntry.Text = (string)_ui["sambaKickoffTime"];
+				smbCanChangePwdEntry.Text = (string)_ui["sambaPwdCanChange"];
+				smbMustChangePwdEntry.Text = (string)_ui["sambaPwdMustChange"];
 			}
 			else
 			{
@@ -348,20 +359,6 @@ namespace lat
 			_memberOfStore.SetSortColumnId (0, SortType.Ascending);
 
 			passwordEntry.Sensitive = false;
-
-//			usernameEntry.Changed += new EventHandler (OnNameChanged);
-//			firstNameEntry.Changed += new EventHandler (OnNameChanged);
-//			lastNameEntry.Changed += new EventHandler (OnNameChanged);
-
-//			passwordButton.Clicked += new EventHandler (OnPasswordClicked);
-
-//			addGroupButton.Clicked += new EventHandler (OnAddGroupClicked);
-//			removeGroupButton.Clicked += new EventHandler (OnRemoveGroupClicked);
-
-//			okButton.Clicked += new EventHandler (OnOkClicked);
-//			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-//			editUserDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 		}
 
 		private void toggleSambaWidgets (bool state)
@@ -370,6 +367,12 @@ namespace lat
 			smbProfilePathEntry.Sensitive = state;
 			smbHomePathEntry.Sensitive = state;
 			smbHomeDriveEntry.Sensitive = state;
+			smbExpireEntry.Sensitive = state;
+			smbCanChangePwdEntry.Sensitive = state;
+			smbMustChangePwdEntry.Sensitive = state;
+			smbSetExpireButton.Sensitive = state;
+			smbSetCanButton.Sensitive = state;
+			smbSetMustButton.Sensitive = state;
 		}
 
 		public void OnAddGroupClicked (object o, EventArgs args)
@@ -455,6 +458,27 @@ namespace lat
 			_smbNT = pd.NTPassword;
 
 			_passChanged = true;
+		}
+
+		public void OnSetExpireClicked (object o, EventArgs args)
+		{
+			TimeDateDialog td = new TimeDateDialog ();
+
+			smbExpireEntry.Text = td.UnixTime.ToString ();
+		}
+
+		public void OnSetCanClicked (object o, EventArgs args)
+		{
+			TimeDateDialog td = new TimeDateDialog ();
+
+			smbCanChangePwdEntry.Text = td.UnixTime.ToString ();
+		}
+
+		public void OnSetMustClicked (object o, EventArgs args)
+		{
+			TimeDateDialog td = new TimeDateDialog ();
+
+			smbMustChangePwdEntry.Text = td.UnixTime.ToString ();
 		}
 
 		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
@@ -546,6 +570,15 @@ namespace lat
 				retVal.Add ("sambaHomePath", smbHomePathEntry.Text);
 				retVal.Add ("sambaHomeDrive", smbHomeDriveEntry.Text);
 				retVal.Add ("sambaLogonScript", smbLoginScriptEntry.Text);
+
+				if (smbExpireEntry.Text != "")
+					retVal.Add ("sambaKickoffTime", smbExpireEntry.Text);
+
+				if (smbCanChangePwdEntry.Text != "")
+					retVal.Add ("sambaPwdCanChange", smbCanChangePwdEntry.Text);
+
+				if (smbMustChangePwdEntry.Text != "")
+					retVal.Add ("sambaPwdMustChange", smbMustChangePwdEntry.Text);
 			}
 
 			return retVal;

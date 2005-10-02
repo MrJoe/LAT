@@ -2,9 +2,5 @@
 - Add preferences dialog for setting directory structure
 - Find a way to change a AD users password
 - Find a way to create new AD users and groups
-- Support more Samba attributes 
-	- password change times
-	- set account deactivated
-	- set password to no expire
 - Support binary data in attributes
 - Obtain some icons (including a program icon for LAT)
