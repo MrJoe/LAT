@@ -23,6 +23,7 @@ lat requires the following other packages:
 
 	* Mono 1.1.8
 	* Gtk# 2.3.91
+	* GNOME Keyring 0.4.2
 
 Simple installation procedure:
 
