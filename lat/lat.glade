@@ -1871,7 +1871,8 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="New">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-new</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_NEW_ITEM</property>
+		      <property name="label" translatable="yes">_New</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnNewActivate" last_modification_time="Tue, 05 Jul 2005 10:28:28 GMT"/>
 		    </widget>
@@ -1880,9 +1881,21 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="Delete">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-delete</property>
+		      <property name="label" translatable="yes">Delete</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnDeleteActivate" last_modification_time="Tue, 05 Jul 2005 10:28:41 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image660">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-delete</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
@@ -1901,7 +1914,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image622">
+			<widget class="GtkImage" id="image661">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1923,7 +1936,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image623">
+			<widget class="GtkImage" id="image662">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1951,7 +1964,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image624">
+			<widget class="GtkImage" id="image663">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1973,7 +1986,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image625">
+			<widget class="GtkImage" id="image664">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2010,8 +2023,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="quit">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-quit</property>
-		      <property name="use_underline">True</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_EXIT_ITEM</property>
 		      <signal name="activate" handler="OnQuitActivate" last_modification_time="Thu, 24 Feb 2005 15:40:49 GMT"/>
 		    </widget>
 		  </child>
@@ -2032,8 +2044,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="cut">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-cut</property>
-		      <property name="use_underline">True</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_CUT_ITEM</property>
 		      <signal name="activate" handler="OnCutActivate" last_modification_time="Sun, 27 Feb 2005 17:31:44 GMT"/>
 		    </widget>
 		  </child>
@@ -2041,8 +2052,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="copy">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-copy</property>
-		      <property name="use_underline">True</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_COPY_ITEM</property>
 		      <signal name="activate" handler="OnCopyActivate" last_modification_time="Sun, 27 Feb 2005 17:31:44 GMT"/>
 		    </widget>
 		  </child>
@@ -2050,8 +2060,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="paste">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-paste</property>
-		      <property name="use_underline">True</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_PASTE_ITEM</property>
 		      <signal name="activate" handler="OnPasteActivate" last_modification_time="Sun, 27 Feb 2005 17:32:05 GMT"/>
 		    </widget>
 		  </child>
@@ -2080,8 +2089,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="Properties">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-properties</property>
-		      <property name="use_underline">True</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_PROPERTIES_ITEM</property>
 		      <signal name="activate" handler="OnPropertiesActivate" last_modification_time="Fri, 08 Jul 2005 20:08:04 GMT"/>
 		    </widget>
 		  </child>
@@ -2226,9 +2234,21 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="Refresh">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-refresh</property>
+		      <property name="label" translatable="yes">Refresh</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnRefreshActivate" last_modification_time="Tue, 05 Jul 2005 10:43:17 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image665">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-refresh</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 		</widget>
@@ -2254,7 +2274,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image626">
+			<widget class="GtkImage" id="image666">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -2270,8 +2290,7 @@ you wish to connect to.</property>
 		  <child>
 		    <widget class="GtkImageMenuItem" id="about1">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-about</property>
-		      <property name="use_underline">True</property>
+		      <property name="stock_item">GNOMEUIINFO_MENU_ABOUT_ITEM</property>
 		      <signal name="activate" handler="OnAboutActivate" last_modification_time="Thu, 24 Feb 2005 15:41:47 GMT"/>
 		    </widget>
 		  </child>
@@ -18467,7 +18486,7 @@ Make sure you are logged in as the administator.</property>
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
-		      <signal name="clicked" handler="OnRemovedClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
+		      <signal name="clicked" handler="OnRemoveClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 		    </widget>
 		  </child>
 

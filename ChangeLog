@@ -1,3 +1,5 @@
+	* BUGFIX: Mass edit crashes when selected due to typo in signal handler definition
+
 Version 0.7.3
 
 	* Added New entry templates
