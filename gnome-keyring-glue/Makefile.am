@@ -23,12 +23,13 @@ $(ASSEMBLY).dll: $(CSFILES)
 all: $(ASSEMBLY).dll
 
 ASSEMBLYlibdir = $(prefix)/lib/lat
-ASSEMBLYlib_DATA = $(ASSEMBLY).dll
+ASSEMBLYlib_DATA = $(ASSEMBLY).dll $(ASSEMBLY).dll.config
 
 EXTRA_DIST = \
 	$(CSFILES) \
 	AUTHORS \
-	LICENSE.LGPL
+	LICENSE.LGPL \
+	$(ASSEMBLY).dll.config
 
 CLEANFILES = \
 	$(ASSEMBLY).dll \
