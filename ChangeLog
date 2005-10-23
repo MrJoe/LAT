@@ -1,3 +1,5 @@
+Version 0.7.4
+
 	* BUGFIX: Added .config for gnome-keyring-glue so it loads the correct gnome-keyring library
 	* BUGFIX: Mass edit crashes when selected due to typo in signal handler definition
 
