@@ -172,7 +172,7 @@ namespace lat
 			c2 = random.Next (0, chrSalt.Length);
 
 			string tmpSalt = String.Format ("{0}{1}", chrSalt[c1], chrSalt[c2]);
-			string crypt = Syscall.crypt (passwd, tmpSalt);
+			string crypt = Mono.Unix.Native.Syscall.crypt (passwd, tmpSalt);
 
 			retVal = "{CRYPT}" + crypt;
 
