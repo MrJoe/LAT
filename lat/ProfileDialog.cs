@@ -94,9 +94,6 @@ namespace lat
 
 			createCombo ();
 
-			// FIXME: SSL support
-			encryptionRadioButton.Sensitive = false;
-			noEncryptionRadioButton.Sensitive = false;
 			noEncryptionRadioButton.Active = true;
 		}	
 
@@ -122,7 +119,7 @@ namespace lat
 
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
-/* FIXME: SSL support */
+
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (encryptionRadioButton.Active)

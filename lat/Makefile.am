@@ -8,7 +8,6 @@ CSFILES = \
 	AssemblyInfo.cs \
 	AddAttributeDialog.cs \
 	CertificateDialog.cs \
-	CertMgr.cs \
 	ConnectDialog.cs \
 	Connection.cs \
 	ContactsView.cs \

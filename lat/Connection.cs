@@ -20,8 +20,12 @@
 
 using System;
 using System.Collections;
+using Syscert = System.Security.Cryptography.X509Certificates;
+using Mono.Security.X509;
+using Mono.Security.Cryptography;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
+
 
 namespace lat
 {
@@ -54,13 +58,63 @@ namespace lat
 				_conn = new LdapConnection ();
 
 				_conn.SecureSocketLayer = _ssl;	
+				_conn.UserDefinedServerCertValidationDelegate += new 
+					CertificateValidationCallback(SSLHandler);
+
 				_conn.Connect (_host, _port);
 				_conn.Bind (_user, _pass);
 			}
-			catch
+			catch (Exception e)
 			{
-				Logger.Log.Debug ("Bind failed");
+				Logger.Log.Debug ("Bind failed: {0}", e.Message);
 			}
+		}
+
+		public static bool SSLHandler(Syscert.X509Certificate certificate,
+						int[] certificateErrors)
+		{
+			X509Store store = null;
+			X509Stores stores = X509StoreManager.CurrentUser;
+			store = stores.TrustedRoot;
+			bool retVal = true;
+
+			//Import the details of the certificate from the server.
+			X509Certificate x509 = null;
+			X509CertificateCollection coll = new X509CertificateCollection ();
+			byte[] data = certificate.GetRawCertData();
+			if (data != null)			
+				x509 = new X509Certificate (data);
+
+			string msg = String.Format (" {0}X.509 v{1} Certificate", 
+				(x509.IsSelfSigned ? "Self-signed " : String.Empty), 
+				x509.Version);
+
+			msg += "  Serial Number: " + CryptoConvert.ToHex (x509.SerialNumber);
+			msg += "  Issuer Name:   " + x509.IssuerName;
+			msg += "  Subject Name:  " + x509.SubjectName;
+			msg += "  Valid From:    " + x509.ValidFrom;
+			msg += "  Valid Until:   " + x509.ValidUntil;
+			msg += "  Unique Hash:   " + CryptoConvert.ToHex (x509.Hash);
+
+			CertificateDialog cd = new CertificateDialog (msg);
+
+			Logger.Log.Debug ("CertificateDialog.UserResponse: {0}", cd.UserResponse);
+
+			if (cd.UserResponse == CertDialogResponse.Import) 
+			{
+				if (x509 != null)
+					coll.Add (x509);
+
+				store.Import (x509);
+
+				Logger.Log.Debug ("Certificate successfully imported.");
+			} 
+			else if (cd.UserResponse == CertDialogResponse.Cancel)
+			{
+				retVal = false;
+			}
+
+			return retVal;
 		}
 
 		public LdapEntry getEntry (string dn)

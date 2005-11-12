@@ -79,9 +79,6 @@ namespace lat
 				connectionDialog.Resizable = true;
 			}
 			
-			// FIXME: SSL support
-			encryptionRadioButton.Sensitive = false;
-			noEncryptionRadioButton.Sensitive = false;
 			noEncryptionRadioButton.Active = true;		
 		}
 
@@ -141,17 +138,7 @@ namespace lat
 
 			Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
 			Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
-
-
-			if (conn.UseSSL)
-			{
-				string url = String.Format ("ldaps://{0}:{1}",
-					conn.Host, conn.Port);
-
-				if (!CertificateManager.Ssl (url, connectionDialog))
-					return;
-			}
-			
+	
 			conn.Bind ();
 	
 			if (doConnect (conn))
@@ -268,7 +255,7 @@ namespace lat
 			return true;
 		}
 
-/* FIXME: re-enable SSL support when Mono gets updated Novell.Directory.Ldap.dll */
+
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (encryptionRadioButton.Active)
@@ -303,16 +290,6 @@ namespace lat
 					ldapBaseEntry.Text,
 					useSSL,
 					serverType);
-
-				if (useSSL)
-				{
-					string url = String.Format ("ldaps://{0}:{1}",
-						hostEntry.Text, portEntry.Text);
-
-					if (!CertificateManager.Ssl (url, connectionDialog))
-					{
-					}
-				}
 			}
 			else if (notebook1.CurrentPage == 1)
 			{
@@ -331,15 +308,6 @@ namespace lat
 
 				Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
 				Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
-
-				if (conn.UseSSL)
-				{
-					string url = String.Format ("ldaps://{0}:{1}",
-						conn.Host, conn.Port);
-
-					if (!CertificateManager.Ssl (url, connectionDialog))
-						return;
-				}
 			}
 
 			conn.Bind ();
