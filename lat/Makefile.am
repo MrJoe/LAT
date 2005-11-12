@@ -66,8 +66,7 @@ REFERENCES = \
 	../gnome-keyring-glue/gnome-keyring-glue.dll \
 	Mono.Posix \
 	Mono.Security \
-	Novell.Directory.Ldap \
-	System.Runtime.Serialization.Formatters.Soap
+	Novell.Directory.Ldap
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 

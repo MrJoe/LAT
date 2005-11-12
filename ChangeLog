@@ -1,3 +1,5 @@
+	* Use binary formatter for template data
+
 Version 0.7.4
 
 	* BUGFIX: Added .config for gnome-keyring-glue so it loads the correct gnome-keyring library

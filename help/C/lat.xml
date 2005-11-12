@@ -363,10 +363,10 @@ wish to make.</para>
 		<para>Contains the users saved connection profiles. Passwords are stored in the users' GNOME keyring database.</para>
 	</sect2>
 
-<!-- ============= templates.xml  ======================== -->
+<!-- ============= templates.dat  ======================== -->
 	 <sect2 id="lat-files-templates"> 
-		<title>templates.xml</title>
-		<para>$HOME/.lat/templates.xml</para>
+		<title>templates.dat</title>
+		<para>$HOME/.lat/templates.dat</para>
 		<para>Contains information on the users new entry templates.</para>
 	</sect2>
 

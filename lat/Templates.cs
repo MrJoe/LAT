@@ -24,7 +24,7 @@ using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Formatters.Soap;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace lat
 {
@@ -92,7 +92,7 @@ namespace lat
 			string dir = Environment.GetEnvironmentVariable("HOME");
 			string tmp = Path.Combine (dir, ".lat");
 			
-			_configFile = Path.Combine (tmp, "templates.xml");
+			_configFile = Path.Combine (tmp, "templates.dat");
 
 			DirectoryInfo di = new DirectoryInfo (tmp);
 			if (!di.Exists)
@@ -170,7 +170,7 @@ namespace lat
 			{
 				Stream stream = File.OpenRead (_configFile);
 
-				IFormatter formatter = new SoapFormatter();
+				IFormatter formatter = new BinaryFormatter();
 				_templates = (ArrayList) formatter.Deserialize (stream);
 				stream.Close ();
 
@@ -190,7 +190,7 @@ namespace lat
 
 				Stream stream = File.OpenWrite (_configFile);
 			
-				IFormatter formatter = new SoapFormatter ();
+				IFormatter formatter = new BinaryFormatter ();
 				formatter.Serialize (stream, _templates); 
 				stream.Close ();
 			}
