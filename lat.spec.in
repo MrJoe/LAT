@@ -18,6 +18,7 @@ BuildRequires: mono-core
 BuildRequires: mono-devel
 BuildRequires: mono-data
 BuildRequires: gtk-sharp2
+BuildRequires: gnome-keyring-devel
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: intltool
