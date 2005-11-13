@@ -44,7 +44,7 @@ namespace lat
 
 		private static string[] hostAttrs = { "cn", "ipHostNumber", "description" };
 
-		public HostsViewDialog (lat.Connection conn) : base (conn)
+		public HostsViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();
 
@@ -63,7 +63,7 @@ namespace lat
 			}
 		}
 
-		public HostsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
@@ -72,7 +72,7 @@ namespace lat
 
 			Init ();
 
-			_hi = getEntryInfo (hostAttrs, le);
+			server.GetAttributeValuesFromEntry (le, hostAttrs, out _hi);
 
 			string hostName = (string) _hi["cn"];
 
@@ -91,7 +91,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "hostDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = hostDialog;		
+			viewDialog = hostDialog;		
 		}
 
 		private Hashtable getCurrentHostInfo ()
@@ -124,14 +124,14 @@ namespace lat
 			{
 				_modList = getMods (hostAttrs, _hi, chi);
 
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
+				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
 			}
 			else
 			{
 				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
 
 				SelectContainerDialog scd = 
-					new SelectContainerDialog (_conn, hostDialog);
+					new SelectContainerDialog (server, hostDialog);
 
 				scd.Title = "Save Host";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the host\n{0}?", (string)chi["cn"]);
@@ -143,7 +143,7 @@ namespace lat
 
 				string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
 
-				Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
+				Util.AddEntry (server, viewDialog, userDN, attrList, true);
 			}
 
 			hostDialog.HideAll ();

@@ -66,7 +66,7 @@ namespace lat
 
 		private ComboBox primaryGroupComboBox;
 
-		public NewUserViewDialog (lat.Connection conn) : base (conn)
+		public NewUserViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();		
 
@@ -74,7 +74,7 @@ namespace lat
 
 			createCombo ();
 
-			uidSpinButton.Value = _conn.GetNextUID ();
+			uidSpinButton.Value = server.GetNextUID ();
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
 			newUserDialog.Run ();
@@ -94,13 +94,13 @@ namespace lat
 		{
 			if (enableSambaButton.Active)
 			{
-				_smbSID = _conn.GetLocalSID ();
+				_smbSID = server.GetLocalSID ();
 			}
 		}
 		
 		private void getGroups ()
 		{
-			ArrayList grps = _conn.SearchByClass ("posixGroup");
+			LdapEntry[] grps = server.SearchByClass ("posixGroup");
 
 			foreach (LdapEntry e in grps)
 			{
@@ -138,7 +138,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "newUserDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = newUserDialog;
+			viewDialog = newUserDialog;
 
 			passwordEntry.Sensitive = false;
 
@@ -213,7 +213,7 @@ namespace lat
 
 			try
 			{
-				_conn.Modify (groupEntry.DN, mods);
+				server.Modify (groupEntry.DN, mods);
 			}
 			catch (Exception e)
 			{
@@ -298,7 +298,7 @@ namespace lat
 				return;
 			}
 
-			if (!Util.CheckUserName (_conn, usernameEntry.Text))
+			if (!Util.CheckUserName (server, usernameEntry.Text))
 			{
 				string format = Mono.Unix.Catalog.GetString (
 					"A user with the username '{0}' already exists!");
@@ -312,7 +312,7 @@ namespace lat
 				return;
 			}
 
-			if (!Util.CheckUID (_conn, Convert.ToInt32 (uidSpinButton.Value)))
+			if (!Util.CheckUID (server, Convert.ToInt32 (uidSpinButton.Value)))
 			{
 				string msg = Mono.Unix.Catalog.GetString (
 					"The UID you have selected is already in use!");
@@ -364,7 +364,7 @@ namespace lat
 			}
 
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, newUserDialog);
+				new SelectContainerDialog (server, newUserDialog);
 
 			scd.Title = "Save User";
 			scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", fullName);
@@ -378,7 +378,7 @@ namespace lat
 
 			updateGroupMembership ();
 
-			Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
+			Util.AddEntry (server, viewDialog, userDN, attrList, true);
 
 			newUserDialog.HideAll ();
 		}

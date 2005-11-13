@@ -85,9 +85,9 @@ namespace lat
 			return retVal;
 		}
 
-		public static bool CheckUserName (lat.Connection conn, string name)
+		public static bool CheckUserName (LdapServer server, string name)
 		{
-			if (conn.Search(String.Format("(uid={0})", name)).Count == 0)
+			if (server.Search(String.Format("(uid={0})", name)).Length == 0)
 			{
 				return true;
 			}
@@ -95,9 +95,9 @@ namespace lat
 			return false;
 		}
 
-		public static bool CheckUID (lat.Connection conn, int uid)
+		public static bool CheckUID (LdapServer server, int uid)
 		{
-			if (conn.Search(String.Format("(uidNumber={0})", uid)).Count == 0)
+			if (server.Search(String.Format("(uidNumber={0})", uid)).Length == 0)
 			{
 				return true;
 			}
@@ -119,11 +119,12 @@ namespace lat
 			resMd.Destroy();
 		}
 
-		public static void AddEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList attrs, bool msgBox)
+		public static void AddEntry (LdapServer server, Gtk.Window parent, 
+					     string dn, ArrayList attrs, bool msgBox)
 		{
 			try
 			{
-				conn.Add (dn, attrs);
+				server.Add (dn, attrs);
 
 				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been added."), dn);
@@ -142,7 +143,8 @@ namespace lat
 			}
 		}
 
-		public static void ModifyEntry (lat.Connection conn, Gtk.Window parent, string dn, ArrayList modList, bool msgBox)
+		public static void ModifyEntry (LdapServer server, Gtk.Window parent, 
+						string dn, ArrayList modList, bool msgBox)
 		{
 			if (modList.Count == 0)
 			{
@@ -156,7 +158,7 @@ namespace lat
 
 			try
 			{
-				conn.Modify (dn, mods);
+				server.Modify (dn, mods);
 
 				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been modified."), dn);
@@ -198,10 +200,11 @@ namespace lat
 			return false;
 		}
 
-		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string[] dn)
+		public static bool DeleteEntry (LdapServer server, Gtk.Window parent, string[] dn)
 		{
 			string msg = String.Format (
-				Mono.Unix.Catalog.GetString ("Are you sure you want to delete:\n\n"));
+				Mono.Unix.Catalog.GetString (
+				"Are you sure you want to delete:\n\n"));
 			
 			foreach (string n in dn)
 			{
@@ -224,7 +227,7 @@ namespace lat
 				{					
 					try
 					{
-						conn.Delete (d);
+						server.Delete (d);
 
 					}
 					catch (Exception e)
@@ -261,55 +264,49 @@ namespace lat
 			return allGood;
 		}
 
-		public static bool DeleteEntry (lat.Connection conn, Gtk.Window parent, string dn)
+		public static bool DeleteEntry (LdapServer server, Gtk.Window parent, string dn)
 		{
-			string msg = String.Format (
-				Mono.Unix.Catalog.GetString ("Are you sure you want to delete\n{0}"), dn);
-				
-			MessageDialog md = new MessageDialog (parent, 
-					DialogFlags.DestroyWithParent,
-					MessageType.Question, 
-					ButtonsType.YesNo, 
-					msg);
-	     
-			ResponseType result = (ResponseType)md.Run ();
+			string msg = String.Format ("{0}\n{1}",
+				Mono.Unix.Catalog.GetString (
+				"Are you sure you want to delete"), 
+				dn);
 
 			bool retVal = false;
-
-			if (result == ResponseType.Yes)
+				
+			if (Util.AskYesNo (parent, msg))
 			{				
 				try
 				{
-					conn.Delete (dn);
+					server.Delete (dn);
 
 					string resMsg = String.Format (
-						Mono.Unix.Catalog.GetString ("Entry {0} has been deleted."), dn);
+						Mono.Unix.Catalog.GetString (
+						"Entry {0} has been deleted."), dn);
 		
-					MessageBox (md, resMsg, MessageType.Info);
+					MessageBox (parent, resMsg, MessageType.Info);
 
 					retVal = true;
 				}
 				catch (Exception e)
 				{
 					string errorMsg =
-						Mono.Unix.Catalog.GetString ("Unable to delete entry ") + dn;
+						Mono.Unix.Catalog.GetString (
+						"Unable to delete entry ") + dn;
 
 					errorMsg += "\nError: " + e.Message;
 
-					MessageBox (md, errorMsg, MessageType.Error);
+					MessageBox (parent, errorMsg, MessageType.Error);
 				}
 			}
-				
-			md.Destroy ();
 
 			return retVal;
 		}
 
-		private static void import (lat.Connection conn, Gtk.Window parent, Uri uri)
+		private static void import (LdapServer server, Gtk.Window parent, Uri uri)
 		{
 			int numImported = 0;
 
-			LDIF ldif = new LDIF (conn);
+			LDIF ldif = new LDIF (server);
 	
 			numImported = ldif.Import (uri);
 
@@ -323,28 +320,28 @@ namespace lat
 				MessageBox (parent, msg, MessageType.Error);
 		}
 		
-		public static void ImportData (lat.Connection conn, Gtk.Window parent, Uri uri)
+		public static void ImportData (LdapServer server, Gtk.Window parent, Uri uri)
 		{
-			import (conn, parent, uri);
+			import (server, parent, uri);
 		}
 
-		public static void ImportData (lat.Connection conn, Gtk.Window parent, string[] uriList)
+		public static void ImportData (LdapServer server, Gtk.Window parent, string[] uriList)
 		{
 			foreach (string u in uriList)
 			{
 				if (!(u.Length > 0))
 					continue;
 
-				import (conn, parent, new Uri(u));
+				import (server, parent, new Uri(u));
 			}
 		}
 
-		public static void ImportData (lat.Connection conn, Gtk.Window parent, string data)
+		public static void ImportData (LdapServer server, Gtk.Window parent, string data)
 		{
 			int numImported = 0;
 			string msg = null;
 
-			LDIF ldif = new LDIF (conn);
+			LDIF ldif = new LDIF (server);
 
 			numImported = ldif.Import (data);
 
@@ -358,9 +355,9 @@ namespace lat
 				MessageBox (parent, msg, MessageType.Error);
 		}
 
-		public static void getChildren (lat.Connection conn, string name, StringBuilder sb)
+		public static void getChildren (LdapServer server, string name, StringBuilder sb)
 		{
-			ArrayList children = conn.getChildren (name);
+			LdapEntry[] children = server.GetEntryChildren (name);
 			
 			if (children == null)
 				return;
@@ -370,38 +367,38 @@ namespace lat
 				LDIF cldif = new LDIF (cle);
 				sb.AppendFormat ("{0}\n", cldif.Export());
 
-				getChildren (conn, cle.DN, sb);
+				getChildren (server, cle.DN, sb);
 			}
 		}
 
-		private static string export (lat.Connection conn, string dn)
+		private static string export (LdapServer server, string dn)
 		{
 			StringBuilder data = new StringBuilder();
 
-			LdapEntry le = (LdapEntry) conn.getEntry (dn);
+			LdapEntry le = (LdapEntry) server.GetEntry (dn);
 			LDIF _ldif = new LDIF (le);
 
 			data.AppendFormat ("{0}\n", _ldif.Export());
 
-			ArrayList children = conn.getChildren (dn);
+			LdapEntry[] children = server.GetEntryChildren (dn);
 
 			foreach (LdapEntry cle in children)
 			{
 				LDIF cldif = new LDIF (cle);
 				data.AppendFormat ("{0}\n", cldif.Export());
 
-				getChildren (conn, cle.DN, data);
+				getChildren (server, cle.DN, data);
 			}
 
 			return data.ToString ();
 		}
 
-		public static void ExportData (lat.Connection conn, string dn, out string data)
+		public static void ExportData (LdapServer server, string dn, out string data)
 		{
-			data = export (conn, dn);
+			data = export (server, dn);
 		}
 	
-		public static void ExportData (lat.Connection conn, Gtk.Window parent, string dn)
+		public static void ExportData (LdapServer server, Gtk.Window parent, string dn)
 		{
 			FileChooserDialog fcd = new FileChooserDialog (
 				Mono.Unix.Catalog.GetString ("Save LDIF export as"),
@@ -417,7 +414,7 @@ namespace lat
 			ResponseType response = (ResponseType) fcd.Run();
 			if (response == ResponseType.Ok) 
 			{
-				string data = export (conn, dn);
+				string data = export (server, dn);
 
 				try 
 				{

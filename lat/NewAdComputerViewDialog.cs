@@ -38,7 +38,7 @@ namespace lat
 
 		private static string[] hostAttrs = { "cn", "dNSHostName" };
 
-		public NewAdComputerViewDialog (lat.Connection conn) : base (conn)
+		public NewAdComputerViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();
 
@@ -62,7 +62,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "newAdComputerDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = newAdComputerDialog;		
+			viewDialog = newAdComputerDialog;		
 		}
 
 		private Hashtable getCurrentHostInfo ()
@@ -91,7 +91,7 @@ namespace lat
 			ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
 
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, newAdComputerDialog);
+				new SelectContainerDialog (server, newAdComputerDialog);
 
 			scd.Title = "Save Computer";
 			scd.Message = String.Format ("Where in the directory would\nyou like save the computer\n{0}?", (string)chi["cn"]);
@@ -103,7 +103,7 @@ namespace lat
 
 			string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
 
-			Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
+			Util.AddEntry (server, viewDialog, userDN, attrList, true);
 
 			newAdComputerDialog.HideAll ();
 		}

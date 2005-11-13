@@ -103,7 +103,7 @@ namespace lat
 
 		private ComboBox primaryGroupComboBox;
 
-		public EditUserViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public EditUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
@@ -176,7 +176,7 @@ namespace lat
 		{
 			if (smbEnableSambaButton.Active)
 			{
-				_smbSID = _conn.GetLocalSID ();
+				_smbSID = server.GetLocalSID ();
 
 				toggleSambaWidgets (true);
 				smbNoteLabel.Text = "Note: You must now reset your password.";
@@ -243,7 +243,7 @@ namespace lat
 
 		private void getGroups (LdapEntry le)
 		{
-			ArrayList grps = _conn.SearchByClass ("posixGroup");
+			LdapEntry[] grps = server.SearchByClass ("posixGroup");
 
 			foreach (LdapEntry e in grps)
 			{
@@ -336,7 +336,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "editUserDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = editUserDialog;
+			viewDialog = editUserDialog;
 
 			TreeViewColumn col;
 
@@ -488,7 +488,7 @@ namespace lat
 
 			try
 			{
-				_conn.Modify (groupEntry.DN, mods);
+				server.Modify (groupEntry.DN, mods);
 			}
 			catch (Exception e)
 			{
@@ -642,7 +642,7 @@ namespace lat
 				}
 			}
 
-			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
+			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
 
 			editUserDialog.HideAll ();
 		}

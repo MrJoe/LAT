@@ -41,7 +41,7 @@ namespace lat
 		private ArrayList _modList;
 //		private Hashtable _di;
 
-		public DynamicViewDialog (lat.Connection conn) : base (conn)
+		public DynamicViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();
 
@@ -70,7 +70,7 @@ namespace lat
 			}		
 		}
 
-		public DynamicViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public DynamicViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
@@ -95,7 +95,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "dynamicDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = dynamicDialog;
+			viewDialog = dynamicDialog;
 
 			TreeViewColumn col;
 
@@ -147,7 +147,7 @@ namespace lat
 		{
 			if (_isEdit)
 			{
-				Util.ModifyEntry (_conn, dynamicDialog, _le.DN, _modList, true);
+				Util.ModifyEntry (server, dynamicDialog, _le.DN, _modList, true);
 			}
 			else
 			{

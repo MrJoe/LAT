@@ -30,23 +30,23 @@ namespace lat
 		{
 		}
 
-		public static void Create (string name, lat.Connection cn, LdapEntry le)
+		public static void Create (string name, LdapServer server, LdapEntry le)
 		{
 			switch (name)
 			{
 				case "Users":
 				{
-					if (cn.ServerType.ToLower() == "microsoft active directory")
+					if (server.ServerType.ToLower() == "microsoft active directory")
 					{
 						if (le != null)
-							new adUserViewDialog (cn, le);
+							new adUserViewDialog (server, le);
 					}
 					else
 					{
 						if (le == null)
-							new NewUserViewDialog (cn);
+							new NewUserViewDialog (server);
 						else
-							new EditUserViewDialog (cn, le);
+							new EditUserViewDialog (server, le);
 					}
 
 					break;
@@ -54,55 +54,55 @@ namespace lat
 
 				case "Groups":
 				{
-					if (cn.ServerType.ToLower() == "microsoft active directory")
+					if (server.ServerType.ToLower() == "microsoft active directory")
 					{
 //						if (le == null)
-//							new adGroupViewDialog (cn);
+//							new adGroupViewDialog (server);
 //						else
-//							new adGroupViewDialog (cn, le);
+//							new adGroupViewDialog (server, le);
 					}
 					else
 					{
 						if (le == null)
-							new GroupsViewDialog (cn);
+							new GroupsViewDialog (server);
 						else
-							new GroupsViewDialog (cn, le);
+							new GroupsViewDialog (server, le);
 					}
 					break;
 				}
 
 				case "Hosts":
 				{
-					if (cn.ServerType.ToLower() == "microsoft active directory")
+					if (server.ServerType.ToLower() == "microsoft active directory")
 					{
 						if (le == null)
-							new NewAdComputerViewDialog (cn);
+							new NewAdComputerViewDialog (server);
 						else
-							new EditAdComputerViewDialog (cn, le);
+							new EditAdComputerViewDialog (server, le);
 					}
 					else
 					{
 						if (le == null)
-							new HostsViewDialog (cn);
+							new HostsViewDialog (server);
 						else
-							new HostsViewDialog (cn, le);
+							new HostsViewDialog (server, le);
 					}				
 					break;
 				}
 
 				case "Contacts":
 					if (le == null)
-						new NewContactsViewDialog (cn);
+						new NewContactsViewDialog (server);
 					else
-						new EditContactsViewDialog (cn, le);
+						new EditContactsViewDialog (server, le);
 
 					break;
 
 				default:
 					if (le == null)
-						new DynamicViewDialog (cn);
+						new DynamicViewDialog (server);
 					else
-						new DynamicViewDialog (cn, le);
+						new DynamicViewDialog (server, le);
 
 					break;
 			}

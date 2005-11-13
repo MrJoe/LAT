@@ -43,7 +43,7 @@ namespace lat
 
 		private static string[] contactAttrs = { "givenName", "sn", "initials", "cn", "displayName" };
 
-		public NewContactsViewDialog (lat.Connection conn) : base (conn)
+		public NewContactsViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();
 
@@ -69,9 +69,9 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "newContactDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = newContactDialog;
+			viewDialog = newContactDialog;
 
-			switch (_conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
 					_isPosix = false;
@@ -137,10 +137,12 @@ namespace lat
 			attrList.Add (attr);
 
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, newContactDialog);
+				new SelectContainerDialog (server, newContactDialog);
 
 			scd.Title = "Save Contact";
-			scd.Message = String.Format ("Where in the directory would\nyou like save the contact\n{0}?", fullName);
+			scd.Message = String.Format (
+				"Where in the directory would\nyou like save the contact\n{0}?",
+				fullName);
 
 			scd.Run ();
 
@@ -149,7 +151,7 @@ namespace lat
 
 			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
 
-			Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
+			Util.AddEntry (server, viewDialog, userDN, attrList, true);
 
 			newContactDialog.HideAll ();
 		}

@@ -19,8 +19,6 @@
 //
 
 using Gtk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
@@ -36,11 +34,11 @@ namespace lat
 
 		Glade.XML ui;
 
-		private lat.Connection _conn;
+		private LdapServer server;
 
-		public LoginDialog (lat.Connection conn, string msg)
+		public LoginDialog (LdapServer ldapServer, string msg)
 		{
-			_conn = conn;
+			server = ldapServer;
 
 			ui = new Glade.XML (null, "lat.glade", "loginDialog", null);
 			ui.Autoconnect (this);
@@ -55,7 +53,7 @@ namespace lat
 		{	
 			try
 			{
-				_conn.Bind (userEntry.Text, passEntry.Text);
+				server.Bind (userEntry.Text, passEntry.Text);
 			}
 			catch (Exception e)
 			{

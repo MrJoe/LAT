@@ -39,12 +39,12 @@ namespace lat
 		[Glade.Widget] Gtk.Entry computerOUEntry;
 		[Glade.Widget] Gtk.Entry idmapOUEntry;
 
-		private Connection _conn;
+		private LdapServer server;
 		private Glade.XML ui;
 
-		public SambaPopulateDialog (Connection conn)
+		public SambaPopulateDialog (LdapServer ldapServer)
 		{
-			_conn = conn;
+			server = ldapServer;
 
 			ui = new Glade.XML (null, "lat.glade", "sambaPopulateDialog", null);
 			ui.Autoconnect (this);
@@ -52,10 +52,10 @@ namespace lat
 			adminEntry.Text = "root";
 			guestEntry.Text = "nobody";
 
-			userOUEntry.Text = "ou=Users," + _conn.LdapRoot;
-			groupOUEntry.Text = "ou=Groups," + _conn.LdapRoot;
-			computerOUEntry.Text = "ou=Computers," + _conn.LdapRoot;
-			idmapOUEntry.Text = "ou=Idmap," + _conn.LdapRoot;
+			userOUEntry.Text = "ou=Users," + server.DirectoryRoot;
+			groupOUEntry.Text = "ou=Groups," + server.DirectoryRoot;
+			computerOUEntry.Text = "ou=Computers," + server.DirectoryRoot;
+			idmapOUEntry.Text = "ou=Idmap," + server.DirectoryRoot;
 
 			sambaPopulateDialog.Run ();
 			sambaPopulateDialog.Destroy ();
@@ -64,7 +64,7 @@ namespace lat
 		public void OnUserBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, sambaPopulateDialog);
+				new SelectContainerDialog (server, sambaPopulateDialog);
 
 			scd.Message = String.Format (
 				Mono.Unix.Catalog.GetString (
@@ -73,14 +73,14 @@ namespace lat
 			scd.Title = Mono.Unix.Catalog.GetString ("Select a user container");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				userOUEntry.Text = scd.DN;
 		}
 
 		public void OnGroupBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, sambaPopulateDialog);
+				new SelectContainerDialog (server, sambaPopulateDialog);
 
 			scd.Message = String.Format (
 				Mono.Unix.Catalog.GetString (
@@ -89,14 +89,14 @@ namespace lat
 			scd.Title = Mono.Unix.Catalog.GetString ("Select a group container");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				groupOUEntry.Text = scd.DN;
 		}
 
 		public void OnComputerBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, sambaPopulateDialog);
+				new SelectContainerDialog (server, sambaPopulateDialog);
 
 			scd.Message = String.Format (
 				Mono.Unix.Catalog.GetString (
@@ -105,14 +105,14 @@ namespace lat
 			scd.Title = Mono.Unix.Catalog.GetString ("Select a computer container");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				computerOUEntry.Text = scd.DN;
 		}
 
 		public void OnIdmapBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, sambaPopulateDialog);
+				new SelectContainerDialog (server, sambaPopulateDialog);
 
 			scd.Message = String.Format (
 				Mono.Unix.Catalog.GetString (
@@ -121,7 +121,7 @@ namespace lat
 			scd.Title = Mono.Unix.Catalog.GetString ("Select an ID map container");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				idmapOUEntry.Text = scd.DN;
 		}
 		
@@ -141,7 +141,7 @@ namespace lat
 
 		private bool checkDN (string dn)
 		{
-			LdapEntry le = _conn.getEntry (dn);
+			LdapEntry le = server.GetEntry (dn);
 
 			if (le == null)
 				return false;
@@ -159,7 +159,7 @@ namespace lat
 			a = new LdapAttribute ("ou", getCN (dn));
 			attrList.Add (a);
 			
-			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
 		private void createUser (string dn, string name, string pass, string sid, string flags, string uid, string gid, string urid, string grid, string gecos)
@@ -228,7 +228,7 @@ namespace lat
 			a = new LdapAttribute ("gecos", gecos);
 			attrList.Add (a);
 
-			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
 		private void createGroup (string dn, string gid, string desc, string sid, string grid, string gtype, string memberuid)
@@ -262,7 +262,7 @@ namespace lat
 				attrList.Add (a);
 			}
 	
-			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
 		private void createDomain (string dn, string domain, string sid)
@@ -278,7 +278,7 @@ namespace lat
 			a = new LdapAttribute ("sambaSID", sid);
 			attrList.Add (a);
 
-			Util.AddEntry (_conn, sambaPopulateDialog, dn, attrList, false);
+			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
@@ -359,7 +359,7 @@ namespace lat
 			createGroup (dn, "552", "Netbios Domain Supports file replication in a sambaDomainName", "S-1-5-32",
 				     "552", "5", "");
 
-			dn = String.Format ("sambaDomainName={0},{1}", domainEntry.Text, _conn.LdapRoot);
+			dn = String.Format ("sambaDomainName={0},{1}", domainEntry.Text, server.DirectoryRoot);
 
 			createDomain (dn, domainEntry.Text, sidEntry.Text);
 

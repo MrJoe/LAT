@@ -18,11 +18,10 @@
 //
 //
 
-using Gtk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
+using System.Net.Sockets;
+using Gtk;
 
 namespace lat 
 {
@@ -47,8 +46,6 @@ namespace lat
 
 		private ProfileManager profileManager;
 		private ListStore profileListStore;
-
-		public lat.Connection UserConnection;
 
 		private ComboBox serverTypeComboBox;
 
@@ -95,29 +92,29 @@ namespace lat
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
 
-		private Connection getSelectedProfile ()
+		internal string GetSelectedProfileName ()
 		{
 			TreeIter iter;
 			TreeModel model;
 
 			if (profileListview.Selection.GetSelected (out model, out iter)) 
 			{
-				object ob = model.GetValue (iter, 0);
-
-				ConnectionProfile cp = profileManager.Lookup (ob.ToString()); 
-
-				Connection conn = new Connection (cp.Host, 
-					cp.Port,
-					cp.User,
-					cp.Pass,
-					cp.LdapRoot,
-					cp.SSL,
-					cp.ServerType);
-
-				return conn;
+				string name = (string) model.GetValue (iter, 0);
+				return name;
 			}
 
-			return null;	
+			return null;
+		}
+
+		internal ConnectionProfile GetSelectedProfile ()
+		{
+			ConnectionProfile cp = new ConnectionProfile();
+			string profileName = GetSelectedProfileName ();
+
+			if (profileName != null)
+				cp = profileManager.Lookup (profileName); 
+	
+			return cp;
 		}
 
 		public void OnPageSwitch (object o, SwitchPageArgs args)
@@ -134,18 +131,19 @@ namespace lat
 
 		public void OnRowDoubleClicked (object o, RowActivatedArgs args) 
 		{
-			Connection conn = getSelectedProfile ();
+			ConnectionProfile cp = GetSelectedProfile ();
 
-			Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
-			Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
-	
-			conn.Bind ();
-	
-			if (doConnect (conn))
+			if (cp.Host == null)
 			{
-				connectionDialog.Destroy ();
-				new latWindow (conn);
+				return;
 			}
+
+			LdapServer server = new LdapServer (cp.Host, cp.Port, 
+				 cp.LdapRoot, cp.ServerType);
+
+			useSSL = cp.SSL;
+
+			DoConnect (server, cp.User, cp.Pass);
 		}
 
 		private void updateProfileList ()
@@ -173,88 +171,38 @@ namespace lat
 
 		public void OnProfileEdit (object o, EventArgs args)
 		{	
-			Gtk.TreeIter iter;
-			Gtk.TreeModel model;
-			
-			if (profileListview.Selection.GetSelected (out model, out iter)) 
+			string profileName = GetSelectedProfileName ();
+
+			if (profileName != null)
 			{
-				object ob = model.GetValue (iter, 0);
-				
-				ConnectionProfile cp = profileManager.Lookup (ob.ToString());
-				
+				ConnectionProfile cp = profileManager.Lookup (profileName);
+			
 				new ProfileDialog (profileManager, cp);
 
 				updateProfileList ();
-			}
-		
+			}		
 		}
 
 		public void OnProfileRemove (object o, EventArgs args)
 		{
-			Gtk.TreeIter iter;
-			Gtk.TreeModel model;
+			string profileName = GetSelectedProfileName ();
 			string msg = null;
 			
-			if (profileListview.Selection.GetSelected (out model, out iter)) 
+			if (profileName != null)
 			{
-				object ob = model.GetValue (iter, 0);
-				msg = String.Format ( 
-					Mono.Unix.Catalog.GetString ("Are you sure you want to delete the profile: {0}"),
-					ob.ToString ());
+				msg = String.Format ("{0} {1}",
+					Mono.Unix.Catalog.GetString (
+					"Are you sure you want to delete the profile:"),
+					profileName);
 				
-				MessageDialog md = new MessageDialog (connectionDialog, 
-						DialogFlags.DestroyWithParent,
-						MessageType.Question, 
-						ButtonsType.YesNo, 
-						msg);
-	     
-				ResponseType result = (ResponseType)md.Run ();
-
-				if (result == ResponseType.Yes)
+				if (Util.AskYesNo (connectionDialog, msg))
 				{
-					profileManager.deleteProfile (ob.ToString());
+					profileManager.deleteProfile (profileName);
 					profileManager.saveProfiles ();
 					updateProfileList ();				
 				}
-				
-				md.Destroy();																			
 			}
-				
 		}
-
-		private bool doConnect (Connection conn)
-		{
-			string msg = null;
-
-			if (conn == null)
-				return false;
-
-			if (!conn.IsConnected)
-			{
-				msg = String.Format (
-					Mono.Unix.Catalog.GetString ("Unable to connect to: ldap://{0}:{1}"),
-					conn.Host, conn.Port);
-			}
-
-			if (!conn.IsBound && msg == null && conn.User != "")
-			{
-				msg = String.Format (
-					Mono.Unix.Catalog.GetString ("Unable to bind to: ldap://{0}:{1}"),
-					conn.Host, conn.Port);
-			}
-
-			if (msg != null)
-			{
-				Util.MessageBox (connectionDialog, msg, MessageType.Error);
-
-				conn = null;
-				
-				return false;
-			}
-		
-			return true;
-		}
-
 
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
@@ -270,9 +218,64 @@ namespace lat
 			}
 		}
 
+		internal bool CheckConnection (LdapServer server, string userName)
+		{
+			string msg = null;
+
+			if (server == null)
+				return false;
+
+			if (!server.Connected)
+			{
+				msg = String.Format (
+					Mono.Unix.Catalog.GetString (
+					"Unable to connect to: ldap://{0}:{1}"),
+					server.Host, server.Port);
+			}
+
+			if (!server.Bound && msg == null && userName != "")
+			{
+				msg = String.Format (
+					Mono.Unix.Catalog.GetString (
+					"Unable to bind to: ldap://{0}:{1}"),
+					server.Host, server.Port);
+			}
+
+			if (msg != null)
+			{
+				Util.MessageBox (connectionDialog, msg, 
+						 MessageType.Error);
+			
+				return false;
+			}
+		
+			return true;
+		}
+
+		internal void DoConnect (LdapServer server, string userName, string userPass)
+		{
+			try
+			{
+				server.Connect (useSSL);
+				server.Bind (userName, userPass);
+			}
+			catch (SocketException se)
+			{
+				Logger.Log.Debug ("Socket error: {0}", se.Message);
+			}
+
+			if (CheckConnection (server, userName))
+			{
+				connectionDialog.Destroy ();
+				new latWindow (server);
+			}
+		}
+
 		public void OnConnectClicked (object o, EventArgs args) 
 		{
-			Connection conn = null;
+			LdapServer server = null;
+			string user = null;
+			string pass = null;
 
 			if (notebook1.CurrentPage == 0)
 			{
@@ -281,42 +284,46 @@ namespace lat
 				if (!serverTypeComboBox.GetActiveIter (out iter))
 					return;
 
-				string serverType = (string) serverTypeComboBox.Model.GetValue (iter, 0);
+				string serverType = (string) 
+					serverTypeComboBox.Model.GetValue (iter, 0);
 
-				conn = new Connection (hostEntry.Text, 
-					int.Parse (portEntry.Text),
-					userEntry.Text,
-					passEntry.Text,
+				server = new LdapServer (
+					hostEntry.Text, 
+					int.Parse (portEntry.Text), 
 					ldapBaseEntry.Text,
-					useSSL,
 					serverType);
+
+				user = userEntry.Text;
+				pass = passEntry.Text;
+
 			}
 			else if (notebook1.CurrentPage == 1)
 			{
 				// Profile
-				conn = getSelectedProfile ();
+				ConnectionProfile cp = GetSelectedProfile ();
 
-				if (conn == null)
+				if (cp.Host == null)
 				{
 					string	msg = Mono.Unix.Catalog.GetString (
 						"No profile selected");
 
-					Util.MessageBox (connectionDialog, msg, MessageType.Error);
+					Util.MessageBox (connectionDialog, 
+						msg,
+						MessageType.Error);
 
 					return;
 				}
 
-				Logger.Log.Debug ("Loaded profile for: {0}.", conn.Host);
-				Logger.Log.Debug ("Using SSL: {0}.", conn.UseSSL);
+				server = new LdapServer (cp.Host, cp.Port, 
+							 cp.LdapRoot, 
+							 cp.ServerType);
+
+				user = cp.User;
+				pass = cp.Pass;
+				useSSL = cp.SSL;
 			}
 
-			conn.Bind ();
-
-			if (doConnect(conn))
-			{
-				connectionDialog.Destroy ();
-				new latWindow (conn);
-			}
+			DoConnect (server, user, pass);
 		}
 
 		public void OnCloseClicked (object o, EventArgs args) 

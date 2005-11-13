@@ -36,7 +36,7 @@ namespace lat
 		[Glade.Widget] Gtk.Button browseButton;
 		[Glade.Widget] Gtk.TreeView attrTreeView;
 
-		private Connection _conn;
+		private LdapServer server;
 		private ListStore attrListStore;
 		private ArrayList _objectClass;
 		private ArrayList _attributes;
@@ -44,9 +44,9 @@ namespace lat
 		private Template t;
 		private bool isTemplate = false;
 
-		public CreateEntryDialog (Connection conn, Template theTemplate)
+		public CreateEntryDialog (LdapServer ldapServer, Template theTemplate)
 		{
-			_conn = conn;
+			server = ldapServer;
 			t = theTemplate;
 			isTemplate = true;
 
@@ -64,9 +64,9 @@ namespace lat
 			createEntryDialog.Destroy ();
 		}
 
-		public CreateEntryDialog (Connection conn, LdapEntry le)
+		public CreateEntryDialog (LdapServer ldapServer, LdapEntry le)
 		{
-			_conn = conn;
+			server = ldapServer;
 
 			Init ();
 
@@ -94,7 +94,7 @@ namespace lat
 			
 			setupTreeViews ();
 
-			browseButton.Label = _conn.LdapRoot;
+			browseButton.Label = server.DirectoryRoot;
 
 			createEntryDialog.Resize (320, 200);
 		}
@@ -102,7 +102,7 @@ namespace lat
 		private void showAttributes ()
 		{
 			string[] required, optional;			
-			_conn.getAllAttrs (_objectClass, out required, out optional);
+			server.GetAllAttributes (_objectClass, out required, out optional);
 
 			foreach (string s in required)
 			{
@@ -178,15 +178,16 @@ namespace lat
 		public void OnBrowseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, createEntryDialog);
+				new SelectContainerDialog (server, createEntryDialog);
 
 			scd.Message = String.Format (
-				Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to save the entry?"));
+				Mono.Unix.Catalog.GetString (
+				"Where in the directory would\nyou like to save the entry?"));
 
 			scd.Title = Mono.Unix.Catalog.GetString ("Select entry base");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				browseButton.Label = scd.DN;
 		}
 
@@ -233,7 +234,7 @@ namespace lat
 
 			_attributes.Add (objAttr);
 
-			Util.AddEntry (_conn, createEntryDialog, dn, _attributes, true);
+			Util.AddEntry (server, createEntryDialog, dn, _attributes, true);
 
 			createEntryDialog.HideAll ();
 		}

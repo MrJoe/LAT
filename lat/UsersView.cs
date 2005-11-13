@@ -33,35 +33,35 @@ namespace lat
 		private static string[] _adColAttrs = { "sAMAccountName", "cn" };
 		private static string[] _posixColAttrs = { "uid", "cn" };
 
-		public UsersView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
-				: base (conn, tv, parent)
+		public UsersView (LdapServer server, TreeView treeView, Gtk.Window parentWindow) 
+				: base (server, treeView, parentWindow)
 		{
-			this._store = new ListStore (typeof (string), typeof (string));
-			this._tv.Model = this._store;
+			this.store = new ListStore (typeof (string), typeof (string));
+			this.tv.Model = this.store;
 
-			this._viewName = "Users";
+			this.viewName = "Users";
 
-			switch (conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
-					this._filter = "(&(objectclass=user)(objectcategory=Person))";
+					this.filter = "(&(objectclass=user)(objectcategory=Person))";
 					break;
 
 				case "generic ldap server":
 				case "openldap":
 				default:
-					this._filter = "(&(objectclass=posixAccount)(objectclass=shadowAccount))";
+					this.filter = "(&(objectclass=posixAccount)(objectclass=shadowAccount))";
 					break;
 			}		
 
-			this._lookupKeyCol = 0;
+			this.lookupKeyCol = 0;
 
 			this.setupColumns (_cols);			
 		}
 
 		public override void Populate ()
 		{
-			switch (_conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
 					this.insertData (_adColAttrs);
@@ -80,19 +80,19 @@ namespace lat
 			SeparatorMenuItem sm = new SeparatorMenuItem ();
 			sm.Show ();
 		
-			_popup.Append (sm);
+			popup.Append (sm);
 
 			MenuItem mailItem = new MenuItem ("Send email");
 			mailItem.Activated += new EventHandler (OnEmailActivate);
 			mailItem.Show ();
 
-			_popup.Append (mailItem);
+			popup.Append (mailItem);
 
 			MenuItem wwwItem = new MenuItem ("Open Home Page");
 			wwwItem.Activated += new EventHandler (OnWWWActivate);
 			wwwItem.Show ();
 
-			_popup.Append (wwwItem);
+			popup.Append (wwwItem);
 		}
 	}
 }

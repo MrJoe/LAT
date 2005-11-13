@@ -18,16 +18,15 @@
 //
 //
 
-using Gtk;
-using Gdk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Novell.Directory.Ldap;
+using Gtk;
+using GLib;
+using Gdk;
 
 namespace lat
 {
@@ -84,7 +83,7 @@ namespace lat
 		private TreeStore browserStore;
 		private TreeIter ldapRootIter;
 
-		private lat.Connection _conn;
+		private LdapServer server;
 		private Gtk.Window _parent;
 
 		private bool _handlersSet = false;
@@ -107,9 +106,9 @@ namespace lat
 			new TargetEntry ("text/plain", 0, 1),
 		};
 
-		public LdapTreeView (lat.Connection conn, Gtk.Window parent) : base ()
+		public LdapTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
-			_conn = conn;
+			server = ldapServer;
 			_parent = parent;
 
 			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
@@ -138,9 +137,9 @@ namespace lat
 			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Convert, IconSize.Menu, "");
 
 			TreeIter iter;
-			iter = browserStore.AppendValues (pb, _conn.Host);
+			iter = browserStore.AppendValues (pb, server.Host);
 
-			ldapRootIter = browserStore.AppendValues (iter, pb, _conn.LdapRoot);
+			ldapRootIter = browserStore.AppendValues (iter, pb, server.DirectoryRoot);
 			browserStore.AppendValues (ldapRootIter, null, "");
 
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
@@ -207,9 +206,9 @@ namespace lat
 				string name = null;
 				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
-				if (name.Equals (_conn.Host))
+				if (name.Equals (server.Host))
 				{
-					DispatchDNSelectedEvent (_conn.Host, true);
+					DispatchDNSelectedEvent (server.Host, true);
 					return;
 				}
 
@@ -224,7 +223,7 @@ namespace lat
 			string name = (string) browserStore.GetValue (
 					args.Iter, (int)TreeCols.DN);
 
-			if (name == _conn.Host)
+			if (name == server.Host)
 			{
 				Logger.Log.Debug ("END ldapRowCollapsed");
 				return;
@@ -275,7 +274,7 @@ namespace lat
 
 			name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
 
-			if (name == _conn.Host)
+			if (name == server.Host)
 			{
 				Logger.Log.Debug ("END ldapRowExpanded");
 				return;
@@ -292,9 +291,9 @@ namespace lat
 
 			try
 			{
-		 		ArrayList ldapEntries = _conn.getChildren (name);
+		 		LdapEntry[] ldapEntries = server.GetEntryChildren (name);
 
-				if (ldapEntries.Count == 0)
+				if (ldapEntries.Length == 0)
 				{
 					browserStore.Remove (ref child);
 				}
@@ -360,17 +359,17 @@ namespace lat
 		{
 			string dn = getSelectedDN ();
 
-			new NewEntryDialog (_conn, dn);
+			new NewEntryDialog (server, dn);
 		}
 
 		private void OnRenameActivate (object o, EventArgs args) 
 		{
 			string dn = getSelectedDN ();
 
-			if (dn == _conn.Host)
+			if (dn == server.Host)
 				return;
 
-			new RenameEntryDialog (_conn, dn);		
+			new RenameEntryDialog (server, dn);		
 		}
 
 		private void OnExportActivate (object o, EventArgs args) 
@@ -380,7 +379,7 @@ namespace lat
 			if (dn.Equals (null))
 				return;
 
-			Util.ExportData (_conn, this._parent, dn);
+			Util.ExportData (server, this._parent, dn);
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args) 
@@ -393,12 +392,12 @@ namespace lat
 
 			string dn = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
-			if (dn == _conn.Host)
+			if (dn == server.Host)
 				return;
 
 			try
 			{
-				if (Util.DeleteEntry (_conn, _parent, dn))
+				if (Util.DeleteEntry (server, _parent, dn))
 					browserStore.Remove (ref iter);
 			}
 			catch {}
@@ -408,12 +407,12 @@ namespace lat
 		{
 			string dn = getSelectedDN ();
 
-			if (dn == _conn.Host)
+			if (dn == server.Host)
 				return;
 
 			DispatchDNSelectedEvent (dn, false);
 
-			AddAttributeDialog aad = new AddAttributeDialog (_conn, dn);
+			AddAttributeDialog aad = new AddAttributeDialog (server, dn);
 	
 			Logger.Log.Debug ("LdapTreeView.OnAddAttr: name: {0} - value: {1}", 
 				aad.Name, aad.Value);
@@ -488,7 +487,7 @@ namespace lat
 
 			Logger.Log.Debug ("Exporting entry: {0}", dn);
 
-			Util.ExportData (_conn, dn, out data);
+			Util.ExportData (server, dn, out data);
 
 			Atom[] targets = args.Context.Targets;
 
@@ -513,7 +512,7 @@ namespace lat
 				{
 					string[] uri_list = Regex.Split (data, "\r\n");
 
-					Util.ImportData (_conn, _parent, uri_list);
+					Util.ImportData (server, _parent, uri_list);
 			
 					success = true;
 					break;
@@ -521,7 +520,7 @@ namespace lat
 
 				case 1:
 				{
-					Util.ImportData (_conn, _parent, data);
+					Util.ImportData (server, _parent, data);
 
 					success = true;
 					break;

@@ -38,27 +38,27 @@ namespace lat
 		private static string[] _adColAttrs = { "name", "description", "operatingSystem" };
 		private static string[] _posixColAttrs = { "cn", "ipHostNumber", "description" };
 
-		public HostsView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
-				: base (conn, tv, parent)
+		public HostsView (LdapServer server, TreeView treeView, Gtk.Window parentWindow) 
+				: base (server, treeView, parentWindow)
 		{
-			this._store = new ListStore (typeof (string), typeof (string), typeof (string));
-			this._tv.Model = this._store;
+			this.store = new ListStore (typeof (string), typeof (string), typeof (string));
+			this.tv.Model = this.store;
 
-			this._viewName = "Hosts";
+			this.viewName = "Hosts";
 
-			switch (conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
-					this._lookupKeyCol = 0;
-					this._filter = "(&(objectclass=user)(objectcategory=Computer))";
+					this.lookupKeyCol = 0;
+					this.filter = "(&(objectclass=user)(objectcategory=Computer))";
 					this.setupColumns (_adCols);
 					break;
 
 				case "generic ldap server":
 				case "openldap":
 				default:
-					this._lookupKeyCol = 0;
-					this._filter = "objectclass=ipHost";
+					this.lookupKeyCol = 0;
+					this.filter = "objectclass=ipHost";
 
 					this.setupColumns (_posixCols);
 					break;
@@ -67,7 +67,7 @@ namespace lat
 
 		public override void Populate ()
 		{
-			switch (_conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
 					this.insertData (_adColAttrs);

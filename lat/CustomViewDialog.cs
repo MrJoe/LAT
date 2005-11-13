@@ -42,7 +42,7 @@ namespace lat
 		private ListStore viewStore;
 	
 		private Hashtable _viewAttrs = new Hashtable ();
-		private lat.Connection _conn;
+		private LdapServer server;
 		private CustomViewManager _cvm;
 
 		private bool _isEdit = false;
@@ -52,21 +52,21 @@ namespace lat
 
 		private ResponseType _result;
 
-		public CustomViewDialog (lat.Connection conn, CustomViewManager cvm)
+		public CustomViewDialog (LdapServer ldapServer, CustomViewManager cvm)
 		{
-			_conn = conn;
+			server = ldapServer;
 			_cvm = cvm;
 
 			Init ();
 
 			customViewDialog.Title = "LAT - New Custom View";
 
-			searchBaseButton.Label = _conn.LdapRoot;
+			searchBaseButton.Label = server.DirectoryRoot;
 		}
 
-		public CustomViewDialog (lat.Connection conn, CustomViewManager cvm, string name)
+		public CustomViewDialog (LdapServer ldapServer, CustomViewManager cvm, string name)
 		{
-			_conn = conn;
+			server = ldapServer;
 			_cvm = cvm;
 
 			_isEdit = true;
@@ -129,13 +129,13 @@ namespace lat
 		public void OnSearchBaseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, customViewDialog);
+				new SelectContainerDialog (server, customViewDialog);
 
 			scd.Message = String.Format ("Where in the directory would\nyou like to start the search?");
 			scd.Title = "Select search base";
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				searchBaseButton.Label = scd.DN;
 		}
 
@@ -154,9 +154,9 @@ namespace lat
 
 		private void checkFilter ()
 		{
-			ArrayList res;
+			LdapEntry[] res;
 
-			res = _conn.Search (
+			res = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
 			if (res != null)

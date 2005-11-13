@@ -49,7 +49,7 @@ namespace lat
 		private TreeIter viewCustomIter;
 
 		private Gtk.Window _parent;
-		private lat.Connection _conn;
+		private LdapServer server;
 
 		private Hashtable customIters = new Hashtable ();
 
@@ -59,20 +59,20 @@ namespace lat
 		private ListStore _vs;
 		private TreeView _vt;
 
-		private enum TreeCols { Icon, Name};
+		private enum TreeCols { Icon, Name };
 
 		public event ViewSelectedHandler ViewSelected;
 
-		public ViewsTreeView (lat.Connection conn, Gtk.Window parent,
+		public ViewsTreeView (LdapServer ldapServer, Gtk.Window parent,
 				      ListStore valueStore, TreeView valueTreeView) : base ()
 		{
-			_conn = conn;
+			server = ldapServer;
 			_parent = parent;
 
 			_vs = valueStore;
 			_vt = valueTreeView;
 
-			viewFactory = new ViewFactory (_vs, _vt, parent, _conn);
+			viewFactory = new ViewFactory (_vs, _vt, parent, server);
 
 			viewsStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 
@@ -87,19 +87,19 @@ namespace lat
 
 			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Convert, IconSize.Menu, "");
 
-			viewRootIter = viewsStore.AppendValues (pb, _conn.Host);
+			viewRootIter = viewsStore.AppendValues (pb, server.Host);
 
 			pb = _parent.RenderIcon (Gtk.Stock.Open, IconSize.Menu, "");
 
-			if (_conn.ServerType.ToLower() == "microsoft active directory")
+			if (server.ServerType.ToLower() == "microsoft active directory")
 			{
 				viewsStore.AppendValues (viewRootIter, pb, "Computers");
 				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
 				viewsStore.AppendValues (viewRootIter, pb, "Groups");
 				viewsStore.AppendValues (viewRootIter, pb, "Users");
 			}
-			else if (_conn.ServerType.ToLower() == "generic ldap server" ||
-				 _conn.ServerType.ToLower() == "openldap")
+			else if (server.ServerType.ToLower() == "generic ldap server" ||
+				 server.ServerType.ToLower() == "openldap")
 			{
 				viewsStore.AppendValues (viewRootIter, pb, "Computers");
 				viewsStore.AppendValues (viewRootIter, pb, "Contacts");

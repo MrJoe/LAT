@@ -55,14 +55,14 @@ namespace lat
 		private bool _isSamba = false;
 		private string _smbSID = "";
 
-		public GroupsViewDialog (lat.Connection conn) : base (conn)
+		public GroupsViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();
 
 			populateUsers ();
 
 			groupDialog.Title = "Add Group";
-			groupIDSpinButton.Value = _conn.GetNextGID ();
+			groupIDSpinButton.Value = server.GetNextGID ();
 
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
@@ -79,7 +79,7 @@ namespace lat
 			}
 		}
 
-		public GroupsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public GroupsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
@@ -92,7 +92,7 @@ namespace lat
 
 			Init ();
 
-			_gi = getEntryInfo (groupAttrs, le);
+			server.GetAttributeValuesFromEntry (le, groupAttrs, out _gi);
 
 			string groupName = (string) _gi ["cn"];
 
@@ -136,13 +136,13 @@ namespace lat
 		{
 			if (enableSambaButton.Active)
 			{
-				_smbSID = _conn.GetLocalSID ();
+				_smbSID = server.GetLocalSID ();
 			}
 		}
 
 		private void populateUsers ()
 		{
-			ArrayList _users = _conn.SearchByClass ("posixAccount");
+			LdapEntry[] _users = server.SearchByClass ("posixAccount");
 
 			foreach (LdapEntry le in _users)
 			{
@@ -162,7 +162,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "groupDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = groupDialog;
+			viewDialog = groupDialog;
 
 			TreeViewColumn col;
 
@@ -335,7 +335,7 @@ namespace lat
 					_modList.Add (lm);
 				}
 	
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
+				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
 			}
 			else
 			{
@@ -361,10 +361,11 @@ namespace lat
 				}
 
 				SelectContainerDialog scd = 
-					new SelectContainerDialog ( _conn, groupDialog);
+					new SelectContainerDialog (server, groupDialog);
 
 				scd.Title = "Save Group";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the group\n{0}?", (string)cgi["cn"]);
+				scd.Message = String.Format (
+					"Where in the directory would\nyou like save the group\n{0}?", (string)cgi["cn"]);
 
 				scd.Run ();
 
@@ -373,7 +374,7 @@ namespace lat
 
 				string userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
 
-				Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
+				Util.AddEntry (server, viewDialog, userDN, attrList, true);
 			}
 
 			groupDialog.HideAll ();

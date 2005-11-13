@@ -37,27 +37,27 @@ namespace lat
 		private static string[] _adColAttrs = { "name", "description" };
 		private static string[] _posixColAttrs = { "gidNumber", "cn", "description" };
 
-		public GroupsView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
-				: base (conn, tv, parent)
+		public GroupsView (LdapServer server, TreeView treeView, Gtk.Window parentWindow) 
+				: base (server, treeView, parentWindow)
 		{
-			this._store = new ListStore (typeof (string), typeof (string), typeof (string));
-			this._tv.Model = this._store;
+			this.store = new ListStore (typeof (string), typeof (string), typeof (string));
+			this.tv.Model = this.store;
 
-			this._viewName = "Groups";
+			this.viewName = "Groups";
 
-			switch (conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
-					this._lookupKeyCol = 0;
-					this._filter = "objectclass=group";
+					this.lookupKeyCol = 0;
+					this.filter = "objectclass=group";
 					this.setupColumns (_adCols);
 					break;
 
 				case "generic ldap server":
 				case "openldap":
 				default:
-					this._lookupKeyCol = 1;
-					this._filter = "objectclass=posixGroup";
+					this.lookupKeyCol = 1;
+					this.filter = "objectclass=posixGroup";
 
 					this.setupColumns (_posixCols);
 					break;
@@ -66,7 +66,7 @@ namespace lat
 		
 		public override void Populate ()
 		{
-			switch (_conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
 					this.insertData (_adColAttrs);

@@ -28,12 +28,12 @@ namespace lat
 	public class LDIF
 	{
 		private LdapEntry _le = null;
-		private lat.Connection _conn = null;
+		private LdapServer server = null;
 		private int _numEntries = 0;
 
-		public LDIF (lat.Connection conn)
+		public LDIF (LdapServer ldapServer)
 		{
-			_conn = conn;
+			server = ldapServer;
 		}
 
 		public LDIF (LdapEntry le)
@@ -82,7 +82,7 @@ namespace lat
 
 			try
 			{
-				_conn.Add (dn, attrList);
+				server.Add (dn, attrList);
 				_numEntries++;
 			}
 			catch {}

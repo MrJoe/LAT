@@ -19,8 +19,6 @@
 //
 
 using Gtk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
@@ -36,13 +34,13 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton templateRadioButton;
 		[Glade.Widget] Gtk.RadioButton entryRadioButton;
 
-		private Connection _conn;
+		private LdapServer server;
 		private ComboBox templateComboBox;
 		private string _dn;
 
-		public NewEntryDialog (Connection conn, string dn)
+		public NewEntryDialog (LdapServer ldapServer, string dn)
 		{
-			_conn = conn;
+			server = ldapServer;
 			_dn = dn;
 
 			ui = new Glade.XML (null, "lat.glade", "newEntryDialog", null);
@@ -87,14 +85,14 @@ namespace lat
 
 				Template t = Global.theTemplateManager.Lookup (name);
 
-				new CreateEntryDialog (_conn, t);
+				new CreateEntryDialog (server, t);
 			}
 			else
 			{
-				if (_dn == _conn.Host)
+				if (_dn == server.Host)
 					return;
 
-				new CreateEntryDialog (_conn, _conn.getEntry (_dn));
+				new CreateEntryDialog (server, server.GetEntry (_dn));
 			}
 
 			newEntryDialog.HideAll ();

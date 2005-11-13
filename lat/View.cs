@@ -30,17 +30,17 @@ namespace lat
 {
 	public abstract class View
 	{
-		protected ListStore _store;
-		protected TreeView _tv;
-		protected Gtk.Window _parent;
-		protected lat.Connection _conn;
-		protected Menu _popup;
+		protected ListStore 	store;
+		protected TreeView 	tv;
+		protected Gtk.Window 	parent;
+		protected LdapServer 	server;
+		protected Menu 		popup;
 
-		protected string _viewName = null;
-		protected string _filter = null;
+		protected string 	viewName = null;
+		protected string 	filter = null;
 
-		protected int _lookupKeyCol;
-		protected Hashtable _lookupTable;
+		protected int 		lookupKeyCol;
+		protected Hashtable 	lookupTable;
 
 		private static TargetEntry[] _sourceTable = new TargetEntry[]
 		{
@@ -53,64 +53,64 @@ namespace lat
 			new TargetEntry ("text/plain", 0, 1),
 		};
 
-		public View (lat.Connection conn, TreeView tv, Gtk.Window parent)
+		public View (LdapServer ldapServer, TreeView treeView, Gtk.Window parentWindow)
 		{
-			_conn = conn;
-			_parent = parent;
+			server = ldapServer;
+			parent = parentWindow;
 
-			_tv = tv;
-			_tv.Selection.Mode = SelectionMode.Multiple;
-			_tv.ButtonPressEvent += new ButtonPressEventHandler (OnEntryRightClick);
+			tv = treeView;
+			tv.Selection.Mode = SelectionMode.Multiple;
+			tv.ButtonPressEvent += new ButtonPressEventHandler (OnEntryRightClick);
 
-			_lookupTable = new Hashtable ();
+			lookupTable = new Hashtable ();
 
-			Gtk.Drag.DestSet (_tv, DestDefaults.All, _targetsTable,
+			Gtk.Drag.DestSet (tv, DestDefaults.All, _targetsTable,
 					Gdk.DragAction.Copy);
 
-			Gtk.Drag.SourceSet (_tv, 
+			Gtk.Drag.SourceSet (tv, 
 				Gdk.ModifierType.Button1Mask | Gdk.ModifierType.Button3Mask, 
 				_sourceTable, Gdk.DragAction.Copy | DragAction.Move);
 
-			_tv.DragBegin += new DragBeginHandler (OnDragBegin);
-			_tv.DragDataGet += new DragDataGetHandler (OnDragDataGet);
-			_tv.DragDataReceived += new DragDataReceivedHandler (OnDragDataReceived);
+			tv.DragBegin += new DragBeginHandler (OnDragBegin);
+			tv.DragDataGet += new DragDataGetHandler (OnDragDataGet);
+			tv.DragDataReceived += new DragDataReceivedHandler (OnDragDataReceived);
 
-			_tv.RowActivated += new RowActivatedHandler (OnRowActivated);
+			tv.RowActivated += new RowActivatedHandler (OnRowActivated);
 		}
 
 		public void DoPopUp()
 		{
-			_popup = new Menu();
+			popup = new Menu();
 
-			 AccelGroup ag = new AccelGroup ();
+			AccelGroup ag = new AccelGroup ();
 
 			ImageMenuItem newItem = new ImageMenuItem (Stock.New, ag);
 			newItem.Activated += new EventHandler (OnNewEntryActivate);
 			newItem.Show ();
 
-			_popup.Append (newItem);
+			popup.Append (newItem);
 
 			MenuItem exportItem = new MenuItem ("Export");
 			exportItem.Activated += new EventHandler (OnExportActivate);
 			exportItem.Show ();
 
-			_popup.Append (exportItem);
+			popup.Append (exportItem);
 
 			ImageMenuItem deleteItem = new ImageMenuItem (Stock.Delete, ag);
 			deleteItem.Activated += new EventHandler (OnDeleteActivate);
 			deleteItem.Show ();
 
-			_popup.Append (deleteItem);
+			popup.Append (deleteItem);
 
 			ImageMenuItem propItem = new ImageMenuItem (Stock.Properties, ag);
 			propItem.Activated += new EventHandler (OnEditActivate);
 			propItem.Show ();
 
-			_popup.Append (propItem);
+			popup.Append (propItem);
 
 			customPopUp ();
 
-			_popup.Popup(null, null, null, 3,
+			popup.Popup(null, null, null, 3,
 					Gtk.Global.CurrentEventTime);
 		}
 
@@ -139,48 +139,30 @@ namespace lat
 				col.AddAttribute (crt, "text", i);
 				col.SortColumnId = i;
 
-				_tv.AppendColumn (col);
+				tv.AppendColumn (col);
 			}
 
-			_tv.ShowAll ();
+			tv.ShowAll ();
 		}
 
-		private static string[] getAttrValues (LdapEntry le, string[] attr)
-		{
-			if (le == null || attr == null)
-				return null;
-
-			ArrayList retVal = new ArrayList ();
-
-			foreach (string n in attr)
-			{
-				LdapAttribute la = le.getAttribute (n);
-
-				if (la != null)
-					retVal.Add (la.StringValue);
-				else
-					retVal.Add ("");
-			}
-
-			return (string[]) retVal.ToArray (typeof (string));
-		}
-
-		private void doInsert (ArrayList objs, string[] attributes)
+		private void DoInsert (LdapEntry[] objs, string[] attributes)
 		{
 			try
 			{
-				if (_store != null)
-					_store.Clear ();
+				if (store != null)
+					store.Clear ();
 
 				foreach (LdapEntry le in objs)
 				{
-					string[] values = getAttrValues (le, attributes);
-					_store.AppendValues (values);
+					string[] values = server.GetAttributeValuesFromEntry (
+						le, attributes);
 
-					if (_lookupTable.ContainsKey (values [_lookupKeyCol]))
-						_lookupTable.Remove (values [_lookupKeyCol]);
+					store.AppendValues (values);
 
-					_lookupTable.Add (values [_lookupKeyCol], le);
+					if (lookupTable.ContainsKey (values [lookupKeyCol]))
+						lookupTable.Remove (values [lookupKeyCol]);
+
+					lookupTable.Add (values [lookupKeyCol], le);
 				}
 			}
 			catch 
@@ -188,7 +170,7 @@ namespace lat
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read data from server");
 
-				Gtk.MessageDialog md = new Gtk.MessageDialog (_parent, 
+				Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
 					Gtk.DialogFlags.DestroyWithParent,
 					Gtk.MessageType.Info, 
 					Gtk.ButtonsType.Close, 
@@ -203,26 +185,26 @@ namespace lat
 
 		public void insertData (string[] attributes)
 		{
-			ArrayList objs = _conn.Search (_filter);
-			doInsert (objs, attributes);
+			LdapEntry[] data = server.Search (filter);
+			DoInsert (data, attributes);
 		}
 
 		public void insertData (string searchBase, string[] attributes)
 		{
-			ArrayList objs = _conn.Search (searchBase, _filter);
-			doInsert (objs, attributes);
+			LdapEntry[] data = server.Search (searchBase, filter);
+			DoInsert (data, attributes);
 		}
 
 		public LdapEntry lookupEntry (TreePath path)
 		{
 			TreeIter iter;
 			
-			if (_store.GetIter (out iter, path))
+			if (store.GetIter (out iter, path))
 			{
 				string key = null;
-				key = (string) _store.GetValue (iter, _lookupKeyCol);
+				key = (string) store.GetValue (iter, lookupKeyCol);
 				
-				LdapEntry le = (LdapEntry) _lookupTable [key];
+				LdapEntry le = (LdapEntry) lookupTable [key];
 
 				return le;
 			} 
@@ -234,7 +216,7 @@ namespace lat
 		{	
 			LdapEntry le = lookupEntry (args.Path);
 
-			ViewDialogFactory.Create (_viewName, _conn, le);
+			ViewDialogFactory.Create (viewName, server, le);
 
 			Populate ();
 		}
@@ -249,7 +231,7 @@ namespace lat
 		{
 			Gtk.TreeModel model;
 
-			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
 			foreach (TreePath path in tp)
 			{
@@ -266,9 +248,9 @@ namespace lat
 
 		public void removeDndHandlers ()
 		{
-			_tv.DragBegin -= new DragBeginHandler (OnDragBegin);
-			_tv.DragDataGet -= new DragDataGetHandler (OnDragDataGet);
-			_tv.DragDataReceived -= new DragDataReceivedHandler (OnDragDataReceived);
+			tv.DragBegin -= new DragBeginHandler (OnDragBegin);
+			tv.DragDataGet -= new DragDataGetHandler (OnDragDataGet);
+			tv.DragDataReceived -= new DragDataReceivedHandler (OnDragDataReceived);
 		}
 		
 		public void OnDragDataReceived (object o, DragDataReceivedArgs args)
@@ -284,7 +266,7 @@ namespace lat
 				{
 					string[] uri_list = Regex.Split (data, "\r\n");
 
-					Util.ImportData (_conn, _parent, uri_list);
+					Util.ImportData (server, parent, uri_list);
 					
 					success = true;
 					break;
@@ -292,7 +274,7 @@ namespace lat
 
 				case 1:
 				{
-					Util.ImportData (_conn, _parent, data);
+					Util.ImportData (server, parent, data);
 
 					success = true;
 					break;
@@ -304,7 +286,7 @@ namespace lat
 
 		public virtual void OnNewEntryActivate (object o, EventArgs args) 
 		{
-			ViewDialogFactory.Create (_viewName, _conn, null);
+			ViewDialogFactory.Create (viewName, server, null);
 
 			Populate ();
 		}
@@ -312,13 +294,13 @@ namespace lat
 		public virtual void OnEditActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
-			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
 			foreach (TreePath path in tp)
 			{
 				LdapEntry le = lookupEntry (path);
 
-				ViewDialogFactory.Create (_viewName, _conn, le);
+				ViewDialogFactory.Create (viewName, server, le);
 				
 				Populate ();
 			}
@@ -332,7 +314,7 @@ namespace lat
 				{
 					LdapEntry le = lookupEntry (path[0]);
 
-					Util.DeleteEntry (_conn, _parent, le.DN);
+					Util.DeleteEntry (server, parent, le.DN);
 
 					return;
 				}
@@ -347,7 +329,7 @@ namespace lat
 
 				string[] dns = (string[]) dnList.ToArray (typeof(string));
 
-				Util.DeleteEntry (_conn, _parent, dns);
+				Util.DeleteEntry (server, parent, dns);
 			}
 			catch {}
 		}
@@ -355,7 +337,7 @@ namespace lat
 		public virtual void OnDeleteActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
-			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
 			deleteEntry (tp);
 			
@@ -365,12 +347,12 @@ namespace lat
 		public virtual void OnExportActivate (object o, EventArgs args)
 		{
 			TreeModel model;
-			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
 			try
 			{
 				LdapEntry le = lookupEntry (tp[0]);
-				Util.ExportData (_conn, _parent, le.DN);
+				Util.ExportData (server, parent, le.DN);
 			}
 			catch {}
 		}
@@ -379,7 +361,7 @@ namespace lat
 		{
 			Gtk.TreeModel model;
 
-			TreePath[] tp = this._tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = this.tv.Selection.GetSelectedRows (out model);
 
 			try
 			{
@@ -402,7 +384,7 @@ namespace lat
 				string msg = Mono.Unix.Catalog.GetString (
 					"Invalid or empty email address");
 				
-				Util.MessageBox (_parent, msg, MessageType.Error);
+				Util.MessageBox (parent, msg, MessageType.Error);
 
 				return;
 			}
@@ -418,7 +400,7 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (_parent, errorMsg, MessageType.Error);
+				Util.MessageBox (parent, errorMsg, MessageType.Error);
 			}
 		}
 
@@ -437,7 +419,7 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (_parent, errorMsg, MessageType.Error);
+				Util.MessageBox (parent, errorMsg, MessageType.Error);
 			}
 		}
 
@@ -449,8 +431,8 @@ namespace lat
 
 		public void removeHandlers ()
 		{
-			_tv.RowActivated -= new RowActivatedHandler (OnRowActivated);
-			_tv.ButtonPressEvent -= new ButtonPressEventHandler (OnEntryRightClick);
+			tv.RowActivated -= new RowActivatedHandler (OnRowActivated);
+			tv.ButtonPressEvent -= new ButtonPressEventHandler (OnEntryRightClick);
 		}
 
 		public abstract void Populate ();

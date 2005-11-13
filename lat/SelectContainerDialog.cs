@@ -36,12 +36,12 @@ namespace lat
 
 		private string _dn = "";
 
-		public SelectContainerDialog (lat.Connection conn, Gtk.Window parent)
+		public SelectContainerDialog (LdapServer ldapServer, Gtk.Window parent)
 		{
 			ui = new Glade.XML (null, "lat.glade", "selectContainerDialog", null);
 			ui.Autoconnect (this);
 
-			_ldapTreeview = new LdapTreeView (conn, parent);
+			_ldapTreeview = new LdapTreeView (ldapServer, parent);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
 
 			browserScrolledWindow.AddWithViewport (_ldapTreeview);

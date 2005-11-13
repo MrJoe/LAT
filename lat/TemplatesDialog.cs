@@ -36,11 +36,11 @@ namespace lat
 		[Glade.Widget] Gtk.TreeView templateTreeView;
 
 		private ListStore _store;
-		private Connection _conn;
+		private LdapServer server;
 
-		public TemplatesDialog (Connection conn)
+		public TemplatesDialog (LdapServer ldapServer)
 		{
-			_conn = conn;
+			server = ldapServer;
 
 			ui = new Glade.XML (null, "lat.glade", "templatesDialog", null);
 			ui.Autoconnect (this);
@@ -93,7 +93,7 @@ namespace lat
 
 		public void OnAddClicked (object o, EventArgs args)
 		{
-			TemplateEditorDialog ted = new TemplateEditorDialog (_conn);
+			TemplateEditorDialog ted = new TemplateEditorDialog (server);
 
 			if (ted.UserTemplate == null)
 				return;
@@ -106,7 +106,7 @@ namespace lat
 		{
 			Template t = Global.theTemplateManager.Lookup (name);
 
-			TemplateEditorDialog ted = new TemplateEditorDialog (_conn, t);
+			TemplateEditorDialog ted = new TemplateEditorDialog (server, t);
 
 			if (ted.UserTemplate == null)
 				return;

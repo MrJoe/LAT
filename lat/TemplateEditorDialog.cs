@@ -19,8 +19,6 @@
 //
 
 using Gtk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
@@ -44,13 +42,13 @@ namespace lat
 		private ArrayList _objectClass;
 		private Template t = null;
 
-		private Connection _conn;
+		private LdapServer server;
 		private ComboBox attrClassComboBox;
 		private bool _isEdit = false;
 
-		public TemplateEditorDialog (Connection conn)
+		public TemplateEditorDialog (LdapServer ldapServer)
 		{
-			_conn = conn;
+			server = ldapServer;
 		
 			Init ();
 
@@ -58,9 +56,9 @@ namespace lat
 			templateEditorDialog.Destroy ();
 		}
 
-		public TemplateEditorDialog (Connection conn, Template theTemplate)
+		public TemplateEditorDialog (LdapServer ldapServer, Template theTemplate)
 		{
-			_conn = conn;
+			server = ldapServer;
 			_isEdit = true;
 
 			t = theTemplate;
@@ -132,7 +130,7 @@ namespace lat
 			// class
 			attrClassComboBox = ComboBox.NewText ();
 			
-			ArrayList ocs = _conn.getObjClasses ();			
+			LdapEntry[] ocs = server.GetObjectClasses ();			
 			ArrayList tmp = new ArrayList ();
 
 			foreach (LdapEntry le in ocs)
@@ -184,7 +182,7 @@ namespace lat
 			attrListStore.Clear ();
 
 			string[] required, optional;			
-			_conn.getAllAttrs (_objectClass, out required, out optional);
+			server.GetAllAttributes (_objectClass, out required, out optional);
 
 			foreach (string s in required)
 			{

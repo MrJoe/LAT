@@ -91,7 +91,8 @@ namespace lat
 		private SchemaTreeView _schemaTreeview;
 		private SearchResultsTreeView _searchTreeView;
 
-		private Connection _conn;
+		private LdapServer server;
+
 		private ArrayList _modList;
 		private ArrayList _searchResults = null;
 
@@ -105,10 +106,10 @@ namespace lat
 
 		private string _pasteDN = null;
 		private bool _isCopy = false;
-		
-		public latWindow (Connection conn) 
+
+		public latWindow (LdapServer ldapServer) 
 		{
-			_conn = conn;
+			server = ldapServer;
 			_modList = new ArrayList ();
 
 			ui = new Glade.XML (null, "lat.glade", "mainWindow", null);
@@ -119,7 +120,7 @@ namespace lat
 
 			// Setup views
 			_viewsTreeView = new ViewsTreeView (
-				_conn, 
+				server, 
 				mainWindow, 
 				valuesStore, 
 				valuesListview);
@@ -130,7 +131,7 @@ namespace lat
 			viewScrolledWindow.Show ();
 
 			// Setup browser			
-			_ldapTreeview = new LdapTreeView (_conn, mainWindow);
+			_ldapTreeview = new LdapTreeView (server, mainWindow);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
 			_ldapTreeview.AttributeAdded += new AttributeAddedHandler (ldapAttrAdded);
 
@@ -138,21 +139,21 @@ namespace lat
 			browserScrolledWindow.Show ();
 
 			// Setup schema browser
-			_schemaTreeview = new SchemaTreeView (_conn, mainWindow);
+			_schemaTreeview = new SchemaTreeView (server, mainWindow);
 			_schemaTreeview.schemaSelected += new schemaSelectedHandler (schemaDNSelected);
 
 			schemaScrolledWindow.AddWithViewport (_schemaTreeview);
 			schemaScrolledWindow.Show ();
 
 			// Setup search
-			_searchTreeView = new SearchResultsTreeView (_conn);
+			_searchTreeView = new SearchResultsTreeView (server);
 			_searchTreeView.SearchResultSelected += 
 				new SearchResultSelectedHandler (OnSearchSelected);
 
 			resultsScrolledWindow.AddWithViewport (_searchTreeView);
 			resultsScrolledWindow.Show ();
 
-			searchBaseButton.Label = _conn.LdapRoot;
+			searchBaseButton.Label = server.DirectoryRoot;
 			toggleButtons (false);
 
 			// status bar
@@ -180,12 +181,12 @@ namespace lat
 
 			templateToolButton.Hide ();
 		}
-
+		
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
 			clearValues ();
 
-			if (args.Name.Equals (_conn.Host))
+			if (args.Name.Equals (server.Host))
 			{
 				// FIXME: Need a way to remove the handlers
 
@@ -200,7 +201,7 @@ namespace lat
 
 		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
 		{
-			LdapEntry entry = _conn.getEntry (args.DN);
+			LdapEntry entry = server.GetEntry (args.DN);
 
 			if (entry != null)
 				showEntryAttributes (entry);
@@ -210,13 +211,13 @@ namespace lat
 		{
 			string msg = null;
 
-			if (_conn.AuthDN == null)
+			if (server.AuthDN == null)
 			{
 				msg = String.Format("Bind DN: anonymous");
 			}
 			else
 			{
-				msg = String.Format("Bind DN: {0}", _conn.AuthDN);
+				msg = String.Format("Bind DN: {0}", server.AuthDN);
 			}
 
 			appBar.Pop ();
@@ -301,14 +302,14 @@ namespace lat
 			{
 				setInfoNotePage (0);
 
-				SchemaParser sp = _conn.getObjClassSchema (args.Name);
+				SchemaParser sp = server.GetObjectClassSchema (args.Name);
 				showEntrySchema (sp);
 			}
 			else if (args.Parent == "Attribute Types")
 			{
 				setInfoNotePage (1);
 
-				SchemaParser sp = _conn.getAttrTypeSchema (args.Name);
+				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
 				showAttrTypeSchema (sp);
 			}
 		}
@@ -321,7 +322,7 @@ namespace lat
 				return;
 			}
 
-			LdapEntry entry = _conn.getEntry (args.DN);
+			LdapEntry entry = server.GetEntry (args.DN);
 			showEntryAttributes (entry);
 		}
 
@@ -363,7 +364,7 @@ namespace lat
 			if (dn == null)
 				return;
 			
-			if (dn.Equals (_conn.Host))
+			if (dn.Equals (server.Host))
 			{
 				return;
 			}
@@ -392,8 +393,14 @@ namespace lat
 				_searchResults = null;
 			}
 
-			_searchResults = _conn.Search (
+			LdapEntry[] entries = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
+
+			// FIXME: bad, bad bad
+			_searchResults = new ArrayList ();
+
+			foreach (LdapEntry le in entries)
+				_searchResults.Add (le);
 
 			if (_searchResults != null)
 			{
@@ -410,7 +417,7 @@ namespace lat
 		public void OnSearchBaseClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, mainWindow);
+				new SelectContainerDialog (server, mainWindow);
 
 			scd.Message = String.Format (
 				Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
@@ -418,7 +425,7 @@ namespace lat
 			scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (_conn.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				searchBaseButton.Label = scd.DN;
 		}
 
@@ -426,7 +433,7 @@ namespace lat
 		{
 			string dn = _ldapTreeview.getSelectedDN ();
 
-			Util.ModifyEntry (_conn, mainWindow, dn, _modList, true);
+			Util.ModifyEntry (server, mainWindow, dn, _modList, true);
 
 			applyButton.Sensitive = false;
 		}
@@ -436,33 +443,33 @@ namespace lat
 			valuesStore.Clear ();
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Host"), _conn.Host);
+				Mono.Unix.Catalog.GetString ("Host"), server.Host);
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Port"), _conn.Port.ToString());
+				Mono.Unix.Catalog.GetString ("Port"), server.Port.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("User"), _conn.AuthDN);
+				Mono.Unix.Catalog.GetString ("User"), server.AuthDN);
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Base DN"), _conn.LdapRoot);
+				Mono.Unix.Catalog.GetString ("Base DN"), server.DirectoryRoot);
 
 			valuesStore.AppendValues (
 				Mono.Unix.Catalog.GetString ("Connected"),
-					 _conn.IsConnected.ToString());
+					 server.Connected.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Bound"), _conn.IsBound.ToString());
+				Mono.Unix.Catalog.GetString ("Bound"), server.Bound.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("TLS/SSL"), _conn.UseSSL.ToString());
+				Mono.Unix.Catalog.GetString ("TLS/SSL"), server.UseSSL.ToString());
 
 			valuesStore.AppendValues (
 				Mono.Unix.Catalog.GetString ("Protocol Version"),
-					 _conn.Protocol.ToString());
+					 server.Protocol.ToString());
 
 			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Server Type"), _conn.ServerType);
+				Mono.Unix.Catalog.GetString ("Server Type"), server.ServerType);
 		}
 
 		private void showEntryAttributes (LdapEntry entry)
@@ -476,7 +483,7 @@ namespace lat
 
 			foreach (string o in a.StringValueArray)
 			{
-				string[] attrs = _conn.getAllAttrs (o);
+				string[] attrs = server.GetAllAttributes (o);
 				
 				foreach (string at in attrs)
 				{
@@ -520,7 +527,7 @@ namespace lat
 				if (dn == null)
 					return;
 		
-				LdapEntry le = _conn.getEntry (dn);
+				LdapEntry le = server.GetEntry (dn);
 				showEntryAttributes (le);
 			}
 		}
@@ -751,7 +758,7 @@ namespace lat
 
 		public void OnTemplatesClicked (object o, EventArgs args)
 		{
-			new TemplatesDialog (_conn);
+			new TemplatesDialog (server);
 		}
 
 		// Menu
@@ -805,14 +812,14 @@ namespace lat
 			string msg = Mono.Unix.Catalog.GetString (
 				"Enter the new username and password\nyou wish to re-login with");
 
-			new LoginDialog (_conn, msg);
+			new LoginDialog (server, msg);
 			updateStatusBar ();
 		}
 
 		public void OnDisconnectActivate (object o, EventArgs args) 
 		{
 			string msg = Mono.Unix.Catalog.GetString (
-				"Are you sure you want to disconnect from\nserver: ") + _conn.Host;
+				"Are you sure you want to disconnect from\nserver: ") + server.Host;
 
 			MessageDialog md = new MessageDialog (mainWindow, 
 					DialogFlags.DestroyWithParent,
@@ -824,7 +831,7 @@ namespace lat
 
 			if (result == ResponseType.Yes)
 			{
-				_conn.Disconnect ();
+				server.Disconnect ();
 
 				mainWindow.Hide ();
 				mainWindow = null;
@@ -855,7 +862,7 @@ namespace lat
 				ub.Scheme = "file";
 				ub.Path = fcd.Filename;
 
-				Util.ImportData (_conn, mainWindow, ub.Uri);
+				Util.ImportData (server, mainWindow, ub.Uri);
 			} 
 		
 			fcd.Destroy();
@@ -863,7 +870,7 @@ namespace lat
 
 		public void OnExportActivate (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = new SelectContainerDialog (_conn, mainWindow);
+			SelectContainerDialog scd = new SelectContainerDialog (server, mainWindow);
 
 			scd.Title = Mono.Unix.Catalog.GetString ("Export entry");
 
@@ -874,12 +881,12 @@ namespace lat
 			if (scd.DN.Equals (""))
 				return;
 
-			Util.ExportData (_conn, mainWindow, scd.DN);
+//			Util.ExportData (server, mainWindow, scd.DN);
 		}
 
 		public void OnPopulateActivate (object o, EventArgs args)
 		{
-			new SambaPopulateDialog (_conn);
+			new SambaPopulateDialog (server);
 		}
 
 		public void OnCutActivate (object o, EventArgs args)
@@ -924,7 +931,7 @@ namespace lat
 
 				if (_isCopy)
 				{
-					_conn.Copy (_cutDN, r.toString(false), _pasteDN);
+					server.Copy (_cutDN, r.toString(false), _pasteDN);
 
 					msg = String.Format (
 						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
@@ -933,7 +940,7 @@ namespace lat
 				}
 				else
 				{
-					_conn.Move (_cutDN, r.toString(false), _pasteDN);
+					server.Move (_cutDN, r.toString(false), _pasteDN);
 
 					msg = String.Format (
 						Mono.Unix.Catalog.GetString ("Entry {0} moved to {1}"), 
@@ -978,7 +985,7 @@ namespace lat
 
 		public void OnMassEditActivate (object o, EventArgs args)
 		{
-			new MassEditDialog (_conn);
+			new MassEditDialog (server);
 		}
 
 		public void OnViewChanged (object o, EventArgs args)

@@ -26,19 +26,19 @@ namespace lat
 {
 	public class ViewFactory
 	{
-		private ListStore _ls;
-		private TreeView _tv;
-		private Gtk.Window _pw;
-		private lat.Connection _cn;
-		public TreeStore _viewStore;
-		public Hashtable _ti;
+		private ListStore 	_ls;
+		private TreeView 	_tv;
+		private Gtk.Window 	_pw;
+		private LdapServer 	_srv;
+		public TreeStore 	_viewStore;
+		public Hashtable 	_ti;
 
-		public ViewFactory (ListStore ls, TreeView tv, Gtk.Window pw, lat.Connection cn)
+		public ViewFactory (ListStore ls, TreeView tv, Gtk.Window pw, LdapServer srv)
 		{
 			_ls = ls;
 			_tv = tv;
 			_pw = pw;
-			_cn = cn;
+			_srv = srv;
 		}
 
 		private void Cleanup ()
@@ -63,28 +63,28 @@ namespace lat
 			switch (name)
 			{
 				case "Users":
-					retVal = new UsersView (_cn, _tv, _pw);
+					retVal = new UsersView (_srv, _tv, _pw);
 					break;
 
 				case "Groups":
-					retVal = new GroupsView (_cn, _tv, _pw);
+					retVal = new GroupsView (_srv, _tv, _pw);
 					break;
 				
 				case "Computers":
 				case "Hosts":
-					retVal = new HostsView (_cn, _tv, _pw);
+					retVal = new HostsView (_srv, _tv, _pw);
 					break;
 
 				case "Contacts":
-					retVal = new ContactsView (_cn, _tv, _pw);
+					retVal = new ContactsView (_srv, _tv, _pw);
 					break;
 
 				case "Custom Views":
-					retVal = new CustomView (_cn, _tv, _pw, _ti, _viewStore);
+					retVal = new CustomView (_srv, _tv, _pw, _ti, _viewStore);
 					break;
 
 				default:
-					retVal = new DynamicView (name, _cn, _tv, _pw);
+					retVal = new DynamicView (name, _srv, _tv, _pw);
 					break;
 			}
 

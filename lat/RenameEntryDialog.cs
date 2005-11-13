@@ -19,8 +19,6 @@
 //
 
 using Gtk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
 
@@ -35,12 +33,12 @@ namespace lat
 		[Glade.Widget] Gtk.Entry newNameEntry;
 		[Glade.Widget] Gtk.CheckButton saveOldNameCheckButton;
 
-		private Connection _conn;
+		private LdapServer server;
 		private string _selectedDN;
 
-		public RenameEntryDialog (Connection conn, string selectedDN)
+		public RenameEntryDialog (LdapServer ldapServer, string selectedDN)
 		{
-			_conn = conn;
+			server = ldapServer;
 			_selectedDN = selectedDN;
 
 			ui = new Glade.XML (null, "lat.glade", "renameEntryDialog", null);
@@ -60,10 +58,11 @@ namespace lat
 			
 			try
 			{
-				_conn.Rename (oldDN, newDN, saveOld);
+				server.Rename (oldDN, newDN, saveOld);
 
 				string msg = String.Format (
-					Mono.Unix.Catalog.GetString ("Entry {0} has been renamed to {1}."),
+					Mono.Unix.Catalog.GetString (
+					"Entry {0} has been renamed to {1}."),
 					oldDN, newDN);
 
 				Util.MessageBox (renameEntryDialog, msg, MessageType.Info);

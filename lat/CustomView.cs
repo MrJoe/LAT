@@ -32,13 +32,13 @@ namespace lat
 		private Hashtable _ti;
 		private TreeStore _vs;
 
-		public CustomView (lat.Connection conn, TreeView tv, Gtk.Window parent, Hashtable ti, TreeStore viewStore) 
-				: base (conn, tv, parent)
+		public CustomView (LdapServer server, TreeView treeView, Gtk.Window parentWindow, Hashtable ti, TreeStore viewStore) 
+				: base (server, treeView, parentWindow)
 		{
-			this._store = new ListStore (typeof (string));
-			this._tv.Model = this._store;
+			this.store = new ListStore (typeof (string));
+			this.tv.Model = this.store;
 
-			this._viewName = "Custom Views";
+			this.viewName = "Custom Views";
 
 			this.setupColumns (_cols);
 
@@ -50,13 +50,13 @@ namespace lat
 
 		public override void Populate ()
 		{
-			_store.Clear ();
+			store.Clear ();
 
 			string[] views = cvm.getViewNames ();
 
 			foreach (string v in views)
 			{
-				_store.AppendValues (v);
+				store.AppendValues (v);
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace lat
 		{
 			try
 			{
-				CustomViewDialog cvd = new CustomViewDialog (_conn, cvm);
+				CustomViewDialog cvd = new CustomViewDialog (server, cvm);
 				cvd.Run ();
 
 				if (cvd.Result != ResponseType.Ok)
@@ -75,7 +75,7 @@ namespace lat
 
 				TreeIter iter = (TreeIter) _ti ["root"];
 				
-				Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Open, IconSize.Menu, "");
+				Gdk.Pixbuf pb = parent.RenderIcon (Stock.Open, IconSize.Menu, "");
 
 				TreeIter newIter = _vs.AppendValues (iter, pb, cvd.Name);
 
@@ -87,16 +87,16 @@ namespace lat
 		public override void OnEditActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
-			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
 			foreach (TreePath path in tp)
 			{
 				TreeIter iter;
-				_store.GetIter (out iter, path);
+				store.GetIter (out iter, path);
 			
-				string name = (string) _store.GetValue (iter, 0);
+				string name = (string) store.GetValue (iter, 0);
 
-				new CustomViewDialog (_conn, cvm, name);
+				new CustomViewDialog (server, cvm, name);
 			}
 
 			Populate ();
@@ -108,14 +108,14 @@ namespace lat
 			{
 				TreeIter iter;
 
-				_store.GetIter (out iter, tp);
-				string name = (string) _store.GetValue (iter, 0);
+				store.GetIter (out iter, tp);
+				string name = (string) store.GetValue (iter, 0);
 
 
 				string msg = String.Format (
 					Mono.Unix.Catalog.GetString ("Are you sure you want to delete:\n{0}"), name);
 
-				MessageDialog md = new MessageDialog (_parent, 
+				MessageDialog md = new MessageDialog (parent, 
 					DialogFlags.DestroyWithParent,
 					MessageType.Question, 
 					ButtonsType.YesNo, 
@@ -139,7 +139,7 @@ namespace lat
 		public override void OnDeleteActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
-			TreePath[] tp = _tv.Selection.GetSelectedRows (out model);
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
 			deleteView (tp);
 
@@ -152,11 +152,11 @@ namespace lat
 		public override void OnRowActivated (object o, RowActivatedArgs args)		
 		{
 			TreeIter iter;
-			_store.GetIter (out iter, args.Path);
+			store.GetIter (out iter, args.Path);
 			
-			string name = (string) _store.GetValue (iter, 0);
+			string name = (string) store.GetValue (iter, 0);
 
-			CustomViewDialog cvd = new CustomViewDialog (_conn, cvm, name);
+			CustomViewDialog cvd = new CustomViewDialog (server, cvm, name);
 			cvd.Run ();
 
 			Populate ();

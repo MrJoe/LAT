@@ -46,7 +46,7 @@ namespace lat
 
 	public class SearchResultsTreeView : Gtk.TreeView
 	{
-		private lat.Connection _conn;
+		private LdapServer server;
 		private ListStore resultsStore;
 
 		private static TargetEntry[] searchSourceTable = new TargetEntry[]
@@ -56,9 +56,9 @@ namespace lat
 
 		public event SearchResultSelectedHandler SearchResultSelected;
 
-		public SearchResultsTreeView (lat.Connection conn) : base ()
+		public SearchResultsTreeView (LdapServer ldapServer) : base ()
 		{
-			_conn = conn;
+			server = ldapServer;
 
 			resultsStore = new ListStore (typeof (string));
 			this.Model = resultsStore;
@@ -111,7 +111,7 @@ namespace lat
 			string dn = (string) model.GetValue (iter, 0);
 			string data = null;
 
-			Util.ExportData (_conn, dn, out data);
+			Util.ExportData (server, dn, out data);
 
 			Atom[] targets = args.Context.Targets;
 

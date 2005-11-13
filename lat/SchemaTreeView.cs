@@ -60,16 +60,16 @@ namespace lat
 		private TreeIter objIter;
 		private TreeIter attrIter;
 
-		private lat.Connection _conn;
+		private LdapServer server;
 		private Gtk.Window _parent;
 
 		private enum TreeCols { Icon, DN };
 
 		public event schemaSelectedHandler schemaSelected;
 
-		public SchemaTreeView (lat.Connection conn, Gtk.Window parent) : base ()
+		public SchemaTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
-			_conn = conn;
+			server = ldapServer;
 			_parent = parent;
 
 			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
@@ -85,10 +85,10 @@ namespace lat
 			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Convert, IconSize.Menu, "");
 
 			TreeIter iter;
-			iter = browserStore.AppendValues (pb, _conn.Host);
+			iter = browserStore.AppendValues (pb, server.Host);
 
 			objIter = browserStore.AppendValues (iter, pb, "Object Classes");
-			ArrayList objEntries = _conn.getObjClasses ();
+			LdapEntry[] objEntries = server.GetObjectClasses ();
 
 			ArrayList tmp = new ArrayList ();
 
@@ -113,7 +113,7 @@ namespace lat
 			tmp.Clear ();
 
 			attrIter = browserStore.AppendValues (iter, pb, "Attribute Types");
-			ArrayList attrEntries = _conn.getAttrTypes ();
+			LdapEntry[] attrEntries = server.GetAttributeTypes ();
 
 			foreach (LdapEntry le in attrEntries)
 			{
@@ -182,7 +182,7 @@ namespace lat
 				string name = null;
 				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
-				if (name.Equals (_conn.Host))
+				if (name.Equals (server.Host))
 				{
 					return;
 				}

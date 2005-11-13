@@ -42,28 +42,28 @@ namespace lat
 		private static string[] _adColAttrs = { "name", "description", "mail", "wWWHomePage" };
 		private static string[] _posixColAttrs = { "cn", "mail", "telephoneNumber", "homePhone", "mobile" };
 
-		public ContactsView (lat.Connection conn, TreeView tv, Gtk.Window parent) 
-				: base (conn, tv, parent)
+		public ContactsView (LdapServer ldapServer, TreeView treeView, 
+			Gtk.Window parentWindow) : base (ldapServer, treeView, parentWindow)
 		{
-			this._store = new ListStore (typeof (string), typeof (string),
+			this.store = new ListStore (typeof (string), typeof (string),
 				typeof (string), typeof (string), typeof (string));
 
-			this._tv.Model = this._store;
-			this._viewName = "Contacts";
+			this.tv.Model = this.store;
+			this.viewName = "Contacts";
 
-			switch (conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
-					this._lookupKeyCol = 0;
-					this._filter = "objectclass=contact";
+					this.lookupKeyCol = 0;
+					this.filter = "objectclass=contact";
 					this.setupColumns (_adCols);
 					break;
 
 				case "generic ldap server":
 				case "openldap":
 				default:
-					this._lookupKeyCol = 0;
-					this._filter = "objectclass=inetOrgPerson";
+					this.lookupKeyCol = 0;
+					this.filter = "objectclass=inetOrgPerson";
 
 					this.setupColumns (_posixCols);
 					break;
@@ -72,7 +72,7 @@ namespace lat
 
 		public override void Populate ()
 		{
-			switch (_conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
 					this.insertData (_adColAttrs);
@@ -91,19 +91,19 @@ namespace lat
 			SeparatorMenuItem sm = new SeparatorMenuItem ();
 			sm.Show ();
 		
-			_popup.Append (sm);
+			popup.Append (sm);
 
 			MenuItem mailItem = new MenuItem ("Send email");
 			mailItem.Activated += new EventHandler (OnEmailActivate);
 			mailItem.Show ();
 
-			_popup.Append (mailItem);
+			popup.Append (mailItem);
 
 			MenuItem wwwItem = new MenuItem ("Open Home Page");
 			wwwItem.Activated += new EventHandler (OnWWWActivate);
 			wwwItem.Show ();
 
-			_popup.Append (wwwItem);
+			popup.Append (wwwItem);
 		}
 	}
 }

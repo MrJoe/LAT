@@ -86,7 +86,7 @@ namespace lat
 						"title", "postOfficeBox", "homeDirectory",
 						"profilePath", "scriptPath", "userPrincipalName" };
 
-		public adUserViewDialog (lat.Connection conn) : base (conn)
+		public adUserViewDialog (LdapServer ldapServer) : base (ldapServer)
 		{
 			Init ();
 
@@ -105,7 +105,7 @@ namespace lat
 			}
 		}
 
-		public adUserViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public adUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
@@ -114,7 +114,7 @@ namespace lat
 
 			Init ();
 
-			_ci = getEntryInfo (contactAttrs, le);
+			server.GetAttributeValuesFromEntry (le, contactAttrs, out _ci);
 
 			string displayName = (string)_ci["displayName"];
 
@@ -173,7 +173,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "adUserDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = adUserDialog;
+			viewDialog = adUserDialog;
 		}
 
 		public void OnNameChanged (object o, EventArgs args)
@@ -237,7 +237,7 @@ namespace lat
 			{
 				_modList = getMods (contactAttrs, _ci, cci);
 
-				Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
+				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
 			}
 			else
 			{
@@ -254,7 +254,7 @@ namespace lat
 				attrList.Add (attr);
 
 				SelectContainerDialog scd = 
-					new SelectContainerDialog (_conn, adUserDialog);
+					new SelectContainerDialog (server, adUserDialog);
 
 				scd.Title = "Save Contact";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the contact\n{0}?", fullName);
@@ -266,7 +266,7 @@ namespace lat
 
 				string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
 
-				Util.AddEntry (_conn, _viewDialog, userDN, attrList, true);
+				Util.AddEntry (server, viewDialog, userDN, attrList, true);
 			}
 
 			adUserDialog.HideAll ();

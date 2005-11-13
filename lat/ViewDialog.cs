@@ -28,47 +28,13 @@ namespace lat
 {
 	public class ViewDialog
 	{
-		protected lat.Connection _conn;
-		protected Gtk.Dialog _viewDialog;
+		protected LdapServer server;
+		protected Gtk.Dialog viewDialog;
 		protected bool missingValues = false;
 
-		public ViewDialog (lat.Connection conn)
+		public ViewDialog (LdapServer ldapServer)
 		{
-			_conn = conn;
-		}
-
-		public static Hashtable getEntryInfo (string[] attrs, LdapEntry le)
-		{
-			Hashtable ei = new Hashtable ();
-
-			foreach (string a in attrs)
-			{
-				LdapAttribute attr;
-				attr = le.getAttribute (a);
-
-				if (attr == null)
-				{
-					ei.Add (a, "");
-				}
-				else
-				{
-					ei.Add (a, attr.StringValue);
-				}
-			}
-
-			return ei;
-		}
-
-		public static string getAttribute (LdapEntry le, string attr)
-		{
-			LdapAttribute la = le.getAttribute (attr);
-
-			if (la != null)
-			{
-				return la.StringValue;
-			}
-
-			return "";
+			server = ldapServer;
 		}
 
 		public static ArrayList getAttributes (string[] objClass, string[] attrs, Hashtable entryInfo)
@@ -142,7 +108,7 @@ namespace lat
 				msg += String.Format ("{0}\n", m);
 			}
 
-			Util.MessageBox (_viewDialog, msg, MessageType.Warning);
+			Util.MessageBox (viewDialog, msg, MessageType.Warning);
 		}
 
 		private static bool checkReq (string name, Hashtable entryInfo)
@@ -170,7 +136,7 @@ namespace lat
 				if (obj.Equals ("top"))
 					continue;
 
-				string[] reqs = _conn.getRequiredAttrs (obj);
+				string[] reqs = server.GetRequiredAttrs (obj);
 	
 				if (reqs == null)
 					continue;
@@ -200,12 +166,12 @@ namespace lat
 
 		public virtual void OnCancelClicked (object o, EventArgs args)
 		{
-			_viewDialog.HideAll ();
+			viewDialog.HideAll ();
 		}
 
 		public virtual void OnDlgDelete (object o, DeleteEventArgs args)
 		{
-			_viewDialog.HideAll ();
+			viewDialog.HideAll ();
 		}
 	}
 }

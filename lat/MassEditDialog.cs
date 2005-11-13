@@ -40,14 +40,14 @@ namespace lat
 
 		private ListStore modListStore;
 		private ArrayList _modList;
-		private Connection _conn;
+		private LdapServer server;
 
 		private ComboBox actionComboBox;
 
-		public MassEditDialog (Connection conn)
+		public MassEditDialog (LdapServer ldapServer)
 		{
 			_modList = new ArrayList ();
-			_conn = conn;
+			server = ldapServer;
 
 			ui = new Glade.XML (null, "lat.glade", "massEditDialog", null);
 			ui.Autoconnect (this);
@@ -165,14 +165,14 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			ArrayList sr = _conn.Search (_conn.LdapRoot, searchEntry.Text);
+			LdapEntry[] sr = server.Search (server.DirectoryRoot, searchEntry.Text);
 
 			modListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
 
 			foreach (LdapEntry e in sr)
 			{
 				ArrayList tmp = (ArrayList) _modList.Clone ();
-				Util.ModifyEntry (_conn, massEditDialog, e.DN, tmp, false);
+				Util.ModifyEntry (server, massEditDialog, e.DN, tmp, false);
 			}
 
 			massEditDialog.HideAll ();

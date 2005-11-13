@@ -38,7 +38,7 @@ namespace lat
 		[Glade.Widget] Gtk.Button cancelButton;
 		[Glade.Widget] Gtk.Button okButton;
 
-		private Connection _conn;
+		private LdapServer server;
 
 		private string _dn;
 		private string _name = null;
@@ -47,9 +47,9 @@ namespace lat
 		private ComboBox attrClassComboBox;
 		private static ComboBox attrNameComboBox;
 
-		public AddAttributeDialog (Connection conn, string dn)
+		public AddAttributeDialog (LdapServer ldapServer, string dn)
 		{
-			_conn = conn;
+			server = ldapServer;
 			_dn = dn;
 
 			ui = new Glade.XML (null, "lat.glade", "addAttributeDialog", null);
@@ -71,7 +71,7 @@ namespace lat
 			try
 			{
 				// class
-				LdapEntry le = _conn.getEntry (_dn);
+				LdapEntry le = server.GetEntry (_dn);
 				LdapAttribute la = le.getAttribute ("objectClass");
 
 				attrClassComboBox = ComboBox.NewText ();
@@ -109,7 +109,7 @@ namespace lat
 
 			string objClass = (string) attrClassComboBox.Model.GetValue (iter, 0);
 
-			string [] attrs = _conn.getAllAttrs (objClass);
+			string [] attrs = server.GetAllAttributes (objClass);
 
 			if (attrNameComboBox == null)
 			{

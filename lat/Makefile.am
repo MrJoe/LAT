@@ -9,7 +9,6 @@ CSFILES = \
 	AddAttributeDialog.cs \
 	CertificateDialog.cs \
 	ConnectDialog.cs \
-	Connection.cs \
 	ContactsView.cs \
 	CreateEntryDialog.cs \
 	CustomView.cs \
@@ -27,6 +26,7 @@ CSFILES = \
 	HostsViewDialog.cs \
 	LDIF.cs \
 	LdapSearch.cs \
+	LdapServer.cs \
 	LdapTreeView.cs \
 	Logger.cs \
 	LoginDialog.cs \

@@ -87,7 +87,8 @@ namespace lat
 
 		private static string[] contactAttrs;
 
-		public EditContactsViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public EditContactsViewDialog (LdapServer ldapServer, LdapEntry le) : 
+			base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
@@ -99,7 +100,7 @@ namespace lat
 			else
 				contactAttrs = posixContactAttrs;
 
-			_ci = getEntryInfo (contactAttrs, le);
+			server.GetAttributeValuesFromEntry (le, contactAttrs, out _ci);
 
 			string displayName = (string)_ci["displayName"];
 
@@ -165,9 +166,9 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "editContactDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = editContactDialog;
+			viewDialog = editContactDialog;
 
-			switch (_conn.ServerType.ToLower())
+			switch (server.ServerType.ToLower())
 			{
 				case "microsoft active directory":
 					_isPosix = false;
@@ -257,7 +258,7 @@ namespace lat
 			}
 
 			_modList = getMods (contactAttrs, _ci, cci);
-			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
+			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
 
 			editContactDialog.HideAll ();
 		}

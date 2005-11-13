@@ -61,14 +61,15 @@ namespace lat
 						"operatingSystemServicePack", "location", 
 						"managedBy"};
 
-		public EditAdComputerViewDialog (lat.Connection conn, LdapEntry le) : base (conn)
+		public EditAdComputerViewDialog (LdapServer ldapServer, LdapEntry le) : 
+						 base (ldapServer)
 		{
 			_le = le;
 			_modList = new ArrayList ();
 
 			Init ();
 
-			_hi = getEntryInfo (hostAttrs, le);
+			server.GetAttributeValuesFromEntry (le, hostAttrs, out _hi);
 
 			computerNameLabel.Text = (string) _hi["cn"];
 		
@@ -111,15 +112,28 @@ namespace lat
 		{
 			try
 			{
-				LdapEntry leMan = _conn.getEntry (dn);
+				LdapEntry leMan = server.GetEntry (dn);
 
-				manOfficeLabel.Text = getAttribute (leMan, "physicalDeliveryOfficeName");
-				manStreetTextView.Buffer.Text = getAttribute (leMan, "streetAddress");
-				manCityLabel.Text = getAttribute (leMan, "l");
-				manStateLabel.Text = getAttribute (leMan, "st");
-				manCountryLabel.Text = getAttribute (leMan, "c");
-				manTelephoneNumberLabel.Text = getAttribute (leMan, "telephoneNumber");
-				manFaxNumberLabel.Text = getAttribute (leMan, "facsimileTelephoneNumber");
+				manOfficeLabel.Text = server.GetAttributeValueFromEntry (
+					leMan, "physicalDeliveryOfficeName");
+
+				manStreetTextView.Buffer.Text = server.GetAttributeValueFromEntry 
+					(leMan, "streetAddress");
+
+				manCityLabel.Text = server.GetAttributeValueFromEntry (
+					leMan, "l");
+
+				manStateLabel.Text = server.GetAttributeValueFromEntry (
+					leMan, "st");
+
+				manCountryLabel.Text = server.GetAttributeValueFromEntry (
+					leMan, "c");
+
+				manTelephoneNumberLabel.Text = server.GetAttributeValueFromEntry 
+					(leMan, "telephoneNumber");
+
+				manFaxNumberLabel.Text = server.GetAttributeValueFromEntry (
+					leMan, "facsimileTelephoneNumber");
 			}
 			catch 
 			{
@@ -138,7 +152,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "editAdComputerDialog", null);
 			ui.Autoconnect (this);
 
-			_viewDialog = editAdComputerDialog;
+			viewDialog = editAdComputerDialog;
 		
 			computerNameEntry.Sensitive = false;
 //			computerNameEntry.IsEditable = false;
@@ -173,7 +187,7 @@ namespace lat
 		public void OnManChangeClicked (object o, EventArgs args)
 		{
 			SelectContainerDialog scd = 
-				new SelectContainerDialog (_conn, editAdComputerDialog);
+				new SelectContainerDialog (server, editAdComputerDialog);
 
 			scd.Title = "Save Computer";
 			scd.Message = Mono.Unix.Catalog.GetString (
@@ -210,7 +224,7 @@ namespace lat
 
 			_modList = getMods (hostAttrs, _hi, chi);
 
-			Util.ModifyEntry (_conn, _viewDialog, _le.DN, _modList, true);
+			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
 
 			editAdComputerDialog.HideAll ();
 		}

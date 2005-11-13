@@ -28,8 +28,8 @@ namespace lat
 		private string[] _cols;
 		private CustomViewData cvd;
 
-		public DynamicView (string name, lat.Connection conn, TreeView tv, Gtk.Window parent) 
-				: base (conn, tv, parent)
+		public DynamicView (string name, LdapServer server, TreeView treeView, Gtk.Window parentWindow) 
+				: base (server, treeView, parentWindow)
 		{
 			CustomViewManager cvm = new CustomViewManager ();
 			cvd = cvm.Lookup (name);
@@ -44,12 +44,12 @@ namespace lat
 				types[i] = typeof (string);
 			}
 
-			this._store = new ListStore (types);
-			this._tv.Model = this._store;
+			this.store = new ListStore (types);
+			this.tv.Model = this.store;
 
-			this._viewName = name;
-			this._filter = cvd.Filter;
-			this._lookupKeyCol = 0;
+			this.viewName = name;
+			this.filter = cvd.Filter;
+			this.lookupKeyCol = 0;
 
 			this.setupColumns (_cols);
 		}
