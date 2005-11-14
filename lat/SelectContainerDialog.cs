@@ -19,8 +19,6 @@
 //
 
 using Gtk;
-using GLib;
-using Glade;
 using System;
 
 namespace lat 

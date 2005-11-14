@@ -19,9 +19,6 @@
 //
 
 using Gtk;
-using Gdk;
-using GLib;
-using Glade;
 using Gnome;
 using System;
 using System.Collections;

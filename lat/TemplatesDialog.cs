@@ -22,7 +22,6 @@ using System;
 using System.Collections;
 
 using Gtk;
-using Glade;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 

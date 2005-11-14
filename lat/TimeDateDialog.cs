@@ -19,7 +19,6 @@
 //
 
 using Gtk;
-using Glade;
 using System;
 
 namespace lat

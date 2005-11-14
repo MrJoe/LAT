@@ -19,7 +19,6 @@
 //
 
 using Gtk;
-using GLib;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;

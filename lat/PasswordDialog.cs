@@ -23,8 +23,6 @@ using System.Security.Cryptography;
 using System.Text;
 
 using Gtk;
-using GLib;
-using Glade;
 using Mono.Unix;
 
 namespace lat 

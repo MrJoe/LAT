@@ -20,7 +20,6 @@
 
 using Gtk;
 using Gdk;
-using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
