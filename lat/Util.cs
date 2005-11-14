@@ -200,66 +200,63 @@ namespace lat
 			return false;
 		}
 
+		internal static bool deleteEntry (LdapServer server, string dn)
+		{
+			try
+			{
+				server.Delete (dn);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Logger.Log.Debug ("deleteEntry error: {0}", e.Message);
+				return false;
+			}
+		}
+
 		public static bool DeleteEntry (LdapServer server, Gtk.Window parent, string[] dn)
 		{
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString (
 				"Are you sure you want to delete:\n\n"));
+
+			string errorMsg =
+				Mono.Unix.Catalog.GetString (
+				"Unable to delete the following entries:\n");
 			
 			foreach (string n in dn)
 			{
 				msg += String.Format ("{0}\n", n);
 			}
 
-			MessageDialog md = new MessageDialog (parent, 
-					DialogFlags.DestroyWithParent,
-					MessageType.Question, 
-					ButtonsType.YesNo, 
-					msg);
-	     
-			ResponseType result = (ResponseType)md.Run ();
+			if (!Util.AskYesNo (parent, msg))
+			{
+				return false;
+			}
 
 			bool allGood = true;
 
-			if (result == ResponseType.Yes)
-			{
-				foreach (string d in dn)
-				{					
-					try
-					{
-						server.Delete (d);
+			foreach (string d in dn)
+			{					
+				allGood = deleteEntry (server, d);
 
-					}
-					catch (Exception e)
-					{
-						allGood = false;
-
-						string errorMsg =
-							Mono.Unix.Catalog.GetString (
-							"Unable to delete all entry " + d);
-
-						errorMsg += "\nError: " + e.Message;
-
-						MessageBox (parent, errorMsg, MessageType.Error);
-
-						break;
-					}
-				}
-
-				if (allGood)
+				if (!allGood)
 				{
-					MessageBox (parent, 
-						Mono.Unix.Catalog.GetString (
-						"Entries successfully deleted."), 
-						MessageType.Info);
+					errorMsg += d;
 				}
+			}
+
+			if (allGood)
+			{
+				MessageBox (parent, 
+					Mono.Unix.Catalog.GetString (
+					"Entries successfully deleted."), 
+					MessageType.Info);
 			}
 			else
 			{
-				allGood = false;
+				MessageBox (parent, errorMsg, MessageType.Error);
 			}
-
-			md.Destroy ();
 
 			return allGood;
 		}

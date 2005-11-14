@@ -146,17 +146,16 @@ namespace lat
 		private void createOU (string dn)
 		{
 			ArrayList attrList = new ArrayList ();
-			LdapAttribute a = new LdapAttribute ("objectclass", "organizationalUnit");
 
-			attrList.Add (a);
-
-			a = new LdapAttribute ("ou", getCN (dn));
-			attrList.Add (a);
+			attrList.Add (new LdapAttribute ("objectclass", "organizationalUnit"));
+			attrList.Add (new LdapAttribute ("ou", getCN (dn)));
 			
 			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
-		private void createUser (string dn, string name, string pass, string sid, string flags, string uid, string gid, string urid, string grid, string gecos)
+		private void createUser (string dn, string name, string pass, string sid, 
+					 string flags, string uid, string gid, 
+					 string urid, string grid, string gecos)
 		{
 			ArrayList attrList = new ArrayList ();
 			LdapAttribute a = new LdapAttribute ("objectclass", "inetOrgPerson");

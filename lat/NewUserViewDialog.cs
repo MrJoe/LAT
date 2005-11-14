@@ -374,7 +374,7 @@ namespace lat
 			if (scd.DN == "")
 				return;
 
-			string userDN = String.Format ("uid={0},{1}", (string)cui["uid"], scd.DN);
+			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
 
 			updateGroupMembership ();
 
