@@ -1,4 +1,5 @@
-	* Re-enable SSL support; requires Mono >= 1.10
+	* SSL support
+	* Only require hostname and port to connect to a server
 	* Use binary formatter for template data
 	* Code cleanup
 

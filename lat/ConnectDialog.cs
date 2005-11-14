@@ -138,8 +138,17 @@ namespace lat
 				return;
 			}
 
-			LdapServer server = new LdapServer (cp.Host, cp.Port, 
-				 cp.LdapRoot, cp.ServerType);
+			LdapServer server;
+
+			if (cp.LdapRoot == "")
+			{
+				server = new LdapServer (cp.Host, cp.Port, cp.ServerType);
+			}
+			else
+			{
+				server = new LdapServer (cp.Host, cp.Port, 
+					 cp.LdapRoot, cp.ServerType);
+			}
 
 			useSSL = cp.SSL;
 
@@ -271,59 +280,78 @@ namespace lat
 			}
 		}
 
-		public void OnConnectClicked (object o, EventArgs args) 
+		internal void QuickConnect ()
 		{
 			LdapServer server = null;
-			string user = null;
-			string pass = null;
-
-			if (notebook1.CurrentPage == 0)
-			{
-				TreeIter iter;
+			TreeIter iter;
 				
-				if (!serverTypeComboBox.GetActiveIter (out iter))
-					return;
+			if (!serverTypeComboBox.GetActiveIter (out iter))
+				return;
 
-				string serverType = (string) 
-					serverTypeComboBox.Model.GetValue (iter, 0);
+			string serverType = (string) 
+				serverTypeComboBox.Model.GetValue (iter, 0);
 
+			if (ldapBaseEntry.Text != "")
+			{
 				server = new LdapServer (
 					hostEntry.Text, 
 					int.Parse (portEntry.Text), 
 					ldapBaseEntry.Text,
 					serverType);
+			}
+			else
+			{
+				server = new LdapServer (
+					hostEntry.Text, 
+					int.Parse (portEntry.Text), 
+					serverType);
+			}
 
-				user = userEntry.Text;
-				pass = passEntry.Text;
+			DoConnect (server, userEntry.Text, passEntry.Text);
+		}
 
+		internal void ProfileConnect ()
+		{
+			LdapServer server = null;
+			ConnectionProfile cp = GetSelectedProfile ();
+
+			if (cp.Host == null)
+			{
+				string	msg = Mono.Unix.Catalog.GetString (
+					"No profile selected");
+
+				Util.MessageBox (connectionDialog, 
+					msg,
+					MessageType.Error);
+
+				return;
+			}
+
+			if (cp.LdapRoot == "")
+			{
+				server = new LdapServer (cp.Host, cp.Port, 
+						 cp.ServerType);
+			}
+			else
+			{
+				server = new LdapServer (cp.Host, cp.Port, 
+						 cp.LdapRoot, 
+						 cp.ServerType);
+			}
+
+			DoConnect (server, cp.User, cp.Pass);
+		}
+
+		public void OnConnectClicked (object o, EventArgs args) 
+		{
+			if (notebook1.CurrentPage == 0)
+			{
+				QuickConnect ();
 			}
 			else if (notebook1.CurrentPage == 1)
 			{
-				// Profile
-				ConnectionProfile cp = GetSelectedProfile ();
-
-				if (cp.Host == null)
-				{
-					string	msg = Mono.Unix.Catalog.GetString (
-						"No profile selected");
-
-					Util.MessageBox (connectionDialog, 
-						msg,
-						MessageType.Error);
-
-					return;
-				}
-
-				server = new LdapServer (cp.Host, cp.Port, 
-							 cp.LdapRoot, 
-							 cp.ServerType);
-
-				user = cp.User;
-				pass = cp.Pass;
-				useSSL = cp.SSL;
+				ProfileConnect ();
 			}
-
-			DoConnect (server, user, pass);
 		}
 
 		public void OnCloseClicked (object o, EventArgs args) 

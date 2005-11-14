@@ -36,8 +36,17 @@ namespace lat {
 		private string 		host;
 		private int		port;
 		private string		rootDN;
+		private bool		findRootDN;
 		private string		sType;
 		private LdapConnection	conn;
+
+		public LdapServer (string hostName, int hostPort, string serverType)
+		{
+			host = hostName;
+			port = hostPort;
+			sType = serverType;
+			findRootDN = true;
+		}
 
 		public LdapServer (string hostName, int hostPort, string dirRoot, 
 				   string serverType)
@@ -102,7 +111,11 @@ namespace lat {
 
 			conn.Connect (host, port);
 
+			if (findRootDN)
+				rootDN = GetRootDN ();
+
 			Logger.Log.Debug ("Connected to '{0}' on port {1}", host, port);
+			Logger.Log.Debug ("Base: {0}", rootDN);
 			Logger.Log.Debug ("Using SSL: {0}", useSSL);
 		}
 
@@ -668,6 +681,24 @@ namespace lat {
 		#endregion
 
 		#region internal_methods
+
+		internal string GetRootDN ()
+		{
+			string[] attrs = new string[] { "namingContexts" };
+
+			LdapEntry[] dse = Search ("", LdapConnection.SCOPE_BASE, 
+				       "objectclass=*", attrs);
+
+			if (dse.Length > 0)
+			{
+				LdapAttribute a = dse[0].getAttribute ("namingContexts");
+				return a.StringValue;
+			}
+
+			Logger.Log.Debug ("Unable to find directory namingContexts");
+
+			return null;
+		}
 
 		internal static bool SSLHandler (Syscert.X509Certificate certificate,
 						int[] certificateErrors)
