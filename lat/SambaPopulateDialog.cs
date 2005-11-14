@@ -61,68 +61,62 @@ namespace lat
 			sambaPopulateDialog.Destroy ();
 		}
 
-		public void OnUserBrowseClicked (object o, EventArgs args)
+		internal void SelectContainer (string msg, string title, Gtk.Entry entry)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (server, sambaPopulateDialog);
 
-			scd.Message = String.Format (
-				Mono.Unix.Catalog.GetString (
-				"Where in the directory would\nyou like to store users?"));
-
-			scd.Title = Mono.Unix.Catalog.GetString ("Select a user container");
+			scd.Message = msg;
+			scd.Title = title;
 			scd.Run ();
 
 			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
-				userOUEntry.Text = scd.DN;
+				entry.Text = scd.DN;
+		}
+
+		public void OnUserBrowseClicked (object o, EventArgs args)
+		{
+			string msg = String.Format (
+				Mono.Unix.Catalog.GetString (
+				"Where in the directory would\nyou like to store users?"));
+
+			string title = 
+				Mono.Unix.Catalog.GetString ("Select a user container");
+
+			SelectContainer (msg, title, userOUEntry);
 		}
 
 		public void OnGroupBrowseClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, sambaPopulateDialog);
-
-			scd.Message = String.Format (
+			string msg = String.Format (
 				Mono.Unix.Catalog.GetString (
 				"Where in the directory would\nyou like to store groups?"));
 
-			scd.Title = Mono.Unix.Catalog.GetString ("Select a group container");
-			scd.Run ();
+			string title = Mono.Unix.Catalog.GetString ("Select a group container");
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
-				groupOUEntry.Text = scd.DN;
+			SelectContainer (msg, title, groupOUEntry);
 		}
 
 		public void OnComputerBrowseClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, sambaPopulateDialog);
-
-			scd.Message = String.Format (
+			string msg = String.Format (
 				Mono.Unix.Catalog.GetString (
 				"Where in the directory would\nyou like to store computers?"));
 
-			scd.Title = Mono.Unix.Catalog.GetString ("Select a computer container");
-			scd.Run ();
-
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
-				computerOUEntry.Text = scd.DN;
+			string title = Mono.Unix.Catalog.GetString ("Select a computer container");
+			
+			SelectContainer (msg, title, computerOUEntry);
 		}
 
 		public void OnIdmapBrowseClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, sambaPopulateDialog);
-
-			scd.Message = String.Format (
+			string msg = String.Format (
 				Mono.Unix.Catalog.GetString (
 				"Where in the directory would\nyou like to store the ID map?"));
 
-			scd.Title = Mono.Unix.Catalog.GetString ("Select an ID map container");
-			scd.Run ();
+			string title = Mono.Unix.Catalog.GetString ("Select an ID map container");
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
-				idmapOUEntry.Text = scd.DN;
+			SelectContainer (msg, title, idmapOUEntry);
 		}
 		
 		private static string getCN (string dn)
@@ -171,96 +165,48 @@ namespace lat
 			a.addValue ("shadowAccount");
 			attrList.Add (a);
 
-			a = new LdapAttribute ("cn", name);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sn", name);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("gidNumber", gid);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("uid", name);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("uidNumber", uid);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("homeDirectory", "/dev/null");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaPwdLastSet", "0");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaLogonTime", "0");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaLogoffTime", "2147483647");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaKickoffTime", "2147483647");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaPwdCanChange", "0");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaPwdMustChange", "2147483647");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaPrimaryGroupSID", sid + "-" + grid);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaLMPassword", pass);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaNTPassword", pass);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaAcctFlags", flags);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaSID", sid + "-" + urid);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("loginShell", "/bin/false");
-			attrList.Add (a);
-
-			a = new LdapAttribute ("gecos", gecos);
-			attrList.Add (a);
+			attrList.Add (new LdapAttribute ("cn", name));
+			attrList.Add (new LdapAttribute ("sn", name));
+			attrList.Add (new LdapAttribute ("gidNumber", gid));
+			attrList.Add (new LdapAttribute ("uid", name));
+			attrList.Add (new LdapAttribute ("uidNumber", uid));
+			attrList.Add (new LdapAttribute ("homeDirectory", "/dev/null"));
+			attrList.Add (new LdapAttribute ("sambaPwdLastSet", "0"));
+			attrList.Add (new LdapAttribute ("sambaLogonTime", "0"));
+			attrList.Add (new LdapAttribute ("sambaLogoffTime", "2147483647"));
+			attrList.Add (new LdapAttribute ("sambaKickoffTime", "2147483647"));
+			attrList.Add (new LdapAttribute ("sambaPwdCanChange", "0"));
+			attrList.Add (new LdapAttribute ("sambaPwdMustChange", "2147483647"));
+			attrList.Add (new LdapAttribute ("sambaPrimaryGroupSID", 
+				      sid + "-" + grid));
+			attrList.Add (new LdapAttribute ("sambaLMPassword", pass));
+			attrList.Add (new LdapAttribute ("sambaNTPassword", pass));
+			attrList.Add (new LdapAttribute ("sambaAcctFlags", flags));
+			attrList.Add (new LdapAttribute ("sambaSID", sid + "-" + urid));
+			attrList.Add (new LdapAttribute ("loginShell", "/bin/false"));
+			attrList.Add (new LdapAttribute ("gecos", gecos));
 
 			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
-		private void createGroup (string dn, string gid, string desc, string sid, string grid, string gtype, string memberuid)
+		private void createGroup (string dn, string gid, string desc, 
+					  string sid, string grid, string gtype, 
+					  string memberuid)
 		{
 			ArrayList attrList = new ArrayList ();
 			LdapAttribute a = new LdapAttribute ("objectclass", "posixGroup");
 			a.addValue ("sambaGroupMapping");
 			attrList.Add (a);
 
-			a = new LdapAttribute ("gidNumber", gid);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("cn", getCN (dn));
-			attrList.Add (a);
-
-			a = new LdapAttribute ("description", desc);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaSID", sid + "-" + grid);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaGroupType", gtype);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("displayName", getCN (dn));
-			attrList.Add (a);
+			attrList.Add (new LdapAttribute ("gidNumber", gid));
+			attrList.Add (new LdapAttribute ("cn", getCN (dn)));
+			attrList.Add (new LdapAttribute ("description", desc));
+			attrList.Add (new LdapAttribute ("sambaSID", sid + "-" + grid));
+			attrList.Add (new LdapAttribute ("sambaGroupType", gtype));
+			attrList.Add (new LdapAttribute ("displayName", getCN (dn)));
 		
 			if (memberuid != "")
-			{
-				a = new LdapAttribute ("memberUid", memberuid);
-				attrList.Add (a);
-			}
+				attrList.Add (new LdapAttribute ("memberUid", memberuid));
 	
 			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
@@ -272,11 +218,8 @@ namespace lat
 //			a.addValue ("sambaUnixIdPool");
 			attrList.Add (a);
 
-			a = new LdapAttribute ("sambaDomainName", domain);
-			attrList.Add (a);
-
-			a = new LdapAttribute ("sambaSID", sid);
-			attrList.Add (a);
+			attrList.Add (new LdapAttribute ("sambaDomainName", domain));
+			attrList.Add (new LdapAttribute ("sambaSID", sid));
 
 			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
