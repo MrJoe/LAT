@@ -28,7 +28,10 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace lat {
 
-	public sealed class LdapServer
+	/// <summary>The main class that encapsulates the connection
+	/// to a directory server through the Ldap protocol.
+	/// </summary>
+	public class LdapServer
 	{
 		private string 		host;
 		private int		port;
@@ -47,6 +50,12 @@ namespace lat {
 
 		#region methods
 
+		/// <summary>Adds an entry to the directory
+		/// 
+		/// </summary>
+		/// <param name="dn">The distinguished name of the new entry.</param>
+		/// <param name="attributes">An arraylist of string attributes for the 
+		/// new ldap entry.</param>
 		public void Add (string dn, ArrayList attributes)
 		{
 			Logger.Log.Debug ("START Connection.Add ()");
@@ -71,11 +80,19 @@ namespace lat {
 			Logger.Log.Debug ("END Connection.Add ()");
 		}
 
+		/// <summary>Binds to the directory server with the given user
+		/// name and password.
+		/// </summary>
+		/// <param name="userName">Username</param>
+		/// <param name="userPass">Password</param> 
 		public void Bind (string userName, string userPass)
 		{
 			conn.Bind (userName, userPass);
 		}
 
+		/// <summary>Connects to the directory server.
+		/// </summary>
+		/// <param name="useSSL">Use SSL/TLS to encrypt session</param>
 		public void Connect (bool useSSL)
 		{
 			conn = new LdapConnection ();
@@ -89,16 +106,26 @@ namespace lat {
 			Logger.Log.Debug ("Using SSL: {0}", useSSL);
 		}
 
+		/// <summary>Copy a directory entry
+		/// </summary>
+		/// <param name="oldDN">Distinguished name of the entry to copy</param>
+		/// <param name="newRDN">New name for entry</param>
+		/// <param name="parentDN">Parent name</param>
 		public void Copy (string oldDN, string newRDN, string parentDN)
 		{
 			conn.Rename (oldDN, newRDN, parentDN, false);
 		}
 
+		/// <summary>Deletes a directory entry
+		/// </summary>
+		/// <param name="dn">Distinguished name of the entry to delete</param>
 		public void Delete (string dn)
 		{
 			conn.Delete (dn);
 		}
 
+		/// <summary>Disconnects from a directory server
+		/// </summary>
 		public void Disconnect ()
 		{
 			conn.Disconnect ();
@@ -107,6 +134,12 @@ namespace lat {
 			Logger.Log.Debug ("Disconnected from '{0}'", host);
 		}
 
+		/// <summary>Gets a list of required and optional attributes for
+		/// the given object classes.
+		/// </summary>
+		/// <param name="objClass">List of object classes</param>
+		/// <param name="required">Required attributes</param>
+		/// <param name="optional">Optional attributes</param>
 		public void GetAllAttributes (ArrayList objClass, 
 					 out string[] required, out string[] optional)
 		{
@@ -157,6 +190,9 @@ namespace lat {
 			}
 		}
 
+		/// <summary>Gets a list of all attributes for the given object class
+		/// </summary>
+		/// <param name="objClass">Name of object class</param>
 		public string[] GetAllAttributes (string objClass)
 		{
 			try
@@ -197,6 +233,10 @@ namespace lat {
 			}
 		}
 
+		/// <summary>Gets a list of attribute types supported on the
+		/// directory.
+		/// </summary>
+		/// <returns>An array of LdapEntry objects</returns>
 		public LdapEntry[] GetAttributeTypes ()
 		{
 			if (!conn.Connected)
@@ -209,6 +249,10 @@ namespace lat {
 	 			"objectclass=*", attrs);
 		}
 
+		/// <summary>Gets the schema for a given attribute type
+		/// </summary>
+		/// <param name="attrType">Attribute type</param>
+		/// <returns>A SchemaParser object</returns>
 		public SchemaParser GetAttributeTypeSchema (string attrType)
 		{
 			if (!conn.Connected)
@@ -239,6 +283,13 @@ namespace lat {
 			return null;
 		}
 
+		/// <summary>Gets the value of an attribute for the given
+		/// entry.
+		/// </summary>
+		/// <param name="le">LdapEntry</param>
+		/// <param name="attr">Attribute to lookup type</param>
+		/// <returns>The value of the attribute (or an empty string if there is
+		/// no value).</returns>
 		public string GetAttributeValueFromEntry (LdapEntry le, string attr)
 		{
 			LdapAttribute la = le.getAttribute (attr);
@@ -251,6 +302,12 @@ namespace lat {
 			return "";
 		}
 
+		/// <summary>Gets the value of the given attribute for the given
+		/// entry.
+		/// </summary>
+		/// <param name="le">LdapEntry</param>
+		/// <param name="attrs">List of attributes to lookup</param>
+		/// <returns>A list of attribute values</returns>
 		public string[] GetAttributeValuesFromEntry (LdapEntry le, string[] attrs)
 		{
 			if (le == null || attrs == null)
@@ -271,6 +328,12 @@ namespace lat {
 			return (string[]) retVal.ToArray (typeof (string));
 		}
 
+		/// <summary>Gets the value of the given attribute for the given
+		/// entry.
+		/// </summary>
+		/// <param name="le">LdapEntry</param>
+		/// <param name="attrs">List of attributes to lookup</param>
+		/// <param name="entryInfo">Hashtable to populate values with</returns>
 		public void GetAttributeValuesFromEntry (LdapEntry le, string[] attrs, 
 							 out Hashtable entryInfo)
 		{
@@ -290,6 +353,9 @@ namespace lat {
 			}
 		}
 
+		/// <summary>Gets an entry in the directory.
+		/// </summary>
+		/// <param name="dn">The distinguished name of the entry</param>
 		public LdapEntry GetEntry (string dn)
 		{
 			if (!conn.Connected)
@@ -306,6 +372,10 @@ namespace lat {
 			return null;
 		}
 
+		/// <summary>Gets the children of a given entry.
+		/// </summary>
+		/// <param name="entryDN">Distiguished name of entry</param>
+		/// <returns>A list of children (if any)</returns>
 		public LdapEntry[] GetEntryChildren (string entryDN)
 		{
 			if (!conn.Connected)
@@ -315,6 +385,9 @@ namespace lat {
 					    "objectclass=*", null);
 		}
 
+		/// <summary>Gets the local Samba SID (if available).
+		/// </summary>
+		/// <returns>sambaSID</returns>
 		public string GetLocalSID ()
 		{
 			LdapEntry[] sid = Search (rootDN, LdapConnection.SCOPE_ONE,
@@ -329,6 +402,9 @@ namespace lat {
 			return null;			
 		}
 
+		/// <summary>Gets the next available gidNumber
+		/// </summary>
+		/// <returns>The next group number</returns>
 		public int GetNextGID ()
 		{
 			ArrayList gids = new ArrayList ();
@@ -353,6 +429,9 @@ namespace lat {
 			}			
 		}
 
+		/// <summary>Gets the next available uidNumber
+		/// </summary>
+		/// <returns>The next user number</returns>
 		public int GetNextUID ()
 		{
 			ArrayList uids = new ArrayList ();
@@ -377,6 +456,9 @@ namespace lat {
 			}
 		}
 
+		/// <summary>Gets a list of object classes supported on the directory.
+		/// </summary>
+		/// <returns>A list of object class entries</returns>
 		public LdapEntry[] GetObjectClasses ()
 		{
 			string[] attrs = new string[] { "objectclasses" };
@@ -385,6 +467,10 @@ namespace lat {
 				       "objectclass=*", attrs);
 		}
 
+		/// <summary>Gets the schema of a given object class.
+		/// </summary>
+		/// <param name="objClass">Name of object class</param>
+		/// <returns>A SchemaParser object</returns>
 		public SchemaParser GetObjectClassSchema (string objClass)
 		{
 			if (!conn.Connected)
@@ -415,6 +501,10 @@ namespace lat {
 			return null;
 		}
 
+		/// <summary>Gets a list of requried attributes for a given object class.
+		/// </summary>
+		/// <param name="objClass">Name of object class</param>
+		/// <returns>An array of required attribute names</returns>
 		public string[] GetRequiredAttrs (string objClass)
 		{
 			if (!conn.Connected || objClass == null)
@@ -434,6 +524,11 @@ namespace lat {
 			return null;
 		}
 
+		/// <summary>Gets a list of requried attributes for a list of given
+		/// object classes.
+		/// </summary>
+		/// <param name="objClasses">Array of objectclass names</param>
+		/// <returns>An array of required attribute names</returns>
 		public string[] GetRequiredAttrs (string[] objClasses)
 		{
 			if (!conn.Connected || objClasses == null)
@@ -466,32 +561,62 @@ namespace lat {
 			return (string[]) retVal.ToArray (typeof (string));
 		}
 
+		/// <summary>Modifies the specified entry
+		/// </summary>
+		/// <param name="dn">Distinguished name of entry to modify</param>
+		/// <param name="mods">Array of LdapModification objects</param>
 		public void Modify (string dn, LdapModification[] mods)
 		{
 			conn.Modify (dn, mods);
 		}
 
+		/// <summary>Moves the specified entry
+		/// </summary>
+		/// <param name="oldDN">Distinguished name of entry to move</param>
+		/// <param name="newRDN">New name of entry</param>
+		/// <param name="parentDN">Name of parent entry</param>
 		public void Move (string oldDN, string newRDN, string parentDN)
 		{
 			conn.Rename (oldDN, newRDN, parentDN, true);
 		}
 
+		/// <summary>Renames the specified entry
+		/// </summary>
+		/// <param name="oldDN">Distinguished name of entry to rename</param>
+		/// <param name="newDN">New to rename entry to</param>
+		/// <param name="saveOld">Save old entry</param>
 		public void Rename (string oldDN, string newDN, bool saveOld)
 		{
 			conn.Rename (oldDN, newDN, saveOld);
 		}
 
+		/// <summary>Searches the directory
+		/// </summary>
+		/// <param name="searchFilter">filter to search for</param>
+		/// <returns>List of entries matching filter</returns>
 		public LdapEntry[] Search (string searchFilter)
 		{
 			return Search (rootDN, LdapConnection.SCOPE_SUB, searchFilter, null);
 		}
 
+		/// <summary>Searches the directory
+		/// </summary>
+		/// <param name="searchBase">Where to start the search</param>
+		/// <param name="searchFilter">Filter to search for</param>
+		/// <returns>List of entries matching filter</returns>
 		public LdapEntry[] Search (string searchBase, string searchFilter)
 		{
 			return Search (searchBase, LdapConnection.SCOPE_SUB, 
 				       searchFilter, null);	
 		}
 
+		/// <summary>Searches the directory
+		/// </summary>
+		/// <param name="searchBase">Where to start the search</param>
+		/// <param name="searchScope">Scope of search</param>
+		/// <param name="searchFilter">Filter to search for</param>
+		/// <param name="searchAttrs">Attributes to search for</param>
+		/// <returns>List of entries matching filter</returns>
 		public LdapEntry[] Search (string searchBase, int searchScope, 
 					   string searchFilter, string[] searchAttrs)
 		{	
@@ -530,6 +655,11 @@ namespace lat {
 			}
 		}
 
+		/// <summary>Searches the directory for all entries of a given object
+		/// class.
+		/// </summary>
+		/// <param name="objectClass">Name of objectclass</param>
+		/// <returns>List of entries matching objectclass</returns>
 		public LdapEntry[] SearchByClass (string objectClass)
 		{
 			return Search (rootDN, String.Format ("objectclass={0}", objectClass));
