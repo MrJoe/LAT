@@ -881,7 +881,7 @@ namespace lat
 			if (scd.DN.Equals (""))
 				return;
 
-//			Util.ExportData (server, mainWindow, scd.DN);
+			Util.ExportData (server, mainWindow, scd.DN);
 		}
 
 		public void OnPopulateActivate (object o, EventArgs args)
