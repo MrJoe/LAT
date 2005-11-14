@@ -78,11 +78,11 @@ namespace lat
 			this.ShowAll ();
 		}
 
-		public void UpdateSearchResults (ArrayList searchResults)
+		public void UpdateSearchResults (LdapEntry[] searchResults)
 		{
 			resultsStore.Clear ();
 
-			if (!(searchResults.Count > 0))
+			if (!(searchResults.Length > 0))
 			{
 				resultsStore.AppendValues (
 					Mono.Unix.Catalog.GetString ("No matches found."));

@@ -94,7 +94,6 @@ namespace lat
 		private LdapServer server;
 
 		private ArrayList _modList;
-		private ArrayList _searchResults = null;
 
 		private ListStore valuesStore;
 
@@ -387,24 +386,12 @@ namespace lat
 
 		public void OnSearchClicked (object o, EventArgs args)
 		{
-			if (_searchResults != null)
-			{
-				_searchResults.Clear ();
-				_searchResults = null;
-			}
-
-			LdapEntry[] entries = server.Search (
+			LdapEntry[] searchResults = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
-			// FIXME: bad, bad bad
-			_searchResults = new ArrayList ();
-
-			foreach (LdapEntry le in entries)
-				_searchResults.Add (le);
-
-			if (_searchResults != null)
+			if (searchResults.Length > 0)
 			{
-				_searchTreeView.UpdateSearchResults (_searchResults);
+				_searchTreeView.UpdateSearchResults (searchResults);
 			}
 			else
 			{
