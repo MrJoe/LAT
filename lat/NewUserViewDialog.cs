@@ -330,14 +330,8 @@ namespace lat
 			cui["gecos"] = fullName;
 
 			ArrayList attrList = getAttributes (objClass, userAttrs, cui);
-
-			LdapAttribute attr;
-
-			attr = new LdapAttribute ("cn", fullName);
-			attrList.Add (attr);
-
-			attr = new LdapAttribute ("gecos", fullName);
-			attrList.Add (attr);
+			attrList.Add (new LdapAttribute ("cn", fullName));
+			attrList.Add (new LdapAttribute ("gecos", fullName));
 
 			if (enableSambaButton.Active)
 			{
