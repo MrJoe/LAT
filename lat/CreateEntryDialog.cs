@@ -18,12 +18,10 @@
 //
 //
 
-using Gtk;
-using GLib;
-using Glade;
 using System;
 using System.Collections;
 using Novell.Directory.Ldap;
+using Gtk;
 
 namespace lat
 {
@@ -99,12 +97,9 @@ namespace lat
 			createEntryDialog.Resize (320, 200);
 		}
 
-		private void showAttributes ()
+		internal void insertValues (string[] values, string valueType)
 		{
-			string[] required, optional;			
-			server.GetAllAttributes (_objectClass, out required, out optional);
-
-			foreach (string s in required)
+			foreach (string s in values)
 			{
 				if (s == "objectClass")
 					continue;
@@ -113,31 +108,24 @@ namespace lat
 				{
 					attrListStore.AppendValues (s, 
 						t.GetAttributeDefaultValue (s),
-						"Required");
+						valueType);
 				}
 				else
 				{
 					attrListStore.AppendValues (s, 
 						"",
-						"Required");
+						valueType);
 				}
 			}
+		}
 
-			foreach (string s in optional)
-			{
-				if (isTemplate)
-				{
-					attrListStore.AppendValues (s, 
-						t.GetAttributeDefaultValue (s),
-						"Optional");
-				}
-				else
-				{
-					attrListStore.AppendValues (s, 
-						"",
-						"Optional");
-				}
-			}
+		private void showAttributes ()
+		{
+			string[] required, optional;			
+			server.GetAllAttributes (_objectClass, out required, out optional);
+
+			insertValues (required, "Required");
+			insertValues (optional, "Optional");
 		}
 
 		private void setupTreeViews ()

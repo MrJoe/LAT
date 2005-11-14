@@ -170,16 +170,7 @@ namespace lat
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read data from server");
 
-				Gtk.MessageDialog md = new Gtk.MessageDialog (parent, 
-					Gtk.DialogFlags.DestroyWithParent,
-					Gtk.MessageType.Info, 
-					Gtk.ButtonsType.Close, 
-					msg);
-
-				md.Run ();
-				md.Destroy();
-
-				md = null;
+				Util.MessageBox (parent, msg, Gtk.MessageType.Info);
 			}
 		}
 
