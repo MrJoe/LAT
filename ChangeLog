@@ -1,4 +1,6 @@
+	* Re-enable SSL support; requires Mono >= 1.10
 	* Use binary formatter for template data
+	* Code cleanup
 
 Version 0.7.4
 
