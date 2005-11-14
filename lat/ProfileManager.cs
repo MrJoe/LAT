@@ -146,10 +146,6 @@ namespace lat
 						
 					foreach (NetworkPasswordData i in list) 
 					{
-						Logger.Log.Debug (
-						  "Got password for: {0}://{1}:{2}/",
-						  i.Protocol, i.Server, i.Port);
-
 						cp.Pass = i.Password;
 					}
 			

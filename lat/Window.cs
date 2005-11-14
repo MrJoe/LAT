@@ -386,7 +386,7 @@ namespace lat
 			LdapEntry[] searchResults = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
-			if (searchResults.Length > 0)
+			if (searchResults.Length > 0 && filterEntry.Text != "")
 			{
 				_searchTreeView.UpdateSearchResults (searchResults);
 			}
