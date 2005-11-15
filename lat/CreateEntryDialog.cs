@@ -97,7 +97,7 @@ namespace lat
 			createEntryDialog.Resize (320, 200);
 		}
 
-		internal void insertValues (string[] values, string valueType)
+		private void insertValues (string[] values, string valueType)
 		{
 			foreach (string s in values)
 			{

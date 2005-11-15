@@ -59,7 +59,7 @@ namespace lat
 			sambaPopulateDialog.Destroy ();
 		}
 
-		internal void SelectContainer (string msg, string title, Gtk.Entry entry)
+		private void SelectContainer (string msg, string title, Gtk.Entry entry)
 		{
 			SelectContainerDialog scd = 
 				new SelectContainerDialog (server, sambaPopulateDialog);

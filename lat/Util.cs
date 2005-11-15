@@ -199,7 +199,7 @@ namespace lat
 			return false;
 		}
 
-		internal static bool deleteEntry (LdapServer server, string dn)
+		private static bool deleteEntry (LdapServer server, string dn)
 		{
 			try
 			{

@@ -92,7 +92,7 @@ namespace lat
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
 
-		internal string GetSelectedProfileName ()
+		private string GetSelectedProfileName ()
 		{
 			TreeIter iter;
 			TreeModel model;
@@ -106,7 +106,7 @@ namespace lat
 			return null;
 		}
 
-		internal ConnectionProfile GetSelectedProfile ()
+		private ConnectionProfile GetSelectedProfile ()
 		{
 			ConnectionProfile cp = new ConnectionProfile();
 			string profileName = GetSelectedProfileName ();
@@ -206,7 +206,7 @@ namespace lat
 			}
 		}
 
-		internal bool CheckConnection (LdapServer server, string userName)
+		private bool CheckConnection (LdapServer server, string userName)
 		{
 			string msg = null;
 
@@ -240,7 +240,7 @@ namespace lat
 			return true;
 		}
 
-		internal void DoConnect (LdapServer server, string userName, string userPass)
+		private void DoConnect (LdapServer server, string userName, string userPass)
 		{
 			try
 			{
@@ -259,7 +259,7 @@ namespace lat
 			}
 		}
 
-		internal void QuickConnect ()
+		private void QuickConnect ()
 		{
 			LdapServer server = null;
 			TreeIter iter;
@@ -289,7 +289,7 @@ namespace lat
 			DoConnect (server, userEntry.Text, passEntry.Text);
 		}
 
-		internal void ProfileConnect ()
+		private void ProfileConnect ()
 		{
 			LdapServer server = null;
 			ConnectionProfile cp = GetSelectedProfile ();

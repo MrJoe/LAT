@@ -680,9 +680,9 @@ namespace lat {
 
 		#endregion
 
-		#region internal_methods
+		#region private_methods
 
-		internal string GetRootDN ()
+		private string GetRootDN ()
 		{
 			string[] attrs = new string[] { "namingContexts" };
 
@@ -700,7 +700,7 @@ namespace lat {
 			return null;
 		}
 
-		internal static bool SSLHandler (Syscert.X509Certificate certificate,
+		private static bool SSLHandler (Syscert.X509Certificate certificate,
 						int[] certificateErrors)
 		{
 			X509Store store = null;
