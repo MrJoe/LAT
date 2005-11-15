@@ -131,28 +131,7 @@ namespace lat
 
 		public void OnRowDoubleClicked (object o, RowActivatedArgs args) 
 		{
-			ConnectionProfile cp = GetSelectedProfile ();
-
-			if (cp.Host == null)
-			{
-				return;
-			}
-
-			LdapServer server;
-
-			if (cp.LdapRoot == "")
-			{
-				server = new LdapServer (cp.Host, cp.Port, cp.ServerType);
-			}
-			else
-			{
-				server = new LdapServer (cp.Host, cp.Port, 
-					 cp.LdapRoot, cp.ServerType);
-			}
-
-			useSSL = cp.SSL;
-
-			DoConnect (server, cp.User, cp.Pass);
+			ProfileConnect ();
 		}
 
 		private void updateProfileList ()
