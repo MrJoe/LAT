@@ -318,6 +318,8 @@ namespace lat
 						 cp.ServerType);
 			}
 
+			useSSL = cp.SSL;
+
 			DoConnect (server, cp.User, cp.Pass);
 		}
 
