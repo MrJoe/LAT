@@ -11,13 +11,13 @@ Source: 	%{name}-%{version}.tar.gz
 
 Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
 
-Requires: mono
-Requires: mono-data
-Requires: gtk-sharp2
-BuildRequires: mono-core
-BuildRequires: mono-devel
-BuildRequires: mono-data
-BuildRequires: gtk-sharp2
+Requires: mono >= 1.1.10
+Requires: mono-data >= 1.1.10
+Requires: gtk-sharp2 >= 2.4
+BuildRequires: mono-core >= 1.1.10
+BuildRequires: mono-devel >= 1.1.10
+BuildRequires: mono-data >= 1.1.10
+BuildRequires: gtk-sharp2 >= 2.4
 BuildRequires: gnome-keyring-devel
 BuildRequires: autoconf
 BuildRequires: automake
@@ -39,18 +39,14 @@ make %{?_smp_mflags}
 %{__rm} -rf %{buildroot}
 %makeinstall
 
-rm -r $RPM_BUILD_ROOT/var/scrollkeeper
-
 %clean
 %{__rm} -rf %{buildroot}
 
 %post
 /sbin/ldconfig 2>/dev/null
-scrollkeeper-update -p /var/scrollkeeper
 
 %postun
 /sbin/ldconfig 2>/dev/null
-scrollkeeper-update -p /var/scrollkeeper
 
 %files
 %defattr(-, root, root)
