@@ -225,7 +225,7 @@ namespace lat
 					server.Host, server.Port);
 			}
 
-			if (!server.Bound && msg == null)
+			if (!server.Bound && msg == null && userName != "")
 			{
 				msg = String.Format (
 					Mono.Unix.Catalog.GetString (
