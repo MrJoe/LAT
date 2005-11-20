@@ -1,4 +1,4 @@
-AC_INIT(lat, 0.7.4, lorenb@mmgsecurity.com)
+AC_INIT(lat, 0.7.5, lorenb@mmgsecurity.com)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
@@ -17,13 +17,6 @@ fi
 
 AC_PATH_PROG(MONO, mono)
 AC_PATH_PROG(MCS, mcs)
-
-AC_MSG_CHECKING([for mono.pc])
-if test -z `$PKG_CONFIG --variable=prefix mono`; then
-  AC_MSG_ERROR([missing the mono.pc file, usually found in the mono-devel package])
-else
-  AC_MSG_RESULT([found])
-fi
 
 dnl Version dependencies
 MONO_REQUIRED=1.1

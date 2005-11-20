@@ -1,4 +1,5 @@
-	* SSL support
+Version 0.7.5
+
 	* Only require hostname and port to connect to a server
 	* Use binary formatter for template data
 	* Code cleanup

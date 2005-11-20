@@ -76,7 +76,11 @@ namespace lat
 				connectionDialog.Resizable = true;
 			}
 			
-			noEncryptionRadioButton.Active = true;		
+			noEncryptionRadioButton.Active = true;
+
+			// FIXME: Renable SSL support
+			encryptionRadioButton.Sensitive = false;
+			noEncryptionRadioButton.Sensitive = false;		
 		}
 
 		private void createCombo ()

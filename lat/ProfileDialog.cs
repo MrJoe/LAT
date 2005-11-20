@@ -93,6 +93,10 @@ namespace lat
 			createCombo ();
 
 			noEncryptionRadioButton.Active = true;
+	
+			// FIXME: Renable SSL support
+			encryptionRadioButton.Sensitive = false;
+			noEncryptionRadioButton.Sensitive = false;
 		}	
 
 		private static void comboSetActive (ComboBox cb, string name)

@@ -15,7 +15,6 @@ Requires: mono >= 1.1.10
 Requires: mono-data >= 1.1.10
 Requires: gtk-sharp2 >= 2.4
 BuildRequires: mono-core >= 1.1.10
-BuildRequires: mono-devel >= 1.1.10
 BuildRequires: mono-data >= 1.1.10
 BuildRequires: gtk-sharp2 >= 2.4
 BuildRequires: gnome-keyring-devel
