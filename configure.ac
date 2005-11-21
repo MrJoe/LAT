@@ -36,10 +36,6 @@ AC_SUBST(GTKSHARP_LIBS)
 dnl gnome-keyring is needed, but only at runtime. Oh well, good to check for it nonetheless
 PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
 
-dnl Check for Mono
-AC_PATH_PROG(MCS, mcs)
-AC_PATH_PROG(MONO, mono)
-
 MCS_FLAGS=
 MONO_FLAGS=
 if test $USE_MAINTAINER_MODE = yes; then
