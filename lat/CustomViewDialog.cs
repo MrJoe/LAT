@@ -159,8 +159,8 @@ namespace lat
 
 			if (res.Length > 0)
 			{
-				LdapEntry le = (LdapEntry) res[0];
-				fillAttrs (le);
+				foreach (LdapEntry le in res)
+					fillAttrs (le);
 			}
 			else
 			{
