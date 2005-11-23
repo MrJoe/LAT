@@ -157,7 +157,7 @@ namespace lat
 			res = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
-			if (res != null)
+			if (res.Length > 0)
 			{
 				LdapEntry le = (LdapEntry) res[0];
 				fillAttrs (le);
@@ -226,6 +226,13 @@ namespace lat
 		public void OnSaveClicked (object o, EventArgs args)
 		{
 			string cols = "";
+
+			if (_viewAttrs.Keys.Count == 0)
+			{
+				Util.MessageBox (customViewDialog, 
+						"You must select what attributes will be displayed in the view",
+						 MessageType.Error);
+			}
 
 			foreach (string name in _viewAttrs.Keys)
 			{

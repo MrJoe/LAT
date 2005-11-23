@@ -1,3 +1,5 @@
+	* BUGFIX: [#20] Custom view filter kill app
+
 Version 0.7.5
 
 	* Only require hostname and port to connect to a server
@@ -27,9 +29,9 @@ Version 0.7.2
 	* Allow multiple user add/remove in group dialog
 	* Fix logic error in add/remove group code
 	* Add support for crypt(3) passwords
-	* BUGFIX [#13]: Add new user dialog crashes when clicking Ok
-	* BUGFIX [#12]: Don't crash if unable to determine next UID/GID (Julian Oppermann)
-	* BUGFIX [#11]: Parenthesis count in search filters. (Julian Oppermann)
+	* BUGFIX: [#13] Add new user dialog crashes when clicking Ok
+	* BUGFIX: [#12] Don't crash if unable to determine next UID/GID (Julian Oppermann)
+	* BUGFIX: [#11] Parenthesis count in search filters. (Julian Oppermann)
 
 Version 0.7.1
 
@@ -53,11 +55,11 @@ Version 0.6.1
 	  users/computers (New filter from Vladimir Stojiljkovic)
 	* Added "Add Attribute" to browser popup menu
 	* Show list of known attributes when adding entry in the browser view
-	* BUGFIX [#7]: Should be buildable without shipping .dll
-	* BUGFIX [#6]: small interface error
-	* BUGFIX [#5]: lat crash on the profiles window
-	* BUGFIX [#3]: Dialog should not close (adding user,group, etc.)
-	* BUGFIX [#2]: Adding more than one member to a group does not work
+	* BUGFIX: [#7] Should be buildable without shipping .dll
+	* BUGFIX: [#6] small interface error
+	* BUGFIX: [#5] lat crash on the profiles window
+	* BUGFIX: [#3] Dialog should not close (adding user,group, etc.)
+	* BUGFIX: [#2] Adding more than one member to a group does not work
 
 Version 0.6
 
