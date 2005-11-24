@@ -1,26 +1,26 @@
 	* BUGFIX: [#20] Custom view filter kill app
 
-Version 0.7.5
+0.7.5
 
 	* Only require hostname and port to connect to a server
 	* Use binary formatter for template data
 	* Code cleanup
 
-Version 0.7.4
+0.7.4
 
 	* BUGFIX: Added .config for gnome-keyring-glue so it loads the correct gnome-keyring library
 	* BUGFIX: Mass edit crashes when selected due to typo in signal handler definition
 
-Version 0.7.3
+0.7.3
 
 	* Added New entry templates
 	* Added support for more Samba attributes in User view
 	* Re-enabled GNOME Keyring support
 	* Move signal definitions into .glade file where possible
 	* Code cleanup
-	* BUGFIX [#15] - RPM dependancy should contain mono-data
+	* BUGFIX: [#15] RPM dependancy should contain mono-data
 
-Version 0.7.2
+0.7.2
 
 	* Make sure username and UID are not in use when adding new user (Julian Oppermann)
 	* Suggest display name, username and home directory in new user dialog (Julian Oppermann)
@@ -33,13 +33,13 @@ Version 0.7.2
 	* BUGFIX: [#12] Don't crash if unable to determine next UID/GID (Julian Oppermann)
 	* BUGFIX: [#11] Parenthesis count in search filters. (Julian Oppermann)
 
-Version 0.7.1
+0.7.1
 
 	* Removed pre-built assemblies (Novell.Directory.Ldap.dll; gnome-keyring-sharp.dll). 
 	* SSL/TLS support disabled.
 	* Gnome Keyring support removed.
 
-Version 0.7
+0.7
 
 	* Added mass edit feature
 	* Added View->Show all attributes menu option
@@ -49,7 +49,7 @@ Version 0.7
 	* Password changes update Samba NTLM passwords (if applicable)
 	* Added schema browser
 
-Version 0.6.1
+0.6.1
 
 	* Changing filter for AD User & Computer view to better match all 
 	  users/computers (New filter from Vladimir Stojiljkovic)
@@ -61,7 +61,7 @@ Version 0.6.1
 	* BUGFIX: [#3] Dialog should not close (adding user,group, etc.)
 	* BUGFIX: [#2] Adding more than one member to a group does not work
 
-Version 0.6
+0.6
 
 	* Active Directory support
 	* Start of Samba support
@@ -81,7 +81,7 @@ Version 0.6
 	* BUGFIX: Incorrect RDNs generated in copy/cut/paste code
 	* BUGFIX: Insert line break into certificate dialog text
 
-Version 0.5.4
+0.5.4
 
 	* SSL support
 	* Allow drag and drop LDIF export from search results
@@ -89,7 +89,7 @@ Version 0.5.4
 	* Added pt_BR translation
 	* BUGFIX: Fixed build errors in lat.spec.in
 
-Version 0.5.3
+0.5.3
 
 	* Added re-login feature
 	* Added support for Copy/Cut/Paste entries in browser
@@ -98,15 +98,15 @@ Version 0.5.3
 	* New about dialog
 	* BUGFIX: Fix compile warnings under Mono 1.1.x
 
-Version 0.5.2
+0.5.2
 
 	* BUGFIX: Use Mono.Posix.Catalog instead of GNU.gettext
 
-Version 0.5.1
+0.5.1
 
 	* BUGFIX: Typo in connect dialog error messages causes crash
 
-Version 0.5
+0.5
 
 	* Added search builder
 	* Added support for custom user-defined views
@@ -114,7 +114,7 @@ Version 0.5
 	* BUGFIX: LdapTreeView inserts duplicate entries
 	* BUGFIX: Event handlers are not removed when view changes
 
-Version 0.4.1
+0.4.1
 	
 	* BUGFIX: Verify required attributes when adding new entries
 	* BUGFIX: Cancel new entry if user doesn't select container
@@ -122,7 +122,7 @@ Version 0.4.1
 	* BUGFIX: Don't prompt yes/no for each entry when doing mass delete
 	* Code cleanup; removed 1,000 lines
 
-Version 0.4
+0.4
 
 	* Added LDIF import/export (including drag and drop support)
 	* Added search function
@@ -132,7 +132,7 @@ Version 0.4
 	* Guido Trotter now maintiaing Debian scripts (Debian Bug #298381)
 	* BUGFIX: Duplicate profile created when doing a rename
 
-Version 0.3.1
+0.3.1
 
 	* Added "Hosts" view
 	* Re-designed "Users" edit dialog
@@ -143,7 +143,7 @@ Version 0.3.1
 	* BUGFIX: Fix crash when attributes missing
 	* BUGFIX: Don't crash when when there are no group members in "Groups" view
 
-Version 0.3
+0.3
 
 	* Added support for different views
 	* Wrote initial views for Users & Groups
@@ -153,11 +153,11 @@ Version 0.3
 	* Added scripts for making Debian packages
 	* Various bugfixes
 
-Version 0.2.1
+0.2.1
 
 	* Fixed bug in add/edit of profiles
 
-Version 0.2
+0.2
 
 	* Rewrote LDAP browsing code
 	* Updated Connect/Profile dialogs to better conform to GNOME HIG
@@ -166,10 +166,10 @@ Version 0.2
 	* Added .desktop entry
 	* Various bugfixes
 
-Version 0.1.1
+0.1.1
 
 	* Included missing lat.glade file
 
-Version 0.1
+0.1
 
 	* Initial public release.
