@@ -1,7 +1,10 @@
 /resource:../resources/lat.glade
 /resource:../resources/contact-new.png
+/resource:../resources/contact-new-48x48.png
 /resource:../resources/edit-find.png
+/resource:../resources/edit-find-48x48.png
 /resource:../resources/locked16x16.png
+/resource:../resources/locked-48x48.png
 /resource:../resources/stock_person.png
 /resource:../resources/text-x-generic.png
 /resource:../resources/unlocked16x16.png
@@ -12,3 +15,4 @@
 /resource:../resources/mail-message-new.png
 /resource:../resources/document-save.png
 /resource:../resources/go-home.png
+/resource:../resources/x-directory-remote-server-48x48.png

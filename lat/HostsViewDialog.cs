@@ -33,6 +33,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry hostNameEntry;
 		[Glade.Widget] Gtk.Entry ipEntry;
 		[Glade.Widget] Gtk.Entry descriptionEntry;
+		[Glade.Widget] Gtk.Image image31;
 
 		private bool _isEdit;
 		
@@ -89,7 +90,11 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "hostDialog", null);
 			ui.Autoconnect (this);
 
-			viewDialog = hostDialog;		
+			viewDialog = hostDialog;
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			image31.Pixbuf = pb;
 		}
 
 		private Hashtable getCurrentHostInfo ()

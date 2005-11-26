@@ -33,6 +33,7 @@ namespace lat
 //		[Glade.Widget] Gtk.Label computerNameLabel;
 		[Glade.Widget] Gtk.Entry computerNameEntry;
 		[Glade.Widget] Gtk.Entry dnsNameEntry;
+		[Glade.Widget] Gtk.Image image182;
 
 		private static string[] hostAttrs = { "cn", "dNSHostName" };
 
@@ -60,7 +61,11 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "newAdComputerDialog", null);
 			ui.Autoconnect (this);
 
-			viewDialog = newAdComputerDialog;		
+			viewDialog = newAdComputerDialog;
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			image182.Pixbuf = pb;
 		}
 
 		private Hashtable getCurrentHostInfo ()

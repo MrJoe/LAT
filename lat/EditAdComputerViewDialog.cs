@@ -49,6 +49,7 @@ namespace lat
 		[Glade.Widget] Gtk.Label manCountryLabel;
 		[Glade.Widget] Gtk.Label manTelephoneNumberLabel;
 		[Glade.Widget] Gtk.Label manFaxNumberLabel;
+		[Glade.Widget] Gtk.Image image178;
 
 		private LdapEntry _le;
 		private ArrayList _modList;
@@ -164,6 +165,10 @@ namespace lat
 			
 			manNameEntry.Sensitive = false;
 			manStreetTextView.Sensitive = false;
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			image178.Pixbuf = pb;
 		}
 
 		private Hashtable getCurrentHostInfo ()

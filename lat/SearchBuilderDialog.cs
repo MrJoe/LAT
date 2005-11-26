@@ -53,6 +53,7 @@ namespace lat
 		[Glade.Widget] Button removeButton;
 		[Glade.Widget] Button okButton;
 		[Glade.Widget] Button cancelButton;
+		[Glade.Widget] Gtk.Image image117;
 
 		private Glade.XML ui;
 		private ComboBox opComboBox;
@@ -76,6 +77,10 @@ namespace lat
 
 			ui = new Glade.XML (null, "lat.glade", "searchBuilderDialog", null);
 			ui.Autoconnect (this);
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("edit-find-48x48.png");
+			image117.Pixbuf = pb;
 
 			opComboBox = createCombo (ops);
 			opHbox.Add (opComboBox);

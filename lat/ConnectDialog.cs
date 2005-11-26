@@ -39,7 +39,8 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
 		[Glade.Widget] Gtk.HBox stHBox;	
 		[Glade.Widget] Gtk.Notebook notebook1;
-		[Glade.Widget] TreeView profileListview; 
+		[Glade.Widget] TreeView profileListview;
+		[Glade.Widget] Gtk.Image image5;
 		
 		private bool haveProfiles = false;
 		private bool useSSL = false;
@@ -55,6 +56,10 @@ namespace lat
 		
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
 			ui.Autoconnect (this);
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			image5.Pixbuf = pb;
 
 			connectionDialog.Resizable = false;
 

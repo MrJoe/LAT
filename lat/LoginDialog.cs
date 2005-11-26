@@ -32,6 +32,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
 		[Glade.Widget] Gtk.CheckButton useSSLCheckButton;
+		[Glade.Widget] Gtk.Image image455;
 
 		Glade.XML ui;
 
@@ -48,6 +49,10 @@ namespace lat
 
 			// FIXME: re-enable SSL support
 			useSSLCheckButton.Sensitive = false;
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("locked-48x48.png");
+			image455.Pixbuf = pb;
 
 			loginDialog.Run ();
 			loginDialog.Destroy ();

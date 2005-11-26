@@ -36,6 +36,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry gnInitialsEntry;
 		[Glade.Widget] Gtk.Entry gnLastNameEntry;
 		[Glade.Widget] Gtk.Entry gnDisplayName;
+		[Glade.Widget] Gtk.Image image181;
 
 		private bool _isPosix;
 
@@ -81,6 +82,10 @@ namespace lat
 					_isPosix = true;
 					break;
 			}
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("contact-new-48x48.png");
+			image181.Pixbuf = pb;
 		}
 
 		public void OnNameChanged (object o, EventArgs args)

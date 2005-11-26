@@ -60,6 +60,8 @@ namespace lat
 		[Glade.Widget] Gtk.Entry ozDeptEntry;
 		[Glade.Widget] Gtk.Entry ozCompanyEntry;
 
+		[Glade.Widget] Gtk.Image image180;
+
 		private bool _isPosix;
 		
 		private LdapEntry _le;
@@ -184,6 +186,10 @@ namespace lat
 					adCountryEntry.Sensitive = false;
 					break;
 			}
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("contact-new-48x48.png");
+			image180.Pixbuf = pb;
 		}
 
 		public void OnNameChanged (object o, EventArgs args)

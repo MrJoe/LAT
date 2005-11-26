@@ -39,6 +39,7 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton encryptionRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
 		[Glade.Widget] Gtk.HBox stHBox;
+		[Glade.Widget] Gtk.Image image7;
 			
 		private bool _useSSL = false;
 		private bool _isEdit = false;
@@ -90,6 +91,10 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "profileDialog", null);
 			ui.Autoconnect (this);		
 
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			image7.Pixbuf = pb;
+			
 			createCombo ();
 
 			noEncryptionRadioButton.Active = true;
