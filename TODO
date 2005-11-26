@@ -1,6 +1,4 @@
-- Cleanup code
 - Find a way to change a AD users password
 - Find a way to create new AD users and groups
 - Support binary data in attributes
-- Obtain some icons (including a program icon for LAT)
-- Add preferences dialog for setting directory structure (???)
+- Obtain a program icon for LAT
