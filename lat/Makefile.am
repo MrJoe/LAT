@@ -69,18 +69,6 @@ REFERENCES = \
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
-RESOURCES = \
-	$(ASSEMBLY).glade \
-	contact-new.png  \
-	locked16x16.png \
-	stock_person.png \
-	text-x-generic.png \
-	unlocked16x16.png \
-	users.png \
-	x-directory-normal.png \
-	x-directory-remote-server.png \
-	x-directory-remote-workgroup.png
-
 $(ASSEMBLY).exe: $(CSFILES)
 	$(CSC) -out:$@ @lat.sources $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS)
 
@@ -96,7 +84,6 @@ bin_SCRIPTS = $(ASSEMBLY)
 
 EXTRA_DIST = \
 	$(CSFILES) \
-	$(RESOURCES) \
 	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \

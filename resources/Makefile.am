@@ -1,4 +1,5 @@
 EXTRA_DIST = \
+	lat.glade \
 	contact-new.png \
 	text-x-generic.png \
 	x-directory-remote-server.png \
