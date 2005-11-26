@@ -31,6 +31,7 @@ namespace lat
 		[Glade.Widget] Gtk.Label msgLabel;
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
+		[Glade.Widget] Gtk.CheckButton useSSLCheckButton;
 
 		Glade.XML ui;
 
@@ -44,6 +45,9 @@ namespace lat
 			ui.Autoconnect (this);
 
 			msgLabel.Text = msg;
+
+			// FIXME: re-enable SSL support
+			useSSLCheckButton.Sensitive = false;
 
 			loginDialog.Run ();
 			loginDialog.Destroy ();

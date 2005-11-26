@@ -9,4 +9,7 @@ EXTRA_DIST = \
 	locked16x16.png \
 	users.png \
 	stock_person.png \
-	x-directory-normal.png
+	x-directory-normal.png \
+	mail-message-new.png \
+	document-save.png \
+	go-home.png

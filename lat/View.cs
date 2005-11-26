@@ -90,7 +90,9 @@ namespace lat
 
 			popup.Append (newItem);
 
-			MenuItem exportItem = new MenuItem ("Export");
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("document-save.png");
+			ImageMenuItem exportItem = new ImageMenuItem ("Export");
+			exportItem.Image = new Gtk.Image (pb);
 			exportItem.Activated += new EventHandler (OnExportActivate);
 			exportItem.Show ();
 

@@ -9,3 +9,6 @@
 /resource:../resources/x-directory-normal.png
 /resource:../resources/x-directory-remote-server.png
 /resource:../resources/x-directory-remote-workgroup.png
+/resource:../resources/mail-message-new.png
+/resource:../resources/document-save.png
+/resource:../resources/go-home.png

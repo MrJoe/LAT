@@ -82,13 +82,17 @@ namespace lat
 		
 			popup.Append (sm);
 
-			MenuItem mailItem = new MenuItem ("Send email");
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("mail-message-new.png");
+			ImageMenuItem mailItem = new ImageMenuItem ("Send email");
+			mailItem.Image = new Gtk.Image (pb);
 			mailItem.Activated += new EventHandler (OnEmailActivate);
 			mailItem.Show ();
 
 			popup.Append (mailItem);
 
-			MenuItem wwwItem = new MenuItem ("Open Home Page");
+			Gdk.Pixbuf wwwImage = Gdk.Pixbuf.LoadFromResource ("go-home.png");
+			ImageMenuItem wwwItem = new ImageMenuItem ("Open Home Page");
+			wwwItem.Image = new Gtk.Image (wwwImage);
 			wwwItem.Activated += new EventHandler (OnWWWActivate);
 			wwwItem.Show ();
 
