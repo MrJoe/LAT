@@ -1,4 +1,4 @@
-SUBDIRS = debian gnome-keyring-glue lat po desktop help
+SUBDIRS = debian gnome-keyring-glue lat po desktop resources help
 
 EXTRA_DIST = \
 	README \

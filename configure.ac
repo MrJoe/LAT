@@ -65,4 +65,5 @@ lat/lat
 po/Makefile.in
 help/Makefile
 help/C/Makefile
+resources/Makefile
 ])

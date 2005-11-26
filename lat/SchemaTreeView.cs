@@ -58,7 +58,7 @@ namespace lat
 		private TreeIter attrIter;
 
 		private LdapServer server;
-		private Gtk.Window _parent;
+//		private Gtk.Window _parent;
 
 		private enum TreeCols { Icon, DN };
 
@@ -67,7 +67,7 @@ namespace lat
 		public SchemaTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
 			server = ldapServer;
-			_parent = parent;
+//			_parent = parent;
 
 			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 
@@ -79,12 +79,14 @@ namespace lat
 			this.AppendColumn ("icon", new CellRendererPixbuf (), "pixbuf", (int)TreeCols.Icon);
 			this.AppendColumn ("ldapRoot", new CellRendererText (), "text", (int)TreeCols.DN);
 
-			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Convert, IconSize.Menu, "");
+			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			Gdk.Pixbuf folderIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-normal.png");
+			Gdk.Pixbuf genIcon = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
 
 			TreeIter iter;
-			iter = browserStore.AppendValues (pb, server.Host);
+			iter = browserStore.AppendValues (dirIcon, server.Host);
 
-			objIter = browserStore.AppendValues (iter, pb, "Object Classes");
+			objIter = browserStore.AppendValues (iter, folderIcon, "Object Classes");
 			LdapEntry[] objEntries = server.GetObjectClasses ();
 
 			ArrayList tmp = new ArrayList ();
@@ -104,12 +106,12 @@ namespace lat
 
 			foreach (string n in tmp)
 			{
-				browserStore.AppendValues (objIter, pb, n);
+				browserStore.AppendValues (objIter, genIcon, n);
 			}
 
 			tmp.Clear ();
 
-			attrIter = browserStore.AppendValues (iter, pb, "Attribute Types");
+			attrIter = browserStore.AppendValues (iter, folderIcon, "Attribute Types");
 			LdapEntry[] attrEntries = server.GetAttributeTypes ();
 
 			foreach (LdapEntry le in attrEntries)
@@ -127,7 +129,7 @@ namespace lat
 
 			foreach (string n in tmp)
 			{
-				browserStore.AppendValues (attrIter, pb, n);
+				browserStore.AppendValues (attrIter, genIcon, n);
 			}
 
 			this.ShowAll ();

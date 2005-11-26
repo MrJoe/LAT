@@ -19,6 +19,7 @@
 //
 
 using Gtk;
+using Gdk;
 using System;
 using System.Collections;
 
@@ -71,7 +72,7 @@ namespace lat
 			_vs = valueStore;
 			_vt = valueTreeView;
 
-			viewFactory = new ViewFactory (_vs, _vt, parent, server);
+			viewFactory = new ViewFactory (_vs, _vt, _parent, server);
 
 			viewsStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 
@@ -84,29 +85,32 @@ namespace lat
 			this.AppendColumn ("viewsRoot", new CellRendererText (), "text", 
 					(int)TreeCols.Name);
 
-			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Convert, IconSize.Menu, "");
+			Pixbuf groupIcon = Pixbuf.LoadFromResource ("users.png");
+			Pixbuf usersIcon = Pixbuf.LoadFromResource ("stock_person.png");
+			Pixbuf compIcon = Pixbuf.LoadFromResource ("x-directory-remote-workgroup.png");
+			Pixbuf contactIcon = Pixbuf.LoadFromResource ("contact-new.png");
+			Pixbuf customIcon = Pixbuf.LoadFromResource ("x-directory-normal.png");
+			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 
-			viewRootIter = viewsStore.AppendValues (pb, server.Host);
-
-			pb = _parent.RenderIcon (Gtk.Stock.Open, IconSize.Menu, "");
+			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
 
 			if (server.ServerType.ToLower() == "microsoft active directory")
 			{
-				viewsStore.AppendValues (viewRootIter, pb, "Computers");
-				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
-				viewsStore.AppendValues (viewRootIter, pb, "Groups");
-				viewsStore.AppendValues (viewRootIter, pb, "Users");
+				viewsStore.AppendValues (viewRootIter, compIcon, "Computers");
+				viewsStore.AppendValues (viewRootIter, contactIcon, "Contacts");
+				viewsStore.AppendValues (viewRootIter, groupIcon, "Groups");
+				viewsStore.AppendValues (viewRootIter, usersIcon, "Users");
 			}
 			else if (server.ServerType.ToLower() == "generic ldap server" ||
 				 server.ServerType.ToLower() == "openldap")
 			{
-				viewsStore.AppendValues (viewRootIter, pb, "Computers");
-				viewsStore.AppendValues (viewRootIter, pb, "Contacts");
-				viewsStore.AppendValues (viewRootIter, pb, "Groups");
-				viewsStore.AppendValues (viewRootIter, pb, "Users");
+				viewsStore.AppendValues (viewRootIter, compIcon, "Computers");
+				viewsStore.AppendValues (viewRootIter, contactIcon, "Contacts");
+				viewsStore.AppendValues (viewRootIter, groupIcon, "Groups");
+				viewsStore.AppendValues (viewRootIter, usersIcon, "Users");
 			}
 
-			viewCustomIter = viewsStore.AppendValues (viewRootIter, pb, 
+			viewCustomIter = viewsStore.AppendValues (viewRootIter, customIcon, 
 				"Custom Views");
 
 			CustomViewManager cvm = new CustomViewManager ();
@@ -116,7 +120,7 @@ namespace lat
 			{
 				TreeIter citer;
 
-				citer = viewsStore.AppendValues (viewCustomIter, pb, v);
+				citer = viewsStore.AppendValues (viewCustomIter, customIcon, v);
 				customIters.Add (v, citer);
 			}
 

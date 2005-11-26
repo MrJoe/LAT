@@ -1886,7 +1886,7 @@ you wish to connect to.</property>
 		      <signal name="activate" handler="OnDeleteActivate" last_modification_time="Tue, 05 Jul 2005 10:28:41 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image660">
+			<widget class="GtkImage" id="image668">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-delete</property>
 			  <property name="icon_size">1</property>
@@ -1914,7 +1914,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image661">
+			<widget class="GtkImage" id="image669">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1936,7 +1936,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image662">
+			<widget class="GtkImage" id="image670">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1964,7 +1964,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image663">
+			<widget class="GtkImage" id="image671">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1986,7 +1986,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image664">
+			<widget class="GtkImage" id="image672">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2239,7 +2239,7 @@ you wish to connect to.</property>
 		      <signal name="activate" handler="OnRefreshActivate" last_modification_time="Tue, 05 Jul 2005 10:43:17 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image665">
+			<widget class="GtkImage" id="image673">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -2274,7 +2274,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image666">
+			<widget class="GtkImage" id="image674">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -4403,10 +4403,38 @@ you wish to connect to.</property>
       </child>
 
       <child>
-	<widget class="GnomeAppBar" id="appBar">
+	<widget class="GtkHBox" id="hbox396">
 	  <property name="visible">True</property>
-	  <property name="has_progress">False</property>
-	  <property name="has_status">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">0</property>
+
+	  <child>
+	    <widget class="GtkImage" id="sslImage">
+	      <property name="visible">True</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">5</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GnomeAppBar" id="appBar">
+	      <property name="visible">True</property>
+	      <property name="has_progress">False</property>
+	      <property name="has_status">True</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">5</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="padding">2</property>
@@ -15800,7 +15828,7 @@ the server.
 		  <child>
 		    <widget class="GtkTable" id="table12">
 		      <property name="visible">True</property>
-		      <property name="n_rows">2</property>
+		      <property name="n_rows">3</property>
 		      <property name="n_columns">2</property>
 		      <property name="homogeneous">False</property>
 		      <property name="row_spacing">0</property>
@@ -15904,6 +15932,58 @@ the server.
 			  <property name="bottom_attach">2</property>
 			  <property name="x_padding">5</property>
 			  <property name="y_padding">5</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkLabel" id="label397">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes"></property>
+			  <property name="use_underline">False</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+			  <property name="width_chars">-1</property>
+			  <property name="single_line_mode">False</property>
+			  <property name="angle">0</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">0</property>
+			  <property name="right_attach">1</property>
+			  <property name="top_attach">2</property>
+			  <property name="bottom_attach">3</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkCheckButton" id="useSSLCheckButton">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">Use TLS/SSL</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">1</property>
+			  <property name="right_attach">2</property>
+			  <property name="top_attach">2</property>
+			  <property name="bottom_attach">3</property>
+			  <property name="x_padding">5</property>
+			  <property name="y_padding">5</property>
+			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
 		      </child>

@@ -214,8 +214,8 @@ namespace lat
 
 		public virtual void OnDragBegin (object o, DragBeginArgs args)
 		{
-			// FIXME: change icon
-			// FIXME: Drag.SetIconPixbuf (args.Context, <obj>, 0, 0);
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
+			Gtk.Drag.SetIconPixbuf (args.Context, pb, 0, 0);
 		}
 
 		public virtual void OnDragDataGet (object o, DragDataGetArgs args)

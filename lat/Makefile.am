@@ -70,14 +70,23 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 RESOURCES = \
-	/resource:$(srcdir)/$(ASSEMBLY).glade,$(ASSEMBLY).glade
+	$(ASSEMBLY).glade \
+	contact-new.png  \
+	locked16x16.png \
+	stock_person.png \
+	text-x-generic.png \
+	unlocked16x16.png \
+	users.png \
+	x-directory-normal.png \
+	x-directory-remote-server.png \
+	x-directory-remote-workgroup.png
 
 $(ASSEMBLY).exe: $(CSFILES)
-	$(CSC) -out:$@ $(SOURCES_BUILD) $(REFERENCES_BUILD) $(RESOURCES) $(GTKSHARP_LIBS)
+	$(CSC) -out:$@ @lat.sources $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS)
 
 all: $(ASSEMBLY).exe
 
-ASSEMBLYlibdir = $(prefix)/lib/lat
+ASSEMBLYlibdir = $(prefix)/lib/$(ASSEMBLY)
 ASSEMBLYlib_DATA = $(ASSEMBLY).exe
 
 man_MANS = \
@@ -87,11 +96,13 @@ bin_SCRIPTS = $(ASSEMBLY)
 
 EXTRA_DIST = \
 	$(CSFILES) \
+	$(RESOURCES) \
 	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
-	$(ASSEMBLY).glade \
-	$(ASSEMBLY).in
+	$(ASSEMBLY).in \
+	$(ASSEMBLY).sources \
+	$(ASSEMBLY).resources
 
 CLEANFILES = \
 	$(ASSEMBLY).exe \

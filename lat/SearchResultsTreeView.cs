@@ -95,8 +95,8 @@ namespace lat
 
 		private void OnSearchDragBegin (object o, DragBeginArgs args)
 		{
-			// FIXME: change icon
-			// FIXME: Drag.SetIconPixbuf (args.Context, <obj>, 0, 0);
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
+			Gtk.Drag.SetIconPixbuf (args.Context, pb, 0, 0);
 		}
 
 		private void OnSearchDragDataGet (object o, DragDataGetArgs args)

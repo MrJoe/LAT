@@ -134,12 +134,14 @@ namespace lat
 			this.AppendColumn ("icon", new CellRendererPixbuf (), "pixbuf", (int)TreeCols.Icon);
 			this.AppendColumn ("ldapRoot", new CellRendererText (), "text", (int)TreeCols.DN);
 
-			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Convert, IconSize.Menu, "");
+			Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 
 			TreeIter iter;
-			iter = browserStore.AppendValues (pb, server.Host);
+			iter = browserStore.AppendValues (dirIcon, server.Host);
 
-			ldapRootIter = browserStore.AppendValues (iter, pb, server.DirectoryRoot);
+			ldapRootIter = browserStore.AppendValues (iter, dirIcon,
+				server.DirectoryRoot);
+
 			browserStore.AppendValues (ldapRootIter, null, "");
 
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
@@ -270,7 +272,7 @@ namespace lat
 			string name = null;
 			bool firstPass = false;
 
-			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Open, IconSize.Menu, "");
+			Pixbuf pb = Pixbuf.LoadFromResource ("x-directory-normal.png");
 
 			name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
 
@@ -468,8 +470,8 @@ namespace lat
 
 		public void OnDragBegin (object o, DragBeginArgs args)
 		{
-			// FIXME: change icon
-			// FIXME: Drag.SetIconPixbuf (args.Context, <obj>, 0, 0);
+			Gdk.Pixbuf pb = Pixbuf.LoadFromResource ("text-x-generic.png");
+			Gtk.Drag.SetIconPixbuf (args.Context, pb, 0, 0);
 		}
 
 		public void OnDragDataGet (object o, DragDataGetArgs args)

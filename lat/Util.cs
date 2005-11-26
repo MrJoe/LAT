@@ -84,6 +84,22 @@ namespace lat
 			return retVal;
 		}
 
+		public static Gdk.Pixbuf GetSSLIcon (bool ssl)
+		{
+			Gdk.Pixbuf retIcon = null;
+
+			if (ssl)
+			{
+				retIcon = Gdk.Pixbuf.LoadFromResource ("locked16x16.png");
+			}
+			else
+			{
+				retIcon = Gdk.Pixbuf.LoadFromResource ("unlocked16x16.png");
+			}
+
+			return retIcon;
+		}
+
 		public static bool CheckUserName (LdapServer server, string name)
 		{
 			if (server.Search(String.Format("(uid={0})", name)).Length == 0)

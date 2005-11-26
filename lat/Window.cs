@@ -81,6 +81,7 @@ namespace lat
 
 		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
 		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
+		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
 
 		private ViewsTreeView _viewsTreeView;
@@ -153,6 +154,7 @@ namespace lat
 			toggleButtons (false);
 
 			// status bar
+			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
 			updateStatusBar ();
 
 			// handlers		
