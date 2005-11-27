@@ -46,6 +46,7 @@ CSFILES = \
 	SearchBuilderDialog.cs \
 	SearchResultsTreeView.cs \
 	SelectContainerDialog.cs \
+	SelectGroupsDialog.cs \
 	Templates.cs \
 	TemplatesDialog.cs \
 	TemplateEditorDialog.cs \

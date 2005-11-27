@@ -37,28 +37,22 @@ namespace lat
 		[Glade.Widget] Gtk.Label usernameLabel;
 		[Glade.Widget] Gtk.Label fullnameLabel;
 
-		[Glade.Widget] Gtk.Entry usernameEntry;
-		[Glade.Widget] Gtk.SpinButton uidSpinButton;
 		[Glade.Widget] Gtk.Entry firstNameEntry;
+		[Glade.Widget] Gtk.Entry initialsEntry;
 		[Glade.Widget] Gtk.Entry lastNameEntry;
 		[Glade.Widget] Gtk.Entry descriptionEntry;
 		[Glade.Widget] Gtk.Entry officeEntry;
 
-		[Glade.Widget] Gtk.Entry homeDirEntry;
-		[Glade.Widget] Gtk.Entry shellEntry;
-		[Glade.Widget] Gtk.Entry passwordEntry;
-		[Glade.Widget] Gtk.HBox comboHbox;
-
 		[Glade.Widget] Gtk.Entry mailEntry;
 		[Glade.Widget] Gtk.Entry phoneEntry;
 
-		// Groups
-		[Glade.Widget] Gtk.TreeView allGroupsTreeview;
-		[Glade.Widget] Gtk.TreeView memberOfTreeview;
+		// Account
+		[Glade.Widget] Gtk.Entry usernameEntry;
+		[Glade.Widget] Gtk.SpinButton uidSpinButton;
+		[Glade.Widget] Gtk.Entry homeDirEntry;
+		[Glade.Widget] Gtk.Entry shellEntry;
 
-		// Samba
 		[Glade.Widget] Gtk.CheckButton smbEnableSambaButton;
-		[Glade.Widget] Gtk.Label smbNoteLabel;
 		[Glade.Widget] Gtk.Entry smbLoginScriptEntry;
 		[Glade.Widget] Gtk.Entry smbProfilePathEntry;
 		[Glade.Widget] Gtk.Entry smbHomePathEntry;
@@ -70,17 +64,42 @@ namespace lat
 		[Glade.Widget] Gtk.Button smbSetCanButton;
 		[Glade.Widget] Gtk.Button smbSetMustButton;
 
-		private static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
-					      "userPassword", "mail", "loginShell", "cn",
-					      "homeDirectory", "description",
-				              "physicalDeliveryOfficeName",
-					      "telephoneNumber"};
+		// Groups
+		[Glade.Widget] Gtk.Label primaryGroupLabel;
+		[Glade.Widget] Gtk.TreeView memberOfTreeview;
+
+		// Address
+		[Glade.Widget] Gtk.TextView adStreetTextView;
+		[Glade.Widget] Gtk.Entry adPOBoxEntry;
+		[Glade.Widget] Gtk.Entry adCityEntry;
+		[Glade.Widget] Gtk.Entry adStateEntry;
+		[Glade.Widget] Gtk.Entry adZipEntry;
+
+		// Telephones
+		[Glade.Widget] Gtk.Entry tnHomeEntry;
+		[Glade.Widget] Gtk.Entry tnPagerEntry;
+		[Glade.Widget] Gtk.Entry tnMobileEntry;
+		[Glade.Widget] Gtk.Entry tnFaxEntry;
+		[Glade.Widget] Gtk.Entry tnIPPhoneEntry;
+
+		// Organization
+		[Glade.Widget] Gtk.Entry ozTitleEntry;
+		[Glade.Widget] Gtk.Entry ozDeptEntry;
+		[Glade.Widget] Gtk.Entry ozCompanyEntry;
+
+		private static string[] userAttrs = { "givenName", "sn", "initials", "cn",
+			"uid", "uidNumber", "gidNumber", "userPassword", "mail", "loginShell", 
+			"homeDirectory", "description", "physicalDeliveryOfficeName",
+			"telephoneNumber", "postalAddress", "l", "st", "postalCode",
+			"facsimileTelephoneNumber", "pager", "mobile", "homePhone", 
+			"street", "title", "postOfficeBox" };
 
 		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath",
 			"sambaHomeDrive", "sambaLogonScript", "sambaKickoffTime", 
 			"sambaPwdCanChange", "sambaPwdMustChange" };
 
 		private bool _isSamba = false;
+		private string _pass = "";
 		private string _smbLM = "";
 		private string _smbNT = "";
 		private string _smbSID = "";
@@ -96,10 +115,7 @@ namespace lat
 		private Hashtable _modsGroup;
 		private Hashtable _memberOfGroups;
 
-		private ListStore _allGroupStore;
 		private ListStore _memberOfStore;
-
-		private ComboBox primaryGroupComboBox;
 
 		public EditUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
 		{
@@ -114,12 +130,11 @@ namespace lat
 
 			getGroups (le);
 
-			createCombo ();		
-
 			string userName = (string) _ui["cn"];
 
 			editUserDialog.Title = userName + " Properties";
 
+			// General
 			usernameLabel.UseMarkup = true;
 			usernameLabel.Markup = 
 				String.Format ("<span size=\"larger\"><b>{0}</b></span>", _ui["uid"]);
@@ -127,16 +142,18 @@ namespace lat
 			fullnameLabel.Text = String.Format ("{0} {1}", _ui["givenName"], _ui["sn"]);
 
 			firstNameEntry.Text = (string)_ui["givenName"];
+			initialsEntry.Text = (string)_ui["initials"];
 			lastNameEntry.Text = (string)_ui["sn"];
-			usernameEntry.Text = (string)_ui["uid"];
-			uidSpinButton.Value = int.Parse ((string)_ui["uidNumber"]);
-			passwordEntry.Text = (string)_ui["userPassword"];
-			mailEntry.Text = (string)_ui["mail"];
-			shellEntry.Text = (string)_ui["loginShell"];
-			homeDirEntry.Text = (string)_ui["homeDirectory"];
 			descriptionEntry.Text = (string)_ui["description"];
 			officeEntry.Text = (string)_ui["physicalDeliveryOfficeName"];
+			mailEntry.Text = (string)_ui["mail"];
 			phoneEntry.Text = (string)_ui["telephoneNumber"];
+
+			// Account
+			usernameEntry.Text = (string)_ui["uid"];
+			uidSpinButton.Value = int.Parse ((string)_ui["uidNumber"]);
+			shellEntry.Text = (string)_ui["loginShell"];
+			homeDirEntry.Text = (string)_ui["homeDirectory"];
 
 			if (_isSamba)
 			{
@@ -156,6 +173,29 @@ namespace lat
 				smbEnableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 				toggleSambaWidgets (false);
 			}
+
+			// Groups
+			string pgid = (string) _ui["gidNumber"];
+			string pname = (string) _allGroupGids [pgid];		
+			primaryGroupLabel.Text = pname;			
+
+			// Address
+			adStreetTextView.Buffer.Text = (string)_ui["street"];
+			adPOBoxEntry.Text = (string)_ui["postOfficeBox"];
+			adCityEntry.Text = (string)_ui["l"];
+			adStateEntry.Text = (string)_ui["st"];
+			adZipEntry.Text = (string)_ui["postalCode"];
+
+			// Telephones
+			tnHomeEntry.Text = (string)_ui["homePhone"];
+			tnPagerEntry.Text = (string)_ui["pager"];
+			tnMobileEntry.Text = (string)_ui["mobile"];
+			tnFaxEntry.Text = (string)_ui["facsimileTelephoneNumber"];
+
+			// Organization
+			ozTitleEntry.Text = (string)_ui["title"];
+			ozDeptEntry.Text = (string)_ui["departmentNumber"];
+			ozCompanyEntry.Text = (string)_ui["o"];
 
 			editUserDialog.Run ();
 
@@ -177,12 +217,10 @@ namespace lat
 				_smbSID = server.GetLocalSID ();
 
 				toggleSambaWidgets (true);
-				smbNoteLabel.Text = "Note: You must now reset your password.";
 			}
 			else
 			{
 				toggleSambaWidgets (false);
-				smbNoteLabel.Markup = "";
 			}
 		}
 
@@ -263,13 +301,6 @@ namespace lat
 							_memberOfStore.AppendValues (nameAttr.StringValue);
 						}
 					}
-
-					if (!_memberOfGroups.ContainsKey (nameAttr.StringValue))
-						_allGroupStore.AppendValues (nameAttr.StringValue);
-				}
-				else
-				{
-					_allGroupStore.AppendValues (nameAttr.StringValue);
 				}
 
 				if (!_allGroups.ContainsKey (nameAttr.StringValue))
@@ -279,31 +310,6 @@ namespace lat
 					_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
 			}
 				
-		}
-
-		private void createCombo ()
-		{
-			primaryGroupComboBox = ComboBox.NewText ();
-
-			string pgid = (string) _ui["gidNumber"];
-			string name = (string) _allGroupGids [pgid];
-			int index = 0;
-			int pindex = 0;
-
-			foreach (string key in _allGroups.Keys)
-			{
-				primaryGroupComboBox.AppendText (key);
-			
-				if (key.Equals (name))
-					pindex = index;
-
-				index++;
-			}		
-
-			primaryGroupComboBox.Active = pindex;
-			primaryGroupComboBox.Show ();
-
-			comboHbox.Add (primaryGroupComboBox);
 		}
 
 		private bool checkSamba (LdapEntry le)
@@ -338,15 +344,6 @@ namespace lat
 
 			TreeViewColumn col;
 
-			_allGroupStore = new ListStore (typeof (string));
-			allGroupsTreeview.Model = _allGroupStore;
-			allGroupsTreeview.Selection.Mode = SelectionMode.Multiple;
-
-			col = allGroupsTreeview.AppendColumn ("Name", new CellRendererText (), "text", 0);
-			col.SortColumnId = 0;
-	
-			_allGroupStore.SetSortColumnId (0, SortType.Ascending);
-
 			_memberOfStore = new ListStore (typeof (string));
 			memberOfTreeview.Model = _memberOfStore;
 			memberOfTreeview.Selection.Mode = SelectionMode.Multiple;
@@ -355,8 +352,6 @@ namespace lat
 			col.SortColumnId = 0;
 	
 			_memberOfStore.SetSortColumnId (0, SortType.Ascending);
-
-			passwordEntry.Sensitive = false;
 		}
 
 		private void toggleSambaWidgets (bool state)
@@ -375,23 +370,27 @@ namespace lat
 
 		public void OnAddGroupClicked (object o, EventArgs args)
 		{
-			TreeModel model;
-			TreeIter iter;
-
-			TreePath[] tp = allGroupsTreeview.Selection.GetSelectedRows (out model);
-
-			for (int i  = tp.Length; i > 0; i--)
+			ArrayList tmp = new ArrayList ();
+	
+			foreach (string k in _allGroups.Keys)
 			{
-				_allGroupStore.GetIter (out iter, tp[(i - 1)]);
+				if (k.Equals (primaryGroupLabel.Text) ||
+				    _memberOfGroups.ContainsKey (k))
+					continue;
 
-				string name = (string) _allGroupStore.GetValue (iter, 0);
+				tmp.Add (k);
+			}
 
+			string[] allgroups = (string[]) tmp.ToArray (typeof(string));
+
+			SelectGroupsDialog sgd = new SelectGroupsDialog (allgroups);
+
+			foreach (string name in sgd.SelectedGroupNames)
+			{
 				_memberOfStore.AppendValues (name);
 		
 				if (!_memberOfGroups.ContainsKey (name))
 					_memberOfGroups.Add (name, "memberUid");
-
-				_allGroupStore.Remove (ref iter);
 
 				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
 				LdapModification lm = new LdapModification (LdapModification.ADD, attr);
@@ -402,7 +401,6 @@ namespace lat
 
 				_modsGroup.Clear ();
 			}
-
 		}
 
 		public void OnRemoveGroupClicked (object o, EventArgs args)
@@ -422,8 +420,6 @@ namespace lat
 		
 				if (_memberOfGroups.ContainsKey (name))
 					_memberOfGroups.Remove (name);
-
-				_allGroupStore.AppendValues (name);
 
 				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
 				LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
@@ -448,14 +444,36 @@ namespace lat
 		{
 			PasswordDialog pd = new PasswordDialog ();
 
-			if (!passwordEntry.Text.Equals ("") && pd.UnixPassword.Equals (""))
+			if (pd.UnixPassword.Equals (""))
 				return;
 
-			passwordEntry.Text = pd.UnixPassword;
+			_pass = pd.UnixPassword;
 			_smbLM = pd.LMPassword;
 			_smbNT = pd.NTPassword;
 
 			_passChanged = true;
+		}
+
+		public void OnSetPrimaryGroupClicked (object o, EventArgs args)
+		{
+			ArrayList tmp = new ArrayList ();
+	
+			foreach (string k in _allGroups.Keys)
+			{
+				if (k.Equals (primaryGroupLabel.Text))
+					continue;
+
+				tmp.Add (k);
+			}
+
+			string[] allgroups = (string[]) tmp.ToArray (typeof(string));
+
+			SelectGroupsDialog sgd = new SelectGroupsDialog (allgroups);
+
+			if (sgd.SelectedGroupNames.Length > 0)
+			{
+				primaryGroupLabel.Text = sgd.SelectedGroupNames[0];
+			}
 		}
 
 		public void OnSetExpireClicked (object o, EventArgs args)
@@ -543,24 +561,25 @@ namespace lat
 		{
 			Hashtable retVal = new Hashtable ();
 
-			TreeIter iter;
-				
-			primaryGroupComboBox.GetActiveIter (out iter);
-
-			string pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
-
+			// General 
 			retVal.Add ("givenName", firstNameEntry.Text);
+			retVal.Add ("initials", initialsEntry.Text);
 			retVal.Add ("sn", lastNameEntry.Text);
-			retVal.Add ("uid", usernameEntry.Text);
-			retVal.Add ("uidNumber", uidSpinButton.Value.ToString());
-			retVal.Add ("userPassword", passwordEntry.Text);
-			retVal.Add ("gidNumber", getGidNumber(pg));
-			retVal.Add ("mail", mailEntry.Text);
-			retVal.Add ("loginShell", shellEntry.Text);
-			retVal.Add ("homeDirectory", homeDirEntry.Text);
 			retVal.Add ("description", descriptionEntry.Text);
 			retVal.Add ("physicalDeliveryOfficeName", officeEntry.Text);
+			retVal.Add ("mail", mailEntry.Text);
 			retVal.Add ("telephoneNumber", phoneEntry.Text);
+
+			// Account
+			retVal.Add ("uid", usernameEntry.Text);
+			retVal.Add ("uidNumber", uidSpinButton.Value.ToString());
+			retVal.Add ("homeDirectory", homeDirEntry.Text);
+			retVal.Add ("loginShell", shellEntry.Text);
+
+			if (_passChanged)
+			{
+				retVal.Add ("userPassword", _pass);
+			}
 
 			if (_isSamba)
 			{
@@ -578,6 +597,28 @@ namespace lat
 				if (smbMustChangePwdEntry.Text != "")
 					retVal.Add ("sambaPwdMustChange", smbMustChangePwdEntry.Text);
 			}
+
+			// Groups
+			retVal.Add ("gidNumber", getGidNumber(primaryGroupLabel.Text));
+
+			// Address
+			retVal.Add ("street", adStreetTextView.Buffer.Text);
+			retVal.Add ("l", adCityEntry.Text);
+			retVal.Add ("st", adStateEntry.Text);
+			retVal.Add ("postalCode", adZipEntry.Text);
+			retVal.Add ("postOfficeBox", adPOBoxEntry.Text);
+
+			// Telephones
+			retVal.Add ("facsimileTelephoneNumber", tnFaxEntry.Text);
+			retVal.Add ("pager", tnPagerEntry.Text);
+			retVal.Add ("mobile", tnMobileEntry.Text);
+			retVal.Add ("homePhone", tnHomeEntry.Text);
+			retVal.Add ("ipPhone", tnIPPhoneEntry.Text);
+
+			// Organization
+			retVal.Add ("title", ozTitleEntry.Text);
+			retVal.Add ("departmentNumber", ozDeptEntry.Text);
+			retVal.Add ("o", ozCompanyEntry.Text);
 
 			return retVal;
 		}
