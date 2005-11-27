@@ -20,6 +20,7 @@
 
 using Gtk;
 using System;
+using System.Collections;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -75,12 +76,54 @@ namespace lat
 			}		
 		}
 
+		public void OnPwdActivate (object o, EventArgs args)
+		{
+			PasswordDialog pd = new PasswordDialog ();
+
+			if (pd.UnixPassword.Equals (""))
+				return;
+
+			ArrayList mods = new ArrayList ();
+			LdapEntry le = GetSelectedEntry ();
+			
+			LdapAttribute la; 
+			LdapModification lm;
+
+			la = new LdapAttribute ("userPassword", pd.UnixPassword);
+			lm = new LdapModification (LdapModification.REPLACE, la);
+
+			mods.Add (lm);
+
+			if (Util.CheckSamba (le))
+			{
+				la = new LdapAttribute ("sambaLMPassword", pd.LMPassword);
+				lm = new LdapModification (LdapModification.REPLACE, la);
+
+				mods.Add (lm);
+
+				la = new LdapAttribute ("sambaNTPassword", pd.NTPassword);
+				lm = new LdapModification (LdapModification.REPLACE, la);
+
+				mods.Add (lm);
+			}
+
+			Util.ModifyEntry (server, parent, le.DN, mods, true);
+		}
+
 		public override void customPopUp  ()
 		{
 			SeparatorMenuItem sm = new SeparatorMenuItem ();
 			sm.Show ();
 		
 			popup.Append (sm);
+
+			Gdk.Pixbuf pwdImage = Gdk.Pixbuf.LoadFromResource ("locked16x16.png");
+			ImageMenuItem pwdItem = new ImageMenuItem ("Change password");
+			pwdItem.Image = new Gtk.Image (pwdImage);
+			pwdItem.Activated += new EventHandler (OnPwdActivate);
+			pwdItem.Show ();
+
+			popup.Append (pwdItem);
 
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("mail-message-new.png");
 			ImageMenuItem mailItem = new ImageMenuItem ("Send email");

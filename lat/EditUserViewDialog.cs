@@ -124,7 +124,7 @@ namespace lat
 
 			Init ();
 
-			_isSamba = checkSamba (le);
+			_isSamba = Util.CheckSamba (le);
 
 			_ui = getUserInfo (le);
 
@@ -310,24 +310,6 @@ namespace lat
 					_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
 			}
 				
-		}
-
-		private bool checkSamba (LdapEntry le)
-		{
-			bool retVal = false;
-			
-			LdapAttribute la = le.getAttribute ("objectClass");
-			
-			if (la == null)
-				return retVal;
-
-			foreach (string s in la.StringValueArray)
-			{
-				if (s.ToLower() == "sambasamaccount")
-					retVal = true;
-			}
-
-			return retVal;
 		}
 
 		private void Init ()

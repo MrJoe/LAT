@@ -61,6 +61,24 @@ namespace lat
 			return mods;
 		}
 
+		public static bool CheckSamba (LdapEntry le)
+		{
+			bool retVal = false;
+			
+			LdapAttribute la = le.getAttribute ("objectClass");
+			
+			if (la == null)
+				return retVal;
+
+			foreach (string s in la.StringValueArray)
+			{
+				if (s.ToLower() == "sambasamaccount")
+					retVal = true;
+			}
+
+			return retVal;
+		}
+
 		public static string SuggestUserName (string firstName, string lastName)
 		{
 			string retVal = "";

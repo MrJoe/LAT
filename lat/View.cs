@@ -368,6 +368,24 @@ namespace lat
 			return "";
 		}
 
+		protected LdapEntry GetSelectedEntry ()
+		{
+			Gtk.TreeModel model;
+
+			TreePath[] tp = this.tv.Selection.GetSelectedRows (out model);
+
+			try
+			{
+				LdapEntry le = this.lookupEntry (tp[0]);
+
+				return le;
+			}
+			catch 
+			{
+				return null;
+			}
+		}
+
 		public virtual void OnEmailActivate (object o, EventArgs args) 
 		{
 			string url = getSelectedAttribute ("mail");
