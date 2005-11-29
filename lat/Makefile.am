@@ -9,20 +9,15 @@ CSFILES = \
 	AddAttributeDialog.cs \
 	CertificateDialog.cs \
 	ConnectDialog.cs \
-	ContactsView.cs \
 	CreateEntryDialog.cs \
-	CustomView.cs \
 	CustomViewDialog.cs \
 	CustomViewManager.cs \
 	Defines.cs \
-	DynamicView.cs \
 	DynamicViewDialog.cs \
 	EditAdComputerViewDialog.cs \
 	EditContactsViewDialog.cs \
 	EditUserViewDialog.cs \
-	GroupsView.cs \
 	GroupsViewDialog.cs \
-	HostsView.cs \
 	HostsViewDialog.cs \
 	LDIF.cs \
 	LdapSearch.cs \
@@ -47,16 +42,14 @@ CSFILES = \
 	SearchResultsTreeView.cs \
 	SelectContainerDialog.cs \
 	SelectGroupsDialog.cs \
+	ServerView.cs \
 	Templates.cs \
 	TemplatesDialog.cs \
 	TemplateEditorDialog.cs \
 	TimeDateDialog.cs \
-	UsersView.cs \
 	Util.cs \
-	View.cs \
 	ViewDialog.cs \
 	ViewDialogFactory.cs \
-	ViewFactory.cs \
 	ViewsTreeView.cs \
 	Window.cs
 

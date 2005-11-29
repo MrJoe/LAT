@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Xml;
 
 namespace lat 
 {
@@ -28,5 +29,87 @@ namespace lat
 		public static string PACKAGE = "@PACKAGE@";
 		public static string VERSION = "@VERSION@";
 		public static string LOCALE_DIR = "@prefix@/share/locale";
+
+		public static string VIEWS_XML = 
+			"<views>" +
+			"<view displayName=\"Contacts\" name=\"openldapContacts\">" +
+			"<filter>objectClass=inetOrgPerson</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"cn\">Name</column>" +
+			"<column name=\"mail\">Email</column>" +
+			"<column name=\"telephoneNumber\">Work</column>" +
+			"<column name=\"homePhone\">Home</column>" +
+			"<column name=\"mobile\">Mobile</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Contacts\" name=\"adContacts\">" +
+			"<filter>objectclass=contact</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"name\">Name</column>" +
+			"<column name=\"description\">Email</column>" +
+			"<column name=\"mail\">Work</column>" +
+			"<column name=\"wWWHomePage\">Home</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Groups\" name=\"openldapGroups\">" +
+			"<filter>objectclass=posixGroup</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"1\">" +
+			"<column name=\"gidNumber\">Group ID</column>" +
+			"<column name=\"cn\">Name</column>" +
+			"<column name=\"description\">Description</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Groups\" name=\"adGroups\">" +
+			"<filter>objectclass=group</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"name\">Name</column>" +
+			"<column name=\"description\">Description</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Computers\" name=\"openldapComputers\">" +
+			"<filter>objectclass=ipHost</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"cn\">Hostname</column>" +
+			"<column name=\"ipHostNumber\">IP address</column>" +
+			"<column name=\"description\">Description</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Computers\" name=\"adComputers\">" +
+			"<filter>" + 
+			XmlConvert.EncodeName ("(&(objectclass=user)(objectcategory=Computer))") +
+			"</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"name\">Hostname</column>" +
+			"<column name=\"description\">Description</column>" +
+			"<column name=\"operatingSystem\">Operating system</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Users\" name=\"openldapUsers\">" +
+			"<filter>" +
+			XmlConvert.EncodeName ("(&(objectclass=posixAccount)(objectclass=shadowAccount))") +
+			"</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"uid\">Username</column>" +
+			"<column name=\"cn\">Full name</column>" +
+			"</columns>" +
+			"</view>" +
+			"<view displayName=\"Users\" name=\"adUsers\">" +
+			"<filter>" +
+			XmlConvert.EncodeName ("(&(objectclass=user)(objectcategory=Person))") +
+			"</filter>" +
+			"<searchBase></searchBase>" +
+			"<columns primaryKey=\"0\">" +
+			"<column name=\"sAMAccountName\">Username</column>" +
+			"<column name=\"cn\">Full name</column>" +
+			"</columns>" +
+			"</view>" +
+			"</views>";
 	}
 }

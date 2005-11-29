@@ -28,6 +28,7 @@ public class Global
 	public static Gnome.Program latProgram;
 	public static bool Debug = false;
 	public static TemplateManager theTemplateManager;
+	public static ViewManager viewManager;
 }
 
 public class LdapAdministrationTool
@@ -102,6 +103,8 @@ public class LdapAdministrationTool
 
 		Global.theTemplateManager = new TemplateManager ();
 		Global.theTemplateManager.Load ();
+
+		Global.viewManager = new ViewManager ();
 
 		Global.latProgram = new Program (
 			Defines.PACKAGE, Defines.VERSION, Modules.UI, args);

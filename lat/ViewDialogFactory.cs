@@ -34,63 +34,65 @@ namespace lat
 		{
 			switch (name)
 			{
-				case "Users":
+				case "openldapUsers":
 				{
-					if (server.ServerType.ToLower() == "microsoft active directory")
-					{
-						if (le != null)
-							new adUserViewDialog (server, le);
-					}
+					if (le == null)
+						new NewUserViewDialog (server);
 					else
-					{
-						if (le == null)
-							new NewUserViewDialog (server);
-						else
-							new EditUserViewDialog (server, le);
-					}
+						new EditUserViewDialog (server, le);
 
 					break;
 				}
 
-				case "Groups":
+				case "adUsers":
 				{
-					if (server.ServerType.ToLower() == "microsoft active directory")
-					{
-//						if (le == null)
-//							new adGroupViewDialog (server);
-//						else
-//							new adGroupViewDialog (server, le);
-					}
-					else
-					{
-						if (le == null)
-							new GroupsViewDialog (server);
-						else
-							new GroupsViewDialog (server, le);
-					}
+					if (le != null)
+						new adUserViewDialog (server, le);
+
 					break;
 				}
 
-				case "Hosts":
+				case "openldapGroups":
 				{
-					if (server.ServerType.ToLower() == "microsoft active directory")
-					{
-						if (le == null)
-							new NewAdComputerViewDialog (server);
-						else
-							new EditAdComputerViewDialog (server, le);
-					}
+					if (le == null)
+						new GroupsViewDialog (server);
 					else
-					{
-						if (le == null)
-							new HostsViewDialog (server);
-						else
-							new HostsViewDialog (server, le);
-					}				
+						new GroupsViewDialog (server, le);
+
 					break;
 				}
 
-				case "Contacts":
+				case "adGroups":
+				{
+//					if (le == null)
+//						new adGroupViewDialog (server);
+//					else
+//						new adGroupViewDialog (server, le);
+					break;
+				}
+
+				case "openldapComputers":
+				{
+					if (le == null)
+						new HostsViewDialog (server);
+					else
+						new HostsViewDialog (server, le);
+
+					break;
+				}
+
+				case "adComputers":
+				{
+					if (le == null)
+						new NewAdComputerViewDialog (server);
+					else
+						new EditAdComputerViewDialog (server, le);
+
+					break;
+				}
+
+				case "openldapContacts":
+				case "adContacts":
 					if (le == null)
 						new NewContactsViewDialog (server);
 					else

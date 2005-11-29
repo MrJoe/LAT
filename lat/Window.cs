@@ -90,6 +90,8 @@ namespace lat
 		private SearchResultsTreeView _searchTreeView;
 
 		private LdapServer server;
+		private ServerViewFactory serverViewFactory;
+		private ServerView currentView;
 
 		private ArrayList _modList;
 
@@ -116,16 +118,14 @@ namespace lat
 			hpaned1.Position = 250;
 
 			// Setup views
-			_viewsTreeView = new ViewsTreeView (
-				server, 
-				mainWindow, 
-				valuesStore, 
-				valuesListview);
-
+			_viewsTreeView = new ViewsTreeView (server);
 			_viewsTreeView.ViewSelected += new ViewSelectedHandler (OnViewSelected);
 
 			viewScrolledWindow.AddWithViewport (_viewsTreeView);
 			viewScrolledWindow.Show ();
+
+			serverViewFactory = new ServerViewFactory (valuesStore, 
+				valuesListview, mainWindow, server);
 
 			// Setup browser			
 			_ldapTreeview = new LdapTreeView (server, mainWindow);
@@ -625,26 +625,26 @@ namespace lat
 		private void removeButtonHandlers ()
 		{
 			newToolButton.Clicked -= new EventHandler
-				 (_viewsTreeView.CurrentView.OnNewEntryActivate);
+				 (currentView.OnNewEntryActivate);
 
 			propertiesToolButton.Clicked -= new EventHandler
-				 (_viewsTreeView.CurrentView.OnEditActivate);
+				 (currentView.OnEditActivate);
 
 			deleteToolButton.Clicked -= new EventHandler
-				 (_viewsTreeView.CurrentView.OnDeleteActivate);
+				 (currentView.OnDeleteActivate);
 
 			refreshToolButton.Clicked -= new EventHandler
-				 (_viewsTreeView.CurrentView.OnRefreshActivate);
+				 (currentView.OnRefreshActivate);
 		}
 
 		private void cleanupView ()
 		{
-			if (_viewsTreeView.CurrentView != null)
+			if (currentView != null)
 			{
 				removeButtonHandlers ();
-				_viewsTreeView.CurrentView.removeDndHandlers ();
-				_viewsTreeView.CurrentView.removeHandlers ();
-				_viewsTreeView.CurrentView = null;
+				currentView.RemoveDndHandlers ();
+				currentView.RemoveHandlers ();
+				currentView = null;
 			}
 		}
 
@@ -652,25 +652,24 @@ namespace lat
 		{
 			cleanupView ();
 
-			_viewsTreeView.CurrentView = 
-				_viewsTreeView.theViewFactory.Create (name);
+			currentView = serverViewFactory.Create (name);
 
-			if (_viewsTreeView.CurrentView != null)
+			if (currentView != null)
 			{
-				_viewsTreeView.CurrentView.Populate ();
+				currentView.Populate ();
 			}
 
 			newToolButton.Clicked += new EventHandler
-				(_viewsTreeView.CurrentView.OnNewEntryActivate);
+				(currentView.OnNewEntryActivate);
 
 			propertiesToolButton.Clicked += new EventHandler
-				(_viewsTreeView.CurrentView.OnEditActivate);
+				(currentView.OnEditActivate);
 
 			deleteToolButton.Clicked += new EventHandler
-				(_viewsTreeView.CurrentView.OnDeleteActivate);
+				(currentView.OnDeleteActivate);
 
 			refreshToolButton.Clicked += new EventHandler
-				(_viewsTreeView.CurrentView.OnRefreshActivate);
+				(currentView.OnRefreshActivate);
 
 			toggleButtons (true);
 		}
@@ -753,8 +752,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_viewsTreeView.CurrentView != null)
-					_viewsTreeView.CurrentView.OnNewEntryActivate (o, args);
+				if (currentView != null)
+					currentView.OnNewEntryActivate (o, args);
 			}
 			else if (viewNotebook.CurrentPage == 1)
 			{
@@ -766,8 +765,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_viewsTreeView.CurrentView != null)
-					_viewsTreeView.CurrentView.OnDeleteActivate (o, args);
+				if (currentView != null)
+					currentView.OnDeleteActivate (o, args);
 			}
 			else if (viewNotebook.CurrentPage == 1)
 			{
@@ -779,8 +778,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_viewsTreeView.CurrentView != null)
-					_viewsTreeView.CurrentView.OnEditActivate (o, args);
+				if (currentView != null)
+					currentView.OnEditActivate (o, args);
 			}
 		}
 
@@ -788,8 +787,8 @@ namespace lat
 		{
 			if (viewNotebook.CurrentPage == 0)
 			{
-				if (_viewsTreeView.CurrentView != null)
-					_viewsTreeView.CurrentView.OnRefreshActivate (o, args);
+				if (currentView != null)
+					currentView.OnRefreshActivate (o, args);
 			}
 		}
 
