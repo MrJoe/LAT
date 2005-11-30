@@ -1,3 +1,4 @@
+	* Refactored view code; All views can now be customized
 	* Added 'Change password' item to Users view popup menu
 	* Redesigned user edit dialog
 

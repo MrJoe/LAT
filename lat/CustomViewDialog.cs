@@ -72,7 +72,11 @@ namespace lat
 
 			nameEntry.Text = vd.Name;
 			filterEntry.Text = vd.Filter;
-			searchBaseButton.Label = vd.Base;
+
+			if (vd.Base == "")
+				searchBaseButton.Label = ldapServer.DirectoryRoot;
+			else
+				searchBaseButton.Label = vd.Base;
 
 			foreach (string c in vd.Cols)
 			{

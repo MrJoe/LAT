@@ -44,6 +44,24 @@ namespace lat
 			return lm;
 		}
 
+		public static string GetServerPrefix (LdapServer server)
+		{
+			string prefix = null;
+	
+			switch (server.ServerType.ToLower())
+			{
+				case "microsoft active directory":
+					prefix = "ad";
+					break;
+
+				case "openldap":
+					prefix = server.ServerType.ToLower();
+					break;
+			}
+
+			return prefix;
+		}
+
 		public static ArrayList CreateSambaMods (int uid, string sid, string lm, string nt)
 		{
 			ArrayList mods = new ArrayList ();

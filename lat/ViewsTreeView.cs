@@ -231,7 +231,15 @@ namespace lat
 
 		private void OnPropertiesActivate (object o, EventArgs args) 
 		{
-			Console.WriteLine ("HERE");
+			string viewName = GetSelectedViewName ();
+
+			if (!customIters.Contains (viewName))
+			{
+				string prefix = Util.GetServerPrefix (server);
+				viewName = prefix + viewName;
+			}
+
+			new CustomViewDialog (server, viewName);
 		}
 
 		private void DispatchViewSelectedEvent (string name)

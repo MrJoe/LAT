@@ -59,7 +59,7 @@ namespace lat
 			if (viewData.Name == null)
 			{
 				// Probably a standard view; search again
-				prefix = GetPrefix ();
+				prefix = Util.GetServerPrefix (ldapServer);
 
 				viewData = (ViewData) Global.viewManager.Lookup (
 					prefix + viewName);
@@ -71,24 +71,6 @@ namespace lat
 						     parentWindow);
 
 			return serverView;
-		}
-
-		private string GetPrefix ()
-		{
-			string prefix = null;
-	
-			switch (ldapServer.ServerType.ToLower())
-			{
-				case "microsoft active directory":
-					prefix = "ad";
-					break;
-
-				case "openldap":
-					prefix = ldapServer.ServerType.ToLower();
-					break;
-			}
-
-			return prefix;
 		}
 
 		private void Cleanup ()
