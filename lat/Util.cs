@@ -54,8 +54,9 @@ namespace lat
 					prefix = "ad";
 					break;
 
+				case "generic ldap server":
 				case "openldap":
-					prefix = server.ServerType.ToLower();
+					prefix = "openldap";
 					break;
 			}
 

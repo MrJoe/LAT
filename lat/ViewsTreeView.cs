@@ -110,22 +110,12 @@ namespace lat
 			Pixbuf usersIcon = Pixbuf.LoadFromResource ("stock_person.png");
 
 			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
-			string prefix = "";
+			string prefix = Util.GetServerPrefix (server);
 
-			switch (serverType.ToLower())
-			{
-				case "microsoft active directory":
-					prefix = "ad";
-					break;
-
-				case "openldap":
-					prefix = serverType.ToLower();
-					break;
-			}
-
+Console.WriteLine ("vd prefix: {0}", prefix);
 			ViewData vd = (ViewData) Global.viewManager.Lookup (prefix + "Computers");
 			viewsStore.AppendValues (viewRootIter, compIcon, vd.DisplayName);
-
+Console.WriteLine ("vd name: {0} - displayName: {1}", vd.Name, vd.DisplayName);
 			vd = (ViewData) Global.viewManager.Lookup (prefix + "Contacts");
 			viewsStore.AppendValues (viewRootIter, contactIcon, vd.DisplayName);
 
