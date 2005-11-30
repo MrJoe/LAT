@@ -112,10 +112,9 @@ namespace lat
 			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
 			string prefix = Util.GetServerPrefix (server);
 
-Console.WriteLine ("vd prefix: {0}", prefix);
 			ViewData vd = (ViewData) Global.viewManager.Lookup (prefix + "Computers");
 			viewsStore.AppendValues (viewRootIter, compIcon, vd.DisplayName);
-Console.WriteLine ("vd name: {0} - displayName: {1}", vd.Name, vd.DisplayName);
+
 			vd = (ViewData) Global.viewManager.Lookup (prefix + "Contacts");
 			viewsStore.AppendValues (viewRootIter, contactIcon, vd.DisplayName);
 
