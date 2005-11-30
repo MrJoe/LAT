@@ -794,6 +794,7 @@ namespace lat {
 		public bool UseSSL
 		{
 			get { return conn.SecureSocketLayer; }
+			set { conn.SecureSocketLayer = value; }
 		}
 
 		#endregion
