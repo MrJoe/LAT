@@ -42,6 +42,7 @@ namespace lat
 		private string _unix;
 		private string _lm;
 		private string _nt;
+		private ResponseType response;
 
 		public PasswordDialog ()
 		{
@@ -54,7 +55,7 @@ namespace lat
 			shaRadioButton.Active = true;
 			useSaltCheckButton.Active = true;
 
-			passwordDialog.Run ();
+			response = (ResponseType) passwordDialog.Run ();
 			passwordDialog.Destroy ();
 		}	
 
@@ -226,6 +227,11 @@ namespace lat
 		public void OnCancelClicked (object o, EventArgs args)
 		{
 			passwordDialog.HideAll ();
+		}
+
+		public ResponseType UserResponse
+		{
+			get { return response; }
 		}
 
 		public string UnixPassword 

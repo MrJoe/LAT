@@ -568,7 +568,8 @@ namespace lat
 		{
 			PasswordDialog pd = new PasswordDialog ();
 
-			if (pd.UnixPassword.Equals (""))
+			if (pd.UnixPassword.Equals ("") || 
+			    pd.UserResponse == ResponseType.Cancel)
 				return;
 
 			ArrayList mods = new ArrayList ();
