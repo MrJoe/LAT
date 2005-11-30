@@ -113,10 +113,11 @@ public class LdapAdministrationTool
 			Defines.PACKAGE, 
 			Defines.LOCALE_DIR);
 
-		new ConnectDialog ();
-		
+		new ConnectDialog ();	
 		Global.latProgram.Run ();
+
 		Global.theTemplateManager.Save ();
+		Global.viewManager.SaveViews ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}

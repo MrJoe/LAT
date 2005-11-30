@@ -36,36 +36,30 @@ namespace lat
 
 		Glade.XML ui;
 
+		private LdapServer server;
 		private ListStore allStore;
 		private ListStore viewStore;
 	
 		private Hashtable _viewAttrs = new Hashtable ();
-		private LdapServer server;
-		private CustomViewManager _cvm;
 
 		private bool _isEdit = false;
 		private string _oldName;
-
 		private string _name = null;
 
-		private ResponseType _result;
-
-		public CustomViewDialog (LdapServer ldapServer, CustomViewManager cvm)
+		public CustomViewDialog (LdapServer ldapServer)
 		{
 			server = ldapServer;
-			_cvm = cvm;
 
 			Init ();
 
-			customViewDialog.Title = "LAT - New Custom View";
+			customViewDialog.Title = "LAT - New custom view";
 
 			searchBaseButton.Label = server.DirectoryRoot;
 		}
 
-		public CustomViewDialog (LdapServer ldapServer, CustomViewManager cvm, string name)
+		public CustomViewDialog (LdapServer ldapServer, string name)
 		{
 			server = ldapServer;
-			_cvm = cvm;
 
 			_isEdit = true;
 			_oldName = name;
@@ -74,16 +68,13 @@ namespace lat
 			
 			customViewDialog.Title = name + " Properties";
 
-			CustomViewData cvd = cvm.Lookup (name);
+			ViewData vd = Global.viewManager.Lookup (name);
 
-			nameEntry.Text = cvd.Name;
-			filterEntry.Text = cvd.Filter;
-			searchBaseButton.Label = cvd.Base;
+			nameEntry.Text = vd.Name;
+			filterEntry.Text = vd.Filter;
+			searchBaseButton.Label = vd.Base;
 
-			char[] delimStr = { ',' };
-			string[] cols = cvd.Cols.Split (delimStr);
-
-			foreach (string c in cols)
+			foreach (string c in vd.Cols)
 			{
 				_viewAttrs.Add (c, c);
 				viewStore.AppendValues (c);
@@ -94,7 +85,7 @@ namespace lat
 
 		public void Run ()
 		{
-			_result = (ResponseType) customViewDialog.Run ();
+			customViewDialog.Run ();
 			customViewDialog.Destroy ();
 		}
 
@@ -225,49 +216,50 @@ namespace lat
 
 		public void OnSaveClicked (object o, EventArgs args)
 		{
-			string cols = "";
-
 			if (_viewAttrs.Keys.Count == 0)
 			{
 				Util.MessageBox (customViewDialog, 
-						"You must select what attributes will be displayed in the view",
-						 MessageType.Error);
+				  "You must select what attributes will be displayed in the view",
+				   MessageType.Error);
 			}
+
+			ArrayList tmp = new ArrayList ();
 
 			foreach (string name in _viewAttrs.Keys)
 			{
-				cols += String.Format ("{0},", 
-						(string)_viewAttrs[name]);
+				tmp.Add (name);
 			}
 
-			cols = cols.Remove ((cols.Length - 1), 1);
-
-			CustomViewData cvd = new CustomViewData (
-				nameEntry.Text,
-				filterEntry.Text,
-				searchBaseButton.Label,
-				cols);
+			ViewData vd = new ViewData ();
+			vd.Name = nameEntry.Text;
+			vd.DisplayName = nameEntry.Text;
+			vd.PrimaryKey = -1;
+			vd.Type = "custom";
+			vd.Filter = filterEntry.Text;
+			vd.Base = searchBaseButton.Label;
+			vd.Cols = (string[])tmp.ToArray (typeof(string));
+			vd.ColNames = (string[])tmp.ToArray (typeof(string));
 
 			if (_isEdit)
 			{
-				if (!_oldName.Equals (cvd.Name))
+				if (!_oldName.Equals (vd.Name))
 				{
-					_cvm.deleteView (_oldName);
-					_cvm.addView (cvd);
+					Global.viewManager.DeleteView (_oldName);
+					Global.viewManager.AddView (vd);
 				}
 				else
 				{
-					_cvm.updateView (cvd);
+					Global.viewManager.UpdateView (vd);
 				}
 			}
 			else
 			{
-				_cvm.addView (cvd);
+				Global.viewManager.AddView (vd);
 			}
 
-			_cvm.saveViews ();
+			Global.viewManager.SaveViews ();
 
-			_name = cvd.Name;
+			_name = vd.Name;
 
 			customViewDialog.HideAll ();
 		}
@@ -286,11 +278,6 @@ namespace lat
 		public string Name
 		{
 			get { return _name; }
-		}	
-
-		public ResponseType Result
-		{
-			get { return _result; }
 		}
 	}
 }

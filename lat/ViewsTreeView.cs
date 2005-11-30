@@ -48,27 +48,22 @@ namespace lat
 	public class ViewsTreeView : Gtk.TreeView
 	{
 		private LdapServer	server;
+		private Gtk.Window	parentWindow;
 		private Menu 		popup;
 		private TreeStore	viewsStore;
 		private TreeIter	viewRootIter;
 		private TreeIter	viewCustomIter;
-
-		private Hashtable customIters = new Hashtable ();
-
-//		private ListStore _vs;
-//		private TreeView _vt;
+		private Hashtable 	customIters; 
 
 		private enum TreeCols { Icon, Name };
 
 		public event ViewSelectedHandler ViewSelected;
 
-		public ViewsTreeView (LdapServer ldapServer) : base ()
+		public ViewsTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
 			server = ldapServer;
-
-//			_vs = valueStore;
-//			_vt = valueTreeView;
-			
+			customIters = new Hashtable ();
+		
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
 
 			viewsStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
@@ -84,24 +79,22 @@ namespace lat
 			AddViews (server.ServerType);
 
 			Pixbuf customIcon = Pixbuf.LoadFromResource ("x-directory-normal.png");
+			Pixbuf genIcon = Pixbuf.LoadFromResource ("text-x-generic.png");
+
 			viewCustomIter = viewsStore.AppendValues (viewRootIter, customIcon, 
 				"Custom Views");
 
-//			CustomViewManager cvm = new CustomViewManager ();
-//			string[] views = cvm.getViewNames ();
+			string[] customViews = Global.viewManager.GetCustomViewNames ();
 
-//			foreach (string v in views)
-//			{
-//				TreeIter citer;
+			foreach (string v in customViews)
+			{
+				TreeIter citer;
 
-//				citer = viewsStore.AppendValues (viewCustomIter, customIcon, v);
-//				customIters.Add (v, citer);
-//			}
+				citer = viewsStore.AppendValues (viewCustomIter, genIcon, v);
+				customIters.Add (v, citer);
+			}
 
 			customIters.Add ("root", viewCustomIter);
-
-//			viewFactory._viewStore = viewsStore;
-//			viewFactory._ti = customIters;
 
 			this.RowActivated += new RowActivatedHandler (viewRowActivated);
 			this.ExpandAll ();
@@ -158,6 +151,21 @@ namespace lat
 
 			AccelGroup ag = new AccelGroup ();
 
+			ImageMenuItem newItem = new ImageMenuItem (
+				Stock.New, new Gtk.AccelGroup(IntPtr.Zero));
+
+			newItem.Activated += new EventHandler (OnNewActivate);
+			newItem.Show ();
+			popup.Append (newItem);
+
+			ImageMenuItem deleteItem = new ImageMenuItem (
+				Stock.Delete, new Gtk.AccelGroup(IntPtr.Zero));
+
+			deleteItem.Activated += new EventHandler (OnDeleteActivate);
+			deleteItem.Show ();
+
+			popup.Append (deleteItem);
+
 			ImageMenuItem propItem = new ImageMenuItem (Stock.Properties, ag);
 			propItem.Activated += new EventHandler (OnPropertiesActivate);
 			propItem.Show ();
@@ -166,6 +174,59 @@ namespace lat
 
 			popup.Popup(null, null, null, 3,
 					Gtk.Global.CurrentEventTime);
+		}
+
+		private void OnNewActivate (object o, EventArgs args)
+		{
+			CustomViewDialog cvd = new CustomViewDialog (server);
+			cvd.Run ();
+
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
+
+			TreeIter newIter;
+			newIter = viewsStore.AppendValues (viewCustomIter, pb, cvd.Name);
+
+			customIters.Add (cvd.Name, newIter);
+		}
+
+		public string GetSelectedViewName ()
+		{
+			TreeModel model;
+			TreeIter iter;
+			string name;
+
+			if (this.Selection.GetSelected (out model, out iter))
+			{
+				name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
+				return name;
+			}
+
+			return null;
+		}
+
+		private void OnDeleteActivate (object o, EventArgs args) 
+		{
+			string viewName = GetSelectedViewName ();
+			
+			string msg = String.Format (
+				Mono.Unix.Catalog.GetString (
+				"Are you sure you want to delete: {0}"), viewName);
+
+			if (Util.AskYesNo (parentWindow, msg))
+			{
+				if (!customIters.Contains (viewName))
+				{
+					string errMsg = "Unable to delete standard view";
+
+					Util.MessageBox (parentWindow, errMsg, MessageType.Error);
+					return;
+				}
+
+				TreeIter iter = (TreeIter) customIters [viewName];
+				viewsStore.Remove (ref iter);
+
+				Global.viewManager.DeleteView (viewName);
+			}
 		}
 
 		private void OnPropertiesActivate (object o, EventArgs args) 
@@ -191,6 +252,9 @@ namespace lat
 				string name = null;
 				name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
 
+				if (name.Equals ("Custom Views"))
+					return;
+
 				DispatchViewSelectedEvent (name);
 			} 		
 		}
@@ -200,6 +264,7 @@ namespace lat
 	{
 		public string Name;
 		public string DisplayName;
+		public string Type;
 		public string Filter;
 		public string Base;
 		public int PrimaryKey;
@@ -248,6 +313,7 @@ namespace lat
 			ViewData vd = new ViewData ();
 			vd.Name = node.Attributes["name"].Value;
 			vd.DisplayName = node.Attributes["displayName"].Value;
+			vd.Type = node.Attributes["type"].Value;
 
 			ArrayList cols = new ArrayList ();
 			ArrayList colNames = new ArrayList ();
@@ -294,111 +360,95 @@ namespace lat
 			}
 		}
 
+		// FIXME: better to override []
 		public ViewData Lookup (string viewName)
 		{
-			return (ViewData) views[viewName];
+			if (views.Contains (viewName))
+				return (ViewData) views[viewName];
+			
+			return new ViewData ();
 		}
 
-/*		
-		public string[] getViewNames ()
+		public string[] GetCustomViewNames ()
 		{
-			string[] retVal = new string [_views.Count];
-			int count = 0;
-			
-			foreach (string s in _views.Keys)
+			ArrayList retVal = new ArrayList ();
+
+			foreach (string k in views.Keys)
 			{
-				CustomViewData cvd = (CustomViewData) _views[s];
-				retVal [count] = cvd.Name;
+				ViewData vd = (ViewData) views[k];
 				
-				count++;
+				if (!vd.Type.Equals ("standard"))
+				{
+					retVal.Add (vd.Name);
+				}
 			}
-			
-			return retVal;
+
+			return (string[]) retVal.ToArray (typeof (string));
 		}
 		
-		public CustomViewData Lookup (string name)
+		public void AddView (ViewData newView)
 		{
-			return (CustomViewData) _views[name];
+			views.Add (newView.Name, newView);
 		}
 		
-		public void addView (CustomViewData cvd)
+		public void UpdateView (ViewData newView)
 		{
-			_views.Add (cvd.Name, cvd);
+			views [newView.Name] = newView;
 		}
 		
-		public void updateView (CustomViewData cvd)
+		public void DeleteView (string name)
 		{
-			_views[cvd.Name] = cvd;
-		}
-		
-		public void deleteView (string name)
-		{
-			_views.Remove (name);
+			views.Remove (name);
 		}
 
-		public void reloadViews ()
+		public void ReloadViews ()
 		{
-			_views.Clear ();
-			loadViews ();
+			views.Clear ();
+			LoadViews ();
 		}
-		
-		public void loadViews ()
+
+		public void SaveViews ()	
 		{
-			try
+			XmlDocument doc = new XmlDocument ();
+			XmlElement viewsElement, newView;
+
+			viewsElement = doc.CreateElement ("views");
+
+			foreach (string name in views.Keys)
 			{
-				XmlTextReader r = new XmlTextReader (_configFile);
-				
-				while (r.Read()) 
-				{				
-					if (r.Name == "view") 
-					{								
-						CustomViewData cvd = new CustomViewData (
-							r.GetAttribute ("name"),
-							r.GetAttribute ("filter"),
-							r.GetAttribute ("base"),
-							r.GetAttribute ("cols"));
-				
-						_views.Add (cvd.Name, cvd);				
-					} 
-			 	}
-			 			
-			 	r.Close ();
+				ViewData vd = (ViewData) views [name];
+			
+				newView = doc.CreateElement ("view");
+				newView.SetAttribute ("displayName", vd.DisplayName);
+				newView.SetAttribute ("name", vd.Name);
+				newView.SetAttribute ("type", vd.Type);
+
+				XmlElement filter = doc.CreateElement ("filter");
+				filter.InnerText = vd.Filter;
+				newView.AppendChild (filter);
+
+				XmlElement searchBase = doc.CreateElement ("searchBase");
+				searchBase.InnerText = vd.Base;
+				newView.AppendChild (searchBase);
+
+				XmlElement columns = doc.CreateElement ("columns");
+				columns.SetAttribute ("primaryKey", vd.PrimaryKey.ToString());
+
+				for (int i = 0; i < vd.Cols.Length; i++)
+				{
+					XmlElement col = doc.CreateElement ("column");
+					col.SetAttribute ("name", vd.Cols [i]);
+					col.InnerText = vd.ColNames [i];
+
+					columns.AppendChild (col);
+				}
+
+				newView.AppendChild (columns);
+				viewsElement.AppendChild (newView);
 			}
-			catch (Exception e)
-			{
-				Console.WriteLine (e.Message);
-			}
+			
+			doc.AppendChild (viewsElement);
+			doc.Save (configFileName);
 		}
-		
-		public void saveViews ()	
-		{	
-			XmlTextWriter writer = new XmlTextWriter(_configFile,
-						System.Text.Encoding.UTF8);
-						
-			writer.Formatting = Formatting.Indented;
-			writer.WriteStartDocument(false);
-			
-			writer.WriteStartElement("views");
-			
-			foreach (string name in _views.Keys) 
-			{		     			 	
-				CustomViewData cvd = (CustomViewData) _views[name];
-		 	
-				writer.WriteStartElement("view", null);
-			 		
-				writer.WriteAttributeString ("name", cvd.Name);
-				writer.WriteAttributeString ("filter", cvd.Filter);
-				writer.WriteAttributeString ("base", cvd.Base);
-				writer.WriteAttributeString ("cols", cvd.Cols);
-				
-	        		writer.WriteEndElement();
-			}
-	    		
-			writer.WriteEndElement();
-			
-			writer.Flush();
-			writer.Close();	
-		}
-*/
 	}
 }

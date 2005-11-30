@@ -118,7 +118,7 @@ namespace lat
 			hpaned1.Position = 250;
 
 			// Setup views
-			_viewsTreeView = new ViewsTreeView (server);
+			_viewsTreeView = new ViewsTreeView (server, mainWindow);
 			_viewsTreeView.ViewSelected += new ViewSelectedHandler (OnViewSelected);
 
 			viewScrolledWindow.AddWithViewport (_viewsTreeView);

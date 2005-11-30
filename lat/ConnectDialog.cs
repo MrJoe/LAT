@@ -91,9 +91,9 @@ namespace lat
 		private void createCombo ()
 		{
 			serverTypeComboBox = ComboBox.NewText ();
-			serverTypeComboBox.AppendText ("Generic LDAP Server");
 			serverTypeComboBox.AppendText ("OpenLDAP");
 			serverTypeComboBox.AppendText ("Microsoft Active Directory");
+			serverTypeComboBox.AppendText ("Generic LDAP server");
 
 			serverTypeComboBox.Active = 0;
 			serverTypeComboBox.Show ();

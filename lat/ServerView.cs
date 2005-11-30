@@ -54,8 +54,16 @@ namespace lat
 
 			Cleanup ();
 
-			prefix = GetPrefix ();
-			viewData = (ViewData) Global.viewManager.Lookup (prefix + viewName);
+			viewData = (ViewData) Global.viewManager.Lookup (viewName);
+
+			if (viewData.Name == null)
+			{
+				// Probably a standard view; search again
+				prefix = GetPrefix ();
+
+				viewData = (ViewData) Global.viewManager.Lookup (
+					prefix + viewName);
+			}
 
 			serverView = new ServerView (viewData,
 						     ldapServer, 
@@ -206,6 +214,9 @@ namespace lat
 						le, attributes);
 
 					store.AppendValues (values);
+
+					if (vd.PrimaryKey == -1)
+						continue;
 
 					if (lookupTable.ContainsKey (values [vd.PrimaryKey]))
 						lookupTable.Remove (values [vd.PrimaryKey]);

@@ -32,7 +32,7 @@ namespace lat
 
 		public static string VIEWS_XML = 
 			"<views>" +
-			"<view displayName=\"Contacts\" name=\"openldapContacts\">" +
+			"<view displayName=\"Contacts\" name=\"openldapContacts\" type=\"standard\">" +
 			"<filter>objectClass=inetOrgPerson</filter>" +
 			"<searchBase></searchBase>" +
 			"<columns primaryKey=\"0\">" +
@@ -43,7 +43,7 @@ namespace lat
 			"<column name=\"mobile\">Mobile</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Contacts\" name=\"adContacts\">" +
+			"<view displayName=\"Contacts\" name=\"adContacts\" type=\"standard\">" +
 			"<filter>objectclass=contact</filter>" +
 			"<searchBase></searchBase>" +
 			"<columns primaryKey=\"0\">" +
@@ -53,7 +53,7 @@ namespace lat
 			"<column name=\"wWWHomePage\">Home</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Groups\" name=\"openldapGroups\">" +
+			"<view displayName=\"Groups\" name=\"openldapGroups\" type=\"standard\">" +
 			"<filter>objectclass=posixGroup</filter>" +
 			"<searchBase></searchBase>" +
 			"<columns primaryKey=\"1\">" +
@@ -62,7 +62,7 @@ namespace lat
 			"<column name=\"description\">Description</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Groups\" name=\"adGroups\">" +
+			"<view displayName=\"Groups\" name=\"adGroups\" type=\"standard\">" +
 			"<filter>objectclass=group</filter>" +
 			"<searchBase></searchBase>" +
 			"<columns primaryKey=\"0\">" +
@@ -70,7 +70,7 @@ namespace lat
 			"<column name=\"description\">Description</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Computers\" name=\"openldapComputers\">" +
+			"<view displayName=\"Computers\" name=\"openldapComputers\" type=\"standard\">" +
 			"<filter>objectclass=ipHost</filter>" +
 			"<searchBase></searchBase>" +
 			"<columns primaryKey=\"0\">" +
@@ -79,7 +79,7 @@ namespace lat
 			"<column name=\"description\">Description</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Computers\" name=\"adComputers\">" +
+			"<view displayName=\"Computers\" name=\"adComputers\" type=\"standard\">" +
 			"<filter>" + 
 			XmlConvert.EncodeName ("(&(objectclass=user)(objectcategory=Computer))") +
 			"</filter>" +
@@ -90,7 +90,7 @@ namespace lat
 			"<column name=\"operatingSystem\">Operating system</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Users\" name=\"openldapUsers\">" +
+			"<view displayName=\"Users\" name=\"openldapUsers\" type=\"standard\">" +
 			"<filter>" +
 			XmlConvert.EncodeName ("(&(objectclass=posixAccount)(objectclass=shadowAccount))") +
 			"</filter>" +
@@ -100,7 +100,7 @@ namespace lat
 			"<column name=\"cn\">Full name</column>" +
 			"</columns>" +
 			"</view>" +
-			"<view displayName=\"Users\" name=\"adUsers\">" +
+			"<view displayName=\"Users\" name=\"adUsers\" type=\"standard\">" +
 			"<filter>" +
 			XmlConvert.EncodeName ("(&(objectclass=user)(objectcategory=Person))") +
 			"</filter>" +
