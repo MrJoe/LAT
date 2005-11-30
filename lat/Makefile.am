@@ -11,7 +11,6 @@ CSFILES = \
 	ConnectDialog.cs \
 	CreateEntryDialog.cs \
 	CustomViewDialog.cs \
-	CustomViewManager.cs \
 	Defines.cs \
 	DynamicViewDialog.cs \
 	EditAdComputerViewDialog.cs \
