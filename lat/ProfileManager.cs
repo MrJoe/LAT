@@ -59,7 +59,7 @@ namespace lat
 		{
 			_profiles = new Hashtable ();
 		
-			string dir = Environment.GetEnvironmentVariable("HOME");
+			string dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			string tmp = Path.Combine (dir, ".lat");
 			
 			_configFile = Path.Combine (tmp, "profiles.xml");
