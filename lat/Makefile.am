@@ -27,6 +27,7 @@ CSFILES = \
 	Main.cs \
 	MassEditDialog.cs \
 	NewAdComputerViewDialog.cs \
+	NewAdUserViewDialog.cs \
 	NewContactsViewDialog.cs \
 	NewEntryDialog.cs \
 	NewUserViewDialog.cs \

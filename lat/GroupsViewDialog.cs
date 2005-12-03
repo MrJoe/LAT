@@ -117,15 +117,13 @@ namespace lat
 
 			groupDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				groupDialog.Run ();				
 			}
-			else
-			{
-				groupDialog.Destroy ();
-			}
+
+			groupDialog.Destroy ();
 		}
 
 		private void OnSambaChanged (object o, EventArgs args)

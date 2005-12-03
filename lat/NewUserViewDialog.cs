@@ -77,15 +77,13 @@ namespace lat
 
 			newUserDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				newUserDialog.Run ();				
 			}
-			else
-			{
-				newUserDialog.Destroy ();
-			}
+
+			newUserDialog.Destroy ();
 		}
 
 		private void OnSambaChanged (object o, EventArgs args)

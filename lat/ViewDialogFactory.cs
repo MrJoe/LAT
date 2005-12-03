@@ -48,6 +48,8 @@ namespace lat
 				{
 					if (le != null)
 						new adUserViewDialog (server, le);
+					else
+						new NewAdUserViewDialog (server);
 
 					break;
 				}

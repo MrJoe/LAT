@@ -279,6 +279,15 @@ namespace lat
 
 				PopupAddExtra ();
 			}
+			else if (vd.Name == "adUsers")
+			{
+				SeparatorMenuItem sm = new SeparatorMenuItem ();
+				sm.Show ();
+		
+				popup.Append (sm);
+
+				PopupAddExtra ();
+			}
 
 			if (vd.Name.IndexOf ("Contacts") >= 0)
 			{

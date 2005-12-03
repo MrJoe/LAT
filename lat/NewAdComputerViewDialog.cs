@@ -72,6 +72,8 @@ namespace lat
 
 			retVal.Add ("cn", computerNameEntry.Text);
 			retVal.Add ("dNSHostName", dnsNameEntry.Text);
+			retVal.Add ("sAMAccountName", computerNameEntry.Text);
+			retVal.Add ("userAccountControl", "4128");
 
 			return retVal;
 		}
@@ -81,7 +83,8 @@ namespace lat
 			Hashtable chi = getCurrentHostInfo ();
 
 			string[] missing = null;
-			string[] objClass = {"top", "computer"};
+			string[] objClass = {"top", "computer", "organizationalPerson", "person", 
+					     "user"};
 
 			if (!checkReqAttrs (objClass, chi, out missing))
 			{

@@ -153,15 +153,13 @@ namespace lat
 
 			adUserDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				adUserDialog.Run ();				
 			}
-			else
-			{
-				adUserDialog.Destroy ();
-			}
+
+			adUserDialog.Destroy ();
 		}
 
 		private void Init ()
