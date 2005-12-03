@@ -786,8 +786,10 @@ namespace lat {
 					SetActiveDirectoryInfo (dse[0]);
 				}
 			}
-
-			Logger.Log.Debug ("Unable to find directory namingContexts");
+			else
+			{
+				Logger.Log.Debug ("Unable to find directory namingContexts");
+			}
 		}
 
 		private void SetServerType ()
