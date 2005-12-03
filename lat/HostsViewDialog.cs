@@ -51,15 +51,13 @@ namespace lat
 
 			hostDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				hostDialog.Run ();				
 			}
-			else
-			{
-				hostDialog.Destroy ();
-			}
+
+			hostDialog.Destroy ();
 		}
 
 		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)

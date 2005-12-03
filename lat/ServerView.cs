@@ -230,9 +230,9 @@ namespace lat
 		{
 			popup = new Menu();
 
-			AccelGroup ag = new AccelGroup ();
-
-			ImageMenuItem newItem = new ImageMenuItem (Stock.New, ag);
+			ImageMenuItem newItem = new ImageMenuItem ("New");
+			Gtk.Image newImage = new Gtk.Image (Stock.New, IconSize.Menu);
+			newItem.Image = newImage;
 			newItem.Activated += new EventHandler (OnNewEntryActivate);
 			newItem.Show ();
 
@@ -246,13 +246,17 @@ namespace lat
 
 			popup.Append (exportItem);
 
-			ImageMenuItem deleteItem = new ImageMenuItem (Stock.Delete, ag);
+			ImageMenuItem deleteItem = new ImageMenuItem ("Delete");
+			Gtk.Image deleteImage = new Gtk.Image (Stock.Delete, IconSize.Menu);
+			deleteItem.Image = deleteImage;
 			deleteItem.Activated += new EventHandler (OnDeleteActivate);
 			deleteItem.Show ();
 
 			popup.Append (deleteItem);
 
-			ImageMenuItem propItem = new ImageMenuItem (Stock.Properties, ag);
+			ImageMenuItem propItem = new ImageMenuItem ("Properties");
+			Gtk.Image propImage = new Gtk.Image (Stock.Properties, IconSize.Menu);
+			propItem.Image = propImage;
 			propItem.Activated += new EventHandler (OnEditActivate);
 			propItem.Show ();
 
@@ -498,24 +502,6 @@ namespace lat
 			return "";
 		}
 
-		private LdapEntry GetSelectedEntry ()
-		{
-			Gtk.TreeModel model;
-
-			TreePath[] tp = this.tv.Selection.GetSelectedRows (out model);
-
-			try
-			{
-				LdapEntry le = this.LookupEntry (tp[0]);
-
-				return le;
-			}
-			catch 
-			{
-				return null;
-			}
-		}
-
 		public void OnEmailActivate (object o, EventArgs args) 
 		{
 			string url = getSelectedAttribute ("mail");
@@ -564,16 +550,9 @@ namespace lat
 			}
 		}
 
-		public void OnPwdActivate (object o, EventArgs args)
+		private void ChangePassword (LdapEntry entry, PasswordDialog pd)
 		{
-			PasswordDialog pd = new PasswordDialog ();
-
-			if (pd.UnixPassword.Equals ("") || 
-			    pd.UserResponse == ResponseType.Cancel)
-				return;
-
 			ArrayList mods = new ArrayList ();
-			LdapEntry le = GetSelectedEntry ();
 			
 			LdapAttribute la; 
 			LdapModification lm;
@@ -583,7 +562,7 @@ namespace lat
 
 			mods.Add (lm);
 
-			if (Util.CheckSamba (le))
+			if (Util.CheckSamba (entry))
 			{
 				la = new LdapAttribute ("sambaLMPassword", pd.LMPassword);
 				lm = new LdapModification (LdapModification.REPLACE, la);
@@ -596,7 +575,25 @@ namespace lat
 				mods.Add (lm);
 			}
 
-			Util.ModifyEntry (server, parent, le.DN, mods, true);
+			Util.ModifyEntry (server, parent, entry.DN, mods, true);
+		}
+
+		public void OnPwdActivate (object o, EventArgs args)
+		{
+			PasswordDialog pd = new PasswordDialog ();
+
+			if (pd.UnixPassword.Equals ("") || 
+			    pd.UserResponse == ResponseType.Cancel)
+				return;
+
+			TreeModel model;
+			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
+
+			foreach (TreePath path in tp)
+			{
+				LdapEntry le = LookupEntry (path);
+				ChangePassword (le, pd);
+			}
 		}
 
 		public void OnRefreshActivate (object o, EventArgs args)

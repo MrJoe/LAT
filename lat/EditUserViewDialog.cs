@@ -199,15 +199,13 @@ namespace lat
 
 			editUserDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				editUserDialog.Run ();				
 			}
-			else
-			{
-				editUserDialog.Destroy ();
-			}
+
+			editUserDialog.Destroy ();
 		}
 	
 		private void OnSambaChanged (object o, EventArgs args)

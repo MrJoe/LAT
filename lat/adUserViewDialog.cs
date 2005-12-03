@@ -92,15 +92,13 @@ namespace lat
 
 			adUserDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				adUserDialog.Run ();				
 			}
-			else
-			{
-				adUserDialog.Destroy ();
-			}
+
+			adUserDialog.Destroy ();
 		}
 
 		public adUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)

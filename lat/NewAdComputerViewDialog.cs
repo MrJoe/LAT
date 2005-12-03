@@ -45,15 +45,13 @@ namespace lat
 
 			newAdComputerDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				newAdComputerDialog.Run ();				
 			}
-			else
-			{
-				newAdComputerDialog.Destroy ();
-			}
+
+			newAdComputerDialog.Destroy ();
 		}
 
 		private void Init ()

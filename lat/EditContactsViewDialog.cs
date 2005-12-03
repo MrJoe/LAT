@@ -150,15 +150,13 @@ namespace lat
 
 			editContactDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				editContactDialog.Run ();
 			}
-			else
-			{
-				editContactDialog.Destroy ();
-			}
+
+			editContactDialog.Destroy ();
 		}
 
 		private void Init ()

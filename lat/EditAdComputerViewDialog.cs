@@ -96,15 +96,13 @@ namespace lat
 
 			editAdComputerDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				editAdComputerDialog.Run ();				
 			}
-			else
-			{
-				editAdComputerDialog.Destroy ();
-			}
+
+			editAdComputerDialog.Destroy ();
 		}
 
 		private void updateManagedBy (string dn)

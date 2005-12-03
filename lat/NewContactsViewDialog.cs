@@ -50,18 +50,14 @@ namespace lat
 
 			newContactDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				newContactDialog.Run ();				
 			}
-			else
-			{
-				newContactDialog.Destroy ();
-			}
 
+			newContactDialog.Destroy ();
 		}
-
 
 		private void Init ()
 		{

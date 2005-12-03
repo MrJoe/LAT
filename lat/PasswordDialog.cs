@@ -31,7 +31,7 @@ namespace lat
 	{
 		[Glade.Widget] Gtk.Dialog passwordDialog;
 		[Glade.Widget] Gtk.Entry passwordEntry;
-		[Glade.Widget] Gtk.Entry outputEntry;
+		[Glade.Widget] Gtk.Entry reenterEntry;
 		[Glade.Widget] Gtk.RadioButton cryptRadioButton;
 		[Glade.Widget] Gtk.RadioButton md5RadioButton;
 		[Glade.Widget] Gtk.RadioButton shaRadioButton;
@@ -42,6 +42,8 @@ namespace lat
 		private string _unix;
 		private string _lm;
 		private string _nt;
+
+		private bool passwordsDontMatch = false;
 		private ResponseType response;
 
 		public PasswordDialog ()
@@ -49,13 +51,18 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "passwordDialog", null);
 			ui.Autoconnect (this);
 
-			outputEntry.Sensitive = false;
-
 			// Use SSHA by default
 			shaRadioButton.Active = true;
 			useSaltCheckButton.Active = true;
 
 			response = (ResponseType) passwordDialog.Run ();
+
+			while (passwordsDontMatch)
+			{
+				passwordsDontMatch = false;
+				response = (ResponseType) passwordDialog.Run ();
+			}
+
 			passwordDialog.Destroy ();
 		}	
 
@@ -178,22 +185,23 @@ namespace lat
 			return retVal;
 		}
 
-		private void updateOutput ()
-		{
-			_unix = passwordEntry.Text;
-	
+		private void GeneratePassword ()
+		{	 
 			if (md5RadioButton.Active)
 			{
-				outputEntry.Text = doEncryption (_unix, "MD5", useSaltCheckButton.Active);
+				_unix = doEncryption (passwordEntry.Text, "MD5",
+					useSaltCheckButton.Active);
 			}
 			else if (shaRadioButton.Active)
 			{
-				outputEntry.Text = doEncryption (_unix, "SHA", useSaltCheckButton.Active);
+				_unix = doEncryption (passwordEntry.Text,
+					"SHA", useSaltCheckButton.Active);
 			}
 			else if (cryptRadioButton.Active)
 			{
-				outputEntry.Text = generateUnixCrypt (_unix);
+				_unix = generateUnixCrypt (passwordEntry.Text);
 			}
+
 
 			SMBPassword smbpass = new SMBPassword (passwordEntry.Text);
 			_lm = smbpass.LM;
@@ -211,16 +219,23 @@ namespace lat
 				useSaltCheckButton.Sensitive = true;
 			}
 
-			updateOutput ();
-		}
-
-		public void OnPasswordChanged (object o, EventArgs args)
-		{
-			updateOutput ();
+			GeneratePassword ();
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
+			if (passwordEntry.Text != reenterEntry.Text)
+			{
+				string msg = Mono.Unix.Catalog.GetString ("Password don't match");
+				Util.MessageBox (passwordDialog, msg, MessageType.Error);
+				
+				passwordsDontMatch = true;
+
+				return;
+			}
+
+			GeneratePassword ();
+
 			passwordDialog.HideAll ();
 		}
 
@@ -236,7 +251,7 @@ namespace lat
 
 		public string UnixPassword 
 		{
-			get { return outputEntry.Text; }
+			get { return _unix; }
 		}
 
 		public string LMPassword

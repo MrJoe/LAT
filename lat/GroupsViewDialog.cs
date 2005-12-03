@@ -66,15 +66,13 @@ namespace lat
 
 			groupDialog.Run ();
 
-			if (missingValues)
+			while (missingValues)
 			{
 				missingValues = false;
 				groupDialog.Run ();				
 			}
-			else
-			{
-				groupDialog.Destroy ();
-			}
+
+			groupDialog.Destroy ();
 		}
 
 		public GroupsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
