@@ -66,8 +66,8 @@ namespace lat
 
 				case "adGroups":
 				{
-//					if (le == null)
-//						new adGroupViewDialog (server);
+					if (le == null)
+						new NewAdGroupViewDialog (server);
 //					else
 //						new adGroupViewDialog (server, le);
 					break;

@@ -1,4 +1,4 @@
-	* New users view for Active Directory now working
+	* Added support for creating users and groups in Active Directory
 	* Schema browser now works with Active Directory
 	* Refactored view code; All views can now be customized
 	* Added 'Change password' item to Users view popup menu
