@@ -1,4 +1,4 @@
 - Find a way to change a AD users password (need SSL support)
-- Add/edit/view AD group membership
+- edit/view AD group info
 - Support binary data in attributes
 - Obtain a program icon for LAT
