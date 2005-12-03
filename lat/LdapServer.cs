@@ -28,24 +28,42 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace lat {
 
+	public enum LdapServerType { ActiveDirectory, OpenLDAP, Generic, Unknown };
+
+	public struct ActiveDirectoryInfo
+	{
+		public string DnsHostName;
+		public string DomainControllerFunctionality;
+		public string ForestFunctionality;
+		public string DomainFunctionality;
+		public bool IsGlobalCatalogReady;
+		public bool IsSynchronized;
+	}
+
 	/// <summary>The main class that encapsulates the connection
 	/// to a directory server through the Ldap protocol.
 	/// </summary>
 	public class LdapServer
 	{
-		private string 		host;
-		private int		port;
-		private string		rootDN;
-		private bool		findRootDN;
-		private string		sType;
-		private LdapConnection	conn;
+		private string 			host;
+		private int			port;
+		private string			rootDN;
+		private string			schemaDN;
+		private string			defaultSearchFilter;
+		private string			sType;
+		private ActiveDirectoryInfo	adInfo;
+		private LdapServerType		ldapServerType;
+		private LdapConnection		conn;
 
 		public LdapServer (string hostName, int hostPort, string serverType)
 		{
 			host = hostName;
 			port = hostPort;
 			sType = serverType;
-			findRootDN = true;
+			rootDN = null;
+			adInfo = new ActiveDirectoryInfo ();
+
+			SetServerType ();
 		}
 
 		public LdapServer (string hostName, int hostPort, string dirRoot, 
@@ -55,6 +73,9 @@ namespace lat {
 			port = hostPort;
 			rootDN = dirRoot;
 			sType = serverType;
+			adInfo = new ActiveDirectoryInfo ();
+
+			SetServerType ();
 		}
 
 		#region methods
@@ -111,8 +132,11 @@ namespace lat {
 
 			conn.Connect (host, port);
 
-			if (findRootDN)
-				rootDN = GetRootDN ();
+			if (rootDN == null)
+				QueryRootDSE ();
+			
+			if (schemaDN == null)
+				schemaDN = "cn=subschema";
 
 			Logger.Log.Debug ("Connected to '{0}' on port {1}", host, port);
 			Logger.Log.Debug ("Base: {0}", rootDN);
@@ -257,9 +281,9 @@ namespace lat {
 
 			string[] attrs = new string[] { "attributetypes" };
 
-			return Search ("cn=subschema", 
+			return Search (schemaDN, 
 				LdapConnection.SCOPE_BASE,
-	 			"objectclass=*", attrs);
+	 			defaultSearchFilter, attrs);
 		}
 
 		/// <summary>Gets the schema for a given attribute type
@@ -273,9 +297,9 @@ namespace lat {
 
 			string[] attrs = new string[] { "attributetypes" };
 
-			LdapEntry[] entries = Search ("cn=subschema", 
+			LdapEntry[] entries = Search (schemaDN, 
 				LdapConnection.SCOPE_BASE,
-	 			"objectclass=*", attrs);
+	 			defaultSearchFilter, attrs);
 
 			foreach (LdapEntry entry in entries)
 			{			
@@ -476,8 +500,8 @@ namespace lat {
 		{
 			string[] attrs = new string[] { "objectclasses" };
 
-			return Search ("cn=subschema", LdapConnection.SCOPE_BASE, 
-				       "objectclass=*", attrs);
+			return Search (schemaDN, LdapConnection.SCOPE_BASE, 
+				       defaultSearchFilter, attrs);
 		}
 
 		/// <summary>Gets the schema of a given object class.
@@ -491,9 +515,9 @@ namespace lat {
 
 			string[] attrs = new string[] { "objectclasses" };
 
-			LdapEntry[] entries = Search ("cn=subschema", 
+			LdapEntry[] entries = Search (schemaDN, 
 				LdapConnection.SCOPE_BASE,
-	 			"objectclass=*", attrs);
+	 			defaultSearchFilter, attrs);
 
 			foreach (LdapEntry entry in entries)
 			{			
@@ -682,22 +706,114 @@ namespace lat {
 
 		#region private_methods
 
-		private string GetRootDN ()
+		private void SetActiveDirectoryInfo (LdapEntry dse)
 		{
-			string[] attrs = new string[] { "namingContexts" };
+			LdapAttribute a = dse.getAttribute ("dnsHostName");
+			adInfo.DnsHostName = a.StringValue;
 
-			LdapEntry[] dse = Search ("", LdapConnection.SCOPE_BASE, 
-				       "objectclass=*", attrs);
+			LdapAttribute b = dse.getAttribute ("domainControllerFunctionality");
+
+			if (b.StringValue == "0")
+				adInfo.DomainControllerFunctionality =
+					"Windows 2000 Mode";
+			else if (b.StringValue == "2")
+				adInfo.DomainControllerFunctionality = 
+					"Windows Server 2003 Mode";
+			else
+				adInfo.DomainControllerFunctionality = "";
+
+			LdapAttribute c = dse.getAttribute ("forestFunctionality");
+
+			if (c.StringValue == "0")
+				adInfo.ForestFunctionality = "Windows 2000 Forest Mode";
+			else if (c.StringValue == "1")
+				adInfo.ForestFunctionality = 
+					"Windows Server 2003 Interim Forest Mode";
+			else if (c.StringValue == "2")
+				adInfo.ForestFunctionality = "Windows Server 2003 Forest Mode";
+			else
+				adInfo.ForestFunctionality = "";
+
+			LdapAttribute d = dse.getAttribute ("domainFunctionality");
+
+			if (d.StringValue == "0")
+				adInfo.DomainFunctionality = "Windows 2000 Domain Mode";
+			else if (d.StringValue == "1")
+				adInfo.DomainFunctionality = 
+					"Windows Server 2003 Interim Domain Mode";
+			else if (d.StringValue == "2")
+				adInfo.DomainFunctionality = "Windows Server 2003 Domain Mode";
+			else
+				adInfo.DomainFunctionality = "";
+
+			LdapAttribute e = dse.getAttribute ("isGlobalCatalogReady");
+			adInfo.IsGlobalCatalogReady = bool.Parse (e.StringValue);
+
+			LdapAttribute f = dse.getAttribute ("isSynchronized");
+			adInfo.IsSynchronized = bool.Parse (f.StringValue);
+		}
+
+		private void QueryRootDSE ()
+		{
+			LdapEntry[] dse;
+
+			if (ldapServerType == LdapServerType.ActiveDirectory)
+			{
+				dse = Search ("", LdapConnection.SCOPE_BASE, 
+					       "", null);
+			}
+			else
+			{
+				string[] attrs = new string[] { 
+					"namingContexts",
+					"subschemaSubentry" 
+				};
+
+				dse = Search ("", LdapConnection.SCOPE_BASE, 
+					       "objectclass=*", attrs);
+			}
 
 			if (dse.Length > 0)
 			{
 				LdapAttribute a = dse[0].getAttribute ("namingContexts");
-				return a.StringValue;
+				rootDN = a.StringValue;
+
+				LdapAttribute b = dse[0].getAttribute ("subschemaSubentry");
+				schemaDN = b.StringValue;
+
+				if (ldapServerType == LdapServerType.ActiveDirectory)
+				{
+					SetActiveDirectoryInfo (dse[0]);
+				}
 			}
 
 			Logger.Log.Debug ("Unable to find directory namingContexts");
+		}
 
-			return null;
+		private void SetServerType ()
+		{
+			switch (sType.ToLower())
+			{
+				case "microsoft active directory":
+					ldapServerType = LdapServerType.ActiveDirectory;
+					defaultSearchFilter = "";
+					break;
+
+				case "openldap":
+					ldapServerType = LdapServerType.OpenLDAP;
+					defaultSearchFilter = "(objectClass=*)";
+					break;
+
+				case "generic":
+					ldapServerType = LdapServerType.Generic;
+					defaultSearchFilter = "(objectClass=*)";
+					break;
+
+				default:
+					ldapServerType = LdapServerType.Unknown;
+					defaultSearchFilter = "";
+					break;
+			}
 		}
 
 		private static bool SSLHandler (Syscert.X509Certificate certificate,
@@ -786,15 +902,20 @@ namespace lat {
 			get { return conn.ProtocolVersion; }
 		}
 
-		public string ServerType
+		public LdapServerType ServerType
 		{
-			get { return sType; }
+			get { return ldapServerType; }
 		}
 
 		public bool UseSSL
 		{
 			get { return conn.SecureSocketLayer; }
 			set { conn.SecureSocketLayer = value; }
+		}
+
+		public ActiveDirectoryInfo ADInfo
+		{
+			get { return adInfo; }
 		}
 
 		#endregion

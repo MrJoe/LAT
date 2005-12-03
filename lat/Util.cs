@@ -48,14 +48,14 @@ namespace lat
 		{
 			string prefix = null;
 	
-			switch (server.ServerType.ToLower())
+			switch (server.ServerType)
 			{
-				case "microsoft active directory":
+				case LdapServerType.ActiveDirectory:
 					prefix = "ad";
 					break;
 
-				case "generic ldap server":
-				case "openldap":
+				case LdapServerType.Generic:
+				case LdapServerType.OpenLDAP:
 					prefix = "openldap";
 					break;
 			}

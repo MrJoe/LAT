@@ -316,6 +316,8 @@ namespace lat
 		[ConnectBefore]
 		public void OnEntryRightClick (object o, ButtonPressEventArgs args)
 		{
+			// FIXME: Find a way to not deselect multiple selection
+
 			if (args.Event.Button == 3)
 			{
 				DoPopUp ();

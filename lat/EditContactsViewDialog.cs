@@ -166,14 +166,14 @@ namespace lat
 
 			viewDialog = editContactDialog;
 
-			switch (server.ServerType.ToLower())
+			switch (server.ServerType)
 			{
-				case "microsoft active directory":
+				case LdapServerType.ActiveDirectory:
 					_isPosix = false;
 					break;
 
-				case "openldap":
-				case "generic ldap server":
+				case LdapServerType.OpenLDAP:
+				case LdapServerType.Generic:
 				default:
 					_isPosix = true;
 					tnNotesTextView.Sensitive = false;

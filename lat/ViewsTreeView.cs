@@ -76,7 +76,7 @@ namespace lat
 			this.AppendColumn ("viewsRoot", new CellRendererText (), "text", 
 					(int)TreeCols.Name);
 
-			AddViews (server.ServerType);
+			AddViews ();
 
 			Pixbuf customIcon = Pixbuf.LoadFromResource ("x-directory-normal.png");
 			Pixbuf genIcon = Pixbuf.LoadFromResource ("text-x-generic.png");
@@ -101,7 +101,7 @@ namespace lat
 			this.ShowAll ();
 		}
 
-		private void AddViews (string serverType)
+		private void AddViews ()
 		{
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			Pixbuf compIcon = Pixbuf.LoadFromResource ("x-directory-remote-workgroup.png");

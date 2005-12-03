@@ -454,8 +454,32 @@ namespace lat
 				Mono.Unix.Catalog.GetString ("Protocol Version"),
 					 server.Protocol.ToString());
 
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Server Type"), server.ServerType);
+			if (server.ServerType == LdapServerType.ActiveDirectory)
+			{
+				valuesStore.AppendValues (
+					Mono.Unix.Catalog.GetString ("DNS Host Name"),
+					server.ADInfo.DnsHostName);
+
+				valuesStore.AppendValues (
+					Mono.Unix.Catalog.GetString ("Domain Controller Functionality"),
+					server.ADInfo.DomainControllerFunctionality);
+
+				valuesStore.AppendValues (
+					Mono.Unix.Catalog.GetString ("Forest Functionality"),
+					server.ADInfo.ForestFunctionality);
+
+				valuesStore.AppendValues (
+					Mono.Unix.Catalog.GetString ("Domain Functionality"),
+					server.ADInfo.DomainFunctionality);
+
+				valuesStore.AppendValues (
+					Mono.Unix.Catalog.GetString ("Global Catalog Ready"),
+					server.ADInfo.IsGlobalCatalogReady.ToString());
+
+				valuesStore.AppendValues (
+					Mono.Unix.Catalog.GetString ("Synchronized"),
+					server.ADInfo.IsSynchronized.ToString());
+			}
 		}
 
 		private void showEntryAttributes (LdapEntry entry)
