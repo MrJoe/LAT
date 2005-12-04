@@ -57,8 +57,14 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
 			ui.Autoconnect (this);
 
-			// FIXME: manually loading tango icon
-			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			// set window icon
+			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource (
+				"x-directory-remote-server.png");
+			connectionDialog.Icon = dirIcon;
+
+
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource (
+				"x-directory-remote-server-48x48.png");
 			image5.Pixbuf = pb;
 
 			connectionDialog.Resizable = false;

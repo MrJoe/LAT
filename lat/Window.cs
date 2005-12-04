@@ -114,8 +114,18 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "mainWindow", null);
 			ui.Autoconnect (this);
 
-			mainWindow.Resize (640, 480);
-			hpaned1.Position = 250;
+			// set window icon
+			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			mainWindow.Icon = dirIcon;
+
+			// Restore window positions
+			LoadPreference (Preferences.MAIN_WINDOW_WIDTH);
+			LoadPreference (Preferences.MAIN_WINDOW_X);
+			LoadPreference (Preferences.MAIN_WINDOW_MAXIMIZED);
+			LoadPreference (Preferences.MAIN_WINDOW_HPANED);
+
+			// Watch for any changes
+			Preferences.SettingChanged += OnPreferencesChanged;
 
 			// Setup views
 			_viewsTreeView = new ViewsTreeView (server, mainWindow);
@@ -178,6 +188,11 @@ namespace lat
 			toggleInfoNotebook (false);
 
 			templateToolButton.Hide ();
+		}
+
+		public void OnPreferencesChanged (object sender, GConf.NotifyEventArgs args)
+		{
+			LoadPreference (args.Key);
 		}
 		
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
@@ -324,9 +339,31 @@ namespace lat
 			showEntryAttributes (entry);
 		}
 
+		private void Close ()
+		{
+			int x, y, width, height;
+			mainWindow.GetPosition (out x, out y);
+			mainWindow.GetSize (out width, out height);
+
+			bool maximized = ((mainWindow.GdkWindow.State & Gdk.WindowState.Maximized) > 0);
+			Preferences.Set (Preferences.MAIN_WINDOW_MAXIMIZED, maximized);
+
+			if (!maximized) {
+				Preferences.Set (Preferences.MAIN_WINDOW_X, x);
+				Preferences.Set (Preferences.MAIN_WINDOW_Y, y);
+				Preferences.Set (Preferences.MAIN_WINDOW_WIDTH, width);
+				Preferences.Set (Preferences.MAIN_WINDOW_HEIGHT, height);
+			}
+
+			Preferences.Set (Preferences.MAIN_WINDOW_HPANED, hpaned1.Position);
+
+			Application.Quit ();
+		}
+
 		public void OnAppDelete (object o, DeleteEventArgs args) 
 		{	
-			Application.Quit ();
+			Close ();
+			args.RetVal = true;
 		}
 
 		private void OnAttributeEdit (object o, EditedArgs args)
@@ -770,6 +807,49 @@ namespace lat
 			new TemplatesDialog (server);
 		}
 
+		private void LoadPreference (String key)
+		{
+			object val = Preferences.Get (key);
+
+			if (val == null)
+			{
+				if (key == Preferences.MAIN_WINDOW_HPANED)
+					hpaned1.Position = 250;
+
+				return;
+			}
+			
+			Logger.Log.Debug ("Setting {0} to {1}", key, val);
+
+			switch (key) {
+			case Preferences.MAIN_WINDOW_MAXIMIZED:
+				if ((bool) val)
+					mainWindow.Maximize ();
+				else
+					mainWindow.Unmaximize ();
+				break;
+
+			case Preferences.MAIN_WINDOW_X:
+			case Preferences.MAIN_WINDOW_Y:
+				mainWindow.Move((int) Preferences.Get(Preferences.MAIN_WINDOW_X),
+						(int) Preferences.Get(Preferences.MAIN_WINDOW_Y));
+				break;
+			
+			case Preferences.MAIN_WINDOW_WIDTH:
+			case Preferences.MAIN_WINDOW_HEIGHT:
+				mainWindow.SetDefaultSize((int) Preferences.Get(Preferences.MAIN_WINDOW_WIDTH),
+						(int) Preferences.Get(Preferences.MAIN_WINDOW_HEIGHT));
+
+				mainWindow.ReshowWithInitialSize();
+				break;
+
+			case Preferences.MAIN_WINDOW_HPANED:
+				hpaned1.Position = (int) Preferences.Get(
+					Preferences.MAIN_WINDOW_HPANED);
+				break;
+			}
+		}
+
 		// Menu
 
 		public void OnNewActivate (object o, EventArgs args)
@@ -1051,7 +1131,7 @@ namespace lat
 
 		public void OnQuitActivate (object o, EventArgs args) 
 		{
-			Application.Quit ();
+			Close ();
 		}
 
 		public void OnHelpContentsActivate (object o, EventArgs args)

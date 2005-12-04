@@ -33,6 +33,7 @@ CSFILES = \
 	NewEntryDialog.cs \
 	NewUserViewDialog.cs \
 	PasswordDialog.cs \
+	Preferences.cs \
 	ProfileDialog.cs \
 	ProfileManager.cs \
 	RenameEntryDialog.cs \

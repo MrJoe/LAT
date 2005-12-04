@@ -58,6 +58,7 @@ make %{?_smp_mflags}
 %{_datadir}/omf/*
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/application-registry/%{name}.applications
+%{_datadir}/pixmaps/*
 
 %changelog
 * Mon Sep 19 2005 Loren Bandiera <lorenb@mmgsecurity.com>

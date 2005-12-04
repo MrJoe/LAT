@@ -1,4 +1,5 @@
+- Re-enable SSL support 
+	* Depends on http://bugzilla.ximian.com/show_bug.cgi?id=76607
 - Find a way to change a AD users password (need SSL support)
 - edit/view AD group info
 - Support binary data in attributes
-- Obtain a program icon for LAT

@@ -6,6 +6,7 @@
 	* Added 'Change password' item to Users view popup menu
 	* Redesigned user edit dialog
 	* Verify password in password dialog
+	* Remember user window positions
 
 0.7.6
 
