@@ -50,12 +50,14 @@ namespace lat
 
 		public static object GetDefault (string key)
 		{
-			switch (key) {
-			case MAIN_WINDOW_X:
-			case MAIN_WINDOW_Y:
-			case MAIN_WINDOW_HEIGHT:
-			case MAIN_WINDOW_WIDTH:
-				return null;			
+			switch (key) 
+			{
+				case MAIN_WINDOW_X:
+				case MAIN_WINDOW_Y:
+				case MAIN_WINDOW_HEIGHT:
+				case MAIN_WINDOW_WIDTH:
+				case MAIN_WINDOW_HPANED:
+					return null;			
 			}
 
 			return null;

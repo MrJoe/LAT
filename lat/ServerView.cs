@@ -314,7 +314,7 @@ namespace lat
 			popup.Append (mailItem);
 
 			Gdk.Pixbuf wwwImage = Gdk.Pixbuf.LoadFromResource ("go-home.png");
-			ImageMenuItem wwwItem = new ImageMenuItem ("Open Home Page");
+			ImageMenuItem wwwItem = new ImageMenuItem ("Open home page");
 			wwwItem.Image = new Gtk.Image (wwwImage);
 			wwwItem.Activated += new EventHandler (OnWWWActivate);
 			wwwItem.Show ();
