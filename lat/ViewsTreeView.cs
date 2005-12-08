@@ -170,6 +170,9 @@ namespace lat
 			CustomViewDialog cvd = new CustomViewDialog (server);
 			cvd.Run ();
 
+			if (cvd.UserResponse == ResponseType.Cancel)
+				return;
+
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
 
 			TreeIter newIter;

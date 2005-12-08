@@ -46,6 +46,8 @@ namespace lat
 		private string _oldName;
 		private string _name = null;
 
+		private ResponseType response;
+
 		public CustomViewDialog (LdapServer ldapServer)
 		{
 			server = ldapServer;
@@ -89,7 +91,7 @@ namespace lat
 
 		public void Run ()
 		{
-			customViewDialog.Run ();
+			response = (ResponseType) customViewDialog.Run ();
 			customViewDialog.Destroy ();
 		}
 
@@ -282,6 +284,11 @@ namespace lat
 		public string Name
 		{
 			get { return _name; }
+		}
+
+		public ResponseType UserResponse
+		{
+			get { return response; }
 		}
 	}
 }
