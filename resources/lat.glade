@@ -1892,7 +1892,7 @@ you wish to connect to.</property>
 		      <signal name="activate" handler="OnDeleteActivate" last_modification_time="Tue, 05 Jul 2005 10:28:41 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image668">
+			<widget class="GtkImage" id="image704">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-delete</property>
 			  <property name="icon_size">1</property>
@@ -1920,7 +1920,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image669">
+			<widget class="GtkImage" id="image705">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -1942,7 +1942,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image670">
+			<widget class="GtkImage" id="image706">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -1970,7 +1970,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image671">
+			<widget class="GtkImage" id="image707">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -1992,7 +1992,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image672">
+			<widget class="GtkImage" id="image708">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2137,9 +2137,9 @@ you wish to connect to.</property>
 		  </child>
 
 		  <child>
-		    <widget class="GtkRadioMenuItem" id="hostView">
+		    <widget class="GtkRadioMenuItem" id="computersView">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Hosts</property>
+		      <property name="label" translatable="yes">Computers</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <property name="group">userView</property>
@@ -2157,18 +2157,6 @@ you wish to connect to.</property>
 		      <property name="group">userView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:22 GMT"/>
 		      <accelerator key="4" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkRadioMenuItem" id="customView">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Custom Views</property>
-		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <property name="group">userView</property>
-		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sat, 26 Mar 2005 14:32:03 GMT"/>
-		      <accelerator key="5" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 		    </widget>
 		  </child>
 
@@ -2245,7 +2233,7 @@ you wish to connect to.</property>
 		      <signal name="activate" handler="OnRefreshActivate" last_modification_time="Tue, 05 Jul 2005 10:43:17 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image673">
+			<widget class="GtkImage" id="image709">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -2280,7 +2268,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image674">
+			<widget class="GtkImage" id="image710">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>

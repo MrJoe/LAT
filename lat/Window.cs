@@ -49,9 +49,8 @@ namespace lat
 		[Glade.Widget] Gtk.CheckMenuItem showAllAttributes;
 		[Glade.Widget] Gtk.RadioMenuItem userView;
 		[Glade.Widget] Gtk.RadioMenuItem groupView;
-		[Glade.Widget] Gtk.RadioMenuItem hostView;
+		[Glade.Widget] Gtk.RadioMenuItem computersView;
 		[Glade.Widget] Gtk.RadioMenuItem contactView;
-		[Glade.Widget] Gtk.RadioMenuItem customView;
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
 		[Glade.Widget] Gtk.RadioMenuItem schemaView;
@@ -740,9 +739,8 @@ namespace lat
 			if (valuesStore != null)
 			{
 				valuesStore.Clear ();
-				valuesStore = null;			
+				valuesStore = null;
 			}
-
 			foreach (TreeViewColumn col in valuesListview.Columns)
 			{
 				valuesListview.RemoveColumn (col);
@@ -1081,35 +1079,31 @@ namespace lat
 		{
 			clearValues ();
 
+			string viewPrefix = Util.GetServerPrefix (server);
+
 			if (userView.Active)
 			{
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
-				changeView ("Users");
+				changeView (viewPrefix + "Users");
 			}
 			else if (groupView.Active)
 			{
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
-				changeView ("Groups");
+				changeView (viewPrefix + "Groups");
 			}
-			else if (hostView.Active)
+			else if (computersView.Active)
 			{
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
-				changeView ("Hosts");
+				changeView (viewPrefix + "Computers");
 			}
 			else if (contactView.Active)
 			{
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
-				changeView ("Contacts");
-			}
-			else if (customView.Active)
-			{
-				viewNotebook.Page = 0;
-				toggleInfoNotebook (false);
-				changeView ("Custom Views");
+				changeView (viewPrefix + "Contacts");
 			}
 			else if (browserView.Active)
 			{
