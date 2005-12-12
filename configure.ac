@@ -19,7 +19,7 @@ AC_PATH_PROG(MONO, mono)
 AC_PATH_PROG(MCS, mcs)
 
 dnl Version dependencies
-MONO_REQUIRED=1.1
+MONO_REQUIRED=1.1.10
 GTKSHARP_REQUIRED=2.4
 
 dnl pkgconfig checks
