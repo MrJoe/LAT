@@ -60,6 +60,7 @@ namespace lat
 			try
 			{
 				server.UseSSL = useSSLCheckButton.Active;
+				server.Port = 636;
 				server.Bind (userEntry.Text, passEntry.Text);
 			}
 			catch (Exception e)

@@ -162,8 +162,7 @@ namespace lat
 			searchBaseButton.Label = server.DirectoryRoot;
 			toggleButtons (false);
 
-			// status bar
-			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
+			// status bar			
 			updateStatusBar ();
 
 			// handlers		
@@ -234,6 +233,8 @@ namespace lat
 
 			appBar.Pop ();
 			appBar.Push (msg);
+
+			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
 		}
 
 		private void toggleInfoNotebook (bool show)

@@ -903,6 +903,7 @@ namespace lat {
 		public int Port
 		{
 			get { return port; }
+			set { port = value; }
 		}
 
 		public int Protocol

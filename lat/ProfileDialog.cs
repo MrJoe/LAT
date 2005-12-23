@@ -128,10 +128,12 @@ namespace lat
 			if (encryptionRadioButton.Active)
 			{
 				_useSSL = true;
+				portEntry.Text = "636";
 			}
 			else
 			{
 				_useSSL = false;
+				portEntry.Text = "389";
 			}
 		}
 		
