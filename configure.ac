@@ -1,4 +1,4 @@
-AC_INIT(lat, 0.8, lorenb@mmgsecurity.com)
+AC_INIT(lat, 0.8.1, lorenb@mmgsecurity.com)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
@@ -19,7 +19,7 @@ AC_PATH_PROG(MONO, mono)
 AC_PATH_PROG(MCS, mcs)
 
 dnl Version dependencies
-MONO_REQUIRED=1.1.10
+MONO_REQUIRED=1.1.12.1
 GTKSHARP_REQUIRED=2.4
 
 dnl pkgconfig checks

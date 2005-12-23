@@ -47,9 +47,6 @@ namespace lat
 
 			msgLabel.Text = msg;
 
-			// FIXME: re-enable SSL support
-			useSSLCheckButton.Sensitive = false;
-
 			// FIXME: manually loading tango icon
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("locked-48x48.png");
 			image455.Pixbuf = pb;

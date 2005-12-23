@@ -687,7 +687,7 @@ namespace lat {
 			}
 			catch (Exception e)
 			{
-				Logger.Log.Debug ("LdapSearch.Search error: {0}", e.Message);
+				Logger.Log.Debug ("LdapServer.Search error: {0}", e.Message);
 				return null;
 			}
 		}
@@ -821,14 +821,14 @@ namespace lat {
 		private static bool SSLHandler (Syscert.X509Certificate certificate,
 						int[] certificateErrors)
 		{
-			X509Store store = null;
-			X509Stores stores = X509StoreManager.CurrentUser;
-			store = stores.TrustedRoot;
+//			X509Store store = null;
+//			X509Stores stores = X509StoreManager.CurrentUser;
+//			store = stores.TrustedRoot;
 			bool retVal = true;
 
 			//Import the details of the certificate from the server.
 			X509Certificate x509 = null;
-			X509CertificateCollection coll = new X509CertificateCollection ();
+//			X509CertificateCollection coll = new X509CertificateCollection ();
 			byte[] data = certificate.GetRawCertData();
 			if (data != null)			
 				x509 = new X509Certificate (data);
@@ -843,6 +843,12 @@ namespace lat {
 			msg += "\nValid From:    " + x509.ValidFrom;
 			msg += "\nValid Until:   " + x509.ValidUntil;
 			msg += "\nUnique Hash:   " + CryptoConvert.ToHex (x509.Hash);
+
+			Logger.Log.Debug ("Certificate info:\n{0}", msg);
+/*
+			FIXME: Import certificates into user database. This crashes because it can't 
+			FIXME: load the cert dialog. I think it's the context the code is being executed 
+			FIXME: in. Not sure how to resolve. For now just connect to server.
 
 			CertificateDialog cd = new CertificateDialog (msg);
 
@@ -861,7 +867,7 @@ namespace lat {
 			{
 				retVal = false;
 			}
-
+*/
 			return retVal;
 		}
 

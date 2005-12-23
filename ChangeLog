@@ -1,5 +1,8 @@
+0.8.1
 
-	* BUGFIX: [#22] Check for Mono 1.1.10 or greater
+	* Re-enabled SSL support (requires >= Mono 1.1.12.1)
+	* BUGFIX: [#22] Improve dependency checks
+	* BUGFIX: [#20] Custom view filter kills apps
 
 0.8
 
