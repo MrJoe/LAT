@@ -120,7 +120,7 @@ namespace lat {
 		/// <param name="userPass">Password</param> 
 		public void Bind (string userName, string userPass, bool startTLS)
 		{
-			if (usingTLS) {
+			if (startTLS) {
 				usingTLS = true;
 				conn.startTLS();
 			}

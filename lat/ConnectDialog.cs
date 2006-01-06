@@ -258,14 +258,14 @@ namespace lat
 
 		private void DoConnect (LdapServer server, string userName, string userPass)
 		{
-			try
-			{
+			try {
 				server.Connect (useSSL);
 				server.Bind (userName, userPass, useTLS);
-			}
-			catch (SocketException se)
-			{
+
+			} catch (SocketException se) {
+
 				Logger.Log.Debug ("Socket error: {0}", se.Message);
+
 			}
 
 			if (CheckConnection (server, userName))
