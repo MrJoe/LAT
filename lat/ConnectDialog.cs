@@ -35,7 +35,8 @@ namespace lat
 		[Glade.Widget] Gtk.Entry ldapBaseEntry;
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
-		[Glade.Widget] Gtk.RadioButton encryptionRadioButton;
+		[Glade.Widget] Gtk.RadioButton tlsRadioButton;
+		[Glade.Widget] Gtk.RadioButton sslRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
 		[Glade.Widget] Gtk.HBox stHBox;	
 		[Glade.Widget] Gtk.Notebook notebook1;
@@ -44,6 +45,7 @@ namespace lat
 		
 		private bool haveProfiles = false;
 		private bool useSSL = false;
+		private bool useTLS = false;
 
 		private ProfileManager profileManager;
 		private ListStore profileListStore;
@@ -205,14 +207,16 @@ namespace lat
 
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
-			if (encryptionRadioButton.Active)
-			{
+			if (tlsRadioButton.Active) {			
 				useSSL = true;
+				useTLS = true;
+			} else if (sslRadioButton.Active) {
+				useSSL =  true;
+				useTLS = false;
 				portEntry.Text = "636";
-			}
-			else
-			{
+			} else {
 				useSSL = false;
+				useTLS = false;
 				portEntry.Text = "389";
 			}
 		}
@@ -256,7 +260,7 @@ namespace lat
 			try
 			{
 				server.Connect (useSSL);
-				server.Bind (userName, userPass);
+				server.Bind (userName, userPass, useTLS);
 			}
 			catch (SocketException se)
 			{

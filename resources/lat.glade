@@ -548,14 +548,14 @@ you wish to connect to.</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkRadioButton" id="encryptionRadioButton">
+			    <widget class="GtkRadioButton" id="noEncryptionRadioButton">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">SSL/TLS</property>
+			      <property name="label" translatable="yes">None</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="inconsistent">False</property>
 			      <property name="draw_indicator">True</property>
 			      <signal name="toggled" handler="OnEncryptionToggled" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
@@ -568,17 +568,38 @@ you wish to connect to.</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkRadioButton" id="noEncryptionRadioButton">
+			    <widget class="GtkRadioButton" id="sslRadioButton">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">None</property>
+			      <property name="label" translatable="yes">SSL</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
 			      <property name="active">True</property>
 			      <property name="inconsistent">False</property>
 			      <property name="draw_indicator">True</property>
-			      <property name="group">encryptionRadioButton</property>
+			      <property name="group">noEncryptionRadioButton</property>
+			    </widget>
+			    <packing>
+			      <property name="padding">5</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioButton" id="tlsRadioButton">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label" translatable="yes">TLS</property>
+			      <property name="use_underline">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">True</property>
+			      <property name="active">True</property>
+			      <property name="inconsistent">False</property>
+			      <property name="draw_indicator">True</property>
+			      <property name="group">noEncryptionRadioButton</property>
+			      <signal name="toggled" handler="OnEncryptionToggled" last_modification_time="Fri, 06 Jan 2006 04:57:56 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">5</property>
@@ -1479,14 +1500,14 @@ you wish to connect to.</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkRadioButton" id="encryptionRadioButton">
+			<widget class="GtkRadioButton" id="noEncryptionRadioButton">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">SSL/TLS</property>
+			  <property name="label" translatable="yes">None</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
+			  <property name="active">True</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
 			</widget>
@@ -1498,21 +1519,42 @@ you wish to connect to.</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkRadioButton" id="noEncryptionRadioButton">
+			<widget class="GtkRadioButton" id="sslRadioButton">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">None</property>
+			  <property name="label" translatable="yes">SSL</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
 			  <property name="active">True</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
-			  <property name="group">encryptionRadioButton</property>
+			  <property name="group">noEncryptionRadioButton</property>
 			  <signal name="toggled" handler="OnEncryptionToggled" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">10</property>
+			  <property name="expand">False</property>
+			  <property name="fill">False</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkRadioButton" id="tlsRadioButton">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">TLS</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">True</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			  <property name="group">noEncryptionRadioButton</property>
+			  <signal name="toggled" handler="OnEncryptionToggled" last_modification_time="Fri, 06 Jan 2006 05:05:30 GMT"/>
+			</widget>
+			<packing>
+			  <property name="padding">5</property>
 			  <property name="expand">False</property>
 			  <property name="fill">False</property>
 			</packing>

@@ -36,12 +36,14 @@ namespace lat
 		[Glade.Widget] Gtk.Entry ldapBaseEntry;
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
-		[Glade.Widget] Gtk.RadioButton encryptionRadioButton;
+		[Glade.Widget] Gtk.RadioButton tlsRadioButton;
+		[Glade.Widget] Gtk.RadioButton sslRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
 		[Glade.Widget] Gtk.HBox stHBox;
 		[Glade.Widget] Gtk.Image image7;
 			
 		private bool _useSSL = false;
+		private bool _useTLS = false;
 		private bool _isEdit = false;
 		private ProfileManager _pm;
 	
@@ -72,9 +74,12 @@ namespace lat
 			userEntry.Text = cp.User;
 			passEntry.Text = cp.Pass;
 
-			if (cp.SSL)
+			if (cp.TLS) {
+				tlsRadioButton.Active = true;
+			}
+			else if (cp.SSL)
 			{
-				encryptionRadioButton.Active = true;
+				sslRadioButton.Active = true;
 			}
 				
 			comboSetActive (serverTypeComboBox, cp.ServerType.ToLower());
@@ -103,11 +108,11 @@ namespace lat
 		private static void comboSetActive (ComboBox cb, string name)
 		{		
 			if (name.Equals ("generic ldap server"))
-				cb.Active = 0;
-			else if (name.Equals ("openldap"))
-				cb.Active = 1;
-			else if (name.Equals ("microsoft active directory"))
 				cb.Active = 2;
+			else if (name.Equals ("openldap"))
+				cb.Active = 0;
+			else if (name.Equals ("microsoft active directory"))
+				cb.Active = 1;
 		}
 
 		private void createCombo ()
@@ -125,14 +130,16 @@ namespace lat
 
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
-			if (encryptionRadioButton.Active)
-			{
+			if (tlsRadioButton.Active) {
+				_useTLS = true;
 				_useSSL = true;
+			} else if (sslRadioButton.Active) {
+				_useSSL = true;
+				_useTLS = false;
 				portEntry.Text = "636";
-			}
-			else
-			{
+			} else {
 				_useSSL = false;
+				_useTLS = false;
 				portEntry.Text = "389";
 			}
 		}
@@ -154,6 +161,7 @@ namespace lat
 					userEntry.Text,
 					passEntry.Text,
 					_useSSL,
+					_useTLS,
 					st);
 					
 			if (_isEdit)

@@ -35,9 +35,10 @@ namespace lat
 		public string User;
 		public string Pass;
 		public bool SSL;
+		public bool TLS;
 		public string ServerType;
 
-		public ConnectionProfile (string name, string host, int port, string ldapRoot, string user, string pass, bool ssl, string serverType)
+		public ConnectionProfile (string name, string host, int port, string ldapRoot, string user, string pass, bool ssl, bool tls, string serverType)
 		{
 			Name = name;
 			Host = host;
@@ -46,6 +47,7 @@ namespace lat
 			User = user;
 			Pass = pass;
 			SSL = ssl;
+			TLS = tls;
 			ServerType = serverType;
 		}
 	}
@@ -134,6 +136,7 @@ namespace lat
 						r.GetAttribute ("user"),
 						"",
 						bool.Parse (r.GetAttribute ("ssl")),
+						bool.Parse (r.GetAttribute ("tls")),
 						r.GetAttribute ("server_type"));
 
 					GnomeKeyring.Result gkr;
@@ -187,6 +190,7 @@ namespace lat
 				writer.WriteAttributeString ("base", cp.LdapRoot);
 				writer.WriteAttributeString ("user", cp.User);
 				writer.WriteAttributeString ("ssl", cp.SSL.ToString());
+				writer.WriteAttributeString ("tls", cp.TLS.ToString());
 				writer.WriteAttributeString ("server_type", cp.ServerType);
 				
 	        		writer.WriteEndElement();

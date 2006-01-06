@@ -51,6 +51,7 @@ namespace lat {
 		private string			schemaDN;
 		private string			defaultSearchFilter;
 		private string			sType;
+		private bool			usingTLS;
 		private ActiveDirectoryInfo	adInfo;
 		private LdapServerType		ldapServerType;
 		private LdapConnection		conn;
@@ -61,6 +62,8 @@ namespace lat {
 			port = hostPort;
 			sType = serverType;
 			rootDN = null;
+			usingTLS = false;
+
 			adInfo = new ActiveDirectoryInfo ();
 
 			SetServerType ();
@@ -115,8 +118,13 @@ namespace lat {
 		/// </summary>
 		/// <param name="userName">Username</param>
 		/// <param name="userPass">Password</param> 
-		public void Bind (string userName, string userPass)
+		public void Bind (string userName, string userPass, bool startTLS)
 		{
+			if (usingTLS) {
+				usingTLS = true;
+				conn.startTLS();
+			}
+
 			conn.Bind (userName, userPass);
 		}
 
@@ -920,6 +928,11 @@ namespace lat {
 		{
 			get { return conn.SecureSocketLayer; }
 			set { conn.SecureSocketLayer = value; }
+		}
+
+		public bool UseTLS
+		{
+			get { return usingTLS; }
 		}
 
 		public ActiveDirectoryInfo ADInfo
