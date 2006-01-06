@@ -170,7 +170,7 @@ namespace lat
 			CustomViewDialog cvd = new CustomViewDialog (server);
 			cvd.Run ();
 
-			if (cvd.UserResponse == ResponseType.Cancel)
+			if (cvd.UserResponse == ResponseType.Cancel || cvd.Name == null)
 				return;
 
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
