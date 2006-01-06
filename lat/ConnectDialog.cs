@@ -210,6 +210,7 @@ namespace lat
 			if (tlsRadioButton.Active) {			
 				useSSL = false;
 				useTLS = true;
+				portEntry.Text = "389";
 			} else if (sslRadioButton.Active) {
 				useSSL =  true;
 				useTLS = false;
