@@ -126,6 +126,11 @@ namespace lat {
 			}
 
 			conn.Bind (userName, userPass);
+
+			Logger.Log.Debug ("Bound to directory as: {0}", userName);
+
+			if (rootDN == null)
+				QueryRootDSE ();
 		}
 
 		/// <summary>Connects to the directory server.
@@ -139,9 +144,6 @@ namespace lat {
 				CertificateValidationCallback(SSLHandler);
 
 			conn.Connect (host, port);
-
-			if (rootDN == null)
-				QueryRootDSE ();
 			
 			if (schemaDN == null)
 				schemaDN = "cn=subschema";
