@@ -155,11 +155,14 @@ namespace lat
 
 			popup.Append (deleteItem);
 
-			ImageMenuItem propItem = new ImageMenuItem (Stock.Properties, ag);
-			propItem.Activated += new EventHandler (OnPropertiesActivate);
-			propItem.Show ();
+			string viewName = GetSelectedViewName ();
 
-			popup.Append (propItem);
+			if (viewName.ToLower() != "custom views") {
+				ImageMenuItem propItem = new ImageMenuItem (Stock.Properties, ag);
+				propItem.Activated += new EventHandler (OnPropertiesActivate);
+				propItem.Show ();
+				popup.Append (propItem);
+			}
 
 			popup.Popup(null, null, null, 3,
 					Gtk.Global.CurrentEventTime);
