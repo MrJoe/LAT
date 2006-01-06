@@ -128,11 +128,17 @@ namespace lat
 					if (!(r.Name == "profile")) 
 						continue;
 
-					// FIXME: Remove this before 1.0
-					bool tmp = false;
-					try {
-						bool.Parse (r.GetAttribute ("tls"));
-					} catch {}
+					bool ssl = false;
+					bool tls = false;
+
+					string encryption = r.GetAttribute ("encryption");
+					if (encryption != null) {
+
+						if (encryption.ToLower() == "ssl")
+							ssl = true;
+						else if (encryption.ToLower() == "tls")
+							tls  = true;
+					}
 
 					ConnectionProfile cp = new ConnectionProfile (
 						r.GetAttribute ("name"),
@@ -141,8 +147,8 @@ namespace lat
 						r.GetAttribute ("base"),
 						r.GetAttribute ("user"),
 						"",
-						bool.Parse (r.GetAttribute ("ssl")),
-						tmp,
+						ssl,
+						tls,
 						r.GetAttribute ("server_type"));
 
 					GnomeKeyring.Result gkr;
@@ -195,8 +201,14 @@ namespace lat
 				writer.WriteAttributeString ("port", cp.Port.ToString());
 				writer.WriteAttributeString ("base", cp.LdapRoot);
 				writer.WriteAttributeString ("user", cp.User);
-				writer.WriteAttributeString ("ssl", cp.SSL.ToString());
-				writer.WriteAttributeString ("tls", cp.TLS.ToString());
+
+				if (cp.TLS)
+					writer.WriteAttributeString ("encryption", "tls");
+				else if (cp.SSL) 
+					writer.WriteAttributeString ("encryption", "ssl");
+				else
+					writer.WriteAttributeString ("encryption", "none");
+
 				writer.WriteAttributeString ("server_type", cp.ServerType);
 				
 	        		writer.WriteEndElement();
