@@ -128,6 +128,12 @@ namespace lat
 					if (!(r.Name == "profile")) 
 						continue;
 
+					// FIXME: Remove this before 1.0
+					bool tmp = false;
+					try {
+						bool.Parse (r.GetAttribute ("tls"));
+					} catch {}
+
 					ConnectionProfile cp = new ConnectionProfile (
 						r.GetAttribute ("name"),
 						r.GetAttribute ("host"),
@@ -136,7 +142,7 @@ namespace lat
 						r.GetAttribute ("user"),
 						"",
 						bool.Parse (r.GetAttribute ("ssl")),
-						bool.Parse (r.GetAttribute ("tls")),
+						tmp,
 						r.GetAttribute ("server_type"));
 
 					GnomeKeyring.Result gkr;
