@@ -208,7 +208,7 @@ namespace lat
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (tlsRadioButton.Active) {			
-				useSSL = true;
+				useSSL = false;
 				useTLS = true;
 			} else if (sslRadioButton.Active) {
 				useSSL =  true;

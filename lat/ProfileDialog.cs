@@ -132,7 +132,7 @@ namespace lat
 		{
 			if (tlsRadioButton.Active) {
 				_useTLS = true;
-				_useSSL = true;
+				_useSSL = false;
 			} else if (sslRadioButton.Active) {
 				_useSSL = true;
 				_useTLS = false;
