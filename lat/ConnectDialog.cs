@@ -345,6 +345,7 @@ namespace lat
 			}
 
 			useSSL = cp.SSL;
+			useTLS = cp.TLS;
 
 			DoConnect (server, cp.User, cp.Pass);
 		}
