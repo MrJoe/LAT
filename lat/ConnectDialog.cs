@@ -276,6 +276,16 @@ namespace lat
 					MessageType.Error);
 
 				return;
+
+			} catch (Exception e) {
+
+				Logger.Log.Debug ("Unknown error: {0}", e.Message);
+
+				Util.MessageBox (connectionDialog, 
+					"An unknown error occured: " + e.Message, 
+					MessageType.Error);
+
+				return;
 			}
 
 			if (CheckConnection (server, userName))

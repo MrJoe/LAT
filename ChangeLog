@@ -1,4 +1,5 @@
 	* BUGFIX: [#31] lat quits when a wrong password is given
+	* BUGFIX: [#30] Using TLS causes a crash
 	* BUGFIX: [#28] Program crashes when clicking on custom views->properties
 	* BUGFIX: [#27] Wrong "invalid search filter" message
 	* BUGFIX: [#26] Program crashes when using 'X' close button
