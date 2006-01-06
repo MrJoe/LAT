@@ -1,3 +1,4 @@
+	* BUGFIX: [#27] Wrong "invalid search filter" message
 	* BUGFIX: [#26] Program crashes when using 'X' close button
 	* BUGFIX: [#25] SSL/TLS is just SSL
 	* BUGFIX: [#23] Profile server type not being remebered

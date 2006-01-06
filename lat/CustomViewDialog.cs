@@ -154,7 +154,7 @@ namespace lat
 			res = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
-			if (res != null && res.Length > 0)
+			if (res != null)
 			{
 				foreach (LdapEntry le in res)
 					fillAttrs (le);
