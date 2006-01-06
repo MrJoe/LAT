@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Net.Sockets;
+using Novell.Directory.Ldap;
 using Gtk;
 
 namespace lat 
@@ -266,6 +267,15 @@ namespace lat
 
 				Logger.Log.Debug ("Socket error: {0}", se.Message);
 
+			} catch (LdapException le) {
+
+				Logger.Log.Debug ("Ldap error: {0}", le.Message);
+
+				Util.MessageBox (connectionDialog, 
+					le.Message, 
+					MessageType.Error);
+
+				return;
 			}
 
 			if (CheckConnection (server, userName))
