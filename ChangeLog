@@ -1,3 +1,4 @@
+	* Added user option not to store passwords for profiles
 	* BUGFIX: [#32] Profile encryption attribute
 	* BUGFIX: [#31] lat quits when a wrong password is given
 	* BUGFIX: [#30] Using TLS causes a crash

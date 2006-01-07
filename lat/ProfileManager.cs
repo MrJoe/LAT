@@ -34,22 +34,10 @@ namespace lat
 		public string LdapRoot;
 		public string User;
 		public string Pass;
+		public bool DontSavePassword;
 		public bool SSL;
 		public bool TLS;
 		public string ServerType;
-
-		public ConnectionProfile (string name, string host, int port, string ldapRoot, string user, string pass, bool ssl, bool tls, string serverType)
-		{
-			Name = name;
-			Host = host;
-			Port = port;
-			LdapRoot = ldapRoot;
-			User = user;
-			Pass = pass;
-			SSL = ssl;
-			TLS = tls;
-			ServerType = serverType;
-		}
 	}
 
 	public class ProfileManager 
@@ -130,6 +118,7 @@ namespace lat
 
 					bool ssl = false;
 					bool tls = false;
+					bool savePassword = false;
 
 					string encryption = r.GetAttribute ("encryption");
 					if (encryption != null) {
@@ -140,16 +129,23 @@ namespace lat
 							tls  = true;
 					}
 
-					ConnectionProfile cp = new ConnectionProfile (
-						r.GetAttribute ("name"),
-						r.GetAttribute ("host"),
-						int.Parse (r.GetAttribute ("port")),
-						r.GetAttribute ("base"),
-						r.GetAttribute ("user"),
-						"",
-						ssl,
-						tls,
-						r.GetAttribute ("server_type"));
+					string sp = r.GetAttribute ("save_password");
+					if (sp != null) {
+
+						savePassword = bool.Parse (sp);
+					}
+
+					ConnectionProfile cp = new ConnectionProfile ();
+					cp.Name = r.GetAttribute ("name");
+					cp.Host = r.GetAttribute ("host");
+					cp.Port = int.Parse (r.GetAttribute ("port"));
+					cp.LdapRoot = r.GetAttribute ("base");
+					cp.User = r.GetAttribute ("user");
+					cp.Pass = "";
+					cp.DontSavePassword = savePassword;
+					cp.SSL = ssl;
+					cp.TLS = tls;
+					cp.ServerType = r.GetAttribute ("server_type");
 
 					GnomeKeyring.Result gkr;
 					NetworkPasswordData[] list;
@@ -201,6 +197,7 @@ namespace lat
 				writer.WriteAttributeString ("port", cp.Port.ToString());
 				writer.WriteAttributeString ("base", cp.LdapRoot);
 				writer.WriteAttributeString ("user", cp.User);
+				writer.WriteAttributeString ("save_password", cp.DontSavePassword.ToString());
 
 				if (cp.TLS)
 					writer.WriteAttributeString ("encryption", "tls");

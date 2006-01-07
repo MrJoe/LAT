@@ -330,8 +330,8 @@ namespace lat
 			LdapServer server = null;
 			ConnectionProfile cp = GetSelectedProfile ();
 
-			if (cp.Host == null)
-			{
+			if (cp.Host == null) {
+
 				string	msg = Mono.Unix.Catalog.GetString (
 					"No profile selected");
 
@@ -342,13 +342,13 @@ namespace lat
 				return;
 			}
 
-			if (cp.LdapRoot == "")
-			{
+			if (cp.LdapRoot == "") {
+
 				server = new LdapServer (cp.Host, cp.Port, 
 						 cp.ServerType);
-			}
-			else
-			{
+
+			} else {
+
 				server = new LdapServer (cp.Host, cp.Port, 
 						 cp.LdapRoot, 
 						 cp.ServerType);
@@ -357,7 +357,18 @@ namespace lat
 			useSSL = cp.SSL;
 			useTLS = cp.TLS;
 
-			DoConnect (server, cp.User, cp.Pass);
+			if (cp.DontSavePassword) {
+
+				LoginDialog ld = new LoginDialog ("Enter your password", cp.User);
+				ld.Run ();
+
+				if (ld.UserPass != null)
+					DoConnect (server, ld.UserName, ld.UserPass);
+
+			} else {
+
+				DoConnect (server, cp.User, cp.Pass);
+			}
 		}
 
 		public void OnConnectClicked (object o, EventArgs args) 

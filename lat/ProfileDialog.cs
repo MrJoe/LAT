@@ -36,6 +36,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry ldapBaseEntry;
 		[Glade.Widget] Gtk.Entry userEntry;
 		[Glade.Widget] Gtk.Entry passEntry;
+		[Glade.Widget] Gtk.CheckButton savePasswordButton;
 		[Glade.Widget] Gtk.RadioButton tlsRadioButton;
 		[Glade.Widget] Gtk.RadioButton sslRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
@@ -72,7 +73,11 @@ namespace lat
 			ldapBaseEntry.Text = cp.LdapRoot;
 			
 			userEntry.Text = cp.User;
-			passEntry.Text = cp.Pass;
+
+			if (cp.DontSavePassword)
+				savePasswordButton.Active =  true;
+			else
+				passEntry.Text = cp.Pass;
 
 			if (cp.TLS) {
 				tlsRadioButton.Active = true;
@@ -128,6 +133,14 @@ namespace lat
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
 
+		public void OnSavePasswordToggled (object obj, EventArgs args)
+		{
+			if (savePasswordButton.Active)
+				passEntry.Sensitive = false;
+			else
+				passEntry.Sensitive = true;
+		}
+
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (tlsRadioButton.Active) {
@@ -154,17 +167,22 @@ namespace lat
 
 			string st = (string) serverTypeComboBox.Model.GetValue (iter, 0);
 
-			ConnectionProfile profile = new ConnectionProfile (
-					profileNameEntry.Text,
-					hostEntry.Text,
-					int.Parse (portEntry.Text),
-					ldapBaseEntry.Text,
-					userEntry.Text,
-					passEntry.Text,
-					_useSSL,
-					_useTLS,
-					st);
-					
+			ConnectionProfile profile = new ConnectionProfile ();
+			profile.Name = profileNameEntry.Text;
+			profile.Host = hostEntry.Text;
+			profile.Port = int.Parse (portEntry.Text);
+			profile.LdapRoot = ldapBaseEntry.Text;
+			profile.User = userEntry.Text;
+			profile.SSL = _useSSL;
+			profile.TLS = _useTLS;
+			profile.DontSavePassword = savePasswordButton.Active;
+			profile.ServerType = st;
+
+			if (profile.DontSavePassword)
+				profile.Pass = "";
+			else
+				profile.Pass = passEntry.Text;
+
 			if (_isEdit)
 			{
 				if (!_oldName.Equals (profile.Name))

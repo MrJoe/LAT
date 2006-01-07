@@ -37,26 +37,47 @@ namespace lat
 		Glade.XML ui;
 
 		private LdapServer server;
+		private bool isRelogin = false;
+		private string userName;
+		private string userPass;
+
+		public LoginDialog (string msg, string user)
+		{
+			Init ();
+
+			useSSLCheckButton.HideAll ();
+
+			msgLabel.Text = msg;
+			userEntry.Text = user;
+		}
 
 		public LoginDialog (LdapServer ldapServer, string msg)
 		{
+			Init ();
+
 			server = ldapServer;
-
-			ui = new Glade.XML (null, "lat.glade", "loginDialog", null);
-			ui.Autoconnect (this);
-
 			msgLabel.Text = msg;
+			isRelogin = true;
+		}
 
-			// FIXME: manually loading tango icon
-			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("locked-48x48.png");
-			image455.Pixbuf = pb;
-
+		public void Run ()
+		{
 			loginDialog.Run ();
 			loginDialog.Destroy ();
 		}
 
-		public void OnOkClicked (object o, EventArgs args)
-		{	
+		private void Init ()
+		{
+			ui = new Glade.XML (null, "lat.glade", "loginDialog", null);
+			ui.Autoconnect (this);
+
+			// FIXME: manually loading tango icon
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("locked-48x48.png");
+			image455.Pixbuf = pb;
+		}
+
+		private void Relogin ()
+		{
 			try
 			{
 				server.UseSSL = useSSLCheckButton.Active;
@@ -71,6 +92,16 @@ namespace lat
 
 				Util.MessageBox (loginDialog, errorMsg,	MessageType.Error);
 			}
+		}
+
+		public void OnOkClicked (object o, EventArgs args)
+		{	
+			if (isRelogin) {
+				Relogin ();
+			} else {
+				userName = userEntry.Text;
+				userPass = passEntry.Text;
+			}
 
 			loginDialog.HideAll ();
 		}
@@ -78,6 +109,16 @@ namespace lat
 		public void OnCancelClicked (object o, EventArgs args)
 		{
 			loginDialog.HideAll ();
+		}
+
+		public string UserName 
+		{
+			get { return userName; }
+		}
+
+		public string UserPass
+		{
+			get { return userPass; }
 		}
 	}
 }

@@ -900,7 +900,9 @@ namespace lat
 			string msg = Mono.Unix.Catalog.GetString (
 				"Enter the new username and password\nyou wish to re-login with");
 
-			new LoginDialog (server, msg);
+			LoginDialog ld = new LoginDialog (server, msg);
+			ld.Run ();
+
 			updateStatusBar ();
 		}
 
