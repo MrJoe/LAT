@@ -155,16 +155,12 @@ namespace lat
 				searchBaseButton.Label, filterEntry.Text);
 
 			if (res != null)
-			{
 				foreach (LdapEntry le in res)
 					fillAttrs (le);
-			}
 			else
-			{
 				Util.MessageBox (customViewDialog, 
-						"Invalid search filter.", 
-						MessageType.Error);
-			}
+					Mono.Unix.Catalog.GetString ("Invalid search filter."), 
+					MessageType.Error);
 		}
 
 		public void OnTestClicked (object o, EventArgs args)
@@ -177,8 +173,8 @@ namespace lat
 			TreeModel model;
 			TreeIter iter;
 
-			if (allAttrTreeview.Selection.GetSelected (out model, out iter))
-			{
+			if (allAttrTreeview.Selection.GetSelected (out model, out iter)) {
+
 				string name = (string) allStore.GetValue (iter, 0);
 				
 				viewStore.AppendValues (name);
@@ -187,12 +183,12 @@ namespace lat
 					_viewAttrs.Add (name, name);
 
 				allStore.Remove (ref iter);
-			}
-			else
-			{
+
+			} else {
+
 				Util.MessageBox (customViewDialog, 
-						"No attribute selected to add.",
-						 MessageType.Error);
+					Mono.Unix.Catalog.GetString ("No attribute selected to add."),
+					 MessageType.Error);
 			}
 		}
 
@@ -201,8 +197,8 @@ namespace lat
 			TreeModel model;
 			TreeIter iter;
 
-			if (viewAttrTreeview.Selection.GetSelected (out model, out iter))
-			{
+			if (viewAttrTreeview.Selection.GetSelected (out model, out iter)) {
+
 				string name = (string) viewStore.GetValue (iter, 0);
 
 				viewStore.Remove (ref iter);
@@ -211,30 +207,29 @@ namespace lat
 					_viewAttrs.Remove (name);
 
 				allStore.AppendValues (name);
-			}
-			else
-			{
+
+			} else {
+
 				Util.MessageBox (customViewDialog, 
-						"No attribute selected to remove.",
-						 MessageType.Error);
+					Mono.Unix.Catalog.GetString ("No attribute selected to remove."),
+					 MessageType.Error);
 			}			
 		}
 
 		public void OnSaveClicked (object o, EventArgs args)
 		{
-			if (_viewAttrs.Keys.Count == 0)
-			{
+			if (_viewAttrs.Keys.Count == 0) {
+
 				Util.MessageBox (customViewDialog, 
-				  "You must select what attributes will be displayed in the view",
-				   MessageType.Error);
+				  Mono.Unix.Catalog.GetString (
+				  "You must select what attributes will be displayed in the view"),
+				  MessageType.Error);
 			}
 
 			ArrayList tmp = new ArrayList ();
 
 			foreach (string name in _viewAttrs.Keys)
-			{
 				tmp.Add (name);
-			}
 
 			ViewData vd = new ViewData ();
 			vd.Name = nameEntry.Text;
@@ -246,20 +241,20 @@ namespace lat
 			vd.Cols = (string[])tmp.ToArray (typeof(string));
 			vd.ColNames = (string[])tmp.ToArray (typeof(string));
 
-			if (_isEdit)
-			{
-				if (!_oldName.Equals (vd.Name))
-				{
+			if (_isEdit) {
+
+				if (!_oldName.Equals (vd.Name)) {
+
 					Global.viewManager.DeleteView (_oldName);
 					Global.viewManager.AddView (vd);
-				}
-				else
-				{
+
+				} else {
+
 					Global.viewManager.UpdateView (vd);
 				}
-			}
-			else
-			{
+
+			} else {
+
 				Global.viewManager.AddView (vd);
 			}
 

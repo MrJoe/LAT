@@ -271,7 +271,7 @@ namespace lat
 				Logger.Log.Debug ("Unknown error: {0}", e.Message);
 
 				Util.MessageBox (connectionDialog, 
-					"An unknown error occured: " + e.Message, 
+					Mono.Unix.Catalog.GetString ("An unknown error occured: ") + e.Message, 
 					MessageType.Error);
 
 				return;
@@ -347,7 +347,10 @@ namespace lat
 
 			if (cp.DontSavePassword) {
 
-				LoginDialog ld = new LoginDialog ("Enter your password", cp.User);
+				LoginDialog ld = new LoginDialog (
+					Mono.Unix.Catalog.GetString ("Enter your password"), 
+					cp.User);
+
 				ld.Run ();
 
 				if (ld.UserPass != null)

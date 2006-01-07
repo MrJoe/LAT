@@ -1,18 +1,22 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-lat/CertMgr.cs
 lat/ConnectDialog.cs
-lat/ContactsView.cs
-lat/CustomView.cs
+lat/CreateEntryDialog.cs
+lat/CustomViewDialog.cs
 lat/EditAdComputerViewDialog.cs
 lat/EditUserViewDialog.cs
-lat/GroupsView.cs
-lat/HostsView.cs
+lat/LdapTreeView.cs
 lat/LoginDialog.cs
+lat/NewAdGroupViewDialog
+lat/NewUserViewDialog.cs
+lat/PasswordDialog.cs
 lat/RenameEntryDialog.cs
-lat/UsersView.cs
+lat/SambaPopulateDialog.cs
+lat/SearchResultsTreeView.cs
+lat/ServerView.cs
+lat/TemplatesDialog.cs
 lat/Util.cs
-lat/View.cs
 lat/ViewDialog.cs
+lat/ViewsTreeView.cs
 lat/Window.cs
 lat/lat.glade

@@ -1,3 +1,5 @@
+0.8.2
+
 	* Added user option not to store passwords for profiles
 	* BUGFIX: [#33] Use only one enum variable to handle the encryption type (Guido Trotter)
 	* BUGFIX: [#32] Profile encryption attribute
