@@ -35,8 +35,7 @@ namespace lat
 		public string User;
 		public string Pass;
 		public bool DontSavePassword;
-		public bool SSL;
-		public bool TLS;
+		public EncryptionType Encryption;
 		public string ServerType;
 	}
 
@@ -56,15 +55,11 @@ namespace lat
 
 			DirectoryInfo di = new DirectoryInfo (tmp);
 			if (!di.Exists)
-			{
 				di.Create ();
-			}
 
 			FileInfo fi = new FileInfo (_configFile);
 			if (!fi.Exists)
-			{
 				return;
-			}
 			
 			loadProfiles ();		
 		}
@@ -74,8 +69,8 @@ namespace lat
 			string[] retVal = new string [_profiles.Count];
 			int count = 0;
 			
-			foreach (string s in _profiles.Keys)
-			{
+			foreach (string s in _profiles.Keys) {
+
 				ConnectionProfile cp = (ConnectionProfile) _profiles[s];
 				retVal [count] = cp.Name;
 				
@@ -104,69 +99,70 @@ namespace lat
 		{
 			_profiles.Remove (name);
 		}
+
+		private void ParseProfile (XmlElement profileElement)
+		{
+			EncryptionType e = EncryptionType.None;
+			bool savePassword = false;
+
+			string encryption = profileElement.GetAttribute ("encryption");
+			if (encryption != null) {
+
+				if (encryption.ToLower() == "ssl")
+					e = EncryptionType.SSL;
+				else if (encryption.ToLower() == "tls")
+					e = EncryptionType.TLS;
+			}
+
+			string sp = profileElement.GetAttribute ("save_password");
+			if (sp != null)
+				savePassword = bool.Parse (sp);
+
+			ConnectionProfile cp = new ConnectionProfile ();
+			cp.Name = profileElement.GetAttribute ("name");
+			cp.Host = profileElement.GetAttribute ("host");
+			cp.Port = int.Parse (profileElement.GetAttribute ("port"));
+			cp.LdapRoot = profileElement.GetAttribute ("base");
+			cp.User = profileElement.GetAttribute ("user");
+			cp.Pass = "";
+			cp.DontSavePassword = savePassword;
+			cp.Encryption = e;
+			cp.ServerType = profileElement.GetAttribute ("server_type");
+
+			GnomeKeyring.Result gkr;
+			NetworkPasswordData[] list;
+
+			gkr = GnomeKeyring.Global.FindNetworkPassword (
+				cp.User, out list );
+
+			Logger.Log.Debug ("gnome-keyring-result: {0}", gkr);
+						
+			foreach (NetworkPasswordData i in list) 
+				cp.Pass = i.Password;
+
+			_profiles.Add (cp.Name, cp);
+		}
 		
 		public void loadProfiles ()
 		{
-			try
-			{
-				XmlTextReader r = new XmlTextReader (_configFile);
-				
-				while (r.Read()) 
-				{						
-					if (!(r.Name == "profile")) 
-						continue;
+			try {
 
-					bool ssl = false;
-					bool tls = false;
-					bool savePassword = false;
+				XmlDocument doc = new XmlDocument ();
+				doc.Load (_configFile);
 
-					string encryption = r.GetAttribute ("encryption");
-					if (encryption != null) {
+				XmlElement profileRoot = doc.DocumentElement;
+				XmlNodeList nl = profileRoot.GetElementsByTagName ("profile");
 
-						if (encryption.ToLower() == "ssl")
-							ssl = true;
-						else if (encryption.ToLower() == "tls")
-							tls  = true;
-					}
+				if (!(nl.Count > 0))
+					return;
 
-					string sp = r.GetAttribute ("save_password");
-					if (sp != null) {
+				foreach (XmlElement p in nl)
+					ParseProfile (p);
 
-						savePassword = bool.Parse (sp);
-					}
+				doc = null;
 
-					ConnectionProfile cp = new ConnectionProfile ();
-					cp.Name = r.GetAttribute ("name");
-					cp.Host = r.GetAttribute ("host");
-					cp.Port = int.Parse (r.GetAttribute ("port"));
-					cp.LdapRoot = r.GetAttribute ("base");
-					cp.User = r.GetAttribute ("user");
-					cp.Pass = "";
-					cp.DontSavePassword = savePassword;
-					cp.SSL = ssl;
-					cp.TLS = tls;
-					cp.ServerType = r.GetAttribute ("server_type");
+			} catch (Exception e) {
 
-					GnomeKeyring.Result gkr;
-					NetworkPasswordData[] list;
-
-					gkr = GnomeKeyring.Global.FindNetworkPassword (
-						cp.User, out list );
-
-					Logger.Log.Debug ("gnome-keyring-result: {0}", gkr);
-						
-					foreach (NetworkPasswordData i in list) 
-					{
-						cp.Pass = i.Password;
-					}
-			
-					_profiles.Add (cp.Name, cp);
-			 	}
-			 			
-			 	r.Close ();
-			}
-			catch (Exception e)
-			{
 				Console.WriteLine (e.Message);
 			}
 		}
@@ -199,12 +195,23 @@ namespace lat
 				writer.WriteAttributeString ("user", cp.User);
 				writer.WriteAttributeString ("save_password", cp.DontSavePassword.ToString());
 
-				if (cp.TLS)
+				switch (cp.Encryption) {
+
+				case EncryptionType.TLS:
 					writer.WriteAttributeString ("encryption", "tls");
-				else if (cp.SSL) 
+					break;
+
+				case EncryptionType.SSL:
 					writer.WriteAttributeString ("encryption", "ssl");
-				else
+					break;
+
+				case EncryptionType.None:
 					writer.WriteAttributeString ("encryption", "none");
+					break;
+
+				default:
+					break;
+				}
 
 				writer.WriteAttributeString ("server_type", cp.ServerType);
 				

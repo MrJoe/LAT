@@ -30,6 +30,8 @@ namespace lat {
 
 	public enum LdapServerType { ActiveDirectory, OpenLDAP, Generic, Unknown };
 
+	public enum EncryptionType : byte { None, SSL, TLS };
+
 	public struct ActiveDirectoryInfo
 	{
 		public string DnsHostName;
@@ -51,7 +53,7 @@ namespace lat {
 		private string			schemaDN;
 		private string			defaultSearchFilter;
 		private string			sType;
-		private bool			usingTLS;
+		private EncryptionType		encryption;
 		private ActiveDirectoryInfo	adInfo;
 		private LdapServerType		ldapServerType;
 		private LdapConnection		conn;
@@ -62,7 +64,7 @@ namespace lat {
 			port = hostPort;
 			sType = serverType;
 			rootDN = null;
-			usingTLS = false;
+			encryption = EncryptionType.None;
 
 			adInfo = new ActiveDirectoryInfo ();
 
@@ -96,12 +98,10 @@ namespace lat {
 
 			LdapAttributeSet attributeSet = new LdapAttributeSet();
 
-			foreach (LdapAttribute attr in attributes)
-			{
+			foreach (LdapAttribute attr in attributes) {
+
 				foreach (string v in attr.StringValueArray)
-				{
 					Logger.Log.Debug ("{0}:{1}", attr.Name, v);
-				}
 				
 				attributeSet.Add (attr);
 			}
@@ -118,39 +118,43 @@ namespace lat {
 		/// </summary>
 		/// <param name="userName">Username</param>
 		/// <param name="userPass">Password</param> 
-		public void Bind (string userName, string userPass, bool startTLS)
+		public void Bind (string userName, string userPass)
 		{
-			if (startTLS) {
-				usingTLS = true;
-				conn.startTLS();
-			}
-
 			conn.Bind (userName, userPass);
 
 			Logger.Log.Debug ("Bound to directory as: {0}", userName);
-
-			if (rootDN == null)
-				QueryRootDSE ();
 		}
 
 		/// <summary>Connects to the directory server.
 		/// </summary>
-		/// <param name="useSSL">Use SSL/TLS to encrypt session</param>
-		public void Connect (bool useSSL)
+		/// <param name="encryptionType">Type of encryption to use for session</param>
+		public void Connect (EncryptionType encryptionType)
 		{
+			encryption = encryptionType;
+
 			conn = new LdapConnection ();
-			conn.SecureSocketLayer = useSSL;
+	
+			if (encryption == EncryptionType.SSL)
+				conn.SecureSocketLayer = true;
+
 			conn.UserDefinedServerCertValidationDelegate += new 
 				CertificateValidationCallback(SSLHandler);
 
 			conn.Connect (host, port);
+
+			if (encryption == EncryptionType.TLS) {
+				conn.startTLS ();
+			}
 			
 			if (schemaDN == null)
 				schemaDN = "cn=subschema";
 
+			if (rootDN == null)
+				QueryRootDSE ();
+
 			Logger.Log.Debug ("Connected to '{0}' on port {1}", host, port);
 			Logger.Log.Debug ("Base: {0}", rootDN);
-			Logger.Log.Debug ("Using SSL: {0}", useSSL);
+			Logger.Log.Debug ("Using encryption type: {0}", encryptionType.ToString());
 		}
 
 		/// <summary>Copy a directory entry
@@ -712,6 +716,12 @@ namespace lat {
 			return Search (rootDN, String.Format ("objectclass={0}", objectClass));
 		}
 
+		/// <summary>Tries to upgrade to an encrypted connection</summary>
+		public void StartTLS ()
+		{
+			conn.startTLS ();
+		}
+
 		#endregion
 
 		#region private_methods
@@ -932,9 +942,10 @@ namespace lat {
 			set { conn.SecureSocketLayer = value; }
 		}
 
-		public bool UseTLS
+		public EncryptionType Encryption
 		{
-			get { return usingTLS; }
+			get { return encryption; }
+			set { encryption = value; }
 		}
 
 		public ActiveDirectoryInfo ADInfo

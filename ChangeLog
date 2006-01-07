@@ -1,4 +1,5 @@
 	* Added user option not to store passwords for profiles
+	* BUGFIX: [#33] Use only one enum variable to handle the encryption type (Guido Trotter)
 	* BUGFIX: [#32] Profile encryption attribute
 	* BUGFIX: [#31] lat quits when a wrong password is given
 	* BUGFIX: [#30] Using TLS causes a crash

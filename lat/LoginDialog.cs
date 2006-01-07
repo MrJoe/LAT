@@ -80,8 +80,13 @@ namespace lat
 		{
 			try
 			{
-				server.UseSSL = useSSLCheckButton.Active;
-				server.Bind (userEntry.Text, passEntry.Text, server.UseTLS);
+				if (useSSLCheckButton.Active)
+					server.Encryption = EncryptionType.SSL;
+
+				if (server.Encryption == EncryptionType.TLS)
+					server.StartTLS ();
+
+				server.Bind (userEntry.Text, passEntry.Text);
 			}
 			catch (Exception e)
 			{

@@ -43,8 +43,7 @@ namespace lat
 		[Glade.Widget] Gtk.HBox stHBox;
 		[Glade.Widget] Gtk.Image image7;
 			
-		private bool _useSSL = false;
-		private bool _useTLS = false;
+		private EncryptionType encryption = EncryptionType.None;
 		private bool _isEdit = false;
 		private ProfileManager _pm;
 	
@@ -79,12 +78,19 @@ namespace lat
 			else
 				passEntry.Text = cp.Pass;
 
-			if (cp.TLS) {
+			switch (cp.Encryption) {
+	
+			case EncryptionType.TLS:
 				tlsRadioButton.Active = true;
-			}
-			else if (cp.SSL)
-			{
+				break;
+
+			case EncryptionType.SSL:
 				sslRadioButton.Active = true;
+				break;
+
+			case EncryptionType.None:
+				noEncryptionRadioButton.Active = true;
+				break;
 			}
 				
 			comboSetActive (serverTypeComboBox, cp.ServerType.ToLower());
@@ -144,17 +150,14 @@ namespace lat
 		public void OnEncryptionToggled (object obj, EventArgs args)
 		{
 			if (tlsRadioButton.Active) {
-				_useTLS = true;
-				_useSSL = false;
 				portEntry.Text = "389";
+				encryption = EncryptionType.TLS;
 			} else if (sslRadioButton.Active) {
-				_useSSL = true;
-				_useTLS = false;
 				portEntry.Text = "636";
+				encryption = EncryptionType.SSL;
 			} else {
-				_useSSL = false;
-				_useTLS = false;
 				portEntry.Text = "389";
+				encryption = EncryptionType.None;
 			}
 		}
 		
@@ -173,8 +176,7 @@ namespace lat
 			profile.Port = int.Parse (portEntry.Text);
 			profile.LdapRoot = ldapBaseEntry.Text;
 			profile.User = userEntry.Text;
-			profile.SSL = _useSSL;
-			profile.TLS = _useTLS;
+			profile.Encryption = encryption;
 			profile.DontSavePassword = savePasswordButton.Active;
 			profile.ServerType = st;
 
