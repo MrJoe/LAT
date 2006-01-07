@@ -77,6 +77,7 @@ namespace lat
 
 			profileListStore = new ListStore (typeof (string));
 			profileListview.Model = profileListStore;
+			profileListStore.SetSortColumnId (0, SortType.Ascending);
 			
 			TreeViewColumn col;
 			col = profileListview.AppendColumn ("Name", new CellRendererText (), "text", 0);
