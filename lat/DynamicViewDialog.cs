@@ -56,15 +56,12 @@ namespace lat
 		
 			LdapAttributeSet attributeSet = entry.getAttributeSet ();
 			
-			foreach (LdapAttribute a in attributeSet)
-			{
+			foreach (LdapAttribute a in attributeSet) {
 				string[] svalues;
 				svalues = a.StringValueArray;
 							
 				foreach (string s in svalues)
-				{
 					attrStore.AppendValues (a.Name, s);
-				}
 			}		
 		}
 
@@ -119,17 +116,12 @@ namespace lat
 			TreeIter iter;
 
 			if (!attrStore.GetIterFromString (out iter, args.Path))
-			{
 				return;
-			}
 
 			string oldText = (string) attrStore.GetValue (iter, 1);
 
 			if (oldText.Equals (args.NewText))
-			{
-				// no modification
 				return;
-			}
 			
 			string _name = (string) attrStore.GetValue (iter, 0);
 
@@ -144,12 +136,9 @@ namespace lat
 		public void OnOkClicked (object o, EventArgs args)
 		{
 			if (_isEdit)
-			{
 				Util.ModifyEntry (server, dynamicDialog, _le.DN, _modList, true);
-			}
 			else
-			{
-			}
+				; // do nothing
 
 			dynamicDialog.HideAll ();
 		}

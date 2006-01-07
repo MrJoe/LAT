@@ -66,8 +66,7 @@ namespace lat
 
 			groupDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				groupDialog.Run ();				
 			}
@@ -100,13 +99,11 @@ namespace lat
 			LdapAttribute attr;
 			attr = le.getAttribute ("memberuid");
 
-			if (attr != null)
-			{
+			if (attr != null) {
+
 				string[] svalues = attr.StringValueArray;
 
-
-				foreach (string s in svalues)
-				{
+				foreach (string s in svalues) {
 					currentMemberStore.AppendValues (s);
 					_currentMembers.Add (s, "memberuid");
 				}
@@ -117,8 +114,7 @@ namespace lat
 
 			groupDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues){
 				missingValues = false;
 				groupDialog.Run ();				
 			}
@@ -129,25 +125,20 @@ namespace lat
 		private void OnSambaChanged (object o, EventArgs args)
 		{
 			if (enableSambaButton.Active)
-			{
 				_smbSID = server.GetLocalSID ();
-			}
 		}
 
 		private void populateUsers ()
 		{
 			LdapEntry[] _users = server.SearchByClass ("posixAccount");
 
-			foreach (LdapEntry le in _users)
-			{
+			foreach (LdapEntry le in _users) {
 				LdapAttribute nameAttr;
 
 				nameAttr = le.getAttribute ("uid");
 
 				if (nameAttr != null && !_currentMembers.ContainsKey (nameAttr.StringValue) )
-				{
 					allUserStore.AppendValues (nameAttr.StringValue);
-				}
 			}					
 		}
 
@@ -179,9 +170,7 @@ namespace lat
 			currentMemberStore.SetSortColumnId (0, SortType.Ascending);
 
 			if (_isSamba)
-			{
 				enableSambaButton.Hide ();
-			}
 
 			groupDialog.Resize (350, 400);			
 		}
@@ -193,8 +182,8 @@ namespace lat
 
 			TreePath[] tp = allUsersTreeview.Selection.GetSelectedRows (out model);
 
-			for (int i  = tp.Length; i > 0; i--)
-			{
+			for (int i  = tp.Length; i > 0; i--) {
+
 				allUserStore.GetIter (out iter, tp[(i - 1)]);
 
 				string user = (string) allUserStore.GetValue (iter, 0);
@@ -208,8 +197,8 @@ namespace lat
 
 				Logger.Log.Debug ("Adding {0} to group", user);
 
-				if (_isEdit)
-				{
+				if (_isEdit) {
+
 					LdapAttribute attr = new LdapAttribute ("memberuid", user);
 					LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 					_modList.Add (lm);
@@ -227,8 +216,8 @@ namespace lat
 
 			TreePath[] tp = currentMembersTreeview.Selection.GetSelectedRows (out model);
 
-			for (int i  = tp.Length; i > 0; i--)
-			{
+			for (int i  = tp.Length; i > 0; i--) {
+
 				currentMemberStore.GetIter (out iter, tp[(i - 1)]);
 
 				string user = (string) currentMemberStore.GetValue (iter, 0);
@@ -242,8 +231,8 @@ namespace lat
 
 				allUserStore.AppendValues (user);
 
-				if (_isEdit)
-				{
+				if (_isEdit) {
+
 					LdapAttribute attr = new LdapAttribute ("memberuid", user);
 					LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
 					_modList.Add (lm);
@@ -261,10 +250,8 @@ namespace lat
 				return retVal;
 
 			foreach (string s in la.StringValueArray)
-			{
 				if (s.ToLower() == "sambagroupmapping")
 					retVal = true;
-			}
 
 			return retVal;
 		}
@@ -287,8 +274,7 @@ namespace lat
 			string[] objClass = { "top", "posixGroup" };
 			string[] missing = null;
 
-			if (!checkReqAttrs (objClass, cgi, out missing))
-			{
+			if (!checkReqAttrs (objClass, cgi, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 
@@ -296,23 +282,21 @@ namespace lat
 			}
 
 
-			if (_isEdit)
-			{
+			if (_isEdit) {
+
 				if (_modList.Count == 0)
 				{
 					_modList = getMods (groupAttrs, _gi, cgi);
-				}
-				else
-				{
+
+				} else {
+
 					ArrayList tmp = getMods (groupAttrs, _gi, cgi);
 					foreach (LdapModification lm in tmp)
-					{
 						_modList.Add (lm);
-					}
 				}
 
-				if (enableSambaButton.Active)
-				{
+				if (enableSambaButton.Active) {
+
 					LdapAttribute a = new LdapAttribute ("objectclass", "sambaGroupMapping");
 					LdapModification lm = new LdapModification (LdapModification.ADD, a);
 
@@ -330,13 +314,13 @@ namespace lat
 				}
 	
 				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
-			}
-			else
-			{
+
+			} else {
+
 				ArrayList attrList = getAttributes (objClass, groupAttrs, cgi);
 
-				if (enableSambaButton.Active)
-				{
+				if (enableSambaButton.Active) {
+
 					LdapAttribute a = (LdapAttribute) attrList[0];
 					a.addValue ("sambaGroupMapping");
 
@@ -348,8 +332,7 @@ namespace lat
 					a = new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", _smbSID, grid));
 				}
 
-				foreach (string key in _currentMembers.Keys)
-				{
+				foreach (string key in _currentMembers.Keys) {
 					LdapAttribute attr = new LdapAttribute ("memberuid", key);
 					attrList.Add (attr);
 				}

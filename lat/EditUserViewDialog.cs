@@ -155,8 +155,7 @@ namespace lat
 			shellEntry.Text = (string)_ui["loginShell"];
 			homeDirEntry.Text = (string)_ui["homeDirectory"];
 
-			if (_isSamba)
-			{
+			if (_isSamba) {
 				toggleSambaWidgets (true);
 				smbEnableSambaButton.Hide ();
 
@@ -167,9 +166,9 @@ namespace lat
 				smbExpireEntry.Text = (string)_ui["sambaKickoffTime"];
 				smbCanChangePwdEntry.Text = (string)_ui["sambaPwdCanChange"];
 				smbMustChangePwdEntry.Text = (string)_ui["sambaPwdMustChange"];
-			}
-			else
-			{
+
+			} else {
+
 				smbEnableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 				toggleSambaWidgets (false);
 			}
@@ -199,8 +198,7 @@ namespace lat
 
 			editUserDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				editUserDialog.Run ();				
 			}
@@ -210,14 +208,12 @@ namespace lat
 	
 		private void OnSambaChanged (object o, EventArgs args)
 		{
-			if (smbEnableSambaButton.Active)
-			{
+			if (smbEnableSambaButton.Active) {
 				_smbSID = server.GetLocalSID ();
 
 				toggleSambaWidgets (true);
-			}
-			else
-			{
+			} else {
+
 				toggleSambaWidgets (false);
 			}
 		}
@@ -226,36 +222,25 @@ namespace lat
 		{
 			Hashtable ui = new Hashtable ();
 
-			foreach (string a in userAttrs)
-			{
+			foreach (string a in userAttrs) {
 				LdapAttribute attr;
 				attr = le.getAttribute (a);
 
 				if (attr == null)
-				{
 					ui.Add (a, "");
-				}
 				else
-				{
 					ui.Add (a, attr.StringValue);
-				}
 			}
 
-			if (_isSamba)
-			{
-				foreach (string a in sambaAttrs)
-				{
+			if (_isSamba) {
+				foreach (string a in sambaAttrs) {
 					LdapAttribute attr;
 					attr = le.getAttribute (a);
 
 					if (attr == null)
-					{
 						ui.Add (a, "");
-					}
 					else
-					{
 						ui.Add (a, attr.StringValue);
-					}
 				}
 			}
 
@@ -265,12 +250,8 @@ namespace lat
 		private bool checkMemberOf (string user, string[] members)
 		{
 			foreach (string s in members)
-			{
 				if (s.Equals (user))
-				{
 					return true;
-				}
-			}
 	
 			return false;			
 		}
@@ -279,22 +260,22 @@ namespace lat
 		{
 			LdapEntry[] grps = server.SearchByClass ("posixGroup");
 
-			foreach (LdapEntry e in grps)
-			{
+			foreach (LdapEntry e in grps) {
+
 				LdapAttribute nameAttr, gidAttr;
 				nameAttr = e.getAttribute ("cn");
 				gidAttr = e.getAttribute ("gidNumber");
 
-				if (le != null)
-				{
+				if (le != null) {
+
 					LdapAttribute a;
 					a  = e.getAttribute ("memberUid");
 					
-					if (a != null)
-					{	
+					if (a != null) {
+
 						if (checkMemberOf ((string)_ui["uid"], a.StringValueArray)
-						   && !_memberOfGroups.ContainsKey (nameAttr.StringValue))
-						{
+						   && !_memberOfGroups.ContainsKey (nameAttr.StringValue)) {
+
 							_memberOfGroups.Add (nameAttr.StringValue,"memeberUid");
 							_memberOfStore.AppendValues (nameAttr.StringValue);
 						}
@@ -352,8 +333,7 @@ namespace lat
 		{
 			ArrayList tmp = new ArrayList ();
 	
-			foreach (string k in _allGroups.Keys)
-			{
+			foreach (string k in _allGroups.Keys) {
 				if (k.Equals (primaryGroupLabel.Text) ||
 				    _memberOfGroups.ContainsKey (k))
 					continue;
@@ -365,8 +345,8 @@ namespace lat
 
 			SelectGroupsDialog sgd = new SelectGroupsDialog (allgroups);
 
-			foreach (string name in sgd.SelectedGroupNames)
-			{
+			foreach (string name in sgd.SelectedGroupNames) {
+
 				_memberOfStore.AppendValues (name);
 		
 				if (!_memberOfGroups.ContainsKey (name))
@@ -390,8 +370,8 @@ namespace lat
 			
 			TreePath[] tp = memberOfTreeview.Selection.GetSelectedRows (out model);
 
-			for (int i  = tp.Length; i > 0; i--)
-			{
+			for (int i  = tp.Length; i > 0; i--) {
+
 				_memberOfStore.GetIter (out iter, tp[(i - 1)]);
 
 				string name = (string) _memberOfStore.GetValue (iter, 0);
@@ -438,8 +418,8 @@ namespace lat
 		{
 			ArrayList tmp = new ArrayList ();
 	
-			foreach (string k in _allGroups.Keys)
-			{
+			foreach (string k in _allGroups.Keys) {
+
 				if (k.Equals (primaryGroupLabel.Text))
 					continue;
 
@@ -451,9 +431,7 @@ namespace lat
 			SelectGroupsDialog sgd = new SelectGroupsDialog (allgroups);
 
 			if (sgd.SelectedGroupNames.Length > 0)
-			{
 				primaryGroupLabel.Text = sgd.SelectedGroupNames[0];
-			}
 		}
 
 		public void OnSetExpireClicked (object o, EventArgs args)
@@ -482,12 +460,12 @@ namespace lat
 			if (groupEntry == null)
 				return;
 
-			try
-			{
+			try {
+			
 				server.Modify (groupEntry.DN, mods);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg =
 					Mono.Unix.Catalog.GetString ("Unable to modify group ") + groupEntry.DN;
 
@@ -506,8 +484,8 @@ namespace lat
 
 			int count = 0;
 
-			foreach (string key in _modsGroup.Keys)
-			{
+			foreach (string key in _modsGroup.Keys) {
+
 				Logger.Log.Debug ("group: {0}", key);
 
 				LdapModification lm = (LdapModification) _modsGroup[key];
@@ -557,12 +535,10 @@ namespace lat
 			retVal.Add ("loginShell", shellEntry.Text);
 
 			if (_passChanged)
-			{
 				retVal.Add ("userPassword", _pass);
-			}
 
-			if (_isSamba)
-			{
+			if (_isSamba) {
+
 				retVal.Add ("sambaProfilePath", smbProfilePathEntry.Text);
 				retVal.Add ("sambaHomePath", smbHomePathEntry.Text);
 				retVal.Add ("sambaHomeDrive", smbHomeDriveEntry.Text);
@@ -610,8 +586,7 @@ namespace lat
 			string[] objClass = {"posixaccount","inetorgperson", "person" };
 			string[] missing = null;
 
-			if (!checkReqAttrs (objClass, cui, out missing))
-			{
+			if (!checkReqAttrs (objClass, cui, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 
@@ -620,8 +595,8 @@ namespace lat
 
 			_modList = getMods (userAttrs, _ui, cui);
 
-			if (smbEnableSambaButton.Active)
-			{
+			if (smbEnableSambaButton.Active) {
+
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
 
 				ArrayList smbMods = Util.CreateSambaMods (
@@ -631,16 +606,14 @@ namespace lat
 							_smbNT);
 
 				foreach (LdapModification l in smbMods)
-				{
 					_modList.Add (l);
-				}
-			}
-			else if (_isSamba)
-			{
+			
+			} else if (_isSamba) {
+
 				ArrayList smbMods = getMods (sambaAttrs, _ui, cui);
 
-				if (_passChanged)
-				{
+				if (_passChanged) {
+
 					LdapAttribute la; 
 					LdapModification lm;
 
@@ -656,9 +629,7 @@ namespace lat
 				}
 
 				foreach (LdapModification l in smbMods)
-				{
 					_modList.Add (l);
-				}
 			}
 
 			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);

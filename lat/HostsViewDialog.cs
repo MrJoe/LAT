@@ -51,8 +51,7 @@ namespace lat
 
 			hostDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				hostDialog.Run ();				
 			}
@@ -113,22 +112,19 @@ namespace lat
 			string[] missing = null;
 			string[] objClass = {"top", "ipHost", "device"};
 
-			if (!checkReqAttrs (objClass, chi, out missing))
-			{
+			if (!checkReqAttrs (objClass, chi, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 
 				return;
 			}
 
-			if (_isEdit)
-			{
+			if (_isEdit) {
 				_modList = getMods (hostAttrs, _hi, chi);
 
 				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
-			}
-			else
-			{
+			} else {
+
 				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
 
 				SelectContainerDialog scd = 

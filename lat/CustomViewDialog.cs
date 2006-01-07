@@ -80,8 +80,7 @@ namespace lat
 			else
 				searchBaseButton.Label = vd.Base;
 
-			foreach (string c in vd.Cols)
-			{
+			foreach (string c in vd.Cols) {
 				_viewAttrs.Add (c, c);
 				viewStore.AppendValues (c);
 			}
@@ -140,8 +139,7 @@ namespace lat
 
 			LdapAttributeSet attributeSet = le.getAttributeSet ();
 
-			foreach (LdapAttribute attr in attributeSet)
-			{
+			foreach (LdapAttribute attr in attributeSet) {
 				if (!_viewAttrs.ContainsKey (attr.Name))
 					allStore.AppendValues (attr.Name);
 			}

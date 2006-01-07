@@ -52,17 +52,11 @@ namespace lat
 		public void OnOkClicked (object o, EventArgs args) 
 		{
 			if (yesAlwaysRadio.Active)
-			{
 				UserResponse = CertDialogResponse.Import;
-			}
 			else if (yesSessionRadio.Active)
-			{
 				UserResponse = CertDialogResponse.NoImport;
-			}
 			else if (noRadio.Active)
-			{
 				UserResponse = CertDialogResponse.Cancel;
-			}	
 		}
 	}
 }

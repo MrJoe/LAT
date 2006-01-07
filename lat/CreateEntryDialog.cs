@@ -50,8 +50,7 @@ namespace lat
 
 			Init ();
 
-			foreach (string s in t.Classes)
-			{
+			foreach (string s in t.Classes) {
 				attrListStore.AppendValues ("objectClass", s, "Optional");
 				_objectClass.Add (s);
 			}
@@ -70,8 +69,7 @@ namespace lat
 
 			LdapAttribute la = le.getAttribute ("objectClass");
 
-			foreach (string s in la.StringValueArray)
-			{
+			foreach (string s in la.StringValueArray) {
 				attrListStore.AppendValues ("objectClass", s, "Optional");
 				_objectClass.Add (s);
 			}
@@ -99,19 +97,18 @@ namespace lat
 
 		private void insertValues (string[] values, string valueType)
 		{
-			foreach (string s in values)
-			{
+			foreach (string s in values) {
 				if (s == "objectClass")
 					continue;
 
-				if (isTemplate)
-				{
+				if (isTemplate) {
+
 					attrListStore.AppendValues (s, 
 						t.GetAttributeDefaultValue (s),
 						valueType);
-				}
-				else
-				{
+
+				} else {
+
 					attrListStore.AppendValues (s, 
 						"",
 						valueType);
@@ -156,9 +153,7 @@ namespace lat
 			TreeIter iter;
 
 			if (!attrListStore.GetIterFromString (out iter, args.Path))
-			{
 				return;
-			}
 
 			attrListStore.SetValue (iter, 1, args.NewText);		
 		}
@@ -193,19 +188,14 @@ namespace lat
 			if (_name == null || _value == null || _value == "")
 				return false;
 
-			if (_name.ToLower() == "objectclass")
-			{
+			if (_name.ToLower() == "objectclass") {
 				if (objAttr == null)
-				{
 					objAttr = new LdapAttribute (_name, _value);
-				}
 				else
-				{
 					objAttr.addValue (_value);
-				}
-			}
-			else
-			{
+
+			} else {
+
 				LdapAttribute attr = new LdapAttribute (_name, _value);
 				_attributes.Add (attr);
 			}

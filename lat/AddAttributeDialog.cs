@@ -66,8 +66,8 @@ namespace lat
 
 		private void createCombos ()
 		{
-			try
-			{
+			try {
+
 				// class
 				LdapEntry le = server.GetEntry (_dn);
 				LdapAttribute la = le.getAttribute ("objectClass");
@@ -75,10 +75,8 @@ namespace lat
 				attrClassComboBox = ComboBox.NewText ();
 
 				foreach (string s in la.StringValueArray)
-				{
 					if (!s.Equals ("top"))
 						attrClassComboBox.AppendText (s);
-				}
 
 				attrClassComboBox.Changed += new EventHandler (OnClassChanged);
 
@@ -94,8 +92,8 @@ namespace lat
 				attrNameComboBox.Show ();
 
 				attrNameHBox.PackStart (attrNameComboBox, true, true, 5);
-			}
-			catch {}
+
+			} catch {}
 		}
 
 		private void OnClassChanged (object o, EventArgs args)
@@ -109,21 +107,16 @@ namespace lat
 
 			string [] attrs = server.GetAllAttributes (objClass);
 
-			if (attrNameComboBox == null)
-			{
+			if (attrNameComboBox == null) {
 				// don't know why this happens
-
 				return;
-			}
-			else
-			{
-// FIXME: causes list to go blank
+
+			} else {
+				// FIXME: causes list to go blank
 //				attrNameComboBox.Clear ();
 
 				foreach (string s in attrs)
-				{				
 					attrNameComboBox.AppendText (s);
-				}
 			}		
 		}
 
@@ -136,8 +129,7 @@ namespace lat
 
 			string attrName = (string) attrNameComboBox.Model.GetValue (iter, 0);
 
-			if (attrName.Equals ("(none)"))
-			{
+			if (attrName.Equals ("(none)")) {
 				// add object class
 				TreeIter cnIter;
 					
@@ -148,9 +140,9 @@ namespace lat
 
 				_name = "objectClass";
 				_value = objClass;
-			}
-			else
-			{
+
+			} else {
+
 				_name = attrName;
 				_value = attrValueEntry.Text;
 			}

@@ -52,10 +52,8 @@ namespace lat
 
 			LdapAttributeSet las = _le.getAttributeSet ();
 
-			foreach (LdapAttribute attr in las)
-			{
-				foreach (string v in attr.StringValueArray)
-				{
+			foreach (LdapAttribute attr in las) {
+				foreach (string v in attr.StringValueArray) {
 					retVal += String.Format ("{0}: {1}\n", 
 						attr.Name, v);
 				}
@@ -72,20 +70,19 @@ namespace lat
 
 			ArrayList attrList = new ArrayList ();
 
-			foreach (string key in ldap_info.Keys)
-			{
+			foreach (string key in ldap_info.Keys) {
 				LdapAttribute attr = (LdapAttribute) ldap_info[key];
 
 				if (!attr.Name.Equals ("dn"))
 					attrList.Add (attr);
 			}
 
-			try
-			{
+			try {
+
 				server.Add (dn, attrList);
 				_numEntries++;
-			}
-			catch {}
+
+			} catch {}
 		}
 
 		private void ldifParse (Hashtable ldap_info, string buf)
@@ -94,22 +91,17 @@ namespace lat
 
 			string[] pairs = buf.Split (delim, 2);
 
-			if (!ldap_info.ContainsKey (pairs[0]))
-			{
+			if (!ldap_info.ContainsKey (pairs[0])) {
 				LdapAttribute attr = new LdapAttribute (pairs[0], pairs[1].Trim());
 				ldap_info.Add (pairs[0], attr);
-			}
-			else
-			{
+			} else {
 				LdapAttribute attr = (LdapAttribute) ldap_info[pairs[0]];
 				ArrayList newValues = new ArrayList ();
 
 				newValues.Add (pairs[1].Trim());
 
 				foreach (string v in attr.StringValueArray)
-				{
 					newValues.Add (v);
-				}
 
 				string[] attrStrings = (string[]) newValues.ToArray (typeof(string));
 
@@ -127,41 +119,35 @@ namespace lat
 
 			ldifParse (ldapInfo, dn);
 
-			try
-			{
-				while ((line = tr.ReadLine()) != null)
-				{
+			try {
+				while ((line = tr.ReadLine()) != null) {
 					if (line.Equals (""))
 						break;
 
 					ldifParse (ldapInfo, line);
 				}
 
-				createEntry (ldapInfo);				
-			}
-			catch {}
+				createEntry (ldapInfo);
+
+			} catch {}
 		}
 
 		public int Import (Uri uri)
 		{
 			string line = null;
 
-			try
-			{
+			try {
 				StreamReader sr = new StreamReader (uri.LocalPath);
 
-				while ((line = sr.ReadLine()) != null) 
-				{
+				while ((line = sr.ReadLine()) != null) {
 					if (line.StartsWith ("dn:"))
-					{
 						readEntry (line, sr);
-					}
 				}
 
-				return _numEntries;	
-			}
-			catch 
-			{
+				return _numEntries;
+
+			} catch {
+
 				return 0;
 			}
  		}
@@ -170,22 +156,17 @@ namespace lat
 		{
 			string line = null;
 
-			try
-			{
+			try {
 				StringReader sr = new StringReader (textBuffer);
 
-				while ((line = sr.ReadLine()) != null) 
-				{
+				while ((line = sr.ReadLine()) != null)  {
 					if (line.StartsWith ("dn:"))
-					{
 						readEntry (line, sr);
-					}
 				}
 
 				return _numEntries;
-			}
-			catch
-			{
+
+			} catch	{
 				return 0;
 			}			
 		}

@@ -90,14 +90,11 @@ namespace lat
 			manNameEntry.Text = manName;
 
 			if (manName != "" || manName != null)
-			{
 				updateManagedBy (manName);
-			}
 
 			editAdComputerDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				editAdComputerDialog.Run ();				
 			}
@@ -107,8 +104,8 @@ namespace lat
 
 		private void updateManagedBy (string dn)
 		{
-			try
-			{
+			try {
+
 				LdapEntry leMan = server.GetEntry (dn);
 
 				manOfficeLabel.Text = server.GetAttributeValueFromEntry (
@@ -131,9 +128,9 @@ namespace lat
 
 				manFaxNumberLabel.Text = server.GetAttributeValueFromEntry (
 					leMan, "facsimileTelephoneNumber");
-			}
-			catch 
-			{
+
+			} catch {
+
 				manOfficeLabel.Text = "";
 				manStreetTextView.Buffer.Text = "";
 				manCityLabel.Text = "";
@@ -197,12 +194,9 @@ namespace lat
 
 			scd.Run ();
 
-			if (scd.DN == "")
-			{
+			if (scd.DN == "") {
 				return;
-			}
-			else
-			{
+			} else {
 				manNameEntry.Text = scd.DN;
 				updateManagedBy (scd.DN);
 			}
@@ -215,8 +209,7 @@ namespace lat
 			string[] missing = null;
 			string[] objClass = {"top", "computer"};
 
-			if (!checkReqAttrs (objClass, chi, out missing))
-			{
+			if (!checkReqAttrs (objClass, chi, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 

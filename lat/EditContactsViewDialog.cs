@@ -130,8 +130,8 @@ namespace lat
 			string contactName = (string) _ci["cn"];
 			editContactDialog.Title = contactName + " Properties";
 
-			if (!_isPosix)
-			{
+			if (!_isPosix) {
+
 				gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
 
 				adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
@@ -142,16 +142,16 @@ namespace lat
 
 				ozDeptEntry.Text = (string)_ci["department"];
 				ozCompanyEntry.Text = (string)_ci["company"];
-			}
-			else
-			{
+
+			} else {
+
 				adStreetTextView.Buffer.Text = (string)_ci["street"];
 			}
 
 			editContactDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
+
 				missingValues = false;
 				editContactDialog.Run ();
 			}
@@ -166,23 +166,23 @@ namespace lat
 
 			viewDialog = editContactDialog;
 
-			switch (server.ServerType)
-			{
-				case LdapServerType.ActiveDirectory:
-					_isPosix = false;
-					break;
+			switch (server.ServerType) {
 
-				case LdapServerType.OpenLDAP:
-				case LdapServerType.Generic:
-				default:
-					_isPosix = true;
-					tnNotesTextView.Sensitive = false;
-					ozDeptEntry.Sensitive = false;
-					ozCompanyEntry.Sensitive = false;
-					gnWebPageEntry.Sensitive = false;
-					tnIPPhoneEntry.Sensitive = false;
-					adCountryEntry.Sensitive = false;
-					break;
+			case LdapServerType.ActiveDirectory:
+				_isPosix = false;
+				break;
+
+			case LdapServerType.OpenLDAP:
+			case LdapServerType.Generic:
+			default:
+				_isPosix = true;
+				tnNotesTextView.Sensitive = false;
+				ozDeptEntry.Sensitive = false;
+				ozCompanyEntry.Sensitive = false;
+				gnWebPageEntry.Sensitive = false;
+				tnIPPhoneEntry.Sensitive = false;
+				adCountryEntry.Sensitive = false;
+				break;
 			}
 
 			// FIXME: manually loading tango icon
@@ -224,8 +224,7 @@ namespace lat
 			retVal.Add ("department", ozDeptEntry.Text);
 			retVal.Add ("company", ozCompanyEntry.Text);
 
-			if (!_isPosix)
-			{
+			if (!_isPosix) {
 				retVal.Add ("streetAddress", adStreetTextView.Buffer.Text);
 				retVal.Add ("info", tnNotesTextView.Buffer.Text);
 			}
@@ -240,19 +239,16 @@ namespace lat
 			string[] objClass;
 			string[] missing = null;
 
-			if (!_isPosix)
-			{
+			if (!_isPosix) {
 				objClass = new string[] {"top", "person", "organizationalPerson", "contact" };
 				contactAttrs = adContactAttrs;		
-			}
-			else
-			{
+			} else {
+
 				contactAttrs = posixContactAttrs;
 				objClass = new string[] {"top", "person", "inetOrgPerson" };
 			}
 
-			if (!checkReqAttrs (objClass, cci, out missing))
-			{
+			if (!checkReqAttrs (objClass, cci, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 

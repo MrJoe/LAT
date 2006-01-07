@@ -30,56 +30,54 @@ public class LdapSearch
 
 	public void addCondition (string attr, string op, string val)
 	{
-		switch (op)
-		{
-			case "begins with":
-				_filter += String.Format ("({0}={1}*)", attr, val);
-				break;
+		switch (op) {
 
-			case "ends with":
-				_filter += String.Format ("({0}=*{1})", attr, val);
-				break;
+		case "begins with":
+			_filter += String.Format ("({0}={1}*)", attr, val);
+			break;
 
-			case "equals":
-				_filter += String.Format ("({0}={1})", attr, val);
-				break;
+		case "ends with":
+			_filter += String.Format ("({0}=*{1})", attr, val);
+			break;
+
+		case "equals":
+			_filter += String.Format ("({0}={1})", attr, val);
+			break;
 		
-			case "contains":
-				_filter += String.Format ("({0}=*{1}*)", attr, val);
-				break;
+		case "contains":
+			_filter += String.Format ("({0}=*{1}*)", attr, val);
+			break;
 
-			case "is present":
-				_filter += String.Format ("({0}=*)", attr);
-				break;
+		case "is present":
+			_filter += String.Format ("({0}=*)", attr);
+			break;
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 
 	public void addBool (string opBool)
 	{
-		switch (opBool)
-		{
-			case "AND":
-				_filter = String.Format ("(&{0}", _filter);
-				break;
+		switch (opBool) {
 
-			case "OR":
-				_filter = String.Format ("(|{0}", _filter);
-				break;
+		case "AND":
+			_filter = String.Format ("(&{0}", _filter);
+			break;
 
-			default:
-				break;
+		case "OR":
+			_filter = String.Format ("(|{0}", _filter);
+			break;
+
+		default:
+			break;
 		}
 	}
 
 	public void endBool ()
 	{
 		if (_filter.StartsWith("(&") || _filter.StartsWith("(|"))
-		{
 			_filter += ")";
-		}
 	}
 
 	public string Filter
