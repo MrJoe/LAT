@@ -96,9 +96,7 @@ namespace lat
 
 			DirectoryInfo di = new DirectoryInfo (tmp);
 			if (!di.Exists)
-			{
 				di.Create ();
-			}
 		}
 
 		public string[] GetTemplateNames ()
@@ -106,9 +104,7 @@ namespace lat
 			ArrayList tmp = new ArrayList ();
 
 			foreach (Template t in _templates)
-			{
 				tmp.Add (t.Name);
-			}
 
 			return (string[]) tmp.ToArray (typeof (string));
 		}
@@ -120,12 +116,10 @@ namespace lat
 
 		public void Update (Template t)
 		{
-			for (int i = 0; i < _templates.Count; i++)
-			{
+			for (int i = 0; i < _templates.Count; i++) {
 				Template p = (Template) _templates[i];
 				
-				if (t.Name.Equals (p.Name))
-				{
+				if (t.Name.Equals (p.Name)) {
 					_templates[i] = t;
 					break;
 				}
@@ -136,12 +130,9 @@ namespace lat
 		{
 			ArrayList tmp = new ArrayList ();
 
-			foreach (Template t in _templates)
-			{
+			foreach (Template t in _templates) {
 				if (!t.Name.Equals (name))
-				{
 					tmp.Add (t);
-				}
 			}
 
 			_templates.Clear ();
@@ -152,10 +143,8 @@ namespace lat
 		{
 			Template retVal = null;
 
-			foreach (Template t in _templates)
-			{
-				if (t.Name.Equals (name))
-				{
+			foreach (Template t in _templates) {
+				if (t.Name.Equals (name)) {
 					retVal = t;
 					break;
 				}
@@ -166,8 +155,8 @@ namespace lat
 
 		public void Load ()
 		{
-			try
-			{
+			try {
+
 				Stream stream = File.OpenRead (_configFile);
 
 				IFormatter formatter = new BinaryFormatter();
@@ -175,17 +164,17 @@ namespace lat
 				stream.Close ();
 
 				Logger.Log.Debug ("Load templates count: " + _templates.Count);
-			} 
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				Logger.Log.Debug ("TemplateManager.Load: {0}", e.Message);
 			}
 		}
 		
 		public void Save ()
 		{	
-			try
-			{
+			try {
+
 				Logger.Log.Debug ("Save templates count: " + _templates.Count);
 
 				Stream stream = File.OpenWrite (_configFile);
@@ -193,9 +182,9 @@ namespace lat
 				IFormatter formatter = new BinaryFormatter ();
 				formatter.Serialize (stream, _templates); 
 				stream.Close ();
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				Logger.Log.Debug ("TemplateManager.Save: {0}", e.Message);
 			}
 		}

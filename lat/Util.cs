@@ -48,16 +48,16 @@ namespace lat
 		{
 			string prefix = null;
 	
-			switch (server.ServerType)
-			{
-				case LdapServerType.ActiveDirectory:
-					prefix = "ad";
-					break;
+			switch (server.ServerType) {
 
-				case LdapServerType.Generic:
-				case LdapServerType.OpenLDAP:
-					prefix = "openldap";
-					break;
+			case LdapServerType.ActiveDirectory:
+				prefix = "ad";
+				break;
+
+			case LdapServerType.Generic:
+			case LdapServerType.OpenLDAP:
+				prefix = "openldap";
+				break;
 			}
 
 			return prefix;
@@ -90,10 +90,8 @@ namespace lat
 				return retVal;
 
 			foreach (string s in la.StringValueArray)
-			{
 				if (s.ToLower() == "sambasamaccount")
 					retVal = true;
-			}
 
 			return retVal;
 		}
@@ -103,18 +101,12 @@ namespace lat
 			string retVal = "";
 
 			if (firstName.Length >= 1)
-			{
 				retVal += firstName.Substring (0,1);
-			}
 			
 			if (lastName.Length >= 6)
-			{
 				retVal += lastName.Substring (0,6);
-			}
 			else
-			{
 				retVal += lastName;
-			}
 			
 			retVal = retVal.ToLower();
 			
@@ -126,13 +118,9 @@ namespace lat
 			Gdk.Pixbuf retIcon = null;
 
 			if (ssl)
-			{
 				retIcon = Gdk.Pixbuf.LoadFromResource ("locked16x16.png");
-			}
 			else
-			{
 				retIcon = Gdk.Pixbuf.LoadFromResource ("unlocked16x16.png");
-			}
 
 			return retIcon;
 		}
@@ -140,9 +128,7 @@ namespace lat
 		public static bool CheckUserName (LdapServer server, string name)
 		{
 			if (server.Search(String.Format("(uid={0})", name)).Length == 0)
-			{
 				return true;
-			}
 		
 			return false;
 		}
@@ -150,9 +136,7 @@ namespace lat
 		public static bool CheckUID (LdapServer server, int uid)
 		{
 			if (server.Search(String.Format("(uidNumber={0})", uid)).Length == 0)
-			{
 				return true;
-			}
 		
 			return false;
 		}
@@ -174,8 +158,8 @@ namespace lat
 		public static void AddEntry (LdapServer server, Gtk.Window parent, 
 					     string dn, ArrayList attrs, bool msgBox)
 		{
-			try
-			{
+			try {
+
 				server.Add (dn, attrs);
 
 				string resMsg = String.Format (
@@ -183,9 +167,9 @@ namespace lat
 	
 				if (msgBox)
 					MessageBox (parent, resMsg, MessageType.Info);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg = 
 					Mono.Unix.Catalog.GetString ("Unable to add entry ") + dn;
 
@@ -198,8 +182,7 @@ namespace lat
 		public static void ModifyEntry (LdapServer server, Gtk.Window parent, 
 						string dn, ArrayList modList, bool msgBox)
 		{
-			if (modList.Count == 0)
-			{
+			if (modList.Count == 0) {
 				Logger.Log.Debug ("ModifyEntry: modList.Count == 0");
 				return;
 			}
@@ -208,8 +191,8 @@ namespace lat
 			mods = new LdapModification [modList.Count];
 			mods = (LdapModification[]) modList.ToArray(typeof(LdapModification));
 
-			try
-			{
+			try {
+
 				server.Modify (dn, mods);
 
 				string resMsg = String.Format (
@@ -218,9 +201,8 @@ namespace lat
 				if (msgBox)
 					MessageBox (parent, resMsg, MessageType.Info);
 
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
+
 				string errorMsg = 
 					Mono.Unix.Catalog.GetString ("Unable to modify entry ") + dn;
 
@@ -245,22 +227,20 @@ namespace lat
 			md.Destroy ();
 
 			if (result == ResponseType.Yes)
-			{
 				return true;
-			}
+
 
 			return false;
 		}
 
 		private static bool deleteEntry (LdapServer server, string dn)
 		{
-			try
-			{
+			try {
 				server.Delete (dn);
 				return true;
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				Logger.Log.Debug ("deleteEntry error: {0}", e.Message);
 				return false;
 			}
@@ -277,36 +257,30 @@ namespace lat
 				"Unable to delete the following entries:\n");
 			
 			foreach (string n in dn)
-			{
 				msg += String.Format ("{0}\n", n);
-			}
 
 			if (!Util.AskYesNo (parent, msg))
-			{
 				return false;
-			}
 
 			bool allGood = true;
 
-			foreach (string d in dn)
-			{					
+			foreach (string d in dn) {
+
 				allGood = deleteEntry (server, d);
 
 				if (!allGood)
-				{
 					errorMsg += d;
-				}
 			}
 
-			if (allGood)
-			{
+			if (allGood) {
+
 				MessageBox (parent, 
 					Mono.Unix.Catalog.GetString (
 					"Entries successfully deleted."), 
 					MessageType.Info);
-			}
-			else
-			{
+
+			} else {
+
 				MessageBox (parent, errorMsg, MessageType.Error);
 			}
 
@@ -322,10 +296,10 @@ namespace lat
 
 			bool retVal = false;
 				
-			if (Util.AskYesNo (parent, msg))
-			{				
-				try
-				{
+			if (Util.AskYesNo (parent, msg)) {
+
+				try {
+
 					server.Delete (dn);
 
 					string resMsg = String.Format (
@@ -335,9 +309,9 @@ namespace lat
 					MessageBox (parent, resMsg, MessageType.Info);
 
 					retVal = true;
-				}
-				catch (Exception e)
-				{
+
+				} catch (Exception e) {
+
 					string errorMsg =
 						Mono.Unix.Catalog.GetString (
 						"Unable to delete entry ") + dn;
@@ -376,8 +350,7 @@ namespace lat
 
 		public static void ImportData (LdapServer server, Gtk.Window parent, string[] uriList)
 		{
-			foreach (string u in uriList)
-			{
+			foreach (string u in uriList) {
 				if (!(u.Length > 0))
 					continue;
 
@@ -411,8 +384,7 @@ namespace lat
 			if (children == null)
 				return;
 
-			foreach (LdapEntry cle in children)
-			{
+			foreach (LdapEntry cle in children) {
 				LDIF cldif = new LDIF (cle);
 				sb.AppendFormat ("{0}\n", cldif.Export());
 
@@ -431,8 +403,7 @@ namespace lat
 
 			LdapEntry[] children = server.GetEntryChildren (dn);
 
-			foreach (LdapEntry cle in children)
-			{
+			foreach (LdapEntry cle in children) {
 				LDIF cldif = new LDIF (cle);
 				data.AppendFormat ("{0}\n", cldif.Export());
 
@@ -461,18 +432,18 @@ namespace lat
 			fcd.SelectMultiple = false;
 
 			ResponseType response = (ResponseType) fcd.Run();
-			if (response == ResponseType.Ok) 
-			{
+			if (response == ResponseType.Ok)  {
+
 				string data = export (server, dn);
 
-				try 
-				{
+				try {
+
 					using (StreamWriter sw = new StreamWriter(fcd.Filename)) 
 					{
 						sw.Write (data);
 					}
-				}
-				catch {}
+
+				} catch {}
 			} 
 		
 			fcd.Destroy();

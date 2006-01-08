@@ -117,9 +117,7 @@ namespace lat
 			Gtk.TreeModel model;
 			
 			if (modListView.Selection.GetSelected (out model, out iter)) 
-			{
 				modListStore.Remove (ref iter);
-			}
 		}
 
 		private bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
@@ -138,22 +136,22 @@ namespace lat
 			LdapAttribute a = new LdapAttribute (_name, _value);
 			LdapModification m;
 
-			switch (_action)
-			{
-				case "Add":
-					m = new LdapModification (LdapModification.ADD, a);
-					break;
+			switch (_action) {
 
-				case "Delete":
-					m = new LdapModification (LdapModification.DELETE, a);
-					break;
+			case "Add":
+				m = new LdapModification (LdapModification.ADD, a);
+				break;
 
-				case "Replace":
-					m = new LdapModification (LdapModification.REPLACE, a);
-					break;
+			case "Delete":
+				m = new LdapModification (LdapModification.DELETE, a);
+				break;
 
-				default:
-					return true;
+			case "Replace":
+				m = new LdapModification (LdapModification.REPLACE, a);
+				break;
+
+			default:
+				return true;
 			}
 
 			_modList.Add (m);
@@ -167,8 +165,7 @@ namespace lat
 
 			modListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
 
-			foreach (LdapEntry e in sr)
-			{
+			foreach (LdapEntry e in sr) {
 				ArrayList tmp = (ArrayList) _modList.Clone ();
 				Util.ModifyEntry (server, massEditDialog, e.DN, tmp, false);
 			}

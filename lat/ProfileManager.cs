@@ -182,8 +182,8 @@ namespace lat
 			
 			writer.WriteStartElement("profiles");
 			
-			foreach (string name in _profiles.Keys) 
-			{		     			 	
+			foreach (string name in _profiles.Keys) {
+		     			 	
 				ConnectionProfile cp = (ConnectionProfile) _profiles[name];
 		 	
 				writer.WriteStartElement("profile", null);

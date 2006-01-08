@@ -185,20 +185,20 @@ namespace lat
 			else
 				profile.Pass = passEntry.Text;
 
-			if (_isEdit)
-			{
-				if (!_oldName.Equals (profile.Name))
-				{
+			if (_isEdit) {
+
+				if (!_oldName.Equals (profile.Name)) {
+
 					_pm.deleteProfile (_oldName);
 					_pm.addProfile (profile);
-				}
-				else
-				{
+
+				} else {
+
 					_pm.updateProfile (profile);
 				}
-			}
-			else
-			{
+
+			} else {
+
 				_pm.addProfile (profile);
 			}
 			

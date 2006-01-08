@@ -47,8 +47,7 @@ namespace lat
 
 			newAdGroupDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				newAdGroupDialog.Run ();				
 			}
@@ -81,8 +80,8 @@ namespace lat
 
 			string[] objClass = { "group" };
 
-			if (groupNameEntry.Text == "" || descriptionEntry.Text == "")
-			{
+			if (groupNameEntry.Text == "" || descriptionEntry.Text == "") {
+
 				string msg = Mono.Unix.Catalog.GetString (
 					"You must provide a group name and description");
 

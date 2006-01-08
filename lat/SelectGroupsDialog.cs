@@ -53,9 +53,7 @@ namespace lat
 			store.SetSortColumnId (0, SortType.Ascending);
 
 			foreach (string s in allGroups)
-			{
 				store.AppendValues (s);
-			}
 			
 			selectGroupsDialog.Resize (320, 200);
 			selectGroupsDialog.Run ();
@@ -69,8 +67,8 @@ namespace lat
 
 			TreePath[] tp = allGroupsTreeview.Selection.GetSelectedRows (out model);
 
-			foreach (TreePath t in tp)
-			{
+			foreach (TreePath t in tp) {
+
 				store.GetIter (out iter, t);
 
 				string name = (string) store.GetValue (iter, 0);

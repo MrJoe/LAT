@@ -92,8 +92,7 @@ namespace lat
 
 			adUserDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				adUserDialog.Run ();				
 			}
@@ -153,8 +152,7 @@ namespace lat
 
 			adUserDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				adUserDialog.Run ();				
 			}
@@ -219,22 +217,21 @@ namespace lat
 			string[] objClass = {"top", "person", "organizationalPerson", "user" };
 			string[] missing = null;
 
-			if (!checkReqAttrs (objClass, cci, out missing))
-			{
+			if (!checkReqAttrs (objClass, cci, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 
 				return;
 			}
 
-			if (_isEdit)
-			{
+			if (_isEdit) {
+
 				_modList = getMods (contactAttrs, _ci, cci);
 
 				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
-			}
-			else
-			{
+
+			} else {
+
 				ArrayList attrList = getAttributes (objClass, contactAttrs, cci);
 
 				string fullName = String.Format ("{0} {1}", 

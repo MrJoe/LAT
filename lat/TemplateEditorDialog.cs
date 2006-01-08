@@ -68,8 +68,7 @@ namespace lat
 			nameEntry.Text = t.Name;
 			nameEntry.Sensitive = false;
 
-			foreach (string s in t.Classes)
-			{
+			foreach (string s in t.Classes) {
 				objListStore.AppendValues (s);
 				_objectClass.Add (s);
 			}
@@ -133,12 +132,10 @@ namespace lat
 			LdapEntry[] ocs = server.GetObjectClasses ();			
 			ArrayList tmp = new ArrayList ();
 
-			foreach (LdapEntry le in ocs)
-			{
+			foreach (LdapEntry le in ocs) {
 				LdapAttribute la = le.getAttribute ("objectclasses");
 						
-				foreach (string s in la.StringValueArray)
-				{
+				foreach (string s in la.StringValueArray) {
 					SchemaParser sp = new SchemaParser (s);
 					tmp.Add (sp.Names[0]);
 				}
@@ -147,9 +144,7 @@ namespace lat
 			tmp.Sort ();
 
 			foreach (string n in tmp)
-			{
 				attrClassComboBox.AppendText (n);
-			}
 
 			attrClassComboBox.Active = 0;
 			attrClassComboBox.Show ();
@@ -162,17 +157,12 @@ namespace lat
 			TreeIter iter;
 
 			if (!attrListStore.GetIterFromString (out iter, args.Path))
-			{
 				return;
-			}
 
 			string oldText = (string) attrListStore.GetValue (iter, 2);
 
 			if (oldText.Equals (args.NewText))
-			{
-				// no modification
 				return;
-			}
 			
 			attrListStore.SetValue (iter, 2, args.NewText);		
 		}
@@ -184,30 +174,27 @@ namespace lat
 			string[] required, optional;			
 			server.GetAllAttributes (_objectClass, out required, out optional);
 
-			foreach (string s in required)
-			{
-				if (_isEdit)
-				{
+			foreach (string s in required) {
+
+				if (_isEdit) {
 					attrListStore.AppendValues (s, 
 						"Required", 
 						t.GetAttributeDefaultValue (s));
-				}
-				else
-				{
+				} else {
+
 					attrListStore.AppendValues (s, "Required", "");
 				}
 			}
 
-			foreach (string s in optional)
-			{
-				if (_isEdit)
-				{
+			foreach (string s in optional) {
+
+				if (_isEdit) {
 					attrListStore.AppendValues (s, 
 						"Required", 
 						t.GetAttributeDefaultValue (s));
-				}
-				else
-				{
+
+				} else {
+
 					attrListStore.AppendValues (s, "Optional", "");
 				}
 			}
@@ -223,9 +210,7 @@ namespace lat
 			string objClass = (string) attrClassComboBox.Model.GetValue (iter, 0);
 
 			if (_objectClass.Contains (objClass))
-			{
 				return;
-			}
 
 			_objectClass.Add (objClass);
 			objListStore.AppendValues (objClass);
@@ -238,8 +223,7 @@ namespace lat
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
 			
-			if (objTreeView.Selection.GetSelected (out model, out iter)) 
-			{
+			if (objTreeView.Selection.GetSelected (out model, out iter))  {
 				string objClass = (string) model.GetValue (iter, 0);
 				_objectClass.Remove (objClass);
 
@@ -268,9 +252,7 @@ namespace lat
 			Gtk.TreeModel model;
 			
 			if (attrTreeView.Selection.GetSelected (out model, out iter)) 
-			{
 				attrListStore.Remove (ref iter);
-			}
 		}
 
 		private bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
@@ -294,13 +276,11 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			if (_isEdit)
-			{
+			if (_isEdit) {
 				t.Name = nameEntry.Text;
 				t.ClearAttributes ();
-			}
-			else
-			{
+			} else {
+
 				t = new Template (nameEntry.Text);
 			}
 

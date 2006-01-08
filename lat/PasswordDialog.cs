@@ -57,8 +57,7 @@ namespace lat
 
 			response = (ResponseType) passwordDialog.Run ();
 
-			while (passwordsDontMatch)
-			{
+			while (passwordsDontMatch) {
 				passwordsDontMatch = false;
 				response = (ResponseType) passwordDialog.Run ();
 			}
@@ -125,33 +124,33 @@ namespace lat
 			byte[] hash = null;
 			string encText = null;
 
-			switch (algorithm)
-			{
-				case "MD5":
-					hashAlgorithm = new MD5CryptoServiceProvider();
-					encText = "{MD5}";
-					break;
+			switch (algorithm) {
 
-				case "SHA":
-					hashAlgorithm = new SHA1Managed();
-					encText = "{SHA}";
-					break;
+			case "MD5":
+				hashAlgorithm = new MD5CryptoServiceProvider();
+				encText = "{MD5}";
+				break;
+
+			case "SHA":
+				hashAlgorithm = new SHA1Managed();
+				encText = "{SHA}";
+				break;
 			}
 
 			ASCIIEncoding enc = new ASCIIEncoding();
 
 			byte[] buffer = enc.GetBytes (_unix);
 
-			if (salted)
-			{
+			if (salted) {
+
 				byte[] saltedBuffer = addSalt (hashAlgorithm, buffer);
 
 				encText = "{S" + algorithm + "}";
             
 				retVal = encText + Convert.ToBase64String (saltedBuffer);
-			}
-			else
-			{
+
+			} else {
+
 				hash = hashAlgorithm.ComputeHash(buffer);
 
 				retVal = encText + Convert.ToBase64String (hash);
@@ -187,18 +186,13 @@ namespace lat
 
 		private void GeneratePassword ()
 		{	 
-			if (md5RadioButton.Active)
-			{
+			if (md5RadioButton.Active) {
 				_unix = doEncryption (passwordEntry.Text, "MD5",
 					useSaltCheckButton.Active);
-			}
-			else if (shaRadioButton.Active)
-			{
+			} else if (shaRadioButton.Active) {
 				_unix = doEncryption (passwordEntry.Text,
 					"SHA", useSaltCheckButton.Active);
-			}
-			else if (cryptRadioButton.Active)
-			{
+			} else if (cryptRadioButton.Active) {
 				_unix = generateUnixCrypt (passwordEntry.Text);
 			}
 
@@ -211,21 +205,16 @@ namespace lat
 		public void OnEncryptionChanged (object o, EventArgs args)
 		{
 			if (cryptRadioButton.Active)
-			{
 				useSaltCheckButton.Sensitive = false;
-			}
 			else
-			{
 				useSaltCheckButton.Sensitive = true;
-			}
 
 			GeneratePassword ();
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			if (passwordEntry.Text != reenterEntry.Text)
-			{
+			if (passwordEntry.Text != reenterEntry.Text) {
 				string msg = Mono.Unix.Catalog.GetString ("Password don't match");
 				Util.MessageBox (passwordDialog, msg, MessageType.Error);
 				

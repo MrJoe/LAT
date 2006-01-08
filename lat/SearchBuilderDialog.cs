@@ -101,8 +101,8 @@ namespace lat
 		{		
 			int count = 0;
 
-			foreach (string s in list)
-			{
+			foreach (string s in list) {
+
 				if (s.Equals (name))
 					cb.Active = count;
 
@@ -115,9 +115,7 @@ namespace lat
 			ComboBox retVal = ComboBox.NewText ();
 
 			foreach (string s in list)
-			{
 				retVal.AppendText (s);
-			}
 
 			retVal.Active = 0;
 			retVal.Show ();
@@ -169,13 +167,10 @@ namespace lat
 			boolCombo.Sensitive = false;
 			vbox76.PackStart (boolCombo, false, true, 16);
 
-			if (_numCriteria == 1)
-			{
+			if (_numCriteria == 1) {
 				firstCritCombo = boolCombo;
 				firstCritCombo.Changed += new EventHandler (OnBoolChanged);
-			}
-			else if (_numCriteria > 1)
-			{
+			} else if (_numCriteria > 1) {
 				_allCombos.Add (boolCombo);
 			}
 
@@ -194,13 +189,13 @@ namespace lat
 
 		private void OnBoolChanged (object o, EventArgs args)
 		{
-			foreach (ComboBox c in _allCombos)
-			{
+			foreach (ComboBox c in _allCombos) {
+
 				if (c == null)
 					continue;
 
-				if (c.Sensitive)
-				{
+				if (c.Sensitive) {
+
 					TreeIter iter;
 						
 					if (!firstCritCombo.GetActiveIter (out iter))
@@ -253,8 +248,8 @@ namespace lat
 		{
 			string boolOp = "";
 
-			foreach (string key in _critTable.Keys)
-			{
+			foreach (string key in _critTable.Keys) 
+{
 				SearchCriteria sc = (SearchCriteria) _critTable [key];
 
 				TreeIter iter;
@@ -284,8 +279,8 @@ namespace lat
 		
 		private void OnOkClicked (object o, EventArgs args)
 		{
-			if (!attributeEntry.Text.Equals (""))
-			{
+			if (!attributeEntry.Text.Equals ("")) {
+
 				TreeIter iter;
 							
 				if (!opComboBox.GetActiveIter (out iter))
@@ -298,9 +293,8 @@ namespace lat
 					attributeEntry.Text,
 					s,
 					valueEntry.Text);
-			}
-			else
-			{
+
+			} else {
 				// complex search
 				buildFilter ();
 			}

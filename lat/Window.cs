@@ -197,8 +197,8 @@ namespace lat
 		{
 			clearValues ();
 
-			if (args.Name.Equals (server.Host))
-			{
+			if (args.Name.Equals (server.Host)) {
+
 				// FIXME: Need a way to remove the handlers
 
 				setNameValueView ();
@@ -223,13 +223,9 @@ namespace lat
 			string msg = null;
 
 			if (server.AuthDN == null)
-			{
 				msg = String.Format("Bind DN: anonymous");
-			}
 			else
-			{
 				msg = String.Format("Bind DN: {0}", server.AuthDN);
-			}
 
 			appBar.Pop ();
 			appBar.Push (msg);
@@ -239,14 +235,11 @@ namespace lat
 
 		private void toggleInfoNotebook (bool show)
 		{
-			if (show)
-			{
+			if (show) {
 				infoNotebook.Show ();
 				hbuttonbox3.Hide ();
 				valuesScrolledWindow.Hide ();
-			}
-			else
-			{
+			} else {
 				infoNotebook.Hide ();
 				hbuttonbox3.Show ();
 				valuesScrolledWindow.Show ();
@@ -255,8 +248,8 @@ namespace lat
 
 		private void setInfoNotePage (int page)
 		{
-			if (page == 0)
-			{
+			if (page == 0) {
+
 				Gtk.Widget w = infoNotebook.GetNthPage (1);
 				w.HideAll ();
 
@@ -264,9 +257,9 @@ namespace lat
 				w.ShowAll ();
 
 				infoNotebook.Show ();
-			}
-			else if (page == 1)
-			{
+
+			} else if (page == 1) {
+
 				Gtk.Widget w = infoNotebook.GetNthPage (1);
 				w.ShowAll ();
 
@@ -274,9 +267,9 @@ namespace lat
 				w.HideAll ();
 
 				infoNotebook.Show ();
-			}
-			else
-			{
+
+			} else {
+
 				infoNotebook.HideAll ();
 			}
 		}
@@ -307,19 +300,16 @@ namespace lat
 		private void schemaDNSelected (object o, schemaSelectedEventArgs args)
 		{
 			if (args.Name == "Object Classes" || args.Name == "Attribute Types")
-			{
 				return;
-			}
 
-			if (args.Parent == "Object Classes")
-			{
+			if (args.Parent == "Object Classes") {
 				setInfoNotePage (0);
 
 				SchemaParser sp = server.GetObjectClassSchema (args.Name);
 				showEntrySchema (sp);
-			}
-			else if (args.Parent == "Attribute Types")
-			{
+
+			} else if (args.Parent == "Attribute Types") {
+
 				setInfoNotePage (1);
 
 				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
@@ -329,8 +319,7 @@ namespace lat
 
 		private void ldapDNSelected (object o, dnSelectedEventArgs args)
 		{
-			if (args.IsHost)
-			{
+			if (args.IsHost) {
 				showConnectionAttributes ();
 				return;
 			}
@@ -371,38 +360,27 @@ namespace lat
 			TreeIter iter;
 
 			if (!valuesStore.GetIterFromString (out iter, args.Path))
-			{
 				return;
-			}
 
 			string oldText = (string) valuesStore.GetValue (iter, 1);
 
 			if (oldText.Equals (args.NewText))
-			{
-				// no modification
 				return;
-			}
 			
 			string _name = (string) valuesStore.GetValue (iter, 0);
 
 			string dn = null;
 
 			if (viewNotebook.CurrentPage == 1)
-			{
 				dn = _ldapTreeview.getSelectedDN ();
-			}
 			else if (viewNotebook.CurrentPage == 2)
-			{
 				dn = _searchTreeView.SelectedResult;
-			}
 		
 			if (dn == null)
 				return;
 			
 			if (dn.Equals (server.Host))
-			{
 				return;
-			}
 
 			valuesStore.SetValue (iter, 1, args.NewText);
 
@@ -426,15 +404,11 @@ namespace lat
 				searchBaseButton.Label, filterEntry.Text);
 
 			if (searchResults.Length > 0 && filterEntry.Text != "")
-			{
 				_searchTreeView.UpdateSearchResults (searchResults);
-			}
 			else
-			{
 				Util.MessageBox (mainWindow, 
 					Mono.Unix.Catalog.GetString ("Invalid search filter."), 
 					MessageType.Error);
-			}			
 		}
 
 		public void OnSearchBaseClicked (object o, EventArgs args)
@@ -491,8 +465,8 @@ namespace lat
 				Mono.Unix.Catalog.GetString ("Protocol Version"),
 					 server.Protocol.ToString());
 
-			if (server.ServerType == LdapServerType.ActiveDirectory)
-			{
+			if (server.ServerType == LdapServerType.ActiveDirectory) {
+
 				valuesStore.AppendValues (
 					Mono.Unix.Catalog.GetString ("DNS Host Name"),
 					server.ADInfo.DnsHostName);
@@ -528,47 +502,39 @@ namespace lat
 		
 			LdapAttribute a = entry.getAttribute ("objectClass");
 
-			foreach (string o in a.StringValueArray)
-			{
+			foreach (string o in a.StringValueArray) {
+
 				string[] attrs = server.GetAllAttributes (o);
 				
 				foreach (string at in attrs)
-				{
 					if (!allAttrs.Contains (at))
 						allAttrs.Add (at);
-				}
 			}
 
 			LdapAttributeSet attributeSet = entry.getAttributeSet ();
 
-			foreach (LdapAttribute attr in attributeSet)
-			{
+			foreach (LdapAttribute attr in attributeSet) {
+
 				if (allAttrs.Contains (attr.Name))
-				{
 					allAttrs.Remove (attr.Name);
-				}
 
 				foreach (string s in attr.StringValueArray)
-				{
 					valuesStore.AppendValues (attr.Name, s);
-				}
 			}
 
 			if (!showAllAttributes.Active)
 				return;
 
 			foreach (string n in allAttrs)
-			{
 				valuesStore.AppendValues (n, "");
-			}
 		}
 
 		public void OnShowAllAttributes (object o, EventArgs args)
 		{
 			string dn = null;
 
-			if (viewNotebook.CurrentPage == 1)
-			{
+			if (viewNotebook.CurrentPage == 1) {
+
 				dn = _ldapTreeview.getSelectedDN ();
 
 				if (dn == null)
@@ -581,17 +547,15 @@ namespace lat
 
 		private void showAttrTypeSchema (SchemaParser sp)
 		{
-			try
-			{
+			try {
+
 				attrIDEntry.Text = sp.ID;
 				attrDescriptionEntry.Text = sp.Description;
 
 				string tmp = "";
 
 				foreach (string a in sp.Names)
-				{
 					tmp += String.Format ("{0}\n", a);
-				}
 
 				attrNameTextview.Buffer.Text = tmp;
 
@@ -608,19 +572,17 @@ namespace lat
 				tmp = "";
 
 				foreach (string b in sp.Superiors)
-				{
 					tmp += String.Format ("{0}\n", b);
-				}
 
 				attrSuperiorTextview.Buffer.Text = tmp;
-			}
-			catch {}
+
+			} catch {}
 		}
 
 		private void showEntrySchema (SchemaParser sp)
 		{
-			try
-			{
+			try {
+
 				objRequiredStore.Clear ();
 				objOptionalStore.Clear ();
 
@@ -630,34 +592,26 @@ namespace lat
 				string tmp = "";
 
 				foreach (string a in sp.Names)
-				{
 					tmp += String.Format ("{0}\n", a);
-				}
 
 				objNameTextview.Buffer.Text = tmp;
 
 				tmp = "";
 
 				foreach (string b in sp.Superiors)
-				{
 					tmp += String.Format ("{0}\n", b);
-				}
 
 				objSuperiorTextview.Buffer.Text = tmp;
 
 				foreach (string c in sp.Required)
-				{
 					objRequiredStore.AppendValues (c);
-				}
 
 				foreach (string d in sp.Optional)
-				{
 					objOptionalStore.AppendValues (d);
-				}
 
 				objObsoleteCheckbutton.Active = sp.Obsolete;
-			}
-			catch {}
+
+			} catch {}
 		}
 
 		private void setNameValueView ()
@@ -700,8 +654,8 @@ namespace lat
 
 		private void cleanupView ()
 		{
-			if (currentView != null)
-			{
+			if (currentView != null) {
+
 				removeButtonHandlers ();
 				currentView.RemoveDndHandlers ();
 				currentView.RemoveHandlers ();
@@ -716,9 +670,7 @@ namespace lat
 			currentView = serverViewFactory.Create (name);
 
 			if (currentView != null)
-			{
 				currentView.Populate ();
-			}
 
 			newToolButton.Clicked += new EventHandler
 				(currentView.OnNewEntryActivate);
@@ -737,31 +689,29 @@ namespace lat
 
 		private void clearValues ()
 		{
-			if (valuesStore != null)
-			{
+			if (valuesStore != null) {
 				valuesStore.Clear ();
 				valuesStore = null;
 			}
+
 			foreach (TreeViewColumn col in valuesListview.Columns)
-			{
 				valuesListview.RemoveColumn (col);
-			}
 		}
 
 		private void notebookViewChanged (object o, SwitchPageArgs args)
 		{
 			clearValues ();
 
-			if (args.PageNum == 0)
-			{
+			if (args.PageNum == 0) {
+
 				_ldapTreeview.removeToolbarHandlers ();
 				toggleButtons (false);
 				toggleInfoNotebook (false);
 
 				templateToolButton.Hide ();
-			}
-			else if (args.PageNum == 1)
-			{
+
+			} else if (args.PageNum == 1) {
+
 				cleanupView ();
 
 				toggleButtons (true);
@@ -774,9 +724,9 @@ namespace lat
 				setNameValueView ();
 
 				_ldapTreeview.setToolbarHandlers (newToolButton, deleteToolButton);
-			}
-			else if (args.PageNum == 2)
-			{
+
+			} else if (args.PageNum == 2) {
+
 				cleanupView ();
 
 				_ldapTreeview.removeToolbarHandlers ();
@@ -786,9 +736,9 @@ namespace lat
 				toggleInfoNotebook (false);
 
 				templateToolButton.Hide ();
-			}
-			else if (args.PageNum == 3)
-			{
+
+			} else if (args.PageNum == 3) {
+
 				cleanupView ();
 
 				toggleButtons (false);
@@ -810,8 +760,8 @@ namespace lat
 		{
 			object val = Preferences.Get (key);
 
-			if (val == null)
-			{
+			if (val == null) {
+
 				if (key == Preferences.MAIN_WINDOW_HPANED)
 					hpaned1.Position = 250;
 
@@ -854,45 +804,33 @@ namespace lat
 		public void OnNewActivate (object o, EventArgs args)
 		{
 			if (viewNotebook.CurrentPage == 0)
-			{
 				if (currentView != null)
 					currentView.OnNewEntryActivate (o, args);
-			}
 			else if (viewNotebook.CurrentPage == 1)
-			{
 				_ldapTreeview.OnNewEntryActivate (o, args);
-			}
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args)
 		{
 			if (viewNotebook.CurrentPage == 0)
-			{
 				if (currentView != null)
 					currentView.OnDeleteActivate (o, args);
-			}
 			else if (viewNotebook.CurrentPage == 1)
-			{
 				_ldapTreeview.OnDeleteActivate (o, args);
-			}
 		}
 
 		public void OnPropertiesActivate (object o, EventArgs args)
 		{
 			if (viewNotebook.CurrentPage == 0)
-			{
 				if (currentView != null)
 					currentView.OnEditActivate (o, args);
-			}
 		}
 
 		public void OnRefreshActivate (object o, EventArgs args)
 		{
 			if (viewNotebook.CurrentPage == 0)
-			{
 				if (currentView != null)
 					currentView.OnRefreshActivate (o, args);
-			}
 		}
 
 		public void OnReloginActivate (object o, EventArgs args)
@@ -919,8 +857,8 @@ namespace lat
 	     
 			ResponseType result = (ResponseType)md.Run ();
 
-			if (result == ResponseType.Yes)
-			{
+			if (result == ResponseType.Yes) {
+
 				server.Disconnect ();
 
 				mainWindow.Hide ();
@@ -946,8 +884,8 @@ namespace lat
 			fcd.SelectMultiple = false;
 
 			ResponseType response = (ResponseType) fcd.Run();
-			if (response == ResponseType.Ok) 
-			{
+			if (response == ResponseType.Ok) {
+
 				UriBuilder ub = new UriBuilder ();
 				ub.Scheme = "file";
 				ub.Path = fcd.Filename;
@@ -1015,21 +953,20 @@ namespace lat
 			DN dn = new DN (_cutDN);
 			RDN r = (RDN) dn.RDNs[0];
 
-			try
-			{
+			try {
+
 				string msg = null;
 
-				if (_isCopy)
-				{
+				if (_isCopy) {
+
 					server.Copy (_cutDN, r.toString(false), _pasteDN);
 
 					msg = String.Format (
 						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
 						_cutDN, _pasteDN);
 
-				}
-				else
-				{
+				} else {
+
 					server.Move (_cutDN, r.toString(false), _pasteDN);
 
 					msg = String.Format (
@@ -1044,18 +981,16 @@ namespace lat
 
 				if (!_isCopy)
 					_ldapTreeview.RemoveRow (_cutIter);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string msg = null;
 
-				if (_isCopy)
-				{
+				if (_isCopy) {
 					string txt = Mono.Unix.Catalog.GetString ("Unable to copy entry ");
 					msg = txt + _cutDN;
-				}
-				else
-				{
+				} else {
+
 					string txt = Mono.Unix.Catalog.GetString ("Unable to move entry ");
 					msg = txt + _cutDN;
 				}
@@ -1068,9 +1003,7 @@ namespace lat
 			}
 
 			if (_isCopy)
-			{
 				_isCopy = false;
-			}
 		}
 
 		public void OnMassEditActivate (object o, EventArgs args)
@@ -1084,42 +1017,29 @@ namespace lat
 
 			string viewPrefix = Util.GetServerPrefix (server);
 
-			if (userView.Active)
-			{
+			if (userView.Active) {
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
 				changeView (viewPrefix + "Users");
-			}
-			else if (groupView.Active)
-			{
+			} else if (groupView.Active) {
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
 				changeView (viewPrefix + "Groups");
-			}
-			else if (computersView.Active)
-			{
+			} else if (computersView.Active) {
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
 				changeView (viewPrefix + "Computers");
-			}
-			else if (contactView.Active)
-			{
+			} else if (contactView.Active) {
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
 				changeView (viewPrefix + "Contacts");
-			}
-			else if (browserView.Active)
-			{
+			} else if (browserView.Active) {
 				viewNotebook.Page = 1;
 				toggleInfoNotebook (false);
-			}
-			else if (searchView.Active)
-			{
+			} else if (searchView.Active) {
 				viewNotebook.Page = 2;
 				toggleInfoNotebook (false);
-			}
-			else if (schemaView.Active)
-			{
+			} else if (schemaView.Active) {
 				viewNotebook.Page = 3;
 				toggleInfoNotebook (true);
 				setInfoNotePage (-1);
@@ -1133,16 +1053,16 @@ namespace lat
 
 		public void OnHelpContentsActivate (object o, EventArgs args)
 		{
-			try
-			{
+			try {
+
 				Gnome.Help.DisplayDesktopOnScreen (Global.latProgram, 
 					Defines.PACKAGE, 
 					"lat.xml", 
 					null, 
 					Gdk.Screen.Default);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				Util.MessageBox (mainWindow, e.Message, MessageType.Error);
 			}
 		}

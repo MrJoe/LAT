@@ -64,36 +64,33 @@ public class LdapAdministrationTool
 		// Parse command-line arguments 			
 		int i = 0;
 
-		// loop taken from beagled
-		while (i < args.Length)
-		{
+		while (i < args.Length) {
+
 			string arg = args[i];
 			++i;
 
-//			string next_arg = i < args.Length ? args[i] : null;
+			switch (arg) {
 
-			switch (arg)
-			{
-				case "-d":
-				case "--debug":
-					Global.Debug = true;
-					break;
+			case "-d":
+			case "--debug":
+				Global.Debug = true;
+				break;
 
-				case "-h":
-				case "--help":
-					printUsage ();
-					Environment.Exit (0);
-					break;
+			case "-h":
+			case "--help":
+				printUsage ();
+				Environment.Exit (0);
+				break;
 
-				case "-v":
-				case "--version":
-					printVersion ();
-					Environment.Exit (0);
-					break;
+			case "-v":
+			case "--version":
+				printVersion ();
+				Environment.Exit (0);
+				break;
 
-				default:
-					Console.WriteLine ("Unknown argument '{0}'", arg);
-					break;
+			default:
+				Console.WriteLine ("Unknown argument '{0}'", arg);
+				break;
 			}
 		}
 

@@ -30,8 +30,7 @@ namespace lat
 
 		public static Logger Log 
 		{
-			get 
-			{
+			get {
 				Logger log = new Logger ();
 				return log;
 			}
@@ -39,8 +38,7 @@ namespace lat
 
 		private void Write (string level, string message) 
 		{
-			if (writer != null) 
-			{
+			if (writer != null)  {
 				writer.WriteLine ("{0}: {1}", level, message);
 				writer.Flush ();
 			}
@@ -49,9 +47,7 @@ namespace lat
 		public void Debug (string message, params object[] args) 
 		{
 			if (Global.Debug) 
-			{
 				Write ("DEBUG", String.Format (message, args));
-			}
 		}
 	}
 }  

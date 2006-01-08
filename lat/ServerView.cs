@@ -56,8 +56,8 @@ namespace lat
 
 			viewData = (ViewData) Global.viewManager.Lookup (viewName);
 
-			if (viewData.Name == null)
-			{
+			if (viewData.Name == null) {
+
 				// Probably a standard view; search again
 				prefix = Util.GetServerPrefix (ldapServer);
 
@@ -76,14 +76,10 @@ namespace lat
 		private void Cleanup ()
 		{
 			if (valueStore != null)
-			{
 				valueStore.Clear ();
-			}			
 
 			foreach (TreeViewColumn col in valueTreeView.Columns)
-			{
 				valueTreeView.RemoveColumn (col);
-			}
 		}
 
 	}
@@ -123,18 +119,14 @@ namespace lat
 			tv.ButtonPressEvent += new ButtonPressEventHandler (OnEntryRightClick);
 
 			if (vd.Base.Equals (""))
-			{
 				vd.Base = server.DirectoryRoot;
-			}
 
 			lookupTable = new Hashtable ();
 
 			System.Type[] types = new System.Type [vd.Cols.Length];
 
 			for (int i = 0; i < vd.Cols.Length; i++)
-			{
 				types[i] = typeof (string);
-			}
 
 			store = new ListStore (types);
 			tv.Model = store;
@@ -150,8 +142,8 @@ namespace lat
 		{
 			CellRenderer crt = new CellRendererText ();
 
-			for (int i = 0; i < vd.Cols.Length; i++)
-			{
+			for (int i = 0; i < vd.Cols.Length; i++) {
+
 				TreeViewColumn col = new TreeViewColumn ();
 				col.Title = vd.ColNames[i];
 				col.PackStart (crt, true);
@@ -185,13 +177,13 @@ namespace lat
 
 		private void DoInsert (LdapEntry[] objs, string[] attributes)
 		{
-			try
-			{
+			try {
+
 				if (store != null)
 					store.Clear ();
 
-				foreach (LdapEntry le in objs)
-				{
+				foreach (LdapEntry le in objs) {
+
 					string[] values = server.GetAttributeValuesFromEntry (
 						le, attributes);
 
@@ -205,9 +197,9 @@ namespace lat
 
 					lookupTable.Add (values [vd.PrimaryKey], le);
 				}
-			}
-			catch 
-			{
+
+			} catch {
+
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read data from server");
 
@@ -262,8 +254,8 @@ namespace lat
 
 			popup.Append (propItem);
 
-			if (vd.Name == "openldapUsers")
-			{
+			if (vd.Name == "openldapUsers") {
+
 				SeparatorMenuItem sm = new SeparatorMenuItem ();
 				sm.Show ();
 		
@@ -278,9 +270,9 @@ namespace lat
 				popup.Append (pwdItem);
 
 				PopupAddExtra ();
-			}
-			else if (vd.Name == "adUsers")
-			{
+
+			} else if (vd.Name == "adUsers") {
+
 				SeparatorMenuItem sm = new SeparatorMenuItem ();
 				sm.Show ();
 		
@@ -289,8 +281,8 @@ namespace lat
 				PopupAddExtra ();
 			}
 
-			if (vd.Name.IndexOf ("Contacts") >= 0)
-			{
+			if (vd.Name.IndexOf ("Contacts") >= 0) {
+
 				SeparatorMenuItem sm = new SeparatorMenuItem ();
 				sm.Show ();
 		
@@ -328,17 +320,14 @@ namespace lat
 			// FIXME: Find a way to not deselect multiple selection
 
 			if (args.Event.Button == 3)
-			{
 				DoPopUp ();
-			}
 		}
 
 		public LdapEntry LookupEntry (TreePath path)
 		{
 			TreeIter iter;
 			
-			if (store.GetIter (out iter, path))
-			{
+			if (store.GetIter (out iter, path)) {
 				string key = null;
 				key = (string) store.GetValue (iter, vd.PrimaryKey);
 				
@@ -371,8 +360,7 @@ namespace lat
 
 			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
-			foreach (TreePath path in tp)
-			{
+			foreach (TreePath path in tp) {
 				LdapEntry le = LookupEntry (path);
 
 				LDIF _ldif = new LDIF (le);
@@ -398,25 +386,22 @@ namespace lat
 			string data = System.Text.Encoding.UTF8.GetString (
 					args.SelectionData.Data);
 
-			switch (args.Info)
+			switch (args.Info) {
+
+			case 0:
 			{
-				case 0:
-				{
-					string[] uri_list = Regex.Split (data, "\r\n");
+				string[] uri_list = Regex.Split (data, "\r\n");
 
-					Util.ImportData (server, parent, uri_list);
+				Util.ImportData (server, parent, uri_list);
 					
-					success = true;
-					break;
-				}
+				success = true;
+				break;
+			}
 
-				case 1:
-				{
-					Util.ImportData (server, parent, data);
-
-					success = true;
-					break;
-				}
+			case 1:
+				Util.ImportData (server, parent, data);
+				success = true;
+				break;
 			}
 
 			Gtk.Drag.Finish (args.Context, success, false, args.Time);
@@ -434,8 +419,7 @@ namespace lat
 			TreeModel model;
 			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
-			foreach (TreePath path in tp)
-			{
+			foreach (TreePath path in tp) {
 				LdapEntry le = LookupEntry (path);
 
 				ViewDialogFactory.Create (vd.Name, server, le);
@@ -446,10 +430,10 @@ namespace lat
 
 		private void DeleteEntry (TreePath[] path)
 		{
-			try
-			{
-				if (!(path.Length > 1))
-				{
+			try {
+
+				if (!(path.Length > 1)) {
+
 					LdapEntry le = LookupEntry (path[0]);
 
 					Util.DeleteEntry (server, parent, le.DN);
@@ -459,8 +443,7 @@ namespace lat
 
 				ArrayList dnList = new ArrayList ();
 
-				foreach (TreePath tp in path)
-				{
+				foreach (TreePath tp in path) {
 					LdapEntry le = LookupEntry (tp);
 					dnList.Add (le.DN);
 				}
@@ -468,8 +451,8 @@ namespace lat
 				string[] dns = (string[]) dnList.ToArray (typeof(string));
 
 				Util.DeleteEntry (server, parent, dns);
-			}
-			catch {}
+
+			} catch {}
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args) 
@@ -487,8 +470,7 @@ namespace lat
 			TreeModel model;
 			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
-			try
-			{
+			try {
 				LdapEntry le = LookupEntry (tp[0]);
 				Util.ExportData (server, parent, le.DN);
 			}
@@ -501,8 +483,7 @@ namespace lat
 
 			TreePath[] tp = this.tv.Selection.GetSelectedRows (out model);
 
-			try
-			{
+			try {
 				LdapEntry le = this.LookupEntry (tp[0]);
 				LdapAttribute la = le.getAttribute (attrName);
 
@@ -517,8 +498,7 @@ namespace lat
 		{
 			string url = getSelectedAttribute ("mail");
 
-			if (url == null || url == "")
-			{
+			if (url == null || url == "") {
 				string msg = Mono.Unix.Catalog.GetString (
 					"Invalid or empty email address");
 				
@@ -527,12 +507,11 @@ namespace lat
 				return;
 			}
 
-			try
-			{
+			try {
 				Gnome.Url.Show ("mailto:" + url);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg =
 					Mono.Unix.Catalog.GetString ("Unable to send mail to ") + url;
 
@@ -546,12 +525,11 @@ namespace lat
 		{
 			string url = getSelectedAttribute ("wWWHomePage");
 
-			try
-			{
+			try {
 				Gnome.Url.Show (url);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg =
 					Mono.Unix.Catalog.GetString ("Unable to open page ") + url;
 
@@ -573,8 +551,7 @@ namespace lat
 
 			mods.Add (lm);
 
-			if (Util.CheckSamba (entry))
-			{
+			if (Util.CheckSamba (entry)) {
 				la = new LdapAttribute ("sambaLMPassword", pd.LMPassword);
 				lm = new LdapModification (LdapModification.REPLACE, la);
 
@@ -600,8 +577,7 @@ namespace lat
 			TreeModel model;
 			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
 
-			foreach (TreePath path in tp)
-			{
+			foreach (TreePath path in tp) {
 				LdapEntry le = LookupEntry (path);
 				ChangePassword (le, pd);
 			}

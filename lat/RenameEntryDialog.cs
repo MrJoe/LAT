@@ -56,8 +56,8 @@ namespace lat
 			string newDN = newNameEntry.Text;
 			bool saveOld = saveOldNameCheckButton.Active;
 			
-			try
-			{
+			try {
+
 				server.Rename (oldDN, newDN, saveOld);
 
 				string msg = String.Format (
@@ -66,9 +66,9 @@ namespace lat
 					oldDN, newDN);
 
 				Util.MessageBox (renameEntryDialog, msg, MessageType.Info);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg =
 					Mono.Unix.Catalog.GetString ("Unable to rename entry ") + oldDN;
 

@@ -59,9 +59,7 @@ namespace lat
 
 			string[] names = Global.theTemplateManager.GetTemplateNames ();
 			foreach (string n in names)
-			{
 				_store.AppendValues (n);
-			}
 		}
 
 		private void setupTreeViews ()
@@ -81,8 +79,7 @@ namespace lat
 			TreePath path = args.Path;
 			TreeIter iter;
 			
-			if (_store.GetIter (out iter, path))
-			{
+			if (_store.GetIter (out iter, path)) {
 				string name = null;
 				name = (string) _store.GetValue (iter, 0);
 
@@ -119,8 +116,7 @@ namespace lat
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
 			
-			if (templateTreeView.Selection.GetSelected (out model, out iter)) 
-			{
+			if (templateTreeView.Selection.GetSelected (out model, out iter))  {
 				string name = (string) model.GetValue (iter, 0);
 				editTemplate (name);
 			}
@@ -132,9 +128,7 @@ namespace lat
 			Gtk.TreeModel model;
 			
 			if (!templateTreeView.Selection.GetSelected (out model, out iter)) 
-			{
 				return;
-			}
 
 			string name = (string) model.GetValue (iter, 0);
 			
@@ -143,8 +137,7 @@ namespace lat
 
 			string msg = String.Format ("{0}\n\n{1}", tmp, name);
 
-			if (Util.AskYesNo (templatesDialog, msg))
-			{
+			if (Util.AskYesNo (templatesDialog, msg)) {
 				Global.theTemplateManager.Delete (name);
 				listTemplates ();
 			}

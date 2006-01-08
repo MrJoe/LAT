@@ -66,8 +66,7 @@ namespace lat
 
 		public string Message
 		{
-			set 
-			{
+			set {
 				msgLabel.Markup = String.Format ("<span size=\"larger\">{0}</span>", value); 
 			}
 		}
@@ -75,9 +74,7 @@ namespace lat
 		private void ldapDNSelected (object o, dnSelectedEventArgs args)
 		{
 			if (args.IsHost)
-			{
 				return;
-			}
 
 			_dn = args.DN;
 

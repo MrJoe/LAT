@@ -81,16 +81,14 @@ namespace lat
 		{
 			resultsStore.Clear ();
 
-			if (!(searchResults.Length > 0))
-			{
+			if (!(searchResults.Length > 0)) {
+
 				resultsStore.AppendValues (
 					Mono.Unix.Catalog.GetString ("No matches found."));
 			}
 			
 			foreach (LdapEntry le in searchResults)
-			{
 				resultsStore.AppendValues (le.DN);
-			}
 		}
 
 		private void OnSearchDragBegin (object o, DragBeginArgs args)
@@ -121,9 +119,7 @@ namespace lat
 		private void DispatchSearchResultSelectedEvent (string dn)
 		{
 			if (SearchResultSelected != null)
-			{
 				SearchResultSelected (this, new SearchResultSelectedEventArgs (dn));
-			}
 		}
 
 		private string getSelectedSearchResult ()

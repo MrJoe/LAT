@@ -45,8 +45,8 @@ namespace lat
 			la = new LdapAttribute ("objectclass", objClass);
 			retVal.Add (la);
 
-			foreach (string a in attrs)
-			{
+			foreach (string a in attrs) {
+
 				string entryValue = (string) entryInfo[a];
 
 				if (entryValue == null || entryValue.Equals (""))
@@ -65,25 +65,23 @@ namespace lat
 
 			ArrayList retVal = new ArrayList ();
 
-			foreach (string a in attrs)
-			{
+			foreach (string a in attrs) {
+
 				string oldValue = (string) oldInfo[a];
 				string newValue = (string) newInfo[a];
 
-				if (!oldValue.Equals (newValue) && newValue != null)
-				{
+				if (!oldValue.Equals (newValue) && newValue != null) {
+
 					Logger.Log.Debug ("Modification: attribute: [{0}] - oldValue: [{1}] - newValue: [{2}]", a, oldValue, newValue);
 
 					LdapAttribute la; 
 					LdapModification lm;
 
-					if (newValue == "")
-					{
+					if (newValue == "") {
 						la = new LdapAttribute (a);
 						lm = new LdapModification (LdapModification.DELETE, la);
-					}
-					else
-					{
+					} else {
+
 						la = new LdapAttribute (a, newValue);
 						lm = new LdapModification (LdapModification.REPLACE, la);
 					}
@@ -103,9 +101,7 @@ namespace lat
 				Mono.Unix.Catalog.GetString ("You must provide values for the following attributes:\n\n"));
 
 			foreach (string m in missing)
-			{
 				msg += String.Format ("{0}\n", m);
-			}
 
 			Util.MessageBox (viewDialog, msg, MessageType.Warning);
 		}
@@ -115,13 +111,9 @@ namespace lat
 			string attrValue = (string) entryInfo [name];
 
 			if (attrValue == null)
-			{
 				return false;
-			} 
 			else if (attrValue.Equals (""))
-			{
 				return false;
-			}
 
 			return true;
 		}
@@ -130,8 +122,8 @@ namespace lat
 		{
 			ArrayList outMiss = new ArrayList ();
 
-			foreach (string obj in objectClass)
-			{
+			foreach (string obj in objectClass) {
+
 				if (obj.Equals ("top"))
 					continue;
 
@@ -140,21 +132,19 @@ namespace lat
 				if (reqs == null)
 					continue;
 
-				foreach (string r in reqs)
-				{
+				foreach (string r in reqs) {
+
 					if (r.Equals ("cn"))
 						continue;
 
-					if (!checkReq (r, entryInfo))
-					{
+					if (!checkReq (r, entryInfo)) {
 						outMiss.Add (r);
 						continue;
 					}
 				}
 			}
 
-			if (outMiss.Count > 0)
-			{
+			if (outMiss.Count > 0) {
 				missing = (string[]) outMiss.ToArray (typeof (string));
 				return false;
 			}

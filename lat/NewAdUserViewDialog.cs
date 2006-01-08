@@ -70,8 +70,7 @@ namespace lat
 
 			newAdUserDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				newAdUserDialog.Run ();				
 			}
@@ -103,8 +102,8 @@ namespace lat
 			LdapEntry[] grps = server.SearchByClass ("group");
 			ArrayList glist = new ArrayList ();
 	
-			foreach (LdapEntry e in grps)
-			{
+			foreach (LdapEntry e in grps) {
+
 				LdapAttribute nameAttr;
 				nameAttr = e.getAttribute ("cn");
 
@@ -119,9 +118,7 @@ namespace lat
 			primaryGroupComboBox = ComboBox.NewText ();
 
 			foreach (string n in groupList)
-			{
 				primaryGroupComboBox.AppendText (n);
-			}
 
 			primaryGroupComboBox.Active = 0;
 			primaryGroupComboBox.Show ();
@@ -168,23 +165,19 @@ namespace lat
 			if (displayNameEntry.Text != "")
 				return;
 
-			if (initialsEntry.Text.Equals(""))
-			{
+			if (initialsEntry.Text.Equals("")) {
+
 				displayNameEntry.Text = String.Format ("{0} {1}", 
 					firstNameEntry.Text, 
 					lastNameEntry.Text);
-			}
-			else
-			{
+
+			} else {
+
 				String format = "";
 				if (initialsEntry.Text.EndsWith("."))
-				{
 					format = "{0} {1} {2}";
-				}
 				else
-				{
 					format = "{0} {1}. {2}";
-				}
 
 				displayNameEntry.Text = String.Format (format, 
 					firstNameEntry.Text, 
@@ -224,8 +217,8 @@ namespace lat
 
 			string[] missing = null;
 
-			if (!checkReqAttrs (objClass, cui, out missing))
-			{
+			if (!checkReqAttrs (objClass, cui, out missing)) {
+
 				missingAlert (missing);
 				missingValues = true;
 

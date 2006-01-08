@@ -45,8 +45,7 @@ namespace lat
 
 			newAdComputerDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				newAdComputerDialog.Run ();				
 			}
@@ -86,8 +85,7 @@ namespace lat
 			string[] objClass = {"top", "computer", "organizationalPerson", "person", 
 					     "user"};
 
-			if (!checkReqAttrs (objClass, chi, out missing))
-			{
+			if (!checkReqAttrs (objClass, chi, out missing)) {
 				missingAlert (missing);
 				return;
 			}

@@ -77,8 +77,7 @@ namespace lat
 
 			newUserDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				newUserDialog.Run ();				
 			}
@@ -89,17 +88,15 @@ namespace lat
 		private void OnSambaChanged (object o, EventArgs args)
 		{
 			if (enableSambaButton.Active)
-			{
 				_smbSID = server.GetLocalSID ();
-			}
 		}
 		
 		private void getGroups ()
 		{
 			LdapEntry[] grps = server.SearchByClass ("posixGroup");
 
-			foreach (LdapEntry e in grps)
-			{
+			foreach (LdapEntry e in grps) {
+
 				LdapAttribute nameAttr, gidAttr;
 				nameAttr = e.getAttribute ("cn");
 				gidAttr = e.getAttribute ("gidNumber");
@@ -115,9 +112,7 @@ namespace lat
 			primaryGroupComboBox = ComboBox.NewText ();
 
 			foreach (string key in _allGroups.Keys)
-			{
 				primaryGroupComboBox.AppendText (key);
-			}
 
 			primaryGroupComboBox.Active = 0;
 			primaryGroupComboBox.Show ();
@@ -172,23 +167,17 @@ namespace lat
 			if (displayNameEntry.Text != "")
 				return;
 
-			if (initialsEntry.Text.Equals(""))
-			{
+			if (initialsEntry.Text.Equals("")) {
 				displayNameEntry.Text = String.Format ("{0} {1}", 
 					firstNameEntry.Text, 
 					lastNameEntry.Text);
-			}
-			else
-			{
+			} else {
+
 				String format = "";
 				if (initialsEntry.Text.EndsWith("."))
-				{
 					format = "{0} {1} {2}";
-				}
 				else
-				{
 					format = "{0} {1}. {2}";
-				}
 
 				displayNameEntry.Text = String.Format (format, 
 					firstNameEntry.Text, 
@@ -197,9 +186,7 @@ namespace lat
 			}
 
 			if (homeDirEntry.Text.Equals("") && !usernameEntry.Text.Equals(""))
-			{
 				homeDirEntry.Text = String.Format("/home/{0}", usernameEntry.Text);
-			}
 		}
 			
 		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
@@ -207,12 +194,11 @@ namespace lat
 			if (groupEntry == null)
 				return;
 
-			try
-			{
+			try {
 				server.Modify (groupEntry.DN, mods);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg =
 					Mono.Unix.Catalog.GetString ("Unable to modify group ") + groupEntry.DN;
 
@@ -227,8 +213,8 @@ namespace lat
 			LdapEntry groupEntry = null;
 			LdapModification[] mods = new LdapModification [1];
 
-			foreach (string key in _memberOfGroups.Keys)
-			{
+			foreach (string key in _memberOfGroups.Keys) {
+
 				LdapAttribute attr = new LdapAttribute ("memberUid", usernameEntry.Text);
 				LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 
@@ -260,8 +246,7 @@ namespace lat
 
 			TreeIter iter;
 				
-			if (primaryGroupComboBox.GetActiveIter (out iter))
-			{
+			if (primaryGroupComboBox.GetActiveIter (out iter)) {
 				string pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
 				retVal.Add ("gidNumber", getGidNumber(pg));
 			}
@@ -286,16 +271,14 @@ namespace lat
 			string[] objClass = { "top", "posixaccount", "shadowaccount","inetorgperson", "person" };
 			string[] missing = null;
 
-			if (!checkReqAttrs (objClass, cui, out missing))
-			{
+			if (!checkReqAttrs (objClass, cui, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 
 				return;
 			}
 
-			if (!Util.CheckUserName (server, usernameEntry.Text))
-			{
+			if (!Util.CheckUserName (server, usernameEntry.Text)) {
 				string format = Mono.Unix.Catalog.GetString (
 					"A user with the username '{0}' already exists!");
 
@@ -308,8 +291,7 @@ namespace lat
 				return;
 			}
 
-			if (!Util.CheckUID (server, Convert.ToInt32 (uidSpinButton.Value)))
-			{
+			if (!Util.CheckUID (server, Convert.ToInt32 (uidSpinButton.Value))) {
 				string msg = Mono.Unix.Catalog.GetString (
 					"The UID you have selected is already in use!");
 
@@ -329,8 +311,8 @@ namespace lat
 			attrList.Add (new LdapAttribute ("cn", fullName));
 			attrList.Add (new LdapAttribute ("gecos", fullName));
 
-			if (enableSambaButton.Active)
-			{
+			if (enableSambaButton.Active) {
+
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
 
 				ArrayList smbMods = Util.CreateSambaMods (
@@ -339,10 +321,9 @@ namespace lat
 							_smbLM,
 							_smbNT);
 
-				foreach (LdapModification l in smbMods)
-				{
-					if (l.Attribute.Name.Equals ("objectclass"))
-					{
+				foreach (LdapModification l in smbMods) {
+					if (l.Attribute.Name.Equals ("objectclass")) {
+ 	
 						LdapAttribute a = (LdapAttribute) attrList[0];
 						a.addValue ("sambaSAMAccount");
 

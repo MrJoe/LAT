@@ -78,8 +78,7 @@ namespace lat
 
 		private void Relogin ()
 		{
-			try
-			{
+			try {
 				if (useSSLCheckButton.Active)
 					server.Encryption = EncryptionType.SSL;
 
@@ -87,9 +86,9 @@ namespace lat
 					server.StartTLS ();
 
 				server.Bind (userEntry.Text, passEntry.Text);
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				string errorMsg =
 					Mono.Unix.Catalog.GetString ("Unable to re-login");
 

@@ -50,8 +50,7 @@ namespace lat
 
 			newContactDialog.Run ();
 
-			while (missingValues)
-			{
+			while (missingValues) {
 				missingValues = false;
 				newContactDialog.Run ();				
 			}
@@ -66,17 +65,17 @@ namespace lat
 
 			viewDialog = newContactDialog;
 
-			switch (server.ServerType)
-			{
-				case LdapServerType.ActiveDirectory:
-					_isPosix = false;
-					break;
+			switch (server.ServerType) {
 
-				case LdapServerType.OpenLDAP:
-				case LdapServerType.Generic:
-				default:
-					_isPosix = true;
-					break;
+			case LdapServerType.ActiveDirectory:
+				_isPosix = false;
+				break;
+
+			case LdapServerType.OpenLDAP:
+			case LdapServerType.Generic:
+			default:
+				_isPosix = true;
+				break;
 			}
 
 			// FIXME: manually loading tango icon
@@ -109,16 +108,11 @@ namespace lat
 			string[] missing = null;
 
 			if (!_isPosix)
-			{
 				objClass = new string[] {"top", "person", "organizationalPerson", "contact" };
-			}
 			else
-			{
 				objClass = new string[] {"top", "person", "inetOrgPerson" };
-			}
 
-			if (!checkReqAttrs (objClass, cci, out missing))
-			{
+			if (!checkReqAttrs (objClass, cci, out missing)) {
 				missingAlert (missing);
 				missingValues = true;
 

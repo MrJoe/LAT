@@ -137,8 +137,6 @@ namespace lat
 		{
 			if (_isEdit)
 				Util.ModifyEntry (server, dynamicDialog, _le.DN, _modList, true);
-			else
-				; // do nothing
 
 			dynamicDialog.HideAll ();
 		}

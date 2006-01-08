@@ -194,8 +194,8 @@ namespace lat {
 		public void GetAllAttributes (ArrayList objClass, 
 					 out string[] required, out string[] optional)
 		{
-			try
-			{
+			try {
+
 				LdapSchema schema;
 				LdapObjectClassSchema ocs;
 				
@@ -204,36 +204,29 @@ namespace lat {
 
 				schema = conn.FetchSchema ( conn.GetSchemaDN() );
 		
-				foreach (string c in objClass)
-				{
+				foreach (string c in objClass) {
+
 					ocs = schema.getObjectClassSchema ( c );
 
-					if (ocs.RequiredAttributes != null)
-					{
+					if (ocs.RequiredAttributes != null) {
+
 						foreach (string r in ocs.RequiredAttributes)
-						{
 							if (!r_attrs.Contains (r))
 								r_attrs.Add (r);
-						}
 					}
 
-					if (ocs.OptionalAttributes != null)
-					{
+					if (ocs.OptionalAttributes != null) {
 						foreach (string o in ocs.OptionalAttributes)
-						{
 							if (!o_attrs.Contains (o))
 								o_attrs.Add (o);
-						}
 					}
-
-
 				}
 
 				required = (string[]) r_attrs.ToArray (typeof (string));
 				optional = (string[]) o_attrs.ToArray (typeof (string));
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				required = null;
 				optional = null;
 
@@ -246,8 +239,8 @@ namespace lat {
 		/// <param name="objClass">Name of object class</param>
 		public string[] GetAllAttributes (string objClass)
 		{
-			try
-			{
+			try {
+
 				LdapSchema schema;
 				LdapObjectClassSchema ocs;
 				
@@ -256,30 +249,23 @@ namespace lat {
 				schema = conn.FetchSchema ( conn.GetSchemaDN() );	
 				ocs = schema.getObjectClassSchema ( objClass );
 
-				if (ocs.RequiredAttributes != null)
-				{
+				if (ocs.RequiredAttributes != null) {
 					foreach (string r in ocs.RequiredAttributes)
-					{
 						if (!attrs.Contains (r))
 							attrs.Add (r);
-					}
 				}
 
-				if (ocs.OptionalAttributes != null)
-				{
+				if (ocs.OptionalAttributes != null) {
 					foreach (string o in ocs.OptionalAttributes)
-					{
 						if (!attrs.Contains (o))
 							attrs.Add (o);
-					}
 				}
 
 				attrs.Sort ();
 
 				return (string[]) attrs.ToArray (typeof (string));
-			}
-			catch
-			{
+
+			} catch	{
 				return null;
 			}
 		}
@@ -315,19 +301,17 @@ namespace lat {
 				LdapConnection.SCOPE_BASE,
 	 			defaultSearchFilter, attrs);
 
-			foreach (LdapEntry entry in entries)
-			{			
+			foreach (LdapEntry entry in entries) {
+
 				LdapAttribute la = entry.getAttribute ("attributetypes");
 
-				foreach (string s in la.StringValueArray)
-				{
+				foreach (string s in la.StringValueArray) {
+
 					SchemaParser sp = new SchemaParser (s);
 
 					foreach (string a in sp.Names)
-					{
 						if (attrType.Equals (a))
 							return sp;
-					}
 				}
 			}
 			
@@ -346,9 +330,7 @@ namespace lat {
 			LdapAttribute la = le.getAttribute (attr);
 
 			if (la != null)
-			{
 				return la.StringValue;
-			}
 
 			return "";
 		}
@@ -366,8 +348,8 @@ namespace lat {
 
 			ArrayList retVal = new ArrayList ();
 
-			foreach (string n in attrs)
-			{
+			foreach (string n in attrs) {
+
 				LdapAttribute la = le.getAttribute (n);
 
 				if (la != null)
@@ -393,8 +375,8 @@ namespace lat {
 
 			entryInfo = new Hashtable ();
 
-			foreach (string n in attrs)
-			{
+			foreach (string n in attrs) {
+
 				LdapAttribute la = le.getAttribute (n);
 
 				if (la != null)
@@ -416,9 +398,7 @@ namespace lat {
 						    "objectclass=*", null);
 
 			if (entry.Length > 0)
-			{
 				return entry[0];
-			}
 		
 			return null;
 		}
@@ -444,8 +424,7 @@ namespace lat {
 			LdapEntry[] sid = Search (rootDN, LdapConnection.SCOPE_ONE,
 						    "objectclass=sambaDomain", null);
 
-			if (sid.Length > 0)
-			{
+			if (sid.Length > 0) {
 				LdapAttribute a = sid[0].getAttribute ("sambaSID");
 				return a.StringValue;
 			}
@@ -463,21 +442,16 @@ namespace lat {
 			LdapEntry[] groups = Search (rootDN, LdapConnection.SCOPE_SUB,
 						    "gidNumber=*", null);
 
-			foreach (LdapEntry entry in groups)
-			{			
+			foreach (LdapEntry entry in groups) {
 				LdapAttribute a = entry.getAttribute ("gidNumber");
 				gids.Add (int.Parse(a.StringValue));
 			}
 
 			gids.Sort ();
 			if (gids.Count == 0)
-			{
 				return 1000;
-			}
 			else
-			{
 				return (int) (gids [gids.Count - 1]) + 1;
-			}			
 		}
 
 		/// <summary>Gets the next available uidNumber
@@ -490,21 +464,16 @@ namespace lat {
 			LdapEntry[] users = Search (rootDN, LdapConnection.SCOPE_SUB,
 						    "uidNumber=*", null);
 
-			foreach (LdapEntry entry in users)
-			{			
+			foreach (LdapEntry entry in users) {
 				LdapAttribute a = entry.getAttribute ("uidNumber");
 				uids.Add (int.Parse(a.StringValue));
 			}
 
 			uids.Sort ();
 			if (uids.Count == 0)
-			{
 				return 1000;
-			}
 			else
-			{
 				return (int) (uids [uids.Count - 1]) + 1;
-			}
 		}
 
 		/// <summary>Gets a list of object classes supported on the directory.
@@ -533,19 +502,15 @@ namespace lat {
 				LdapConnection.SCOPE_BASE,
 	 			defaultSearchFilter, attrs);
 
-			foreach (LdapEntry entry in entries)
-			{			
+			foreach (LdapEntry entry in entries) {			
 				LdapAttribute la = entry.getAttribute ("objectclasses");
 
-				foreach (string s in la.StringValueArray)
-				{
+				foreach (string s in la.StringValueArray) {
 					SchemaParser sp = new SchemaParser (s);
 
 					foreach (string a in sp.Names)
-					{
 						if (objClass.Equals (a))
 							return sp;
-					}
 				}
 			}
 			
@@ -568,9 +533,7 @@ namespace lat {
 			ocs = schema.getObjectClassSchema ( objClass );
 
 			if (ocs != null)
-			{
 				return ocs.RequiredAttributes;
-			}
 
 			return null;
 		}
@@ -591,23 +554,19 @@ namespace lat {
 			LdapSchema schema;
 			schema = conn.FetchSchema ( conn.GetSchemaDN() );
 
-			foreach (string oc in objClasses)
-			{
+			foreach (string oc in objClasses) {
+
 				LdapObjectClassSchema ocs;
 
 				ocs = schema.getObjectClassSchema ( oc );
 
 				foreach (string c in ocs.RequiredAttributes)
-				{
 					if (!retHash.ContainsKey (c))
 						retHash.Add (c, c);
-				}
 			}
 
 			foreach (string key in retHash.Keys)
-			{
 				retVal.Add (key);
-			}
 
 			return (string[]) retVal.ToArray (typeof (string));
 		}
@@ -674,8 +633,8 @@ namespace lat {
 			if (!conn.Connected)
 				return null;
 
-			try
-			{
+			try {
+
 				ArrayList retVal = new ArrayList ();
 
 				LdapSearchQueue queue = conn.Search (searchBase,
@@ -688,19 +647,18 @@ namespace lat {
 
 				LdapMessage msg;
 
-				while ((msg = queue.getResponse ()) != null)
-				{
-					if (msg is LdapSearchResult)
-					{
+				while ((msg = queue.getResponse ()) != null) {
+
+					if (msg is LdapSearchResult) {
 						LdapEntry entry = ((LdapSearchResult) msg).Entry;
 						retVal.Add (entry);
 					}
 				}
 
 				return (LdapEntry[]) retVal.ToArray (typeof (LdapEntry));
-			}
-			catch (Exception e)
-			{
+
+			} catch (Exception e) {
+
 				Logger.Log.Debug ("LdapServer.Search error: {0}", e.Message);
 				return null;
 			}
@@ -777,13 +735,12 @@ namespace lat {
 		{
 			LdapEntry[] dse;
 
-			if (ldapServerType == LdapServerType.ActiveDirectory)
-			{
+			if (ldapServerType == LdapServerType.ActiveDirectory) {
 				dse = Search ("", LdapConnection.SCOPE_BASE, 
 					       "", null);
-			}
-			else
-			{
+
+			} else {
+
 				string[] attrs = new string[] { 
 					"namingContexts",
 					"subschemaSubentry" 
@@ -793,8 +750,8 @@ namespace lat {
 					       "objectclass=*", attrs);
 			}
 
-			if (dse.Length > 0)
-			{
+			if (dse.Length > 0) {
+
 				LdapAttribute a = dse[0].getAttribute ("namingContexts");
 				rootDN = a.StringValue;
 
@@ -802,39 +759,37 @@ namespace lat {
 				schemaDN = b.StringValue;
 
 				if (ldapServerType == LdapServerType.ActiveDirectory)
-				{
 					SetActiveDirectoryInfo (dse[0]);
-				}
-			}
-			else
-			{
+
+			} else {
+
 				Logger.Log.Debug ("Unable to find directory namingContexts");
 			}
 		}
 
 		private void SetServerType ()
 		{
-			switch (sType.ToLower())
-			{
-				case "microsoft active directory":
-					ldapServerType = LdapServerType.ActiveDirectory;
-					defaultSearchFilter = "";
-					break;
+			switch (sType.ToLower()) {
 
-				case "openldap":
-					ldapServerType = LdapServerType.OpenLDAP;
-					defaultSearchFilter = "(objectClass=*)";
-					break;
+			case "microsoft active directory":
+				ldapServerType = LdapServerType.ActiveDirectory;
+				defaultSearchFilter = "";
+				break;
 
-				case "generic":
-					ldapServerType = LdapServerType.Generic;
-					defaultSearchFilter = "(objectClass=*)";
-					break;
+			case "openldap":
+				ldapServerType = LdapServerType.OpenLDAP;
+				defaultSearchFilter = "(objectClass=*)";
+				break;
 
-				default:
-					ldapServerType = LdapServerType.Unknown;
-					defaultSearchFilter = "";
-					break;
+			case "generic":
+				ldapServerType = LdapServerType.Generic;
+				defaultSearchFilter = "(objectClass=*)";
+				break;
+
+			default:
+				ldapServerType = LdapServerType.Unknown;
+				defaultSearchFilter = "";
+				break;
 			}
 		}
 

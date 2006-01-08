@@ -152,17 +152,13 @@ namespace lat
 		private void DispatchDNSelectedEvent (string dn, bool host)
 		{
 			if (dnSelected != null)
-			{
 				dnSelected (this, new dnSelectedEventArgs (dn, host));
-			}
 		}
 
 		private void DispatchAddAttributeEvent (string attrName, string attrValue)
 		{
 			if (AttributeAdded != null && attrName != null)
-			{
 				AttributeAdded (this, new AddAttributeEventArgs (attrName, attrValue));
-			}
 		}
 
 		public string getSelectedDN ()
@@ -171,8 +167,7 @@ namespace lat
 			TreeIter ldapIter;
 			string dn;
 
-			if (this.Selection.GetSelected (out ldapModel, out ldapIter))
-			{
+			if (this.Selection.GetSelected (out ldapModel, out ldapIter)) {
 				dn = (string) browserStore.GetValue (ldapIter, (int)TreeCols.DN);
 				return dn;
 			}
@@ -186,9 +181,7 @@ namespace lat
 			TreeIter ldapIter;
 
 			if (this.Selection.GetSelected (out ldapModel, out ldapIter))
-			{
 				return ldapIter;
-			}
 
 			return ldapIter;
 		}
@@ -203,13 +196,12 @@ namespace lat
 			TreePath path = args.Path;
 			TreeIter iter;
 			
-			if (browserStore.GetIter (out iter, path))
-			{
+			if (browserStore.GetIter (out iter, path)) {
+
 				string name = null;
 				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
-				if (name.Equals (server.Host))
-				{
+				if (name.Equals (server.Host)) {
 					DispatchDNSelectedEvent (server.Host, true);
 					return;
 				}
@@ -225,8 +217,7 @@ namespace lat
 			string name = (string) browserStore.GetValue (
 					args.Iter, (int)TreeCols.DN);
 
-			if (name == server.Host)
-			{
+			if (name == server.Host) {
 				Logger.Log.Debug ("END ldapRowCollapsed");
 				return;
 			}
@@ -245,8 +236,8 @@ namespace lat
 
 			TreeIter lastChild = child;
 
-			while (browserStore.IterNext (ref child))
-			{
+			while (browserStore.IterNext (ref child)) {
+
 				browserStore.Remove (ref lastChild);
 
 				string cn = (string) browserStore.GetValue (
@@ -276,8 +267,7 @@ namespace lat
 
 			name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
 
-			if (name == server.Host)
-			{
+			if (name == server.Host) {
 				Logger.Log.Debug ("END ldapRowExpanded");
 				return;
 			}
@@ -291,41 +281,39 @@ namespace lat
 			if (childName == "")
 				firstPass = true;
 
-			try
-			{
+			try {
+
 		 		LdapEntry[] ldapEntries = server.GetEntryChildren (name);
 
 				if (ldapEntries.Length == 0)
-				{
 					browserStore.Remove (ref child);
-				}
 
 				Logger.Log.Debug ("expanded row: {0}", name);
 
-				foreach (LdapEntry le in ldapEntries)
-				{
+				foreach (LdapEntry le in ldapEntries) {
+
 					Logger.Log.Debug ("\tchild: {0}", le.DN);
 
 					TreeIter _newChild;
 
-					if (firstPass)
-					{
+					if (firstPass) {
+
 						browserStore.SetValue (child, (int)TreeCols.Icon, pb);
 						browserStore.SetValue (child, (int)TreeCols.DN, le.DN);
 
 						browserStore.AppendValues (child, pb, "");
 					
 						firstPass = false;
-					}
-					else
-					{
+
+					} else {
+
 						_newChild = browserStore.AppendValues (args.Iter, pb, le.DN);
 						browserStore.AppendValues (_newChild, pb, "");
 					}
 				}
-			}
-			catch
-			{
+
+			} catch {
+
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read data from server");
 
@@ -337,8 +325,7 @@ namespace lat
 
 		public void removeToolbarHandlers ()
 		{
-			if (_handlersSet)
-			{
+			if (_handlersSet) {
 				_newButton.Clicked -= new EventHandler (OnNewEntryActivate);
 				_deleteButton.Clicked -= new EventHandler (OnDeleteActivate);
 
@@ -397,8 +384,7 @@ namespace lat
 			if (dn == server.Host)
 				return;
 
-			try
-			{
+			try {
 				if (Util.DeleteEntry (server, _parent, dn))
 					browserStore.Remove (ref iter);
 			}
@@ -463,9 +449,7 @@ namespace lat
 		private void OnBrowserRightClick (object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 3)
-			{
 				DoPopUp ();
-			}
 		}
 
 		public void OnDragBegin (object o, DragBeginArgs args)
@@ -508,25 +492,23 @@ namespace lat
 			string data = System.Text.Encoding.UTF8.GetString (
 					args.SelectionData.Data);
 
-			switch (args.Info)
+			switch (args.Info) {
+				
+			case 0:
 			{
-				case 0:
-				{
-					string[] uri_list = Regex.Split (data, "\r\n");
-
-					Util.ImportData (server, _parent, uri_list);
+				string[] uri_list = Regex.Split (data, "\r\n");
 			
-					success = true;
-					break;
-				}
+				Util.ImportData (server, _parent, uri_list);
+			
+				success = true;
+				break;
+			}
 
-				case 1:
-				{
-					Util.ImportData (server, _parent, data);
+			case 1:
+				Util.ImportData (server, _parent, data);
+				success = true;
+				break;
 
-					success = true;
-					break;
-				}
 			}
 
 			Logger.Log.Debug ("import success: {0}", success.ToString());

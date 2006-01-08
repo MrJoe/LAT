@@ -91,12 +91,11 @@ namespace lat
 
 			ArrayList tmp = new ArrayList ();
 
-			foreach (LdapEntry le in objEntries)
-			{
+			foreach (LdapEntry le in objEntries) {
+
 				LdapAttribute la = le.getAttribute ("objectclasses");
 						
-				foreach (string s in la.StringValueArray)
-				{
+				foreach (string s in la.StringValueArray) {
 					SchemaParser sp = new SchemaParser (s);
 					tmp.Add (sp.Names[0]);
 				}
@@ -105,21 +104,18 @@ namespace lat
 			tmp.Sort ();
 
 			foreach (string n in tmp)
-			{
 				browserStore.AppendValues (objIter, genIcon, n);
-			}
 
 			tmp.Clear ();
 
 			attrIter = browserStore.AppendValues (iter, folderIcon, "Attribute Types");
 			LdapEntry[] attrEntries = server.GetAttributeTypes ();
 
-			foreach (LdapEntry le in attrEntries)
-			{
+			foreach (LdapEntry le in attrEntries) {
+
 				LdapAttribute la = le.getAttribute ("attributetypes");
 						
-				foreach (string s in la.StringValueArray)
-				{
+				foreach (string s in la.StringValueArray) {
 					SchemaParser sp = new SchemaParser (s);
 					tmp.Add (sp.Names[0]);
 				}
@@ -128,9 +124,7 @@ namespace lat
 			tmp.Sort ();
 
 			foreach (string n in tmp)
-			{
 				browserStore.AppendValues (attrIter, genIcon, n);
-			}
 
 			this.ShowAll ();
 		}
@@ -138,9 +132,7 @@ namespace lat
 		private void DispatchDNSelectedEvent (string name, string parent)
 		{
 			if (schemaSelected != null)
-			{
 				schemaSelected (this, new schemaSelectedEventArgs (name, parent));
-			}
 		}
 
 		public string getSelectedDN ()
@@ -149,8 +141,7 @@ namespace lat
 			TreeIter ldapIter;
 			string dn;
 
-			if (this.Selection.GetSelected (out ldapModel, out ldapIter))
-			{
+			if (this.Selection.GetSelected (out ldapModel, out ldapIter)) {
 				dn = (string) browserStore.GetValue (ldapIter, (int)TreeCols.DN);
 				return dn;
 			}
@@ -163,8 +154,7 @@ namespace lat
 			TreeModel ldapModel;
 			TreeIter ldapIter;
 
-			if (this.Selection.GetSelected (out ldapModel, out ldapIter))
-			{
+			if (this.Selection.GetSelected (out ldapModel, out ldapIter)) {
 				return ldapIter;
 			}
 
@@ -176,15 +166,13 @@ namespace lat
 			TreePath path = args.Path;
 			TreeIter iter;
 			
-			if (browserStore.GetIter (out iter, path))
-			{
+			if (browserStore.GetIter (out iter, path)) {
+
 				string name = null;
 				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
 				if (name.Equals (server.Host))
-				{
 					return;
-				}
 
 				TreeIter parent;
 				browserStore.IterParent (out parent, iter);

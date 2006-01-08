@@ -61,9 +61,7 @@ namespace lat
 			string[] templates = Global.theTemplateManager.GetTemplateNames ();
 
 			foreach (string s in templates)
-			{
 				templateComboBox.AppendText (s);
-			}
 
 			templateComboBox.Active = 0;
 			templateComboBox.Show ();
@@ -74,8 +72,8 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			if (templateRadioButton.Active)
-			{
+			if (templateRadioButton.Active) {
+
 				TreeIter iter;
 						
 				if (!templateComboBox.GetActiveIter (out iter))
@@ -86,9 +84,9 @@ namespace lat
 				Template t = Global.theTemplateManager.Lookup (name);
 
 				new CreateEntryDialog (server, t);
-			}
-			else
-			{
+
+			} else {
+
 				if (_dn == server.Host)
 					return;
 

@@ -86,8 +86,7 @@ namespace lat
 
 			string[] customViews = Global.viewManager.GetCustomViewNames ();
 
-			foreach (string v in customViews)
-			{
+			foreach (string v in customViews) {
 				TreeIter citer;
 
 				citer = viewsStore.AppendValues (viewCustomIter, genIcon, v);
@@ -129,9 +128,7 @@ namespace lat
 		public void OnRightClick (object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 3)
-			{
 				DoPopUp ();
-			}
 		}
 
 		private void DoPopUp()
@@ -190,8 +187,7 @@ namespace lat
 			TreeIter iter;
 			string name;
 
-			if (this.Selection.GetSelected (out model, out iter))
-			{
+			if (this.Selection.GetSelected (out model, out iter)) {
 				name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
 				return name;
 			}
@@ -207,10 +203,10 @@ namespace lat
 				Mono.Unix.Catalog.GetString (
 				"Are you sure you want to delete: {0}"), viewName);
 
-			if (Util.AskYesNo (parentWindow, msg))
-			{
-				if (!customIters.Contains (viewName))
-				{
+			if (Util.AskYesNo (parentWindow, msg)) {
+
+				if (!customIters.Contains (viewName)) {
+
 					string errMsg = "Unable to delete standard view";
 
 					Util.MessageBox (parentWindow, errMsg, MessageType.Error);
@@ -228,8 +224,8 @@ namespace lat
 		{
 			string viewName = GetSelectedViewName ();
 
-			if (!customIters.Contains (viewName))
-			{
+			if (!customIters.Contains (viewName)) {
+
 				string prefix = Util.GetServerPrefix (server);
 				viewName = prefix + viewName;
 			}
@@ -240,9 +236,7 @@ namespace lat
 		private void DispatchViewSelectedEvent (string name)
 		{
 			if (ViewSelected != null)
-			{
 				ViewSelected (this, new ViewSelectedEventArgs (name));
-			}
 		}
 
 		private void viewRowActivated (object o, RowActivatedArgs args)
@@ -250,8 +244,8 @@ namespace lat
 			TreePath path = args.Path;
 			TreeIter iter;
 			
-			if (viewsStore.GetIter (out iter, path))
-			{
+			if (viewsStore.GetIter (out iter, path)) {
+
 				string name = null;
 				name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
 
@@ -291,15 +285,11 @@ namespace lat
 
 			DirectoryInfo di = new DirectoryInfo (tmp);
 			if (!di.Exists)
-			{
 				di.Create ();
-			}
 
 			FileInfo fi = new FileInfo (configFileName);
 			if (!fi.Exists)
-			{
 				SetDefaultViews ();
-			}
 			
 			LoadViews ();		
 		}
@@ -321,19 +311,18 @@ namespace lat
 			ArrayList cols = new ArrayList ();
 			ArrayList colNames = new ArrayList ();
 
-			foreach (XmlNode n in node.ChildNodes)
-			{
-				if (n.Name.Equals ("columns"))
-				{
+			foreach (XmlNode n in node.ChildNodes) {
+
+				if (n.Name.Equals ("columns")) {
+
 					vd.PrimaryKey = int.Parse (n.Attributes["primaryKey"].Value);
-					foreach (XmlNode c in n.ChildNodes)
-					{
+					foreach (XmlNode c in n.ChildNodes) {
 						cols.Add (c.Attributes["name"].Value);
 						colNames.Add (c.InnerText);
 					}
-				}
-				else
-				{
+
+				} else {
+
 					if (n.Name.Equals ("filter"))
 						vd.Filter = XmlConvert.DecodeName(n.InnerText);
 					else if (n.Name.Equals ("searchBase"))
@@ -358,9 +347,7 @@ namespace lat
 			nodeList = root.SelectNodes("//view");
 
 			foreach (XmlNode view in nodeList)
-			{
 				ParseNode (view);
-			}
 		}
 
 		// FIXME: better to override []
@@ -376,14 +363,12 @@ namespace lat
 		{
 			ArrayList retVal = new ArrayList ();
 
-			foreach (string k in views.Keys)
-			{
+			foreach (string k in views.Keys) {
+
 				ViewData vd = (ViewData) views[k];
 				
 				if (!vd.Type.Equals ("standard"))
-				{
 					retVal.Add (vd.Name);
-				}
 			}
 
 			return (string[]) retVal.ToArray (typeof (string));
@@ -417,8 +402,8 @@ namespace lat
 
 			viewsElement = doc.CreateElement ("views");
 
-			foreach (string name in views.Keys)
-			{
+			foreach (string name in views.Keys) {
+
 				ViewData vd = (ViewData) views [name];
 			
 				newView = doc.CreateElement ("view");
@@ -437,8 +422,8 @@ namespace lat
 				XmlElement columns = doc.CreateElement ("columns");
 				columns.SetAttribute ("primaryKey", vd.PrimaryKey.ToString());
 
-				for (int i = 0; i < vd.Cols.Length; i++)
-				{
+				for (int i = 0; i < vd.Cols.Length; i++) {
+
 					XmlElement col = doc.CreateElement ("column");
 					col.SetAttribute ("name", vd.Cols [i]);
 					col.InnerText = vd.ColNames [i];

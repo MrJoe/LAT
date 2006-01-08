@@ -32,83 +32,66 @@ namespace lat
 
 		public static void Create (string name, LdapServer server, LdapEntry le)
 		{
-			switch (name)
-			{
-				case "openldapUsers":
-				{
-					if (le == null)
-						new NewUserViewDialog (server);
-					else
-						new EditUserViewDialog (server, le);
+			switch (name) {
 
-					break;
-				}
+			case "openldapUsers":
+				if (le == null)
+					new NewUserViewDialog (server);
+				else
+					new EditUserViewDialog (server, le);
+				break;
 
-				case "adUsers":
-				{
-					if (le != null)
-						new adUserViewDialog (server, le);
-					else
-						new NewAdUserViewDialog (server);
+			case "adUsers":
+				if (le != null)
+					new adUserViewDialog (server, le);
+				else
+					new NewAdUserViewDialog (server);
 
-					break;
-				}
+				break;
 
-				case "openldapGroups":
-				{
-					if (le == null)
-						new GroupsViewDialog (server);
-					else
-						new GroupsViewDialog (server, le);
+			case "openldapGroups":
+				if (le == null)
+					new GroupsViewDialog (server);
+				else
+					new GroupsViewDialog (server, le);
+				break;
 
-					break;
-				}
+			case "adGroups":
+				if (le == null)
+					new NewAdGroupViewDialog (server);
+//				else
+//					new adGroupViewDialog (server, le);
+				break;
+	
+			case "openldapComputers":
+				if (le == null)
+					new HostsViewDialog (server);
+				else
+					new HostsViewDialog (server, le);
+	
+				break;
+	
+			case "adComputers":
+				if (le == null)
+					new NewAdComputerViewDialog (server);
+				else
+					new EditAdComputerViewDialog (server, le);
+				break;
 
-				case "adGroups":
-				{
-					if (le == null)
-						new NewAdGroupViewDialog (server);
-//					else
-//						new adGroupViewDialog (server, le);
-					break;
-				}
+			case "openldapContacts":
+			case "adContacts":
+				if (le == null)
+					new NewContactsViewDialog (server);
+				else
+					new EditContactsViewDialog (server, le);
+				break;
 
-				case "openldapComputers":
-				{
-					if (le == null)
-						new HostsViewDialog (server);
-					else
-						new HostsViewDialog (server, le);
-
-					break;
-				}
-
-				case "adComputers":
-				{
-					if (le == null)
-						new NewAdComputerViewDialog (server);
-					else
-						new EditAdComputerViewDialog (server, le);
-
-					break;
-				}
-
-				case "openldapContacts":
-				case "adContacts":
-					if (le == null)
-						new NewContactsViewDialog (server);
-					else
-						new EditContactsViewDialog (server, le);
-
-					break;
-
-				default:
-					if (le == null)
-						new DynamicViewDialog (server);
-					else
-						new DynamicViewDialog (server, le);
-
-					break;
+			default:
+				if (le == null)
+					new DynamicViewDialog (server);
+				else
+					new DynamicViewDialog (server, le);
+				break;
 			}
 		}
 	}
