@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-06-29 09:07-0400\n"
+"POT-Creation-Date: 2006-01-09 00:17-0500\n"
 "PO-Revision-Date: 2005-06-29 09:07-0400\n"
 "Last-Translator: Loren Bandiera <lorenb@mmgsecurity.com>\n"
 "Language-Team: fr_FR <fr_FR@li.org>\n"
@@ -16,734 +16,1537 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lat/CertMgr.cs:173
-msgid "Couldn't decode certificate properly"
-msgstr "N'a pas pu decoder le certificat correctement"
-
-#: lat/ConnectDialog.cs:187
-#, csharp-format
-msgid "Are you sure you want to delete the profile: {0}"
+#: ../lat/ConnectDialog.cs:189
+#, fuzzy
+msgid "Are you sure you want to delete the profile:"
 msgstr "Êtes vous sûr vous voulez supprimer le profil: {0}"
 
-#: lat/ConnectDialog.cs:220
+#: ../lat/ConnectDialog.cs:226
 #, csharp-format
 msgid "Unable to connect to: ldap://{0}:{1}"
 msgstr "Incapable de se relier à: ldap://{0}:{1}"
 
-#: lat/ConnectDialog.cs:227
+#: ../lat/ConnectDialog.cs:234
 #, csharp-format
 msgid "Unable to bind to: ldap://{0}:{1}"
 msgstr "Incapable de lier: ldap://{0}:{1}"
 
-#: lat/ContactsView.cs:29 lat/CustomView.cs:29 lat/GroupsView.cs:30
-#: lat/Window.cs:434
-msgid "Name"
-msgstr "Nom"
-
-#: lat/ContactsView.cs:30
-msgid "Email"
+#: ../lat/ConnectDialog.cs:274
+msgid "An unknown error occured: "
 msgstr ""
 
-#: lat/ContactsView.cs:31
-msgid "Work"
-msgstr "Travail"
+#: ../lat/ConnectDialog.cs:325
+msgid "No profile selected"
+msgstr ""
 
-#: lat/ContactsView.cs:32
-msgid "Home"
-msgstr "À la maison"
+#: ../lat/ConnectDialog.cs:351
+#, fuzzy
+msgid "Enter your password"
+msgstr "Entrez Le Mot de passe"
 
-#: lat/ContactsView.cs:33
-msgid "Mobile"
-msgstr "Mobile"
-
-#: lat/CustomView.cs:109
+#: ../lat/CreateEntryDialog.cs:168
 #, csharp-format
 msgid ""
-"Are you sure you want to delete:\n"
-"{0}"
+"Where in the directory would\n"
+"you like to save the entry?"
 msgstr ""
 
-#: lat/GroupsView.cs:29
-msgid "Group ID"
-msgstr "Qualificateur De Fichier"
+#: ../lat/CreateEntryDialog.cs:170
+#, fuzzy
+msgid "Select entry base"
+msgstr "Choisissez la base de recherche"
 
-#: lat/HostsView.cs:29
-msgid "Hostname"
+#: ../lat/CustomViewDialog.cs:160 ../lat/Window.cs:410
+msgid "Invalid search filter."
+msgstr "Filtre inadmissible de recherche."
+
+#: ../lat/CustomViewDialog.cs:188
+msgid "No attribute selected to add."
 msgstr ""
 
-#: lat/HostsView.cs:30
-msgid "IP Address"
+#: ../lat/CustomViewDialog.cs:212
+msgid "No attribute selected to remove."
 msgstr ""
 
-#: lat/HostsView.cs:31
-msgid "Comment"
-msgstr "Commentaire"
+#: ../lat/CustomViewDialog.cs:223
+msgid "You must select what attributes will be displayed in the view"
+msgstr ""
 
-#: lat/LoginDialog.cs:61
+#: ../lat/EditAdComputerViewDialog.cs:192
+msgid "Select a user who will manage "
+msgstr ""
+
+#: ../lat/EditUserViewDialog.cs:470 ../lat/NewUserViewDialog.cs:203
+#, fuzzy
+msgid "Unable to modify group "
+msgstr "Incapable de modifier l'entrée {0}"
+
+#: ../lat/LdapTreeView.cs:318 ../lat/ServerView.cs:204
+msgid "Unable to read data from server"
+msgstr ""
+
+#: ../lat/LoginDialog.cs:93
 msgid "Unable to re-login"
 msgstr "Incapable à l're-ouverture"
 
-#: lat/RenameEntryDialog.cs:71
+#: ../lat/NewAdGroupViewDialog.cs:86
+msgid "You must provide a group name and description"
+msgstr ""
+
+#: ../lat/NewUserViewDialog.cs:283
+#, csharp-format
+msgid "A user with the username '{0}' already exists!"
+msgstr ""
+
+#: ../lat/NewUserViewDialog.cs:296
+msgid "The UID you have selected is already in use!"
+msgstr ""
+
+#: ../lat/PasswordDialog.cs:218
+#, fuzzy
+msgid "Password don't match"
+msgstr "Mot de passe:   "
+
+#: ../lat/RenameEntryDialog.cs:65
 #, csharp-format
 msgid "Entry {0} has been renamed to {1}."
 msgstr "L'entrée {0} a été retitrée {1}."
 
-#: lat/RenameEntryDialog.cs:80
-#, csharp-format
-msgid "Unable to rename entry {0}."
+#: ../lat/RenameEntryDialog.cs:73
+#, fuzzy
+msgid "Unable to rename entry "
 msgstr "Incapable de retitrer l'entrée {0}."
 
-#: lat/UsersView.cs:29
-msgid "Username"
+#: ../lat/SambaPopulateDialog.cs:79
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store users?"
 msgstr ""
 
-#: lat/UsersView.cs:30
-msgid "Full Name"
-msgstr "Nom et prénoms"
+#: ../lat/SambaPopulateDialog.cs:82
+#, fuzzy
+msgid "Select a user container"
+msgstr "LAT - Choisissez Le Récipient"
 
-#: lat/Util.cs:58
+#: ../lat/SambaPopulateDialog.cs:91
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store groups?"
+msgstr ""
+
+#: ../lat/SambaPopulateDialog.cs:93
+#, fuzzy
+msgid "Select a group container"
+msgstr "LAT - Choisissez Le Récipient"
+
+#: ../lat/SambaPopulateDialog.cs:102
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store computers?"
+msgstr ""
+
+#: ../lat/SambaPopulateDialog.cs:104
+#, fuzzy
+msgid "Select a computer container"
+msgstr "LAT - Choisissez Le Récipient"
+
+#: ../lat/SambaPopulateDialog.cs:113
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store the ID map?"
+msgstr ""
+
+#: ../lat/SambaPopulateDialog.cs:115
+#, fuzzy
+msgid "Select an ID map container"
+msgstr "LAT - Choisissez Le Récipient"
+
+#: ../lat/SearchResultsTreeView.cs:87
+msgid "No matches found."
+msgstr "Aucunes allumettes trouvées."
+
+#: ../lat/ServerView.cs:503
+msgid "Invalid or empty email address"
+msgstr ""
+
+#: ../lat/ServerView.cs:516
+#, fuzzy
+msgid "Unable to send mail to "
+msgstr "Incapable de retitrer l'entrée {0}."
+
+#: ../lat/ServerView.cs:534
+#, fuzzy
+msgid "Unable to open page "
+msgstr "Incapable de copier l'entrée "
+
+#: ../lat/TemplatesDialog.cs:136
+#, fuzzy, csharp-format
+msgid "Are you sure you want to delete:"
+msgstr "Êtes vous sûr vous voulez supprimer le profil: {0}"
+
+#: ../lat/Util.cs:166
 #, csharp-format
 msgid "Entry {0} has been added."
 msgstr "L'entrée {0} a été ajoutée."
 
-#: lat/Util.cs:65
-#, csharp-format
-msgid "Unable to add entry {0}"
+#: ../lat/Util.cs:174
+#, fuzzy
+msgid "Unable to add entry "
 msgstr "Incapable d'ajouter l'entrée {0}"
 
-#: lat/Util.cs:87
+#: ../lat/Util.cs:199
 #, csharp-format
 msgid "Entry {0} has been modified."
 msgstr "L'entrée {0} a été modifiée."
 
-#: lat/Util.cs:94
-#, csharp-format
-msgid "Unable to modify entry {0}"
+#: ../lat/Util.cs:207
+#, fuzzy
+msgid "Unable to modify entry "
 msgstr "Incapable de modifier l'entrée {0}"
 
-#: lat/Util.cs:107
+#: ../lat/Util.cs:253
 #, csharp-format
 msgid ""
 "Are you sure you want to delete:\n"
 "\n"
 msgstr ""
 
-#: lat/Util.cs:131
+#: ../lat/Util.cs:257
+#, fuzzy
+msgid "Unable to delete the following entries:\n"
+msgstr "Incapable de supprimer toutes les entrées."
+
+#: ../lat/Util.cs:279
 msgid "Entries successfully deleted."
 msgstr "Les entrées ont avec succès supprimé."
 
-#: lat/Util.cs:135
-msgid "Unable to delete all entries."
-msgstr "Incapable de supprimer toutes les entrées."
+#: ../lat/Util.cs:294
+#, fuzzy
+msgid "Are you sure you want to delete"
+msgstr "Êtes vous sûr vous voulez supprimer le profil: {0}"
 
-#: lat/Util.cs:149
-#, csharp-format
-msgid ""
-"Are you sure you want to delete\n"
-"{0}"
-msgstr ""
-
-#: lat/Util.cs:166
+#: ../lat/Util.cs:307
 #, csharp-format
 msgid "Entry {0} has been deleted."
 msgstr "L'entrée {0} a été supprimée."
 
-#: lat/Util.cs:175
-#, csharp-format
-msgid "Unable to delete entry {0}"
+#: ../lat/Util.cs:317
+#, fuzzy
+msgid "Unable to delete entry "
 msgstr "Incapable de supprimer l'entrée {0}"
 
-#: lat/Util.cs:195
+#: ../lat/Util.cs:337
 #, csharp-format
 msgid ""
 "Imported {0} entries\n"
 "from {1}."
 msgstr ""
 
-#: lat/Util.cs:230
+#: ../lat/Util.cs:371
 #, csharp-format
 msgid "Imported {0} entries."
 msgstr "{0} entrées importées."
 
-#: lat/Util.cs:285
-msgid "Save export as"
+#: ../lat/Util.cs:424
+#, fuzzy
+msgid "Save LDIF export as"
 msgstr "Économiser l'exportation As"
 
-#: lat/ViewDialog.cs:107
+#: ../lat/ViewDialog.cs:101
 #, csharp-format
 msgid ""
 "You must provide values for the following attributes:\n"
 "\n"
 msgstr ""
 
-#: lat/Window.cs:313
-msgid "No matches found."
-msgstr "Aucunes allumettes trouvées."
+#: ../lat/ViewsTreeView.cs:204
+#, fuzzy, csharp-format
+msgid "Are you sure you want to delete: {0}"
+msgstr "Êtes vous sûr vous voulez supprimer le profil: {0}"
 
-#: lat/Window.cs:346
-msgid "Invalid search filter."
-msgstr "Filtre inadmissible de recherche."
-
-#: lat/Window.cs:357
+#: ../lat/Window.cs:420
 #, csharp-format
 msgid ""
 "Where in the directory would\n"
 "you like to start the search?"
 msgstr ""
 
-#: lat/Window.cs:359
+#: ../lat/Window.cs:422
 msgid "Select search base"
 msgstr "Choisissez la base de recherche"
 
-#: lat/Window.cs:380
+#: ../lat/Window.cs:443
 msgid "Host"
 msgstr "Centre serveur"
 
-#: lat/Window.cs:383
+#: ../lat/Window.cs:446
 msgid "Port"
 msgstr ""
 
-#: lat/Window.cs:386
+#: ../lat/Window.cs:449
 msgid "User"
 msgstr "Utilisateur"
 
-#: lat/Window.cs:389
+#: ../lat/Window.cs:452
 msgid "Base DN"
 msgstr ""
 
-#: lat/Window.cs:392
+#: ../lat/Window.cs:455
 msgid "Connected"
 msgstr "Relié"
 
-#: lat/Window.cs:396
+#: ../lat/Window.cs:459
 msgid "Bound"
 msgstr "Limite"
 
-#: lat/Window.cs:399
+#: ../lat/Window.cs:462
 msgid "TLS/SSL"
 msgstr ""
 
-#: lat/Window.cs:402
+#: ../lat/Window.cs:465
 msgid "Protocol Version"
 msgstr "Version De Protocole"
 
-#: lat/Window.cs:444
+#: ../lat/Window.cs:471
+#, fuzzy
+msgid "DNS Host Name"
+msgstr "Dernier Nom:"
+
+#: ../lat/Window.cs:475
+msgid "Domain Controller Functionality"
+msgstr ""
+
+#: ../lat/Window.cs:479
+msgid "Forest Functionality"
+msgstr ""
+
+#: ../lat/Window.cs:483
+msgid "Domain Functionality"
+msgstr ""
+
+#: ../lat/Window.cs:487
+msgid "Global Catalog Ready"
+msgstr ""
+
+#: ../lat/Window.cs:491
+msgid "Synchronized"
+msgstr ""
+
+#: ../lat/Window.cs:625
+msgid "Name"
+msgstr "Nom"
+
+#: ../lat/Window.cs:635
 msgid "Value"
 msgstr "Valeur"
 
-#: lat/Window.cs:611
-msgid "Choose a file"
+#: ../lat/Window.cs:839
+msgid ""
+"Enter the new username and password\n"
+"you wish to re-login with"
+msgstr ""
+
+#: ../lat/Window.cs:850
+#, fuzzy
+msgid ""
+"Are you sure you want to disconnect from\n"
+"server: "
+msgstr "Êtes vous sûr vous voulez supprimer le profil: {0}"
+
+#: ../lat/Window.cs:876
+#, fuzzy
+msgid "Choose an LDIF file to import"
 msgstr "Choisissez un dossier"
 
-#: lat/Window.cs:629
+#: ../lat/Window.cs:903
 msgid "Export entry"
 msgstr "Entrée d'exportation"
 
-#: lat/Window.cs:632
+#: ../lat/Window.cs:906
 msgid "Select the container you wish to export."
 msgstr "Choisissez le récipient que vous souhaitez exporter."
 
-#: lat/Window.cs:696
+#: ../lat/Window.cs:965
 #, csharp-format
 msgid "Entry {0} copied to {1}"
 msgstr "L'entrée {0} a copié {1}"
 
-#: lat/Window.cs:702
+#: ../lat/Window.cs:973
 #, csharp-format
 msgid "Entry {0} moved to {1}"
 msgstr "L'entrée {0} s'est déplacée à {1}"
 
-#: lat/Window.cs:719
+#: ../lat/Window.cs:990
 msgid "Unable to copy entry "
 msgstr "Incapable de copier l'entrée "
 
-#: lat/Window.cs:724
+#: ../lat/Window.cs:994
 msgid "Unable to move entry "
 msgstr "Incapable de déplacer l'entrée"
 
-#: lat/lat.glade.h:1
+#: ../resources/lat.glade.h:1
+msgid "\n"
+msgstr ""
+
+#: ../resources/lat.glade.h:3
 msgid " Use Salt"
 msgstr " Employez Le Sel"
 
-#: lat/lat.glade.h:2
+#: ../resources/lat.glade.h:4
 msgid "..."
 msgstr "..."
 
-#: lat/lat.glade.h:3
-msgid "<b>Account Details</b>"
+#: ../resources/lat.glade.h:5
+#, fuzzy
+msgid "<b>Accounts</b>"
 msgstr "<b>Détails De Compte</b>"
 
-#: lat/lat.glade.h:4
+#: ../resources/lat.glade.h:6
 msgid "<b>Advanced Settings</b>"
 msgstr "<b>Arrangements Avançés</b>"
 
-#: lat/lat.glade.h:5
-msgid "<b>All Groups</b>"
+#: ../resources/lat.glade.h:7
+#, fuzzy
+msgid "<b>Attributes</b>"
 msgstr "<b>Tous les Groupes</b>"
 
-#: lat/lat.glade.h:6
+#: ../resources/lat.glade.h:8
 msgid "<b>Basic Settings</b>"
 msgstr "<b>Arrangement De base</b>"
 
-#: lat/lat.glade.h:7
-msgid "<b>Contact Information</b>"
-msgstr "<b>L'Information De Contact</b>"
+#: ../resources/lat.glade.h:9
+#, fuzzy
+msgid "<b>Containers</b>"
+msgstr "<b>Détails De Compte</b>"
 
-#: lat/lat.glade.h:8
+#: ../resources/lat.glade.h:10
+#, fuzzy
+msgid "<b>Criteria</b>"
+msgstr "<b>Critères De Recherche</b>"
+
+#: ../resources/lat.glade.h:11
+#, fuzzy
+msgid "<b>Edits</b>"
+msgstr "<b>Membres</b>"
+
+#: ../resources/lat.glade.h:12
 msgid "<b>General</b>"
 msgstr "<b>Généralités</b>"
 
-#: lat/lat.glade.h:9
-msgid "<b>Member Of</b>"
-msgstr "<b>Membre De</b>"
+#: ../resources/lat.glade.h:13
+#, fuzzy
+msgid "<b>Home folder</b>"
+msgstr "<b>Profil</b>"
 
-#: lat/lat.glade.h:10
+#: ../resources/lat.glade.h:14
 msgid "<b>Members</b>"
 msgstr "<b>Membres</b>"
 
-#: lat/lat.glade.h:11
+#: ../resources/lat.glade.h:15
+#, fuzzy
+msgid "<b>Notes:</b>"
+msgstr "<b>Membres</b>"
+
+#: ../resources/lat.glade.h:16
+msgid "<b>Object Classes</b>"
+msgstr ""
+
+#: ../resources/lat.glade.h:17
 msgid "<b>Profile</b>"
 msgstr "<b>Profil</b>"
 
-#: lat/lat.glade.h:12
+#: ../resources/lat.glade.h:18
 msgid "<b>Search Criteria</b>"
 msgstr "<b>Critères De Recherche</b>"
 
-#: lat/lat.glade.h:13
+#: ../resources/lat.glade.h:19
+#, fuzzy
+msgid "<b>Telephone numbers</b>"
+msgstr "<b>Membres</b>"
+
+#: ../resources/lat.glade.h:20
+#, fuzzy
+msgid "<b>User profile</b>"
+msgstr "<b>Profil</b>"
+
+#: ../resources/lat.glade.h:21
 msgid "<span size=\"larger\" weight=\"bold\">Connect to untrusted site?</span>"
-msgstr "<span size=\"larger\" weight=\"bold\">Reliez à untrusted l'emplacement?</span>"
+msgstr ""
+"<span size=\"larger\" weight=\"bold\">Reliez à untrusted l'emplacement?</"
+"span>"
 
-#: lat/lat.glade.h:14
-msgid "<span weight=\"bold\">Address</span>"
-msgstr "<span weight=\"bold\">Adresse</span>"
-
-#: lat/lat.glade.h:15
+#: ../resources/lat.glade.h:22
 msgid "<span weight=\"bold\">Attributes</span>"
 msgstr "<span weight=\"bold\">Attributs</span>"
 
-#: lat/lat.glade.h:16
-msgid "<span weight=\"bold\">Contact Numbers</span>"
-msgstr "<span weight=\"bold\">Nombres De Contact</span>"
+#: ../resources/lat.glade.h:23
+#, fuzzy
+msgid "<span weight=\"bold\">Description</span>"
+msgstr "<span weight=\"bold\">Résultats</span>"
 
-#: lat/lat.glade.h:17
+#: ../resources/lat.glade.h:24
+#, fuzzy
+msgid "<span weight=\"bold\">Equality</span>"
+msgstr "<span weight=\"bold\">Résultats</span>"
+
+#: ../resources/lat.glade.h:25
+#, fuzzy
+msgid "<span weight=\"bold\">ID</span>"
+msgstr "<span weight=\"bold\">Adresse</span>"
+
+#: ../resources/lat.glade.h:26
+#, fuzzy
+msgid "<span weight=\"bold\">Name</span>"
+msgstr "<span weight=\"bold\">Adresse</span>"
+
+#: ../resources/lat.glade.h:27
+#, fuzzy
+msgid "<span weight=\"bold\">OID</span>"
+msgstr "<span weight=\"bold\">Adresse</span>"
+
+#: ../resources/lat.glade.h:28
+#, fuzzy
+msgid "<span weight=\"bold\">Ordering</span>"
+msgstr "<span weight=\"bold\">Adresse</span>"
+
+#: ../resources/lat.glade.h:29
 msgid "<span weight=\"bold\">Results</span>"
 msgstr "<span weight=\"bold\">Résultats</span>"
 
-#: lat/lat.glade.h:18
+#: ../resources/lat.glade.h:30
 msgid "<span weight=\"bold\">Search Criteria</span>"
 msgstr "<span weight=\"bold\">Critères De Recherche</span>"
 
-#: lat/lat.glade.h:19
+#: ../resources/lat.glade.h:31
+#, fuzzy
+msgid "<span weight=\"bold\">Substring</span>"
+msgstr "<span weight=\"bold\">Résultats</span>"
+
+#: ../resources/lat.glade.h:32
+#, fuzzy
+msgid "<span weight=\"bold\">Superior</span>"
+msgstr "<span weight=\"bold\">Critères De Recherche</span>"
+
+#: ../resources/lat.glade.h:33
+#, fuzzy
+msgid "<span weight=\"bold\">Syntax</span>"
+msgstr "<span weight=\"bold\">Résultats</span>"
+
+#: ../resources/lat.glade.h:34
+#, fuzzy
+msgid "Account"
+msgstr "_Au sujet de"
+
+#: ../resources/lat.glade.h:35
+msgid "Account is disabled"
+msgstr ""
+
+#: ../resources/lat.glade.h:36
+#, fuzzy
+msgid "Action:"
+msgstr "Chiffrage:"
+
+#: ../resources/lat.glade.h:37
+msgid "Address"
+msgstr ""
+
+#: ../resources/lat.glade.h:38
+#, fuzzy
+msgid "Administrator:"
+msgstr "Outil D'Administration de LDAP"
+
+#: ../resources/lat.glade.h:39
 msgid "All"
 msgstr "Tous"
 
-#: lat/lat.glade.h:20
+#: ../resources/lat.glade.h:40
+#, fuzzy
+msgid "All groups:"
+msgstr "Tous les utilisateurs:"
+
+#: ../resources/lat.glade.h:41
 msgid "All users:"
 msgstr "Tous les utilisateurs:"
 
-#: lat/lat.glade.h:21
+#: ../resources/lat.glade.h:42
 msgid "Attribute:  "
 msgstr "Attribut:  "
 
-#: lat/lat.glade.h:22
-msgid "Base DN:"
-msgstr ""
+#: ../resources/lat.glade.h:43
+#, fuzzy
+msgid "Base DN:   "
+msgstr "Dernier Nom:  "
 
-#: lat/lat.glade.h:23
+#: ../resources/lat.glade.h:44
 msgid "Base:"
 msgstr ""
 
-#: lat/lat.glade.h:24
+#: ../resources/lat.glade.h:45
 msgid "Base: "
 msgstr ""
 
-#: lat/lat.glade.h:25
+#: ../resources/lat.glade.h:46
+msgid "Based on the currently selected entry"
+msgstr ""
+
+#: ../resources/lat.glade.h:47
+msgid "Browse"
+msgstr ""
+
+#: ../resources/lat.glade.h:48
 msgid "Browser"
 msgstr ""
 
-#: lat/lat.glade.h:26
-msgid "City:    "
-msgstr "Ville:    "
+#: ../resources/lat.glade.h:49
+#, fuzzy
+msgid "Can change password: "
+msgstr "Entrez Le Mot de passe: "
 
-#: lat/lat.glade.h:27
-msgid "Comment:  "
-msgstr "Commentaire:  "
+#: ../resources/lat.glade.h:50
+msgid "Change..."
+msgstr ""
 
-#: lat/lat.glade.h:28
+#: ../resources/lat.glade.h:51
+#, fuzzy
+msgid "City:                  "
+msgstr "Coquille:                "
+
+#: ../resources/lat.glade.h:52
+#, fuzzy
+msgid "City:                     "
+msgstr "Coquille:                "
+
+#: ../resources/lat.glade.h:53
+#, fuzzy
+msgid "Class:            "
+msgstr "Mot de passe:          "
+
+#: ../resources/lat.glade.h:54
+#, fuzzy
+msgid "Collective"
+msgstr "Relié"
+
+#: ../resources/lat.glade.h:55
+#, fuzzy
+msgid "Company:       "
+msgstr "Qualificateur De Fichier:       "
+
+#: ../resources/lat.glade.h:56
+msgid "Computer name (pre-Windows 2000):"
+msgstr ""
+
+#: ../resources/lat.glade.h:57
+#, fuzzy
+msgid "Computer name:"
+msgstr "Nom d'entrée: "
+
+#: ../resources/lat.glade.h:58
+msgid "Computers"
+msgstr ""
+
+#: ../resources/lat.glade.h:59
+msgid "Computers: "
+msgstr ""
+
+#: ../resources/lat.glade.h:60
 msgid "Condition: "
 msgstr ""
 
-#: lat/lat.glade.h:29
+#: ../resources/lat.glade.h:61
 msgid "Connect"
 msgstr "Reliez"
 
-#: lat/lat.glade.h:30
+#: ../resources/lat.glade.h:62
 msgid "Contacts"
 msgstr ""
 
-#: lat/lat.glade.h:31
+#: ../resources/lat.glade.h:63
+msgid "Container: "
+msgstr ""
+
+#: ../resources/lat.glade.h:64
+msgid "Country/region:"
+msgstr ""
+
+#: ../resources/lat.glade.h:65
+msgid "Country/region:   "
+msgstr ""
+
+#: ../resources/lat.glade.h:66
+msgid "Crypt"
+msgstr ""
+
+#: ../resources/lat.glade.h:67
 msgid "Current members:"
 msgstr "Membres courants:"
 
-#: lat/lat.glade.h:32
-msgid "Custom Views"
-msgstr "Vues Faites sur commande"
+#: ../resources/lat.glade.h:68
+#, fuzzy
+msgid "DNS name: "
+msgstr "Nom:"
 
-#: lat/lat.glade.h:33
+#: ../resources/lat.glade.h:69
+#, fuzzy
+msgid "Date:     "
+msgstr "Fax:     "
+
+#: ../resources/lat.glade.h:70
+msgid "Delete"
+msgstr ""
+
+#: ../resources/lat.glade.h:71
+msgid "Department:   "
+msgstr ""
+
+#: ../resources/lat.glade.h:72
 msgid "Description:"
 msgstr ""
 
-#: lat/lat.glade.h:34
-msgid "Description: "
+#: ../resources/lat.glade.h:73
+#, fuzzy
+msgid "Description:   "
+msgstr "Chiffrage:        "
+
+#: ../resources/lat.glade.h:74
+#, fuzzy
+msgid "Description:             "
+msgstr "Chiffrage:        "
+
+#: ../resources/lat.glade.h:75
+#, fuzzy
+msgid "Display Name:         "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:76
+#, fuzzy
+msgid "Display name:  "
+msgstr "Prénom:  "
+
+#: ../resources/lat.glade.h:77
+#, fuzzy
+msgid "Display name:   "
+msgstr "Prénom:  "
+
+#: ../resources/lat.glade.h:78
+msgid "Domain:"
 msgstr ""
 
-#: lat/lat.glade.h:35
-msgid "Email:         "
+#: ../resources/lat.glade.h:79
+#, fuzzy
+msgid "E-mail:                     "
+msgstr "Coquille:                "
+
+#: ../resources/lat.glade.h:80
+msgid "Enable Samba support for this account"
 msgstr ""
 
-#: lat/lat.glade.h:36
+#: ../resources/lat.glade.h:81
+msgid "Enable Samba support for this group"
+msgstr ""
+
+#: ../resources/lat.glade.h:82
+msgid "Enable Samba support for this user"
+msgstr ""
+
+#: ../resources/lat.glade.h:83
 msgid "Encryption:"
 msgstr "Chiffrage:"
 
-#: lat/lat.glade.h:37
+#: ../resources/lat.glade.h:84
 msgid "Encryption:        "
 msgstr "Chiffrage:        "
 
-#: lat/lat.glade.h:38
+#: ../resources/lat.glade.h:85
 msgid "Enter Password"
 msgstr "Entrez Le Mot de passe"
 
-#: lat/lat.glade.h:39
-msgid "Enter Password: "
-msgstr "Entrez Le Mot de passe: "
-
-#: lat/lat.glade.h:40
+#: ../resources/lat.glade.h:86
 msgid ""
-"Enter a hostname and base DN \n"
+"Enter a hostname and port \n"
 "for the LDAP directory\n"
 "you wish to connect to."
 msgstr ""
 
-#: lat/lat.glade.h:43
-msgid "Entry name: "
-msgstr "Nom d'entrée: "
+#: ../resources/lat.glade.h:89
+#, fuzzy
+msgid "Enter password:    "
+msgstr "Entrez Le Mot de passe: "
 
-#: lat/lat.glade.h:44
+#: ../resources/lat.glade.h:90
+msgid "Enter your security identifier (SID)"
+msgstr ""
+
+#: ../resources/lat.glade.h:91
+#, fuzzy
+msgid "Expire account:            "
+msgstr "Rendement:              "
+
+#: ../resources/lat.glade.h:92
 msgid "Export LDIF..."
 msgstr "Exportation LDIF..."
 
-#: lat/lat.glade.h:45
-msgid "Fax:     "
-msgstr "Fax:     "
+#: ../resources/lat.glade.h:93
+#, fuzzy
+msgid "Fax Number:          "
+msgstr "Nom:           "
 
-#: lat/lat.glade.h:46
+#: ../resources/lat.glade.h:94
+#, fuzzy
+msgid "Fax:             "
+msgstr "Valeur:            "
+
+#: ../resources/lat.glade.h:95
 msgid "Filter:  "
 msgstr "Filtre:  "
 
-#: lat/lat.glade.h:47
-msgid "First Name: "
-msgstr "Prénom: "
+#: ../resources/lat.glade.h:96
+#, fuzzy
+msgid "Filter:    "
+msgstr "Filtre:  "
 
-#: lat/lat.glade.h:48
-msgid "First Name:  "
+#: ../resources/lat.glade.h:97
+#, fuzzy
+msgid "First name:       "
 msgstr "Prénom:  "
 
-#: lat/lat.glade.h:49
+#: ../resources/lat.glade.h:98
+#, fuzzy
+msgid "First name:        "
+msgstr "Prénom:  "
+
+#: ../resources/lat.glade.h:99
+#, fuzzy
+msgid "First name:         "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:100
+#, fuzzy
+msgid "First name:                "
+msgstr "Coquille:                "
+
+#: ../resources/lat.glade.h:101
+#, fuzzy
+msgid "Full name:         "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:102
 msgid "General"
 msgstr "Généralités"
 
-#: lat/lat.glade.h:50
+#: ../resources/lat.glade.h:103
 msgid "Group ID:       "
 msgstr "Qualificateur De Fichier:       "
 
-#: lat/lat.glade.h:51
+#: ../resources/lat.glade.h:104
 msgid "Group name: "
 msgstr "Nom de groupe: "
 
-#: lat/lat.glade.h:52
+#: ../resources/lat.glade.h:105
 msgid "Groups"
 msgstr "Groupes"
 
-#: lat/lat.glade.h:53
-msgid "Home Directory:"
+#: ../resources/lat.glade.h:106
+#, fuzzy
+msgid "Groups:       "
+msgstr "Qualificateur De Fichier:       "
+
+#: ../resources/lat.glade.h:107
+#, fuzzy
+msgid "Guest:            "
+msgstr "Valeur:            "
+
+#: ../resources/lat.glade.h:108
+#, fuzzy
+msgid "Home directory:"
 msgstr "Répertoire Local:"
 
-#: lat/lat.glade.h:54
-msgid "Home:"
+#: ../resources/lat.glade.h:109
+msgid "Home drive: "
+msgstr ""
+
+#: ../resources/lat.glade.h:110
+#, fuzzy
+msgid "Home path:"
 msgstr "À la maison:"
 
-#: lat/lat.glade.h:55
+#: ../resources/lat.glade.h:111
+#, fuzzy
+msgid "Home:         "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:112
 msgid "Hostname:"
 msgstr ""
 
-#: lat/lat.glade.h:56
+#: ../resources/lat.glade.h:113
 msgid "Hostname: "
 msgstr ""
 
-#: lat/lat.glade.h:57
-msgid "Hosts"
-msgstr "Centres serveurs"
+#: ../resources/lat.glade.h:114
+msgid "How would you like to create the new entry?"
+msgstr ""
 
-#: lat/lat.glade.h:58
+#: ../resources/lat.glade.h:115
+#, fuzzy
+msgid "ID Map:        "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:116
 msgid "IP Address: "
 msgstr ""
 
-#: lat/lat.glade.h:59
+#: ../resources/lat.glade.h:117
+#, fuzzy
+msgid "IP phone:    "
+msgstr "Téléphone:"
+
+#: ../resources/lat.glade.h:118
 msgid "Import LDIF..."
 msgstr "Importation LDIF..."
 
-#: lat/lat.glade.h:60
+#: ../resources/lat.glade.h:119
+msgid "Info"
+msgstr ""
+
+#: ../resources/lat.glade.h:120
+msgid "Initials:"
+msgstr ""
+
+#: ../resources/lat.glade.h:121
 msgid ""
 "It was not possible to automatically trust the server.  It returned \n"
 "the following security information:"
 msgstr ""
 
-#: lat/lat.glade.h:62
-msgid "LAT - Add Entry"
+#: ../resources/lat.glade.h:123
+#, fuzzy
+msgid "LAT - Add Attribute"
 msgstr "LAT - Ajoutez L'Entrée"
 
-#: lat/lat.glade.h:63
+#: ../resources/lat.glade.h:124
 msgid "LAT - Connect"
 msgstr "LAT - Reliez"
 
-#: lat/lat.glade.h:64
+#: ../resources/lat.glade.h:125
+msgid "LAT - Mass Edit"
+msgstr ""
+
+#: ../resources/lat.glade.h:126
 msgid "LAT - Profile"
 msgstr "LAT - Profil"
 
-#: lat/lat.glade.h:65
+#: ../resources/lat.glade.h:127
 msgid "LAT - Search Builder"
 msgstr "LAT - Constructeur De Recherche"
 
-#: lat/lat.glade.h:66
+#: ../resources/lat.glade.h:128
 msgid "LAT - Select Container"
 msgstr "LAT - Choisissez Le Récipient"
 
-#: lat/lat.glade.h:67
+#: ../resources/lat.glade.h:129
+msgid ""
+"LAT can setup your directory for Samba. Enter your \n"
+"SID (output from 'net getlocalsid') and confirm the\n"
+"users/containers.\n"
+"\n"
+"Make sure you are logged in as the administator."
+msgstr ""
+
+#: ../resources/lat.glade.h:134
+msgid ""
+"LAT requires your Security Identifier for Samba. This can be \n"
+"obtained by running the command 'net getlocalsid'."
+msgstr ""
+
+#: ../resources/lat.glade.h:136
 msgid "LDAP Administration Tool"
 msgstr "Outil D'Administration de LDAP"
 
-#: lat/lat.glade.h:68
-msgid "Last Name:"
-msgstr "Dernier Nom:"
-
-#: lat/lat.glade.h:69
-msgid "Last Name:  "
+#: ../resources/lat.glade.h:137
+#, fuzzy
+msgid "Last name:       "
 msgstr "Dernier Nom:  "
 
-#: lat/lat.glade.h:70
+#: ../resources/lat.glade.h:138
+#, fuzzy
+msgid "Last name:        "
+msgstr "Dernier Nom:  "
+
+#: ../resources/lat.glade.h:139
+#, fuzzy
+msgid "Last name:              "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:140
+msgid "Local path:     "
+msgstr ""
+
+#: ../resources/lat.glade.h:141
+#, fuzzy
+msgid "Location"
+msgstr "Ouverture"
+
+#: ../resources/lat.glade.h:142
+msgid "Location:"
+msgstr ""
+
+#: ../resources/lat.glade.h:143
 msgid "Login"
 msgstr "Ouverture"
 
-#: lat/lat.glade.h:71
+#: ../resources/lat.glade.h:144
+msgid "Login script:"
+msgstr ""
+
+#: ../resources/lat.glade.h:145
+#, fuzzy
+msgid "Login shell:        "
+msgstr "Bureau:         "
+
+#: ../resources/lat.glade.h:146
+msgid "Logon script:   "
+msgstr ""
+
+#: ../resources/lat.glade.h:147
 msgid "MD5"
 msgstr ""
 
-#: lat/lat.glade.h:72
-msgid "Mail:    "
-msgstr "Courrier:    "
-
-#: lat/lat.glade.h:73
-msgid "Mobile:"
+#: ../resources/lat.glade.h:148
+msgid "Managed By"
 msgstr ""
 
-#: lat/lat.glade.h:74
+#: ../resources/lat.glade.h:149
+msgid "Mass Edit..."
+msgstr ""
+
+#: ../resources/lat.glade.h:150
+#, fuzzy
+msgid "Member of:"
+msgstr "<b>Membre De</b>"
+
+#: ../resources/lat.glade.h:151
+#, fuzzy
+msgid "Mobile:        "
+msgstr "Valeur:        "
+
+#: ../resources/lat.glade.h:152
+msgid "Must change password:"
+msgstr ""
+
+#: ../resources/lat.glade.h:153
 msgid "Name:"
 msgstr "Nom:"
 
-#: lat/lat.glade.h:75
+#: ../resources/lat.glade.h:154
+#, fuzzy
+msgid "Name:  "
+msgstr "Nom:"
+
+#: ../resources/lat.glade.h:155
 msgid "Name:          "
 msgstr "Nom:           "
 
-#: lat/lat.glade.h:76
+#: ../resources/lat.glade.h:156
+#, fuzzy
+msgid "Name:           "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:157
+msgid "New Computer"
+msgstr ""
+
+#: ../resources/lat.glade.h:158
+msgid "New Contact"
+msgstr ""
+
+#: ../resources/lat.glade.h:159
+#, fuzzy
+msgid "New Entry"
+msgstr "Retitrez L'Entrée"
+
+#: ../resources/lat.glade.h:160
 msgid "New Name:"
 msgstr "Nouveau Nom:"
 
-#: lat/lat.glade.h:77
+#: ../resources/lat.glade.h:161
+#, fuzzy
+msgid "New User"
+msgstr "Utilisateur"
+
+#: ../resources/lat.glade.h:162
 msgid "No, cancel the connection"
 msgstr "Le non, décommandent le raccordement"
 
-#: lat/lat.glade.h:78
+#: ../resources/lat.glade.h:163
 msgid "None"
 msgstr "Aucun"
 
-#: lat/lat.glade.h:79
-msgid "Office:         "
+#: ../resources/lat.glade.h:164
+msgid "Obsolete"
+msgstr ""
+
+#: ../resources/lat.glade.h:165
+#, fuzzy
+msgid "Office:    "
 msgstr "Bureau:         "
 
-#: lat/lat.glade.h:80
-msgid "Office:          "
+#: ../resources/lat.glade.h:166
+#, fuzzy
+msgid "Office:                      "
 msgstr "Bureau:          "
 
-#: lat/lat.glade.h:81
+#: ../resources/lat.glade.h:167
 msgid "Old Name:"
 msgstr "Vieux Nom:"
 
-#: lat/lat.glade.h:82
-msgid "Output:              "
+#: ../resources/lat.glade.h:168
+msgid "Operating System"
+msgstr ""
+
+#: ../resources/lat.glade.h:169
+msgid "Organization"
+msgstr ""
+
+#: ../resources/lat.glade.h:170
+#, fuzzy
+msgid "P.O. Box:              "
 msgstr "Rendement:              "
 
-#: lat/lat.glade.h:83
-msgid "Pager: "
-msgstr "Pagineur: "
+#: ../resources/lat.glade.h:171
+#, fuzzy
+msgid "Pager:         "
+msgstr "Nom:           "
 
-#: lat/lat.glade.h:84
+#: ../resources/lat.glade.h:172
+msgid "Password never expires"
+msgstr ""
+
+#: ../resources/lat.glade.h:173
 msgid "Password:"
 msgstr ""
 
-#: lat/lat.glade.h:85
-msgid "Password:   "
+#: ../resources/lat.glade.h:174
+#, fuzzy
+msgid "Password:  "
 msgstr "Mot de passe:   "
 
-#: lat/lat.glade.h:86
+#: ../resources/lat.glade.h:175
+#, fuzzy
+msgid "Password:         "
+msgstr "Mot de passe:          "
+
+#: ../resources/lat.glade.h:176
 msgid "Password:           "
 msgstr "Mot de passe:          "
 
-#: lat/lat.glade.h:87
-msgid "Phone:"
-msgstr "Téléphone:"
+#: ../resources/lat.glade.h:177
+#, fuzzy
+msgid "Password:                  "
+msgstr "Mot de passe:          "
 
-#: lat/lat.glade.h:88
-msgid "Port:"
-msgstr "Port:"
+#: ../resources/lat.glade.h:178
+msgid "Populate directory for Samba"
+msgstr ""
 
-#: lat/lat.glade.h:89
-msgid "Postal (ZIP) Code:"
-msgstr "Code Postal:"
+#: ../resources/lat.glade.h:179
+msgid "Populate for Samba..."
+msgstr ""
 
-#: lat/lat.glade.h:90
-msgid "Primary Group: "
+#: ../resources/lat.glade.h:180
+#, fuzzy
+msgid "Port:          "
+msgstr "Mot de passe:          "
+
+#: ../resources/lat.glade.h:181
+#, fuzzy
+msgid "Primary Group:  "
 msgstr "Groupe Primaire: "
 
-#: lat/lat.glade.h:91
+#: ../resources/lat.glade.h:182
+#, fuzzy
+msgid "Primary Group:           "
+msgstr "Groupe Primaire: "
+
+#: ../resources/lat.glade.h:183
+#, fuzzy
+msgid "Primary group:"
+msgstr "Groupe Primaire: "
+
+#: ../resources/lat.glade.h:184
+#, fuzzy
+msgid "Profile"
+msgstr "Profils"
+
+#: ../resources/lat.glade.h:185
+#, fuzzy
+msgid "Profile path: "
+msgstr "Profils"
+
+#: ../resources/lat.glade.h:186
+msgid "Profile path:    "
+msgstr ""
+
+#: ../resources/lat.glade.h:187
 msgid "Profiles"
 msgstr "Profils"
 
-#: lat/lat.glade.h:92
+#: ../resources/lat.glade.h:188
+#, fuzzy
+msgid "Prompt for password"
+msgstr "Entrez Le Mot de passe"
+
+#: ../resources/lat.glade.h:189
 msgid "Quick Connect"
 msgstr "Reliez Vite"
 
-#: lat/lat.glade.h:93
+#: ../resources/lat.glade.h:190
+#, fuzzy
+msgid "RDN:          "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:191
 msgid "Re-login..."
 msgstr "Re-ouverture..."
 
-#: lat/lat.glade.h:94
+#: ../resources/lat.glade.h:192
+#, fuzzy
+msgid "Re-type password:"
+msgstr "Entrez Le Mot de passe: "
+
+#: ../resources/lat.glade.h:193
+msgid "Refresh"
+msgstr ""
+
+#: ../resources/lat.glade.h:194
 msgid "Rename Entry"
 msgstr "Retitrez L'Entrée"
 
-#: lat/lat.glade.h:95
+#: ../resources/lat.glade.h:195
 msgid "SHA"
 msgstr ""
 
-#: lat/lat.glade.h:96
-msgid "SSL/TLS"
+#: ../resources/lat.glade.h:196
+msgid "SID:"
 msgstr ""
 
-#: lat/lat.glade.h:97
+#: ../resources/lat.glade.h:197
+#, fuzzy
+msgid "SID:       "
+msgstr "Qualificateur De Fichier:       "
+
+#: ../resources/lat.glade.h:198
+msgid "SSL"
+msgstr ""
+
+#: ../resources/lat.glade.h:199
 msgid "Save old name as an attribute"
 msgstr "Économiser le vieux nom comme attribut"
 
-#: lat/lat.glade.h:98
+#: ../resources/lat.glade.h:200
+msgid "Schema"
+msgstr ""
+
+#: ../resources/lat.glade.h:201
 msgid "Search"
 msgstr "Recherche"
 
-#: lat/lat.glade.h:99
-msgid "Shell:                 "
-msgstr "Coquille:                "
+#: ../resources/lat.glade.h:202
+msgid "Select groups"
+msgstr ""
 
-#: lat/lat.glade.h:100
+#: ../resources/lat.glade.h:203
+#, fuzzy
+msgid "Select time and date"
+msgstr "Choisissez la base de recherche"
+
+#: ../resources/lat.glade.h:204
+#, fuzzy
+msgid "Server Type:"
+msgstr "_Serveur"
+
+#: ../resources/lat.glade.h:205
+msgid "Service pack:"
+msgstr ""
+
+#: ../resources/lat.glade.h:206
+msgid "Set"
+msgstr ""
+
+#: ../resources/lat.glade.h:207
+#, fuzzy
+msgid "Set password"
+msgstr "Entrez Le Mot de passe"
+
+#: ../resources/lat.glade.h:208
+#, fuzzy
+msgid "Set primary group"
+msgstr "Groupe Primaire: "
+
+#: ../resources/lat.glade.h:209
+msgid "Show all attributes"
+msgstr ""
+
+#: ../resources/lat.glade.h:210
 msgid "Show more options"
 msgstr "Montrez plus d'options"
 
-#: lat/lat.glade.h:101
+#: ../resources/lat.glade.h:211
+msgid "Single value"
+msgstr ""
+
+#: ../resources/lat.glade.h:212
 msgid "Start Search"
 msgstr "Commencez La Recherche"
 
-#: lat/lat.glade.h:102
-msgid "State: "
-msgstr "État: "
+#: ../resources/lat.glade.h:213
+msgid "State/Province:"
+msgstr ""
 
-#: lat/lat.glade.h:103
-msgid "Street:"
+#: ../resources/lat.glade.h:214
+msgid "State/province:   "
+msgstr ""
+
+#: ../resources/lat.glade.h:215
+#, fuzzy
+msgid "Street: "
 msgstr "Rue:"
 
-#: lat/lat.glade.h:104
+#: ../resources/lat.glade.h:216
+#, fuzzy
+msgid "Street:                 "
+msgstr "Coquille:                "
+
+#: ../resources/lat.glade.h:217
+msgid "TLS"
+msgstr ""
+
+#: ../resources/lat.glade.h:218
+msgid "Telephone number:"
+msgstr ""
+
+#: ../resources/lat.glade.h:219
+msgid "Telephone number: "
+msgstr ""
+
+#: ../resources/lat.glade.h:220
+msgid "Telephones"
+msgstr ""
+
+#: ../resources/lat.glade.h:221
+msgid "Template Editor"
+msgstr ""
+
+#: ../resources/lat.glade.h:222
+msgid "Templates"
+msgstr ""
+
+#: ../resources/lat.glade.h:223
 msgid "Test Search"
 msgstr "Examinez La Recherche"
 
-#: lat/lat.glade.h:105
+#: ../resources/lat.glade.h:224
+#, fuzzy
+msgid "Time:     "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:225
+#, fuzzy
+msgid "Title:                "
+msgstr "Coquille:                "
+
+#: ../resources/lat.glade.h:226
 msgid "UID:"
 msgstr ""
 
-#: lat/lat.glade.h:106
+#: ../resources/lat.glade.h:227
+msgid "Use TLS/SSL"
+msgstr ""
+
+#: ../resources/lat.glade.h:228
+msgid "User cannont change password"
+msgstr ""
+
+#: ../resources/lat.glade.h:229
+msgid "User logon name (pre-Windows 2000):      "
+msgstr ""
+
+#: ../resources/lat.glade.h:230
+msgid "User logon name:"
+msgstr ""
+
+#: ../resources/lat.glade.h:231
+msgid "User logon name:      "
+msgstr ""
+
+#: ../resources/lat.glade.h:232
+msgid "User modification"
+msgstr ""
+
+#: ../resources/lat.glade.h:233
+msgid "User must change password at next logon"
+msgstr ""
+
+#: ../resources/lat.glade.h:234
+#, fuzzy
+msgid "User name:      "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:235
+#, fuzzy
+msgid "User name:        "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:236
 msgid "Username:"
 msgstr ""
 
-#: lat/lat.glade.h:107
-msgid "Username: "
-msgstr ""
-
-#: lat/lat.glade.h:108
-msgid "Username:   "
-msgstr ""
-
-#: lat/lat.glade.h:109
+#: ../resources/lat.glade.h:237
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: lat/lat.glade.h:110
+#: ../resources/lat.glade.h:238
+#, fuzzy
+msgid "Users:         "
+msgstr "Nom:           "
+
+#: ../resources/lat.glade.h:239
+msgid "Using a template (select one below)"
+msgstr ""
+
+#: ../resources/lat.glade.h:240
+#, fuzzy
+msgid "Value: "
+msgstr "Valeur"
+
+#: ../resources/lat.glade.h:241
 msgid "Value:       "
 msgstr "Valeur:        "
 
-#: lat/lat.glade.h:111
+#: ../resources/lat.glade.h:242
 msgid "Value:           "
 msgstr "Valeur:            "
 
-#: lat/lat.glade.h:112
+#: ../resources/lat.glade.h:243
+#, fuzzy
+msgid "Version:        "
+msgstr "Chiffrage:        "
+
+#: ../resources/lat.glade.h:244
 msgid "View"
 msgstr "Vue"
 
-#: lat/lat.glade.h:113
+#: ../resources/lat.glade.h:245
 msgid "Views"
 msgstr "Vues"
 
-#: lat/lat.glade.h:114
-msgid "Work:   "
-msgstr "Travail:   "
+#: ../resources/lat.glade.h:246
+#, fuzzy
+msgid "Web page:               "
+msgstr "Coquille:                "
 
-#: lat/lat.glade.h:115
+#: ../resources/lat.glade.h:247
 msgid "Yes, accept this certificate (always)"
 msgstr "Oui, acceptez ce certificat (toujours)"
 
-#: lat/lat.glade.h:116
+#: ../resources/lat.glade.h:248
 msgid "Yes, just accept this certicate for the current session"
 msgstr "Oui, acceptez juste ce certicate pour la session courante"
 
-#: lat/lat.glade.h:117
+#: ../resources/lat.glade.h:249
 msgid ""
 "You should only accept the security information if you trust\n"
 "the server.\n"
 msgstr ""
 
-#: lat/lat.glade.h:120
-msgid "_About"
-msgstr "_Au sujet de"
+#: ../resources/lat.glade.h:252
+#, fuzzy
+msgid "Zip/Postal Code: "
+msgstr "Code Postal:"
 
-#: lat/lat.glade.h:121
+#: ../resources/lat.glade.h:253
+#, fuzzy
+msgid "_Contents"
+msgstr "Commentaire"
+
+#: ../resources/lat.glade.h:254
 msgid "_Disconnect"
 msgstr "_Débranchement"
 
-#: lat/lat.glade.h:122
+#: ../resources/lat.glade.h:255
 msgid "_Edit"
 msgstr "_Éditez"
 
-#: lat/lat.glade.h:123
+#: ../resources/lat.glade.h:256
 msgid "_Help"
 msgstr "_Aide"
 
-#: lat/lat.glade.h:124
+#: ../resources/lat.glade.h:257
+#, fuzzy
+msgid "_New"
+msgstr "_Vue"
+
+#: ../resources/lat.glade.h:258
 msgid "_Server"
 msgstr "_Serveur"
 
-#: lat/lat.glade.h:125
+#: ../resources/lat.glade.h:259
 msgid "_View"
 msgstr "_Vue"
+
+#~ msgid "Couldn't decode certificate properly"
+#~ msgstr "N'a pas pu decoder le certificat correctement"
+
+#~ msgid "Work"
+#~ msgstr "Travail"
+
+#~ msgid "Home"
+#~ msgstr "À la maison"
+
+#~ msgid "Mobile"
+#~ msgstr "Mobile"
+
+#~ msgid "Group ID"
+#~ msgstr "Qualificateur De Fichier"
+
+#~ msgid "Full Name"
+#~ msgstr "Nom et prénoms"
+
+#~ msgid "<b>Contact Information</b>"
+#~ msgstr "<b>L'Information De Contact</b>"
+
+#~ msgid "<span weight=\"bold\">Contact Numbers</span>"
+#~ msgstr "<span weight=\"bold\">Nombres De Contact</span>"
+
+#~ msgid "City:    "
+#~ msgstr "Ville:    "
+
+#~ msgid "Comment:  "
+#~ msgstr "Commentaire:  "
+
+#~ msgid "Custom Views"
+#~ msgstr "Vues Faites sur commande"
+
+#~ msgid "First Name: "
+#~ msgstr "Prénom: "
+
+#~ msgid "Hosts"
+#~ msgstr "Centres serveurs"
+
+#~ msgid "Mail:    "
+#~ msgstr "Courrier:    "
+
+#~ msgid "Pager: "
+#~ msgstr "Pagineur: "
+
+#~ msgid "Port:"
+#~ msgstr "Port:"
+
+#~ msgid "State: "
+#~ msgstr "État: "
+
+#~ msgid "Work:   "
+#~ msgstr "Travail:   "

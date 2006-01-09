@@ -7,7 +7,7 @@ lat/EditAdComputerViewDialog.cs
 lat/EditUserViewDialog.cs
 lat/LdapTreeView.cs
 lat/LoginDialog.cs
-lat/NewAdGroupViewDialog
+lat/NewAdGroupViewDialog.cs
 lat/NewUserViewDialog.cs
 lat/PasswordDialog.cs
 lat/RenameEntryDialog.cs
@@ -19,4 +19,4 @@ lat/Util.cs
 lat/ViewDialog.cs
 lat/ViewsTreeView.cs
 lat/Window.cs
-lat/lat.glade
+resources/lat.glade
