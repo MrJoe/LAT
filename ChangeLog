@@ -1,3 +1,5 @@
+	* Make sure message dialogs are HIG compliant
+
 0.8.2
 
 	* Added user option not to store passwords for profiles
