@@ -103,7 +103,16 @@ namespace lat
 			foreach (string m in missing)
 				msg += String.Format ("{0}\n", m);
 
-			Util.MessageBox (viewDialog, msg, MessageType.Warning);
+			HIGMessageDialog dialog = new HIGMessageDialog (
+					viewDialog,
+					0,
+					Gtk.MessageType.Warning,
+					Gtk.ButtonsType.Ok,
+					"Attributes missing",
+					msg);
+
+			dialog.Run ();
+			dialog.Destroy ();
 		}
 
 		private static bool checkReq (string name, Hashtable entryInfo)

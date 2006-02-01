@@ -85,7 +85,16 @@ namespace lat
 				string msg = Mono.Unix.Catalog.GetString (
 					"You must provide a group name and description");
 
-				Util.MessageBox (newAdGroupDialog, msg, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					newAdGroupDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Creation error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				missingValues = true;
 				return;

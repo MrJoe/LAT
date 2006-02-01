@@ -209,7 +209,17 @@ namespace lat
 
 					string errMsg = "Unable to delete standard view";
 
-					Util.MessageBox (parentWindow, errMsg, MessageType.Error);
+					HIGMessageDialog dialog = new HIGMessageDialog (
+						parentWindow,
+						0,
+						Gtk.MessageType.Error,
+						Gtk.ButtonsType.Ok,
+						"Delete error",
+						errMsg);
+
+					dialog.Run ();
+					dialog.Destroy ();
+
 					return;
 				}
 

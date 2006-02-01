@@ -237,8 +237,16 @@ namespace lat
 
 			if (msg != null) {
 
-				Util.MessageBox (connectionDialog, msg, 
-						 MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					connectionDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Connection Error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			
 				return false;
 			}
@@ -260,9 +268,16 @@ namespace lat
 
 				Logger.Log.Debug ("Ldap error: {0}", le.Message);
 
-				Util.MessageBox (connectionDialog, 
-					le.Message, 
-					MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					connectionDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Connection error",
+					le.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				return;
 
@@ -270,9 +285,16 @@ namespace lat
 
 				Logger.Log.Debug ("Unknown error: {0}", e.Message);
 
-				Util.MessageBox (connectionDialog, 
-					Mono.Unix.Catalog.GetString ("An unknown error occured: ") + e.Message, 
-					MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					connectionDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Unknown connection error",
+					Mono.Unix.Catalog.GetString ("An unknown error occured: ") + e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				return;
 			}
@@ -324,9 +346,16 @@ namespace lat
 				string	msg = Mono.Unix.Catalog.GetString (
 					"No profile selected");
 
-				Util.MessageBox (connectionDialog, 
-					msg,
-					MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					connectionDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Profile error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				return;
 			}

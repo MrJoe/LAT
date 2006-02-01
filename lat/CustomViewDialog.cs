@@ -152,13 +152,21 @@ namespace lat
 			res = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
-			if (res != null)
+			if (res != null) {
 				foreach (LdapEntry le in res)
 					fillAttrs (le);
-			else
-				Util.MessageBox (customViewDialog, 
-					Mono.Unix.Catalog.GetString ("Invalid search filter."), 
-					MessageType.Error);
+			} else {
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					customViewDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Search filter error",
+					Mono.Unix.Catalog.GetString ("Invalid search filter."));
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
 		}
 
 		public void OnTestClicked (object o, EventArgs args)
@@ -184,9 +192,16 @@ namespace lat
 
 			} else {
 
-				Util.MessageBox (customViewDialog, 
-					Mono.Unix.Catalog.GetString ("No attribute selected to add."),
-					 MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					customViewDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Error",
+					Mono.Unix.Catalog.GetString ("No attribute selected to add."));
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 
@@ -208,9 +223,16 @@ namespace lat
 
 			} else {
 
-				Util.MessageBox (customViewDialog, 
-					Mono.Unix.Catalog.GetString ("No attribute selected to remove."),
-					 MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					customViewDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Remove error",
+					Mono.Unix.Catalog.GetString ("No attribute selected to remove."));
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}			
 		}
 
@@ -218,10 +240,17 @@ namespace lat
 		{
 			if (_viewAttrs.Keys.Count == 0) {
 
-				Util.MessageBox (customViewDialog, 
-				  Mono.Unix.Catalog.GetString (
-				  "You must select what attributes will be displayed in the view"),
-				  MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					customViewDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Error",
+					Mono.Unix.Catalog.GetString (
+					"You must select what attributes will be displayed in the view"));
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 
 			ArrayList tmp = new ArrayList ();

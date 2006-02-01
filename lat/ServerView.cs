@@ -203,7 +203,16 @@ namespace lat
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read data from server");
 
-				Util.MessageBox (parent, msg, Gtk.MessageType.Info);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parent,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Network error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 
@@ -501,9 +510,18 @@ namespace lat
 			if (url == null || url == "") {
 				string msg = Mono.Unix.Catalog.GetString (
 					"Invalid or empty email address");
-				
-				Util.MessageBox (parent, msg, MessageType.Error);
 
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parent,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Email error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+				
 				return;
 			}
 
@@ -517,7 +535,16 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (parent, errorMsg, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parent,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Email error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 
@@ -535,7 +562,16 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (parent, errorMsg, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parent,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Network error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 

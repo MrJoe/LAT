@@ -65,7 +65,16 @@ namespace lat
 					"Entry {0} has been renamed to {1}."),
 					oldDN, newDN);
 
-				Util.MessageBox (renameEntryDialog, msg, MessageType.Info);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					renameEntryDialog,
+					0,
+					Gtk.MessageType.Info,
+					Gtk.ButtonsType.Ok,
+					"Entry renamed",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 			} catch (Exception e) {
 
@@ -74,7 +83,16 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (renameEntryDialog, errorMsg, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					renameEntryDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Rename error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 
 			renameEntryDialog.HideAll ();

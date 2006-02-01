@@ -216,8 +216,18 @@ namespace lat
 		{
 			if (passwordEntry.Text != reenterEntry.Text) {
 				string msg = Mono.Unix.Catalog.GetString ("Password don't match");
-				Util.MessageBox (passwordDialog, msg, MessageType.Error);
-				
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					passwordDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Password error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			
 				passwordsDontMatch = true;
 
 				return;

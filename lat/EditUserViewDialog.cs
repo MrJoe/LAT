@@ -471,7 +471,16 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (editUserDialog, errorMsg, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					editUserDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 

@@ -317,7 +317,16 @@ namespace lat
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read data from server");
 
-				Util.MessageBox (_parent, msg, MessageType.Info);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					_parent,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Network error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 
 			Logger.Log.Debug ("END ldapRowExpanded");

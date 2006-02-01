@@ -405,10 +405,18 @@ namespace lat
 
 			if (searchResults.Length > 0 && filterEntry.Text != "")
 				_searchTreeView.UpdateSearchResults (searchResults);
-			else
-				Util.MessageBox (mainWindow, 
-					Mono.Unix.Catalog.GetString ("Invalid search filter."), 
-					MessageType.Error);
+			else {
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Search error",
+					Mono.Unix.Catalog.GetString ("Invalid search filter."));
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
 		}
 
 		public void OnSearchBaseClicked (object o, EventArgs args)
@@ -975,9 +983,16 @@ namespace lat
 
 				}
 
-				Util.MessageBox (mainWindow, 
-					msg, 
-					MessageType.Info);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Info,
+					Gtk.ButtonsType.Ok,
+					"Paste results",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				if (!_isCopy)
 					_ldapTreeview.RemoveRow (_cutIter);
@@ -997,9 +1012,16 @@ namespace lat
 
 				msg += "\nError: " + e.Message;
 
-				Util.MessageBox (mainWindow, 
-					msg, 
-					MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Paste error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 
 			if (_isCopy)
@@ -1063,7 +1085,16 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Util.MessageBox (mainWindow, e.Message, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Help error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 

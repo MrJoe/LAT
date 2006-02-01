@@ -204,7 +204,16 @@ namespace lat
 
 				errorMsg += "\nError: " + e.Message;
 
-				Util.MessageBox (newUserDialog, errorMsg, MessageType.Error);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					newUserDialog,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Modify error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 
@@ -284,7 +293,16 @@ namespace lat
 
 				string msg = String.Format (format, usernameEntry.Text);
 
-				Util.MessageBox (newUserDialog, msg, MessageType.Warning);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					newUserDialog,
+					0,
+					Gtk.MessageType.Warning,
+					Gtk.ButtonsType.Ok,
+					"User error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				missingValues = true;
 
@@ -295,7 +313,16 @@ namespace lat
 				string msg = Mono.Unix.Catalog.GetString (
 					"The UID you have selected is already in use!");
 
-				Util.MessageBox (newUserDialog, msg, MessageType.Warning);
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					newUserDialog,
+					0,
+					Gtk.MessageType.Warning,
+					Gtk.ButtonsType.Ok,
+					"User error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 
 				missingValues = true;
 
