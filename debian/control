@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Loren Bandiera <lorenb@mmgsecurity.com>
 Uploaders: Loren Bandiera <lorenb@mmgsecurity.com>
-Build-Depends: debhelper (>= 4.0.0), mono-mcs (>= 1.1.12.1), gtk-sharp2 (>= 2.4), libgnome-keyring-dev, scrollkeeper, libxml-parser-perl, pkg-config, gnome-doc-utils
+Build-Depends: debhelper (>= 4.0.0), mono-mcs (>= 1.1.12.1), gtk-sharp2 (>= 2.4), libgnome-keyring-dev, scrollkeeper, libxml-parser-perl, pkg-config
 Standards-Version: 3.6.0
 
 Package: lat
