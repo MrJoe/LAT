@@ -140,10 +140,6 @@ do
   fi
 done
 
-if [ ! -f gnome-doc-utils.make ]; then
-   ln -s "`pkg-config --variable=datadir gnome-doc-utils`/gnome-doc-utils/gnome-doc-utils.make"
-fi
-
 if [ ! -f omf.make ]; then
    ln -s "`pkg-config --variable=datadir gnome-doc-utils`/gnome-common/data/omf.make"
 fi

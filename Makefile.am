@@ -10,7 +10,6 @@ EXTRA_DIST = \
 	TODO \
 	lat.spec.in \
 	lat.spec \
-	gnome-doc-utils.make \
 	intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in \
