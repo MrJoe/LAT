@@ -1,4 +1,4 @@
-Name:		lat
+Name:		@PACKAGE@
 Version:	@VERSION@
 Release: 	1
 Summary: 	LDAP Administration Tool
@@ -7,21 +7,21 @@ Group: 		Applications/System
 License: 	GPL
 URL: 		http://people.mmgsecurity.com/~lorenb/lat
 BuildRoot: 	%{_tmppath}/%{name}-root
-Source: 	%{name}-%{version}.tar.gz
+Source: 	http://people.mmgsecurity.com/~lorenb/lat/releases/%{name}-%{version}.tar.gz
 
 Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
 
 Requires: mono >= 1.1.12.1
 Requires: mono-data >= 1.1.12.1
 Requires: gtk-sharp2 >= 2.4
+Requires(post): desktop-file-utils
+Requires(post): scrollkeeper
+Requires(postun): desktop-file-utils
+Requires(postun): scrollkeeper
 BuildRequires: mono-core >= 1.1.12.1
 BuildRequires: mono-data >= 1.1.12.1
 BuildRequires: gtk-sharp2 >= 2.4
 BuildRequires: gnome-keyring-devel
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: intltool
-BuildRequires: pkgconfig
 BuildRequires: scrollkeeper
 
 %description
@@ -32,22 +32,28 @@ LAT stands for LDAP Administration Tool. The tool allows you to browse LDAP-base
 
 %build
 %configure
-make %{?_smp_mflags}
 
 %install
-%{__rm} -rf %{buildroot}
-%makeinstall
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
+
+# remove libtool archives
+find $RPM_BUILD_ROOT/%{_libdir} -name '*.la' -exec rm {} \;
+
+%find_lang %name
 
 %clean
-%{__rm} -rf %{buildroot}
+rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/ldconfig 2>/dev/null
+update-desktop-database &> /dev/null ||:
+scrollkeeper-update -q -o %{_datadir}/omf/%{name} || :
 
 %postun
-/sbin/ldconfig 2>/dev/null
+update-desktop-database &> /dev/null ||:
+scrollkeeper-update -q || :
 
-%files
+%files -f %{name}.lang
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
 %{_bindir}/lat
