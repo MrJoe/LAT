@@ -46,6 +46,7 @@ namespace lat
 
 			oldNameEntry.Text = _selectedDN;
 			
+			renameEntryDialog.Icon = Global.latIcon;
 			renameEntryDialog.Run ();
 			renameEntryDialog.Destroy ();
 		}

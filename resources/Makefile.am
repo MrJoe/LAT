@@ -8,6 +8,7 @@ EXTRA_DIST = \
 	edit-find-48x48.png \
 	unlocked16x16.png \
 	x-directory-remote-workgroup.png \
+	lat.png \
 	locked16x16.png \
 	locked-48x48.png \
 	users.png \

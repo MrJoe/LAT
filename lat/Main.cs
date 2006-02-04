@@ -26,6 +26,7 @@ using lat;
 public class Global
 {
 	public static Gnome.Program latProgram;
+	public static Gdk.Pixbuf latIcon;
 	public static bool Debug = false;
 	public static TemplateManager theTemplateManager;
 	public static ViewManager viewManager;
@@ -98,17 +99,16 @@ public class LdapAdministrationTool
 
 		Application.Init ();
 
+		Global.latIcon = Gdk.Pixbuf.LoadFromResource ("lat.png");
+
 		Global.theTemplateManager = new TemplateManager ();
 		Global.theTemplateManager.Load ();
 
 		Global.viewManager = new ViewManager ();
 
-		Global.latProgram = new Program (
-			Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
+		Global.latProgram = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 
-		Mono.Unix.Catalog.Init (
-			Defines.PACKAGE, 
-			Defines.LOCALE_DIR);
+		Mono.Unix.Catalog.Init (Defines.PACKAGE, Defines.LOCALE_DIR);
 
 		new ConnectDialog ();	
 		Global.latProgram.Run ();

@@ -196,6 +196,7 @@ namespace lat
 			ozDeptEntry.Text = (string)_ui["departmentNumber"];
 			ozCompanyEntry.Text = (string)_ui["o"];
 
+			editUserDialog.Icon = Global.latIcon;
 			editUserDialog.Run ();
 
 			while (missingValues) {

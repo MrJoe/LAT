@@ -43,6 +43,7 @@ namespace lat
 		{
 			Init ();
 
+			dynamicDialog.Icon = Global.latIcon;
 			dynamicDialog.Title = "LAT - Add Entry";
 
 			dynamicDialog.Run ();

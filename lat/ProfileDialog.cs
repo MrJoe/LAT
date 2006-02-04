@@ -114,6 +114,8 @@ namespace lat
 			createCombo ();
 
 			noEncryptionRadioButton.Active = true;
+
+			profileDialog.Icon = Global.latIcon;
 		}	
 
 		private static void comboSetActive (ComboBox cb, string name)

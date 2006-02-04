@@ -47,6 +47,7 @@ namespace lat
 		{
 			Init ();
 
+			hostDialog.Icon = Global.latIcon;
 			hostDialog.Title = "Add Computer";
 
 			hostDialog.Run ();

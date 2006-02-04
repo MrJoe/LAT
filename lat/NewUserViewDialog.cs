@@ -75,6 +75,7 @@ namespace lat
 			uidSpinButton.Value = server.GetNextUID ();
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
+			newUserDialog.Icon = Global.latIcon;
 			newUserDialog.Run ();
 
 			while (missingValues) {

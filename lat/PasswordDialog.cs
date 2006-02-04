@@ -51,6 +51,8 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "passwordDialog", null);
 			ui.Autoconnect (this);
 
+			passwordDialog.Icon = Global.latIcon;
+
 			// Use SSHA by default
 			shaRadioButton.Active = true;
 			useSaltCheckButton.Active = true;

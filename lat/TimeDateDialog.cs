@@ -40,6 +40,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "timeDateDialog", null);
 			ui.Autoconnect (this);
 			
+			timeDateDialog.Icon = Global.latIcon;
 			timeDateDialog.Run ();
 			timeDateDialog.Destroy ();
 		}

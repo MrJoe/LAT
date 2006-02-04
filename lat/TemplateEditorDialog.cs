@@ -89,6 +89,7 @@ namespace lat
 			createCombos ();
 			setupTreeViews ();
 	
+			templateEditorDialog.Icon = Global.latIcon;
 			templateEditorDialog.Resize (640, 480);
 		}
 

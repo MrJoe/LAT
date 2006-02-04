@@ -46,6 +46,7 @@ namespace lat
 			browserScrolledWindow.Show ();
 
 			selectContainerDialog.Resize (350, 400);
+			selectContainerDialog.Icon = Global.latIcon;
 		}
 
 		public void Run ()

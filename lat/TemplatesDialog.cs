@@ -47,6 +47,7 @@ namespace lat
 			setupTreeViews ();
 			listTemplates ();
 
+			templatesDialog.Icon = Global.latIcon;
 			templatesDialog.Resize (320, 300);
 
 			templatesDialog.Run ();

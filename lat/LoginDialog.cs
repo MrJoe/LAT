@@ -74,6 +74,8 @@ namespace lat
 			// FIXME: manually loading tango icon
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("locked-48x48.png");
 			image455.Pixbuf = pb;
+
+			loginDialog.Icon = Global.latIcon;
 		}
 
 		private void Relogin ()

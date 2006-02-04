@@ -54,6 +54,7 @@ namespace lat
 
 			Init ();
 
+			customViewDialog.Icon = Global.latIcon;
 			customViewDialog.Title = "LAT - New custom view";
 
 			searchBaseButton.Label = server.DirectoryRoot;

@@ -45,6 +45,7 @@ namespace lat
 			certInfoLabel.Text = securityInfo;
 			noRadio.Active = true;
 
+			certDialog.Icon = Global.latIcon;
 			certDialog.Run ();
 			certDialog.Destroy ();
 		}

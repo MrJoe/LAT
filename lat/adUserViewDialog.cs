@@ -166,6 +166,8 @@ namespace lat
 			ui.Autoconnect (this);
 
 			viewDialog = adUserDialog;
+			
+			adUserDialog.Icon = Global.latIcon;
 		}
 
 		public void OnNameChanged (object o, EventArgs args)

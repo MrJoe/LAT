@@ -68,7 +68,7 @@ namespace lat
 			modListStore.SetSortColumnId (0, SortType.Ascending);
 
 			massEditDialog.Resize (300, 450);
-
+			massEditDialog.Icon = Global.latIcon;
 			massEditDialog.Run ();
 			massEditDialog.Destroy ();
 		}

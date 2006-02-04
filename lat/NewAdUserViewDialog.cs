@@ -68,6 +68,7 @@ namespace lat
 
 			createCombo ();
 
+			newAdUserDialog.Icon = Global.latIcon;
 			newAdUserDialog.Run ();
 
 			while (missingValues) {

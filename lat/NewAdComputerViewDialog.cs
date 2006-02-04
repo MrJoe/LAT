@@ -41,6 +41,7 @@ namespace lat
 		{
 			Init ();
 
+			newAdComputerDialog.Icon = Global.latIcon;
 			newAdComputerDialog.Title = "Add Computer";
 
 			newAdComputerDialog.Run ();

@@ -92,6 +92,7 @@ namespace lat
 			if (manName != "" || manName != null)
 				updateManagedBy (manName);
 
+			editAdComputerDialog.Icon = Global.latIcon;
 			editAdComputerDialog.Run ();
 
 			while (missingValues) {

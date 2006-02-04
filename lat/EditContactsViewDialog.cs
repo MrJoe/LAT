@@ -148,6 +148,7 @@ namespace lat
 				adStreetTextView.Buffer.Text = (string)_ci["street"];
 			}
 
+			editContactDialog.Icon = Global.latIcon;
 			editContactDialog.Run ();
 
 			while (missingValues) {

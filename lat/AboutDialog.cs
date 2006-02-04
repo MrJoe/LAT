@@ -43,6 +43,7 @@ namespace lat
 				_translators, 
 				null);
 
+			ab.Icon = Global.latIcon;
 			ab.Show ();
 		}
 

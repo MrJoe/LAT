@@ -57,6 +57,8 @@ namespace lat
 
 			showAttributes ();
 
+			createEntryDialog.Icon = Global.latIcon;
+
 			createEntryDialog.Run ();
 			createEntryDialog.Destroy ();
 		}

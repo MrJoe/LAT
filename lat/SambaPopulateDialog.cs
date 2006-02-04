@@ -55,6 +55,7 @@ namespace lat
 			computerOUEntry.Text = "ou=Computers," + server.DirectoryRoot;
 			idmapOUEntry.Text = "ou=Idmap," + server.DirectoryRoot;
 
+			sambaPopulateDialog.Icon = Global.latIcon;
 			sambaPopulateDialog.Run ();
 			sambaPopulateDialog.Destroy ();
 		}

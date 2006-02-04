@@ -50,6 +50,7 @@ namespace lat
 
 			createCombos ();
 
+			newEntryDialog.Icon = Global.latIcon;
 			newEntryDialog.Run ();
 			newEntryDialog.Destroy ();
 		}

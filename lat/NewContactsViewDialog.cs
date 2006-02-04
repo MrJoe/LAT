@@ -46,6 +46,7 @@ namespace lat
 		{
 			Init ();
 
+			newContactDialog.Icon = Global.latIcon;
 			newContactDialog.Title = "New Contact";
 
 			newContactDialog.Run ();

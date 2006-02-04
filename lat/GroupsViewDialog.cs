@@ -64,6 +64,7 @@ namespace lat
 
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
+			groupDialog.Icon = Global.latIcon;
 			groupDialog.Run ();
 
 			while (missingValues) {

@@ -55,6 +55,7 @@ namespace lat
 			foreach (string s in allGroups)
 				store.AppendValues (s);
 			
+			selectGroupsDialog.Icon = Global.latIcon;
 			selectGroupsDialog.Resize (320, 200);
 			selectGroupsDialog.Run ();
 			selectGroupsDialog.Destroy ();

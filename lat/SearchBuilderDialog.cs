@@ -93,6 +93,7 @@ namespace lat
 
 //			searchBuilderDialog.Resize (350, 400);
 
+			searchBuilderDialog.Icon = Global.latIcon;
 			searchBuilderDialog.Run ();
 			searchBuilderDialog.Destroy ();
 		}

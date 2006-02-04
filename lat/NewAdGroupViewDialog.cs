@@ -43,6 +43,7 @@ namespace lat
 		{
 			Init ();
 
+			newAdGroupDialog.Icon = Global.latIcon;
 			newAdGroupDialog.Title = "Add Group";
 
 			newAdGroupDialog.Run ();

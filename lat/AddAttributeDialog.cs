@@ -60,6 +60,8 @@ namespace lat
 
 			addAttributeDialog.DeleteEvent += new DeleteEventHandler (OnDlgDelete);
 
+			addAttributeDialog.Icon = Global.latIcon;
+
 			addAttributeDialog.Run ();
 			addAttributeDialog.Destroy ();
 		}
