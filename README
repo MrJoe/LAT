@@ -14,7 +14,7 @@ see the file 'COPYING' for more information.
 
 The official web site is:
 
-	http://people.mmgsecurity.com/~lorenb/lat/
+	http://dev.mmgsecurity.com/projects/lat/
 
 Installation
 ============
@@ -43,7 +43,7 @@ the MMG Security Subversion repository in the module lat.
 
 	$ mkdir lat
 	$ cd lat
-	$ svn co http://svn.mmgsecurity.com/svn/lat/trunk
+	$ svn co http://dev.mmgsecurity.com/src/lat/trunk
 	$ cd trunk
 	$ ./autogen.sh
 	$ ./configure
@@ -51,4 +51,4 @@ the MMG Security Subversion repository in the module lat.
 
 Bugs / Patches
 ==================
-Bugs/patches can be reported/submitted to http://bugs.mmgsecurity.com/
+Bugs/patches can be reported/submitted to http://dev.mmgsecurity.com/bugs/

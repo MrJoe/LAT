@@ -5,9 +5,9 @@ Summary: 	LDAP Administration Tool
 
 Group: 		Applications/System
 License: 	GPL
-URL: 		http://people.mmgsecurity.com/~lorenb/lat
+URL: 		http://dev.mmgsecurity.com/projects/lat
 BuildRoot: 	%{_tmppath}/%{name}-root
-Source: 	http://people.mmgsecurity.com/~lorenb/lat/releases/%{name}-%{version}.tar.gz
+Source: 	http://dev.mmgsecurity.com/downloads/lat/%{name}-%{version}.tar.gz
 
 Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
 

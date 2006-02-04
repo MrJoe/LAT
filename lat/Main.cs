@@ -37,7 +37,7 @@ public class LdapAdministrationTool
 	public static void printUsage ()
 	{
 		string usage = Defines.PACKAGE + " " + Defines.VERSION + "\n" +
-			"Web page: http://people.mmgsecurity.com/~lorenb/lat/\n" +
+			"Web page: http://dev.mmgsecurity.com/projects/lat/\n" +
 			"Copyright 2005 MMG Security, Inc.\n\n";
 
 		usage += 
