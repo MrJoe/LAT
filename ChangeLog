@@ -1,3 +1,4 @@
+	* Show in process list as 'lat' not 'mono'
 	* Set program icon in all windows and dialogs
 	* Make sure message dialogs are HIG compliant
 

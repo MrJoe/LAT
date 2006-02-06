@@ -97,6 +97,10 @@ public class LdapAdministrationTool
 
 		Logger.Log.Debug ("Starting {0} (version {1})", Defines.PACKAGE, Defines.VERSION);
 
+		try {
+			Util.SetProcessName (Defines.PACKAGE);
+		} catch {}
+
 		Application.Init ();
 
 		Global.latIcon = Gdk.Pixbuf.LoadFromResource ("lat.png");

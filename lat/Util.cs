@@ -22,7 +22,9 @@ using Gtk;
 using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
+using Mono.Unix;
 using Novell.Directory.Ldap;
 
 namespace lat 
@@ -32,6 +34,18 @@ namespace lat
 		public Util ()
 		{
 		}
+
+		// Taken from Banshee; written by Aaron Bockover (aaron@aaronbock.net)
+	        [DllImport("libc")]
+	        static extern int prctl(int option, byte [] arg2, ulong arg3 , ulong arg4, ulong arg5);
+        
+        	public static void SetProcessName(string name)
+	        {
+	            if(prctl(15 /* PR_SET_NAME */, Encoding.ASCII.GetBytes(name), 0, 0, 0) != 0) {
+        	        throw new ApplicationException("Error setting process name: " + 
+                	    Mono.Unix.Native.Stdlib.GetLastError());
+	            }
+        	}
 
 		private static LdapModification createMod (string name, string val)
 		{
