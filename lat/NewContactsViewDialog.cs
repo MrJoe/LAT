@@ -79,7 +79,6 @@ namespace lat
 				break;
 			}
 
-			// FIXME: manually loading tango icon
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("contact-new-48x48.png");
 			image181.Pixbuf = pb;
 		}

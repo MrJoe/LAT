@@ -162,7 +162,6 @@ namespace lat
 			manNameEntry.Sensitive = false;
 			manStreetTextView.Sensitive = false;
 
-			// FIXME: manually loading tango icon
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
 			image178.Pixbuf = pb;
 		}

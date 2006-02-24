@@ -360,7 +360,6 @@ namespace lat
 				ParseNode (view);
 		}
 
-		// FIXME: better to override []
 		public ViewData Lookup (string viewName)
 		{
 			if (views.Contains (viewName))

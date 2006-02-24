@@ -78,7 +78,6 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "searchBuilderDialog", null);
 			ui.Autoconnect (this);
 
-			// FIXME: manually loading tango icon
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("edit-find-48x48.png");
 			image117.Pixbuf = pb;
 
@@ -90,8 +89,6 @@ namespace lat
 
 			okButton.Clicked += new EventHandler (OnOkClicked);
 			cancelButton.Clicked += new EventHandler (OnCancelClicked);
-
-//			searchBuilderDialog.Resize (350, 400);
 
 			searchBuilderDialog.Icon = Global.latIcon;
 			searchBuilderDialog.Run ();

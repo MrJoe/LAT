@@ -90,7 +90,6 @@ namespace lat
 
 			viewDialog = hostDialog;
 
-			// FIXME: manually loading tango icon
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
 			image31.Pixbuf = pb;
 		}

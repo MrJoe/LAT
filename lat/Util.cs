@@ -250,7 +250,6 @@ namespace lat
 				dialog.Destroy ();
 			}
 
-			// FIXME: Do I really need to do this?
 			modList.Clear ();
 		}
 
