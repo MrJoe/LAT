@@ -403,9 +403,7 @@ namespace lat
 			LdapEntry[] searchResults = server.Search (
 				searchBaseButton.Label, filterEntry.Text);
 
-			if (searchResults.Length > 0 && filterEntry.Text != "")
-				_searchTreeView.UpdateSearchResults (searchResults);
-			else {
+			if (searchResults == null) {
 				HIGMessageDialog dialog = new HIGMessageDialog (
 					mainWindow,
 					0,
@@ -416,6 +414,9 @@ namespace lat
 
 				dialog.Run ();
 				dialog.Destroy ();
+
+			} else if (searchResults.Length > 0 && filterEntry.Text != "") {
+				_searchTreeView.UpdateSearchResults (searchResults);
 			}
 		}
 
