@@ -417,6 +417,10 @@ namespace lat
 
 			} else if (searchResults.Length > 0 && filterEntry.Text != "") {
 				_searchTreeView.UpdateSearchResults (searchResults);
+
+				string msg = String.Format ("Found {0} matching entries", searchResults.Length);
+				appBar.Pop ();
+				appBar.Push (msg);
 			}
 		}
 
