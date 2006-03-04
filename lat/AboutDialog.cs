@@ -33,17 +33,16 @@ namespace lat
 
 		public AboutDialog ()
 		{
-			Gnome.About ab = new Gnome.About (
-				Defines.PACKAGE,
-				Defines.VERSION,
-				_copy,
-				_desc,
-				_author,
-				_docs, 
-				_translators, 
-				null);
-
+			Gtk.AboutDialog ab = new Gtk.AboutDialog ();
+			ab.Authors = _author;
+			ab.Comments = _desc;
+			ab.Copyright = _copy;
+			ab.Documenters = _docs;
+			ab.Name = Defines.PACKAGE;
+			ab.TranslatorCredits = _translators;
+			ab.Version = Defines.VERSION;
 			ab.Icon = Global.latIcon;
+
 			ab.Show ();
 		}
 
