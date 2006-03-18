@@ -16,7 +16,10 @@ if test "x$PKG_CONFIG" = "xno"; then
 fi
 
 AC_PATH_PROG(MONO, mono)
-AC_PATH_PROG(MCS, mcs)
+AC_PATH_PROG(MCS, mcs, no)
+if test "x$MCS" = "xno"; then
+	AC_MSG_ERROR([You need to install mcs])
+fi
 
 dnl Version dependencies
 MONO_REQUIRED=1.1.12.1
