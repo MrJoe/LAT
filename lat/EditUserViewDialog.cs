@@ -99,6 +99,7 @@ namespace lat
 			"sambaPwdCanChange", "sambaPwdMustChange" };
 
 		private bool _isSamba = false;
+		private bool firstTimeSamba = false;
 		private string _pass = "";
 		private string _smbLM = "";
 		private string _smbNT = "";
@@ -243,6 +244,8 @@ namespace lat
 					else
 						ui.Add (a, attr.StringValue);
 				}
+			} else {
+				firstTimeSamba = true;
 			}
 
 			return ui;
@@ -318,6 +321,22 @@ namespace lat
 
 		private void toggleSambaWidgets (bool state)
 		{
+			if (state && firstTimeSamba) {
+				string msg = Mono.Unix.Catalog.GetString (
+					"You must reset the password for this account in order to set a samba password.");
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+						editUserDialog,
+						0,
+						Gtk.MessageType.Info,
+						Gtk.ButtonsType.Ok,
+						"Setting a samba password",
+						msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
+
 			smbLoginScriptEntry.Sensitive = state;
 			smbProfilePathEntry.Sensitive = state;
 			smbHomePathEntry.Sensitive = state;

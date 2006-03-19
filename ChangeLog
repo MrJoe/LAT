@@ -1,3 +1,4 @@
+	* BUGFIX: [#40] Select 'Enable Samba support for this user' will not work unless a new password is chosen
 	* BUGFIX: [#39] Compilation errors if mcs is not found
 	* Use Gtk.AboutDialog instead of Gnome.About
 
