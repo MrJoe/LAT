@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-18 21:54-0500\n"
+"POT-Creation-Date: 2006-03-19 06:15-0500\n"
 "PO-Revision-Date: 2005-06-23 09:52-0300\n"
 "Last-Translator: Pablo Borges <pablort@gmail.com>\n"
 "Language-Team: pt_BR <pt_BR@li.org>\n"
@@ -73,17 +73,17 @@ msgstr ""
 msgid "You must select what attributes will be displayed in the view"
 msgstr ""
 
-#: ../lat/EditAdComputerViewDialog.cs:192
+#: ../lat/EditAdComputerViewDialog.cs:196
 msgid "Select a user who will manage "
 msgstr ""
 
-#: ../lat/EditUserViewDialog.cs:326
+#: ../lat/EditUserViewDialog.cs:337
 msgid ""
 "You must reset the password for this account in order to set a samba "
 "password."
 msgstr ""
 
-#: ../lat/EditUserViewDialog.cs:490 ../lat/NewUserViewDialog.cs:204
+#: ../lat/EditUserViewDialog.cs:501 ../lat/NewUserViewDialog.cs:214
 #, fuzzy
 msgid "Unable to modify group "
 msgstr "Não foi possível modificar a entrada {0}"
@@ -96,16 +96,16 @@ msgstr ""
 msgid "Unable to re-login"
 msgstr ""
 
-#: ../lat/NewAdGroupViewDialog.cs:87
+#: ../lat/NewAdGroupViewDialog.cs:91
 msgid "You must provide a group name and description"
 msgstr ""
 
-#: ../lat/NewUserViewDialog.cs:293
+#: ../lat/NewUserViewDialog.cs:303
 #, csharp-format
 msgid "A user with the username '{0}' already exists!"
 msgstr ""
 
-#: ../lat/NewUserViewDialog.cs:315
+#: ../lat/NewUserViewDialog.cs:325
 msgid "The UID you have selected is already in use!"
 msgstr ""
 
@@ -205,27 +205,34 @@ msgstr ""
 "Você tem certeza que deseja apagar:\n"
 "\n"
 
-#: ../lat/Util.cs:166
+#: ../lat/Util.cs:83
+msgid ""
+"LAT could not determine your Samba System ID (SID). If you haven't "
+"configured your directory for Samba yet, select 'Populate directory for "
+"samba' from the Server menu"
+msgstr ""
+
+#: ../lat/Util.cs:185
 #, csharp-format
 msgid "Entry {0} has been added."
 msgstr "A entrada {0} foi adicionada."
 
-#: ../lat/Util.cs:185
+#: ../lat/Util.cs:206
 #, fuzzy
 msgid "Unable to add entry "
 msgstr "Não foi possível adicionar a entrada {0}"
 
-#: ../lat/Util.cs:219
+#: ../lat/Util.cs:242
 #, csharp-format
 msgid "Entry {0} has been modified."
 msgstr "A entrada {0} foi modificada."
 
-#: ../lat/Util.cs:237
+#: ../lat/Util.cs:264
 #, fuzzy
 msgid "Unable to modify entry "
 msgstr "Não foi possível modificar a entrada {0}"
 
-#: ../lat/Util.cs:291
+#: ../lat/Util.cs:318
 #, csharp-format
 msgid ""
 "Are you sure you want to delete:\n"
@@ -234,33 +241,33 @@ msgstr ""
 "Você tem certeza que deseja apagar:\n"
 "\n"
 
-#: ../lat/Util.cs:295
+#: ../lat/Util.cs:322
 #, fuzzy
 msgid "Unable to delete the following entries:\n"
 msgstr "Não foi possível remover todas as entradas"
 
-#: ../lat/Util.cs:322
+#: ../lat/Util.cs:349
 msgid "Entries successfully deleted."
 msgstr "As entradas foram removidas com sucesso."
 
-#: ../lat/Util.cs:348
+#: ../lat/Util.cs:375
 #, fuzzy
 msgid "Are you sure you want to delete"
 msgstr ""
 "Você tem certeza que deseja apagar:\n"
 "\n"
 
-#: ../lat/Util.cs:361
+#: ../lat/Util.cs:388
 #, csharp-format
 msgid "Entry {0} has been deleted."
 msgstr "A entrada {0} foi apagada"
 
-#: ../lat/Util.cs:380
+#: ../lat/Util.cs:407
 #, fuzzy
 msgid "Unable to delete entry "
 msgstr "Não foi possível remover a entrada {0}"
 
-#: ../lat/Util.cs:409
+#: ../lat/Util.cs:436
 #, csharp-format
 msgid ""
 "Imported {0} entries\n"
@@ -269,17 +276,17 @@ msgstr ""
 "{0} entradas foram importadas\n"
 "de {1}."
 
-#: ../lat/Util.cs:465
+#: ../lat/Util.cs:492
 #, csharp-format
 msgid "Imported {0} entries."
 msgstr "{0} entradas foram importadas."
 
-#: ../lat/Util.cs:540
+#: ../lat/Util.cs:567
 #, fuzzy
 msgid "Save LDIF export as"
 msgstr "Salvar export como"
 
-#: ../lat/ViewDialog.cs:101
+#: ../lat/ViewDialog.cs:102
 #, csharp-format
 msgid ""
 "You must provide values for the following attributes:\n"

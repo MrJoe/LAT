@@ -77,6 +77,25 @@ namespace lat
 			return prefix;
 		}
 
+		public static void DisplaySambaSIDWarning (Gtk.Window parent)
+		{
+			string msg = Mono.Unix.Catalog.GetString (
+			   "LAT could not determine your Samba System ID (SID). If you " +
+			   "haven't configured your directory for Samba yet, select " +
+			   "'Populate directory for samba' from the Server menu");
+
+			HIGMessageDialog dialog = new HIGMessageDialog (
+					parent,
+					0,
+					Gtk.MessageType.Warning,
+					Gtk.ButtonsType.Ok,
+					"Unable to enable Samba support",
+					msg);
+
+			dialog.Run ();
+			dialog.Destroy ();
+		}
+
 		public static ArrayList CreateSambaMods (int uid, string sid, string lm, string nt)
 		{
 			ArrayList mods = new ArrayList ();

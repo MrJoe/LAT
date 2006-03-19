@@ -216,7 +216,14 @@ namespace lat
 		private void OnSambaChanged (object o, EventArgs args)
 		{
 			if (smbEnableSambaButton.Active) {
+
 				_smbSID = server.GetLocalSID ();
+
+				if (_smbSID == null) {
+					Util.DisplaySambaSIDWarning (editUserDialog);
+					smbEnableSambaButton.Active = false;
+					return;
+				}
 
 				toggleSambaWidgets (true);
 			} else {
