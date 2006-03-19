@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-14 08:27-0500\n"
+"POT-Creation-Date: 2006-03-18 21:54-0500\n"
 "PO-Revision-Date: 2005-06-23 09:52-0300\n"
 "Last-Translator: Pablo Borges <pablort@gmail.com>\n"
 "Language-Team: pt_BR <pt_BR@li.org>\n"
@@ -77,7 +77,13 @@ msgstr ""
 msgid "Select a user who will manage "
 msgstr ""
 
-#: ../lat/EditUserViewDialog.cs:471 ../lat/NewUserViewDialog.cs:204
+#: ../lat/EditUserViewDialog.cs:326
+msgid ""
+"You must reset the password for this account in order to set a samba "
+"password."
+msgstr ""
+
+#: ../lat/EditUserViewDialog.cs:490 ../lat/NewUserViewDialog.cs:204
 #, fuzzy
 msgid "Unable to modify group "
 msgstr "Não foi possível modificar a entrada {0}"

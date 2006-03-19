@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-14 08:27-0500\n"
+"POT-Creation-Date: 2006-03-18 21:54-0500\n"
 "PO-Revision-Date: 2006-03-14 10:34+0100\n"
 "Last-Translator: Thomas Constans <thomas.constans@opendoor.fr>\n"
 "Language-Team: fr_FR <fr_FR@li.org>\n"
@@ -72,7 +72,13 @@ msgstr "Vous devez choisir quels attributs vous voulez afficher dans la vue"
 msgid "Select a user who will manage "
 msgstr "Choisissez l'utilisateur administrateur"
 
-#: ../lat/EditUserViewDialog.cs:471 ../lat/NewUserViewDialog.cs:204
+#: ../lat/EditUserViewDialog.cs:326
+msgid ""
+"You must reset the password for this account in order to set a samba "
+"password."
+msgstr ""
+
+#: ../lat/EditUserViewDialog.cs:490 ../lat/NewUserViewDialog.cs:204
 msgid "Unable to modify group "
 msgstr "Impossible de modifier l'entrée {0}"
 
