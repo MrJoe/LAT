@@ -316,7 +316,7 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
-				missingValues = true;
+				errorOccured = true;
 
 				return;
 			}
@@ -336,7 +336,27 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
-				missingValues = true;
+				errorOccured = true;
+
+				return;
+			}
+
+			if (passwordEntry.Text == "" || passwordEntry.Text == null) {
+				string msg = Mono.Unix.Catalog.GetString (
+					"You must set a password for the new user");
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					newUserDialog,
+					0,
+					Gtk.MessageType.Warning,
+					Gtk.ButtonsType.Ok,
+					"User error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+
+				errorOccured = true;
 
 				return;
 			}
