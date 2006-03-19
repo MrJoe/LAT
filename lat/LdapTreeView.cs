@@ -24,6 +24,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Utilclass;
 using Gtk;
 using GLib;
 using Gdk;
@@ -90,7 +91,7 @@ namespace lat
 		private Gtk.ToolButton _newButton = null;
 		private Gtk.ToolButton _deleteButton = null;
 
-		private enum TreeCols { Icon, DN };
+		private enum TreeCols { Icon, DN, RDN };
 
 		public event AttributeAddedHandler AttributeAdded;
 		public event dnSelectedHandler dnSelected;
@@ -111,7 +112,7 @@ namespace lat
 			server = ldapServer;
 			_parent = parent;
 
-			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
+			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string), typeof (string));
 
 			this.Model = browserStore;
 			this.HeadersVisible = false;
@@ -131,18 +132,24 @@ namespace lat
 			this.DragDataGet += new DragDataGetHandler (OnDragDataGet);
 			this.DragDataReceived += new DragDataReceivedHandler (OnDragDataReceived);
 
+			TreeViewColumn col;
+
 			this.AppendColumn ("icon", new CellRendererPixbuf (), "pixbuf", (int)TreeCols.Icon);
-			this.AppendColumn ("ldapRoot", new CellRendererText (), "text", (int)TreeCols.DN);
+
+			col = this.AppendColumn ("DN", new CellRendererText (), "text", (int)TreeCols.DN);
+			col.Visible = false;
+
+			this.AppendColumn ("RDN", new CellRendererText (), "text", (int)TreeCols.RDN);
 
 			Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 
 			TreeIter iter;
-			iter = browserStore.AppendValues (dirIcon, server.Host);
+			iter = browserStore.AppendValues (dirIcon, server.Host, server.Host);
 
 			ldapRootIter = browserStore.AppendValues (iter, dirIcon,
-				server.DirectoryRoot);
+				server.DirectoryRoot, server.DirectoryRoot);
 
-			browserStore.AppendValues (ldapRootIter, null, "");
+			browserStore.AppendValues (ldapRootIter, null, "", "");
 
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
 
@@ -293,6 +300,8 @@ namespace lat
 				foreach (LdapEntry le in ldapEntries) {
 
 					Logger.Log.Debug ("\tchild: {0}", le.DN);
+					DN dn = new DN (le.DN);
+					RDN rdn = (RDN) dn.RDNs[0];
 
 					TreeIter _newChild;
 
@@ -300,6 +309,7 @@ namespace lat
 
 						browserStore.SetValue (child, (int)TreeCols.Icon, pb);
 						browserStore.SetValue (child, (int)TreeCols.DN, le.DN);
+						browserStore.SetValue (child, (int)TreeCols.RDN, rdn.Value);
 
 						browserStore.AppendValues (child, pb, "");
 					
@@ -307,8 +317,8 @@ namespace lat
 
 					} else {
 
-						_newChild = browserStore.AppendValues (args.Iter, pb, le.DN);
-						browserStore.AppendValues (_newChild, pb, "");
+						_newChild = browserStore.AppendValues (args.Iter, pb, le.DN, rdn.Value);
+						browserStore.AppendValues (_newChild, pb, "", "");
 					}
 				}
 
