@@ -95,8 +95,12 @@ namespace lat
 			editAdComputerDialog.Icon = Global.latIcon;
 			editAdComputerDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				editAdComputerDialog.Run ();				
 			}
 
@@ -218,7 +222,10 @@ namespace lat
 
 			_modList = getMods (hostAttrs, _hi, chi);
 
-			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
+			if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			editAdComputerDialog.HideAll ();
 		}

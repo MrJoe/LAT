@@ -46,6 +46,11 @@ namespace lat
 			dynamicDialog.Icon = Global.latIcon;
 			dynamicDialog.Title = "LAT - Add Entry";
 
+			while (errorOccured) {
+				errorOccured = false;
+				dynamicDialog.Run ();				
+			}
+
 			dynamicDialog.Run ();
 			dynamicDialog.Destroy ();
 		}
@@ -136,8 +141,12 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			if (_isEdit)
-				Util.ModifyEntry (server, dynamicDialog, _le.DN, _modList, true);
+			if (_isEdit) {
+				if (!Util.ModifyEntry (server, dynamicDialog, _le.DN, _modList, true)) {
+					errorOccured = true;
+					return;
+				}
+			}
 
 			dynamicDialog.HideAll ();
 		}

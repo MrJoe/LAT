@@ -30,6 +30,7 @@ namespace lat
 		protected LdapServer server;
 		protected Gtk.Dialog viewDialog;
 		protected bool missingValues = false;
+		protected bool errorOccured = false;
 
 		public ViewDialog (LdapServer ldapServer)
 		{

@@ -155,7 +155,7 @@ namespace lat
 			return false;
 		}
 
-		public static void AddEntry (LdapServer server, Gtk.Window parent, 
+		public static bool AddEntry (LdapServer server, Gtk.Window parent, 
 					     string dn, ArrayList attrs, bool msgBox)
 		{
 			try {
@@ -179,6 +179,8 @@ namespace lat
 					dialog.Destroy ();
 				}
 
+				return true;
+
 			} catch (Exception e) {
 
 				string errorMsg = 
@@ -196,15 +198,17 @@ namespace lat
 
 					dialog.Run ();
 					dialog.Destroy ();
+
+				return false;
 			}
 		}
 
-		public static void ModifyEntry (LdapServer server, Gtk.Window parent, 
+		public static bool ModifyEntry (LdapServer server, Gtk.Window parent, 
 						string dn, ArrayList modList, bool msgBox)
 		{
 			if (modList.Count == 0) {
 				Logger.Log.Debug ("ModifyEntry: modList.Count == 0");
-				return;
+				return false;
 			}
 
 			LdapModification[] mods;
@@ -231,6 +235,10 @@ namespace lat
 					dialog.Destroy ();
 				}
 
+				modList.Clear ();
+
+				return true;
+
 			} catch (Exception e) {
 
 				string errorMsg = 
@@ -248,9 +256,9 @@ namespace lat
 
 				dialog.Run ();
 				dialog.Destroy ();
-			}
 
-			modList.Clear ();
+				return false;
+			}
 		}
 
 		public static bool AskYesNo (Gtk.Window parent, string msg)

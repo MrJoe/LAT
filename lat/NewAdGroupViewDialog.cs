@@ -48,8 +48,12 @@ namespace lat
 
 			newAdGroupDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				newAdGroupDialog.Run ();				
 			}
 
@@ -118,7 +122,10 @@ namespace lat
 
 			string userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
 
-			Util.AddEntry (server, viewDialog, userDN, attrList, true);
+			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			newAdGroupDialog.HideAll ();
 		}

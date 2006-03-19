@@ -51,8 +51,13 @@ namespace lat
 
 			newContactDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				newContactDialog.Run ();				
 			}
 
@@ -144,7 +149,10 @@ namespace lat
 
 			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
 
-			Util.AddEntry (server, viewDialog, userDN, attrList, true);
+			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			newContactDialog.HideAll ();
 		}

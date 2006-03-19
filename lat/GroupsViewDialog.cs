@@ -67,8 +67,12 @@ namespace lat
 			groupDialog.Icon = Global.latIcon;
 			groupDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				groupDialog.Run ();				
 			}
 
@@ -314,7 +318,10 @@ namespace lat
 					_modList.Add (lm);
 				}
 	
-				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
+				if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
+					errorOccured = true;	
+					return;
+				}
 
 			} else {
 
@@ -352,7 +359,10 @@ namespace lat
 
 				string userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
 
-				Util.AddEntry (server, viewDialog, userDN, attrList, true);
+				if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+					errorOccured = true;
+					return;
+				}
 			}
 
 			groupDialog.HideAll ();

@@ -200,8 +200,13 @@ namespace lat
 			editUserDialog.Icon = Global.latIcon;
 			editUserDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				editUserDialog.Run ();				
 			}
 
@@ -661,7 +666,10 @@ namespace lat
 					_modList.Add (l);
 			}
 
-			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
+			if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			editUserDialog.HideAll ();
 		}

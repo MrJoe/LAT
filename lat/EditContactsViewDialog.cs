@@ -151,9 +151,13 @@ namespace lat
 			editContactDialog.Icon = Global.latIcon;
 			editContactDialog.Run ();
 
-			while (missingValues) {
+			while (missingValues || errorOccured) {
 
-				missingValues = false;
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				editContactDialog.Run ();
 			}
 
@@ -256,7 +260,10 @@ namespace lat
 			}
 
 			_modList = getMods (contactAttrs, _ci, cci);
-			Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
+			if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			editContactDialog.HideAll ();
 		}

@@ -46,8 +46,12 @@ namespace lat
 
 			newAdComputerDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				newAdComputerDialog.Run ();				
 			}
 
@@ -105,7 +109,10 @@ namespace lat
 
 			string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
 
-			Util.AddEntry (server, viewDialog, userDN, attrList, true);
+			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			newAdComputerDialog.HideAll ();
 		}

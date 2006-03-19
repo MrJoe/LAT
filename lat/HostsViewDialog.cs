@@ -52,8 +52,12 @@ namespace lat
 
 			hostDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				hostDialog.Run ();				
 			}
 
@@ -122,7 +126,10 @@ namespace lat
 			if (_isEdit) {
 				_modList = getMods (hostAttrs, _hi, chi);
 
-				Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true);
+				if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
+					errorOccured = true;
+					return;
+				}
 			} else {
 
 				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
@@ -140,7 +147,10 @@ namespace lat
 
 				string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
 
-				Util.AddEntry (server, viewDialog, userDN, attrList, true);
+				if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+					errorOccured = true;
+					return;
+				}
 			}
 
 			hostDialog.HideAll ();

@@ -78,8 +78,12 @@ namespace lat
 			newUserDialog.Icon = Global.latIcon;
 			newUserDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				newUserDialog.Run ();				
 			}
 
@@ -377,7 +381,10 @@ namespace lat
 
 			updateGroupMembership ();
 
-			Util.AddEntry (server, viewDialog, userDN, attrList, true);
+			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+				errorOccured = true;
+				return;
+			}
 
 			newUserDialog.HideAll ();
 		}

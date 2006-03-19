@@ -92,8 +92,13 @@ namespace lat
 
 			adUserDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				adUserDialog.Run ();				
 			}
 
@@ -152,8 +157,12 @@ namespace lat
 
 			adUserDialog.Run ();
 
-			while (missingValues) {
-				missingValues = false;
+			while (missingValues || errorOccured) {
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
 				adUserDialog.Run ();				
 			}
 
@@ -259,7 +268,10 @@ namespace lat
 
 				string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
 
-				Util.AddEntry (server, viewDialog, userDN, attrList, true);
+				if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+					errorOccured = true;
+					return;
+				}
 			}
 
 			adUserDialog.HideAll ();
