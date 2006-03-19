@@ -1,3 +1,5 @@
+        * Show RDN in browser instead of DN
+        * BUGFIX: [#42] Incorrect sambaSID's being generated when creating/enabling samba users
 	* BUGFIX: [#41] Do not close dialogs when an error occurs
 	* BUGFIX: [#40] Select 'Enable Samba support for this user' will not work unless a new password is chosen
 	* BUGFIX: [#39] Compilation errors if mcs is not found

@@ -421,7 +421,7 @@ namespace lat {
 		/// <returns>sambaSID</returns>
 		public string GetLocalSID ()
 		{
-			LdapEntry[] sid = Search (rootDN, LdapConnection.SCOPE_ONE,
+			LdapEntry[] sid = Search (rootDN, LdapConnection.SCOPE_SUB,
 						    "objectclass=sambaDomain", null);
 
 			if (sid.Length > 0) {
