@@ -62,8 +62,6 @@ namespace lat
 			groupDialog.Title = "Add Group";
 			groupIDSpinButton.Value = server.GetNextGID ();
 
-			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
-
 			groupDialog.Icon = Global.latIcon;
 			groupDialog.Run ();
 
@@ -187,6 +185,8 @@ namespace lat
 
 			if (_isSamba)
 				enableSambaButton.Hide ();
+			else
+				enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
 			groupDialog.Resize (350, 400);			
 		}
