@@ -119,9 +119,13 @@ namespace lat
 
 			groupDialog.Run ();
 
-			while (missingValues){
-				missingValues = false;
-				groupDialog.Run ();				
+			while (missingValues || errorOccured){
+				if (missingValues)
+					missingValues = false;
+				else if (errorOccured)
+					errorOccured = false;
+
+				groupDialog.Run ();
 			}
 
 			groupDialog.Destroy ();
@@ -345,6 +349,7 @@ namespace lat
 					int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
 
 					a = new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", _smbSID, grid));
+					attrList.Add (a);
 				}
 
 				foreach (string key in _currentMembers.Keys) {
