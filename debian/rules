@@ -1,4 +1,14 @@
 #!/usr/bin/make -f
+
+export MONO_SHARED_DIR=$(CURDIR)
+
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/gnome.mk
+
+install/lat::
+	rm -rf $(CURDIR)/debian/lat/var
+#!/usr/bin/make -f
 # -*- makefile -*-
 # Sample debian/rules that uses debhelper.
 # GNU copyright 1997 to 1999 by Joey Hess.

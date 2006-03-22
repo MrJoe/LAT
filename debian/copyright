@@ -1,15 +1,137 @@
 This package was debianized by Loren Bandiera <lorenb@mmgsecurity.com> on
 Sun, 20 Feb 2005 20:55:53 -0500.
 
-It was downloaded from http://people.mmgsecurity.com/~lorenb/lat/
+It was downloaded from http://dev.mmgsecurity.com/projects/lat/
 
-Upstream Author: Loren Bandiera <lorenb@mmgsecurity.com>
+Author
+======
 
-This software is Copyright (c) 2005 by MMG Security, Inc.
-Development.
+files under gnome-keyring-glue: Russell Cloran <russell@rucus.net>
 
-You are free to distribute this software under the terms of
-the GNU General Public License.
+all other files: Loren Bandiera <lorenb@mmgsecurity.com>
+
+Copyright Holders
+=================
+
+install-sh: Copyright (C) 1994 X Consortium
+
+files under gnome-keyring-glue: Russell Cloran <russell@rucus.net>
+
+all other files: This software is Copyright (c) 2005 by MMG Security, Inc.
+
+License
+=======
+
+install-sh:
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+ 
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+ 
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+  X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+  AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNEC-
+  TION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+  Except as contained in this notice, the name of the X Consortium shall not
+  be used in advertising or otherwise to promote the sale, use or other deal-
+  ings in this Software without prior written authorization from the X Consor-
+  tium.
+ 
+ 
+  FSF changes to this file are in the public domain.
+
+files under gnome-keyring-glue:
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+On Debian systems, the complete text of the GNU Lesser General Public
+License can be found in the file `/usr/share/common-licenses/LGPL'.
+
+files under help:
+  
+  Permission is granted to copy, distribute and/or modify this
+  document under the terms of the GNU Free Documentation
+  License (GFDL), Version 1.1 or any later version published
+  by the Free Software Foundation with no Invariant Sections,
+  no Front-Cover Texts, and no Back-Cover Texts.  You can find
+  a copy of the GFDL at this link or in the file COPYING-DOCS
+  distributed with this manual.
+   
+  DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED
+  UNDER  THE TERMS OF THE GNU FREE DOCUMENTATION LICENSE 
+  WITH THE FURTHER UNDERSTANDING THAT:
+
+   DOCUMENT IS PROVIDED ON AN "AS IS" BASIS, 
+   WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+   IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE
+   DOCUMENT OR MODIFIED VERSION OF THE
+   DOCUMENT IS FREE OF DEFECTS MERCHANTABLE, FIT FOR
+   A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE
+   RISK AS TO THE QUALITY, ACCURACY, AND PERFORMANCE
+   OF THE DOCUMENT OR MODIFIED VERSION OF THE
+   DOCUMENT IS WITH YOU. SHOULD ANY DOCUMENT OR   
+   MODIFIED VERSION PROVE DEFECTIVE IN ANY RESPECT,
+   YOU (NOT THE INITIAL WRITER, AUTHOR OR ANY
+   CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY
+   SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER
+   OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS
+   LICENSE. NO USE OF ANY DOCUMENT OR MODIFIED
+   VERSION OF THE DOCUMENT IS AUTHORIZED HEREUNDER
+   EXCEPT UNDER THIS DISCLAIMER; AND
+     
+   UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL
+   THEORY, WHETHER IN TORT (INCLUDING NEGLIGENCE),
+   CONTRACT, OR OTHERWISE, SHALL THE AUTHOR,
+   INITIAL WRITER, ANY CONTRIBUTOR, OR ANY
+   DISTRIBUTOR OF THE DOCUMENT OR MODIFIED VERSION
+   OF THE DOCUMENT, OR ANY SUPPLIER OF ANY OF SUCH
+   PARTIES, BE LIABLE TO ANY PERSON FOR ANY
+   DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR
+   CONSEQUENTIAL DAMAGES OF ANY CHARACTER
+   INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS
+   OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR
+   MALFUNCTION, OR ANY AND ALL OTHER DAMAGES OR
+   LOSSES ARISING OUT OF OR RELATING TO USE OF THE
+   DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT,
+   EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF
+   THE POSSIBILITY OF SUCH DAMAGES.
+
+all other files:
+
+  This package is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this package; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 On Debian systems, the complete text of the GNU General Public
 License can be found in the file `/usr/share/common-licenses/GPL'.
