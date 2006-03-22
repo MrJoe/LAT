@@ -7,5 +7,4 @@ EXTRA_DIST = \
 	compat \
 	copyright \
 	docs \
-	menu.ex \
-	watch.ex
+	watch
