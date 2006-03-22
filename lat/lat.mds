@@ -1,0 +1,20 @@
+<Combine name="lat" fileversion="2.0">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry configuration="Debug" build="True" name="lat" />
+      <Entry configuration="Debug" build="True" name="gnome-keyring-glue" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry configuration="Debug" build="True" name="lat" />
+      <Entry configuration="Debug" build="True" name="gnome-keyring-glue" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="lat" single="True">
+    <Execute type="None" entry="lat" />
+    <Execute type="None" entry="gnome-keyring-glue" />
+  </StartMode>
+  <Entries>
+    <Entry filename="./lat.mdp" />
+    <Entry filename="../gnome-keyring-glue/gnome-keyring-glue.mdp" />
+  </Entries>
+</Combine>
