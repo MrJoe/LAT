@@ -59,7 +59,6 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 lat.spec
-debian/Makefile
 desktop/Makefile
 gnome-keyring-glue/Makefile
 lat/AssemblyInfo.cs
