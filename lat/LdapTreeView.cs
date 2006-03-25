@@ -419,7 +419,7 @@ namespace lat
 
 			DispatchDNSelectedEvent (dn, false);
 
-			AddObjectClassDialog dlg = new AddObjectClassDialog (server, dn);
+			AddObjectClassDialog dlg = new AddObjectClassDialog (server);
 
 			foreach (string s in dlg.ObjectClasses)	
 				DispatchAddAttributeEvent ("objectClass", s);

@@ -34,14 +34,12 @@ namespace lat
 		[Glade.Widget] Gtk.TreeView objClassTreeView;
 
 		private LdapServer server;
-		private string entryDN;
 		private ArrayList objectClasses;
 		private ListStore store;
 
-		public AddObjectClassDialog (LdapServer ldapServer, string dn)
+		public AddObjectClassDialog (LdapServer ldapServer)
 		{
 			server = ldapServer;
-			entryDN = dn;
 			objectClasses = new ArrayList ();
 
 			ui = new Glade.XML (null, "lat.glade", "addObjectClassDialog", null);
