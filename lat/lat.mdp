@@ -3,8 +3,8 @@
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="./bin/Debug" assembly="lat" />
       <Build debugmode="True" target="Exe" />
-      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <Execution runwithwarnings="True" commandlineparameters="--debug" consolepause="True" runtime="MsNet" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="./bin/Release" assembly="lat" />
@@ -87,8 +87,8 @@
     <File name="../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/x-directory-remote-workgroup.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./ConnectDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ViewManager.cs" subtype="Code" buildaction="Compile" />
     <File name="./AddObjectClassDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./ViewPluginManager.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

@@ -43,5 +43,13 @@ namespace lat {
 		public abstract Gdk.Pixbuf Icon { get; }		
 	}
 	
+	public class ViewPluginManager
+	{
+		string pluginDirectory;
 	
+		public ViewPluginManager (string directory)
+		{
+			pluginDirectory = directory;
+		}
+	}
 }
