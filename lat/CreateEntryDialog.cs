@@ -41,6 +41,7 @@ namespace lat
 		private LdapAttribute objAttr = null;
 		private Template t;
 		private bool isTemplate = false;
+		private bool errorOccured = false;
 
 		public CreateEntryDialog (LdapServer ldapServer, Template theTemplate)
 		{
@@ -58,8 +59,11 @@ namespace lat
 			showAttributes ();
 
 			createEntryDialog.Icon = Global.latIcon;
-
+			
 			createEntryDialog.Run ();
+			while (errorOccured)
+				createEntryDialog.Run ();
+
 			createEntryDialog.Destroy ();
 		}
 
@@ -79,6 +83,9 @@ namespace lat
 			showAttributes ();
 
 			createEntryDialog.Run ();
+			while (errorOccured)
+				createEntryDialog.Run ();
+
 			createEntryDialog.Destroy ();
 		}
 
@@ -214,13 +221,19 @@ namespace lat
 
 			_attributes.Add (objAttr);
 
-			Util.AddEntry (server, createEntryDialog, dn, _attributes, true);
+			if (!Util.AddEntry (server, createEntryDialog, dn, _attributes, true)) {
+				errorOccured = true;
+				return;
+			} else {
+				errorOccured = false;
+			}
 
 			createEntryDialog.HideAll ();
 		}
 
 		public void OnCancelClicked (object o, EventArgs args)
 		{
+			errorOccured = false;
 			createEntryDialog.HideAll ();
 		}
 	}

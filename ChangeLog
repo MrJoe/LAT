@@ -1,5 +1,4 @@
 	* Use Gtk.AboutDialog instead of Gnome.About
-	* Merged Debian changes to packaging scripts (Eric Dorland)
 
 1.0.3
 

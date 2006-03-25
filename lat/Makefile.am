@@ -52,6 +52,7 @@ CSFILES = \
 	Util.cs \
 	ViewDialog.cs \
 	ViewDialogFactory.cs \
+	ViewManager.cs \
 	ViewsTreeView.cs \
 	Window.cs
 
