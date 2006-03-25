@@ -410,6 +410,21 @@ namespace lat
 			catch {}
 		}
 
+		public void OnAddObjActivate (object o, EventArgs args)
+		{
+			string dn = getSelectedDN ();
+
+			if (dn == server.Host)
+				return;
+
+			DispatchDNSelectedEvent (dn, false);
+
+			AddObjectClassDialog dlg = new AddObjectClassDialog (server, dn);
+
+			foreach (string s in dlg.ObjectClasses)	
+				DispatchAddAttributeEvent ("objectClass", s);
+		}
+
 		public void OnAddAttrActivate (object o, EventArgs args)
 		{
 			string dn = getSelectedDN ();
@@ -441,6 +456,12 @@ namespace lat
 			addAttrItem.Show ();
 
 			popup.Append (addAttrItem);
+
+			MenuItem addObjItem = new MenuItem ("Add Object Class...");
+			addObjItem.Activated += new EventHandler (OnAddObjActivate);
+			addObjItem.Show ();
+
+			popup.Append (addObjItem);
 
 			MenuItem renameItem = new MenuItem ("Rename...");
 			renameItem.Activated += new EventHandler (OnRenameActivate);
