@@ -141,7 +141,7 @@ namespace lat
 
 			ASCIIEncoding enc = new ASCIIEncoding();
 
-			byte[] buffer = enc.GetBytes (_unix);
+			byte[] buffer = enc.GetBytes (input);
 
 			if (salted) {
 

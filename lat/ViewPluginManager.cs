@@ -51,5 +51,9 @@ namespace lat {
 		{
 			pluginDirectory = directory;
 		}
+		
+		// Find plugins
+		// Load plugins
+		// Show views in viewTreeview
 	}
 }
