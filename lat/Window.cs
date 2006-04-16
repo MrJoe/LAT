@@ -378,42 +378,42 @@ namespace lat
 			args.RetVal = true;
 		}
 
-		private void OnAttributeEdit (object o, EditedArgs args)
-		{
-			TreeIter iter;
-
-			if (!valuesStore.GetIterFromString (out iter, args.Path))
-				return;
-
-			string oldText = (string) valuesStore.GetValue (iter, 1);
-
-			if (oldText.Equals (args.NewText))
-				return;
-			
-			string _name = (string) valuesStore.GetValue (iter, 0);
-
-			string dn = null;
-
-			if (viewNotebook.CurrentPage == 1)
-				dn = _ldapTreeview.getSelectedDN ();
-			else if (viewNotebook.CurrentPage == 2)
-				dn = _searchTreeView.SelectedResult;
-		
-			if (dn == null)
-				return;
-			
-			if (dn.Equals (server.Host))
-				return;
-
-			valuesStore.SetValue (iter, 1, args.NewText);
-
-			LdapAttribute attribute = new LdapAttribute (_name, args.NewText);
-			LdapModification lm = new LdapModification (LdapModification.REPLACE, attribute);
-
-			_modList.Add (lm);
-
-			applyButton.Sensitive = true;		
-		}
+//		private void OnAttributeEdit (object o, EditedArgs args)
+//		{
+//			TreeIter iter;
+//
+//			if (!valuesStore.GetIterFromString (out iter, args.Path))
+//				return;
+//
+//			string oldText = (string) valuesStore.GetValue (iter, 1);
+//
+//			if (oldText.Equals (args.NewText))
+//				return;
+//			
+//			string _name = (string) valuesStore.GetValue (iter, 0);
+//
+//			string dn = null;
+//
+//			if (viewNotebook.CurrentPage == 1)
+//				dn = _ldapTreeview.getSelectedDN ();
+//			else if (viewNotebook.CurrentPage == 2)
+//				dn = _searchTreeView.SelectedResult;
+//		
+//			if (dn == null)
+//				return;
+//			
+//			if (dn.Equals (server.Host))
+//				return;
+//
+//			valuesStore.SetValue (iter, 1, args.NewText);
+//
+//			LdapAttribute attribute = new LdapAttribute (_name, args.NewText);
+//			LdapModification lm = new LdapModification (LdapModification.REPLACE, attribute);
+//
+//			_modList.Add (lm);
+//
+//			applyButton.Sensitive = true;		
+//		}
 		
 		public void OnSearchBuilderClicked (object o, EventArgs args)
 		{
@@ -673,8 +673,8 @@ namespace lat
 //			valuesStore.SetSortColumnId (0, SortType.Ascending);
 		}
 
-		private void removeButtonHandlers ()
-		{
+//		private void removeButtonHandlers ()
+//		{
 //			newToolButton.Clicked -= new EventHandler
 //				 (currentView.OnNewEntryActivate);
 //
@@ -686,7 +686,7 @@ namespace lat
 //
 //			refreshToolButton.Clicked -= new EventHandler
 //				 (currentView.OnRefreshActivate);
-		}
+//		}
 
 		private void cleanupView ()
 		{

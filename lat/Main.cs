@@ -106,8 +106,8 @@ public class LdapAdministrationTool
 
 		Global.latIcon = Gdk.Pixbuf.LoadFromResource ("lat.png");
 
-//		Global.theTemplateManager = new TemplateManager ();
-//		Global.theTemplateManager.Load ();
+		Global.theTemplateManager = new TemplateManager ();
+		Global.theTemplateManager.Load ();
 
 		Global.viewPluginManager = new ViewPluginManager ("FIXME");
 		Global.viewPluginManager.LoadPlugins ();
@@ -119,7 +119,7 @@ public class LdapAdministrationTool
 		new ConnectDialog ();	
 		Global.latProgram.Run ();
 
-//		Global.theTemplateManager.Save ();
+		Global.theTemplateManager.Save ();
 		Global.viewPluginManager.SavePluginsState ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);

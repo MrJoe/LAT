@@ -48,8 +48,8 @@ namespace lat
 	public class ViewsTreeView : Gtk.TreeView
 	{
 		private LdapServer	server;
-		private Gtk.Window	parentWindow;
-		private Menu 		popup;
+//		private Gtk.Window	parentWindow;
+//		private Menu 		popup;
 		private TreeStore	viewsStore;
 		private TreeIter	viewRootIter;
 
@@ -60,6 +60,7 @@ namespace lat
 		public ViewsTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
 			server = ldapServer;
+//			parentWindow = parent;
 		
 			viewsStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 			this.Model = viewsStore;
@@ -73,7 +74,7 @@ namespace lat
 
 			AddViews ();
 
-			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
+//			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
 			this.RowActivated += new RowActivatedHandler (ViewRowActivated);
 			
 			this.ExpandAll ();
@@ -83,23 +84,18 @@ namespace lat
 		private void AddViews ()
 		{
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
-//			Pixbuf compIcon = Pixbuf.LoadFromResource ("x-directory-remote-workgroup.png");
-//			Pixbuf contactIcon = Pixbuf.LoadFromResource ("contact-new.png");
-//			Pixbuf groupIcon = Pixbuf.LoadFromResource ("users.png");
-//			Pixbuf usersIcon = Pixbuf.LoadFromResource ("stock_person.png");
-//
 			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
 
 			foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
 				viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);			
 		}
 
-		[ConnectBefore]
-		public void OnRightClick (object o, ButtonPressEventArgs args)
-		{
+//		[ConnectBefore]
+//		public void OnRightClick (object o, ButtonPressEventArgs args)
+//		{
 //			if (args.Event.Button == 3)
 //				DoPopUp ();
-		}
+//		}
 
 //		private void DoPopUp()
 //		{
@@ -164,54 +160,6 @@ namespace lat
 
 			return null;
 		}
-
-//		private void OnDeleteActivate (object o, EventArgs args) 
-//		{
-//			string viewName = GetSelectedViewName ();
-//			
-//			string msg = String.Format (
-//				Mono.Unix.Catalog.GetString (
-//				"Are you sure you want to delete: {0}"), viewName);
-//
-//			if (Util.AskYesNo (parentWindow, msg)) {
-//
-//				if (!customIters.Contains (viewName)) {
-//
-//					string errMsg = "Unable to delete standard view";
-//
-//					HIGMessageDialog dialog = new HIGMessageDialog (
-//						parentWindow,
-//						0,
-//						Gtk.MessageType.Error,
-//						Gtk.ButtonsType.Ok,
-//						"Delete error",
-//						errMsg);
-//
-//					dialog.Run ();
-//					dialog.Destroy ();
-//
-//					return;
-//				}
-//
-//				TreeIter iter = (TreeIter) customIters [viewName];
-//				viewsStore.Remove (ref iter);
-//
-//				Global.viewManager.DeleteView (viewName);
-//			}
-//		}
-//
-//		private void OnPropertiesActivate (object o, EventArgs args) 
-//		{
-//			string viewName = GetSelectedViewName ();
-//
-//			if (!customIters.Contains (viewName)) {
-//
-//				string prefix = Util.GetServerPrefix (server);
-//				viewName = prefix + viewName;
-//			}
-//
-//			new CustomViewDialog (server, viewName);
-//		}
 
 		private void DispatchViewSelectedEvent (string name)
 		{

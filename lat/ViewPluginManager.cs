@@ -125,13 +125,13 @@ namespace lat {
 	
 	public class ViewPluginManager
 	{
-		string pluginDirectory;
+//		string pluginDirectory;
 		string pluginStateDirectory;
 		ArrayList pluginList;
 	
 		public ViewPluginManager (string directory)
 		{
-			pluginDirectory = directory;			
+//			pluginDirectory = directory;			
 			pluginList = new ArrayList ();
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
