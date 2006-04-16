@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public PosixContactsViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "cn", "mail", "telephoneNumber", "homePhone", "mobile" };
+			config.ColumnNames = new string[] { "Name", "Email", "Work", "Home", "Mobile" };
+			config.Filter = "(objectClass=inetOrgPerson)";		
 		}
 	
 		public override void Init ()
@@ -56,23 +59,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "cn", "mail", "telephoneNumber", "homePhone", "mobile" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Name", "Email", "Work", "Home", "Mobile" };
-				return cols;
-			}
-		}
-		
 		public override string Copyright 
 		{ 
 			get { return "MMG Security, Inc."; } 
@@ -81,11 +67,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "POSIX Contact View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(objectClass=inetOrgPerson)"; } 
 		}
 		
 		public override string Name 

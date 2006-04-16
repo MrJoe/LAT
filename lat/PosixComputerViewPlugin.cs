@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public PosixComputerViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "cn", "ipHostNumber", "description" };
+			config.ColumnNames = new string[] { "Hostname", "IP Address", "Description" };
+			config.Filter = "(objectclass=ipHost)";
 		}
 	
 		public override void Init ()
@@ -56,22 +59,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "cn", "ipHostNumber", "description" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Hostname", "IP Address", "Description" };
-				return cols;
-			}
-		}
 		
 		public override string Copyright 
 		{ 
@@ -81,11 +68,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "POSIX Computer View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(objectclass=ipHost)"; } 
 		}
 		
 		public override string Name 

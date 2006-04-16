@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public PosixGroupViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "gidNumber", "cn", "description" };
+			config.ColumnNames = new string[] { "Group ID", "Name", "Description" };
+			config.Filter = "(objectclass=posixGroup)";			
 		}
 	
 		public override void Init ()
@@ -56,23 +59,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "gidNumber", "cn", "description" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Group ID", "Name", "Description" };
-				return cols;
-			}
-		}
-		
 		public override string Copyright 
 		{ 
 			get { return "MMG Security, Inc."; } 
@@ -83,11 +69,6 @@ namespace lat {
 			get { return "POSIX Group View"; } 
 		}
 
-		public override string Filter 
-		{ 
-			get { return "(objectclass=posixGroup)"; } 
-		}
-		
 		public override string Name 
 		{ 
 			get { return "Groups"; } 

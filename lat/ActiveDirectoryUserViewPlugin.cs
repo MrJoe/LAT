@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public ActiveDirectoryUserViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "sAMAccountName", "cn" };
+			config.ColumnNames = new string[] { "Account name", "Real name" };
+			config.Filter = "(&(objectclass=user)(objectcategory=Person))";		
 		}
 	
 		public override void Init ()
@@ -56,22 +59,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "sAMAccountName", "cn" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Account name", "Real name" };
-				return cols;
-			}
-		}
 		
 		public override string Copyright 
 		{ 
@@ -81,11 +68,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "Active Directory User View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(&(objectclass=user)(objectcategory=Person))"; } 
 		}
 		
 		public override string Name 

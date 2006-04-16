@@ -109,8 +109,6 @@ public class LdapAdministrationTool
 //		Global.theTemplateManager = new TemplateManager ();
 //		Global.theTemplateManager.Load ();
 
-//		Global.viewManager = new ViewManager ();
-
 		Global.viewPluginManager = new ViewPluginManager ("FIXME");
 		Global.viewPluginManager.LoadPlugins ();
 
@@ -122,7 +120,7 @@ public class LdapAdministrationTool
 		Global.latProgram.Run ();
 
 //		Global.theTemplateManager.Save ();
-//		Global.viewManager.SaveViews ();
+		Global.viewPluginManager.SavePluginsState ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}

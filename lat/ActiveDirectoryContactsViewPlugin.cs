@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public ActiveDirectoryContactsViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "name", "mail", "telephoneNumber", "wWWHomePage" };
+			config.ColumnNames = new string[] { "Name", "Email", "Work", "Home" };
+			config.Filter = "(objectClass=contact)";	
 		}
 	
 		public override void Init ()
@@ -56,22 +59,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "name", "mail", "telephoneNumber", "wWWHomePage" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Name", "Email", "Work", "Home" };
-				return cols;
-			}
-		}
 		
 		public override string Copyright 
 		{ 
@@ -81,11 +68,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "Active Directory Contact View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(objectClass=contact)"; } 
 		}
 		
 		public override string Name 

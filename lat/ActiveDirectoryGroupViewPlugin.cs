@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public ActiveDirectoryGroupViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "name", "description" };
+			config.ColumnNames = new string[] { "Name", "Description"  };
+			config.Filter = "(objectclass=group)";		
 		}
 	
 		public override void Init ()
@@ -56,22 +59,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "name", "description" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Name", "Description" };
-				return cols;
-			}
-		}
 		
 		public override string Copyright 
 		{ 
@@ -81,11 +68,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "Active Directory Group View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(objectclass=group)"; } 
 		}
 		
 		public override string Name 

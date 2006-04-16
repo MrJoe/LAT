@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public ActiveDirectoryComputerViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "name", "description", "operatingSystem" };
+			config.ColumnNames = new string[] { "Name", "Description", "Operating System" };
+			config.Filter = "(&(objectclass=user)(objectcategory=Computer))";		
 		}
 	
 		public override void Init ()
@@ -57,22 +60,6 @@ namespace lat {
 			}
 		}
 
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "name", "description", "operatingSystem" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Name", "Description", "Operating System" };
-				return cols;
-			}
-		}
-		
 		public override string Copyright 
 		{ 
 			get { return "MMG Security, Inc."; } 
@@ -81,11 +68,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "Active Directory Computer View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(&(objectclass=user)(objectcategory=Computer))"; } 
 		}
 		
 		public override string Name 

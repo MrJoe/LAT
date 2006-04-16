@@ -29,6 +29,9 @@ namespace lat {
 	{
 		public PosixUserViewPlugin () : base ()
 		{
+			config.ColumnAttributes =  new string[] { "uid", "cn" };
+			config.ColumnNames = new string[] { "Username", "Real name" };
+			config.Filter = "(&(objectclass=posixAccount)(objectclass=shadowAccount))";		
 		}
 	
 		public override void Init ()
@@ -84,22 +87,6 @@ namespace lat {
 				return cols;
 			}
 		}
-
-		public override string[] ColumnAttributes 
-		{
-			get {
-				string[] cols = { "uid", "cn" };
-				return cols;
-			}
-		}
-
-		public override string[] ColumnNames 
-		{
-			get {
-				string[] cols = { "Username", "Real name" };
-				return cols;
-			}
-		}
 		
 		public override string Copyright 
 		{ 
@@ -109,11 +96,6 @@ namespace lat {
 		public override string Description 
 		{ 
 			get { return "POSIX User View"; } 
-		}
-
-		public override string Filter 
-		{ 
-			get { return "(&(objectclass=posixAccount)(objectclass=shadowAccount))"; } 
 		}
 		
 		public override string Name 
