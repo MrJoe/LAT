@@ -258,8 +258,12 @@ namespace lat {
 					ViewPlugin p = Global.viewPluginManager.Find (lastSelected);
 					
 					p.Filter = filterEntry.Text;
-					p.DefaultNewContainer = newContainerButton.Label;
-					p.SearchBase = searchBaseButton.Label;
+					
+					if (newContainerButton.Label != "")
+						p.DefaultNewContainer = newContainerButton.Label;
+
+					if (searchBaseButton.Label != "")
+						p.SearchBase = searchBaseButton.Label;					
 				}
 			
 				string name = (string) model.GetValue (iter, 1);
@@ -270,8 +274,12 @@ namespace lat {
 					colNamesEntry.Text = vp.ColumnNames.ToString ();
 					colAttrsEntry.Text = vp.ColumnAttributes.ToString ();
 					filterEntry.Text = vp.Filter;
-					newContainerButton.Label = vp.DefaultNewContainer;
-					searchBaseButton.Label = vp.SearchBase;
+					
+					if (vp.DefaultNewContainer != null)
+						newContainerButton.Label = vp.DefaultNewContainer;
+
+					if (vp.SearchBase != null)
+						searchBaseButton.Label = vp.SearchBase;					
 				}
 			}
 		}
@@ -294,7 +302,7 @@ namespace lat {
 			scd.Run ();
 
 			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
-				newContainerButton.Label = scd.DN;		
+				newContainerButton.Label = scd.DN;
 		}
 		
 		public void OnSearchBaseClicked (object o, EventArgs args)
@@ -318,8 +326,12 @@ namespace lat {
 				ViewPlugin p = Global.viewPluginManager.Find (lastSelected);
 
 				p.Filter = filterEntry.Text;
-				p.DefaultNewContainer = newContainerButton.Label;
-				p.SearchBase = searchBaseButton.Label;
+				
+				if (newContainerButton.Label != "")
+					p.DefaultNewContainer = newContainerButton.Label;
+
+				if (searchBaseButton.Label != "")
+					p.SearchBase = searchBaseButton.Label; 				
 			}		
 		}
 	}
