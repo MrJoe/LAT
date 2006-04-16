@@ -1,4 +1,6 @@
 1.1.0
 
 	* Started conversion of views into plugins
+	* Added plugin manager to view/change settings
+	* Enhancement [#47] - DN's for new contacts, users etc. as a preference
 	* Use Gtk.AboutDialog instead of Gnome.About
