@@ -19,7 +19,9 @@
 //
 
 using System;
+using System.Collections;
 using Gtk;
+using Novell.Directory.Ldap;
 
 namespace lat {
 
@@ -30,15 +32,18 @@ namespace lat {
 		}
 	
 		// Methods
-		protected abstract void Init ();
-		protected abstract void OnAddEntry ();
-		protected abstract void OnEditEntry ();
-		protected abstract void OnDeleteEntry ();
+		public abstract void Init ();
+		public abstract void OnAddEntry (LdapServer server);
+		public abstract void OnEditEntry (LdapServer server, LdapEntry le);
+		public abstract void OnPopupShow (Menu popup);
 			
 		// Properties
 		public abstract string[] Authors { get; }
+		public abstract string[] ColumnAttributes { get; }
+		public abstract string[] ColumnNames { get; }
 		public abstract string Copyright { get; }
 		public abstract string Description { get; }
+		public abstract string Filter { get; }
 		public abstract string Name { get; }
 		public abstract Gdk.Pixbuf Icon { get; }		
 	}
@@ -46,10 +51,32 @@ namespace lat {
 	public class ViewPluginManager
 	{
 		string pluginDirectory;
+		ArrayList pluginList;
 	
 		public ViewPluginManager (string directory)
 		{
 			pluginDirectory = directory;
+			pluginList = new ArrayList ();
+		}
+
+		public void LoadPlugins ()
+		{
+			PosixUserViewPlugin vp = new PosixUserViewPlugin ();
+			pluginList.Add (vp);
+		}
+
+		public ViewPlugin Find (string name)
+		{
+			foreach (ViewPlugin vp in pluginList)
+				if (vp.Name == name)
+						return vp;
+						
+			return null;
+		}
+
+		public ViewPlugin[] Plugins
+		{
+			get { return (ViewPlugin[]) pluginList.ToArray (typeof (ViewPlugin)); }
 		}
 		
 		// Find plugins

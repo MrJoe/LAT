@@ -87,10 +87,10 @@ namespace lat
 				break;
 
 			default:
-				if (le == null)
-					new DynamicViewDialog (server);
-				else
-					new DynamicViewDialog (server, le);
+//				if (le == null)
+//					new DynamicViewDialog (server);
+//				else
+//					new DynamicViewDialog (server, le);
 				break;
 			}
 		}

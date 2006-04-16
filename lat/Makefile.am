@@ -11,9 +11,7 @@ CSFILES = \
 	CertificateDialog.cs \
 	ConnectDialog.cs \
 	CreateEntryDialog.cs \
-	CustomViewDialog.cs \
 	Defines.cs \
-	DynamicViewDialog.cs \
 	EditAdComputerViewDialog.cs \
 	EditContactsViewDialog.cs \
 	EditUserViewDialog.cs \
@@ -34,6 +32,7 @@ CSFILES = \
 	NewEntryDialog.cs \
 	NewUserViewDialog.cs \
 	PasswordDialog.cs \
+	PosixUserViewPlugin.cs \
 	Preferences.cs \
 	ProfileDialog.cs \
 	ProfileManager.cs \
@@ -51,6 +50,7 @@ CSFILES = \
 	TemplateEditorDialog.cs \
 	TimeDateDialog.cs \
 	Util.cs \
+	ViewDataTreeView.cs \
 	ViewDialog.cs \
 	ViewDialogFactory.cs \
 	ViewPluginManager.cs \
@@ -68,7 +68,7 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 $(ASSEMBLY).exe: $(CSFILES)
-	$(CSC) -out:$@ @lat.sources $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS)
+	$(CSC) -out:$@ $(CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS)
 
 all: $(ASSEMBLY).exe
 

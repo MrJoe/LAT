@@ -29,6 +29,11 @@ namespace lat
 {
 	public class latWindow
 	{
+		ViewsTreeView viewsTreeView;
+		ViewDataTreeView viewDataTreeView;
+	
+		// =================
+	
 		Glade.XML ui;
 
 		[Glade.Widget] Gtk.Window mainWindow;
@@ -38,7 +43,7 @@ namespace lat
 		[Glade.Widget] Gtk.ScrolledWindow resultsScrolledWindow;
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
-		[Glade.Widget] TreeView valuesListview;
+//		[Glade.Widget] TreeView valuesListview;
 		[Glade.Widget] Notebook viewNotebook;
 		[Glade.Widget] HPaned hpaned1;
 		[Glade.Widget] Gtk.ToolButton newToolButton;
@@ -83,14 +88,13 @@ namespace lat
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
 
-		private ViewsTreeView _viewsTreeView;
 		private LdapTreeView _ldapTreeview;
 		private SchemaTreeView _schemaTreeview;
 		private SearchResultsTreeView _searchTreeView;
 
 		private LdapServer server;
-		private ServerViewFactory serverViewFactory;
-		private ServerView currentView;
+//		private ServerViewFactory serverViewFactory;
+//		private ServerView currentView;
 
 		private ArrayList _modList;
 
@@ -127,14 +131,18 @@ namespace lat
 			Preferences.SettingChanged += OnPreferencesChanged;
 
 			// Setup views
-			_viewsTreeView = new ViewsTreeView (server, mainWindow);
-			_viewsTreeView.ViewSelected += new ViewSelectedHandler (OnViewSelected);
+			viewsTreeView = new ViewsTreeView (server, mainWindow);
+			viewsTreeView.ViewSelected += new ViewSelectedHandler (OnViewSelected);
 
-			viewScrolledWindow.AddWithViewport (_viewsTreeView);
+			viewScrolledWindow.AddWithViewport (viewsTreeView);
 			viewScrolledWindow.Show ();
 
-			serverViewFactory = new ServerViewFactory (valuesStore, 
-				valuesListview, mainWindow, server);
+			viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
+			valuesScrolledWindow.Show ();
+
+//			serverViewFactory = new ServerViewFactory (valuesStore, 
+//				valuesListview, mainWindow, server);
 
 			// Setup browser			
 			_ldapTreeview = new LdapTreeView (server, mainWindow);
@@ -195,19 +203,29 @@ namespace lat
 		
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
-			clearValues ();
-
-			if (args.Name.Equals (server.Host)) {
-
-				// FIXME: Need a way to remove the handlers
-
-				setNameValueView ();
-				showConnectionAttributes ();
-
+			ViewPlugin vp = Global.viewPluginManager.Find (args.Name);
+			
+			if (vp == null) {
+				Logger.Log.Debug ("OnViewSelected: ViewPlugin == null");
 				return;
 			}
-
-			changeView (args.Name);
+		
+			viewDataTreeView.ConfigureView (vp);
+			viewDataTreeView.Populate ();
+			
+//			clearValues ();
+//
+//			if (args.Name.Equals (server.Host)) {
+//
+//				// FIXME: Need a way to remove the handlers
+//
+//				setNameValueView ();
+//				showConnectionAttributes ();
+//
+//				return;
+//			}
+//
+//			changeView (args.Name);
 		}
 
 		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
@@ -629,86 +647,86 @@ namespace lat
 
 		private void setNameValueView ()
 		{
-			TreeViewColumn col;
-
-			valuesStore = new ListStore (typeof (string), typeof (string));
-			valuesListview.Model = valuesStore;
-
-			col = valuesListview.AppendColumn (
-				Mono.Unix.Catalog.GetString ("Name"), 
-				new CellRendererText (), "text", 0);
-
-			col.SortColumnId = 0;
-
-			CellRendererText cell = new CellRendererText ();
-			cell.Editable = true;
-			cell.Edited += new EditedHandler (OnAttributeEdit);
-
-			col = valuesListview.AppendColumn (
-				Mono.Unix.Catalog.GetString ("Value"), cell, "text", 1);
-		
-			valuesStore.SetSortColumnId (0, SortType.Ascending);
+//			TreeViewColumn col;
+//
+//			valuesStore = new ListStore (typeof (string), typeof (string));
+//			valuesListview.Model = valuesStore;
+//
+//			col = valuesListview.AppendColumn (
+//				Mono.Unix.Catalog.GetString ("Name"), 
+//				new CellRendererText (), "text", 0);
+//
+//			col.SortColumnId = 0;
+//
+//			CellRendererText cell = new CellRendererText ();
+//			cell.Editable = true;
+//			cell.Edited += new EditedHandler (OnAttributeEdit);
+//
+//			col = valuesListview.AppendColumn (
+//				Mono.Unix.Catalog.GetString ("Value"), cell, "text", 1);
+//		
+//			valuesStore.SetSortColumnId (0, SortType.Ascending);
 		}
 
 		private void removeButtonHandlers ()
 		{
-			newToolButton.Clicked -= new EventHandler
-				 (currentView.OnNewEntryActivate);
-
-			propertiesToolButton.Clicked -= new EventHandler
-				 (currentView.OnEditActivate);
-
-			deleteToolButton.Clicked -= new EventHandler
-				 (currentView.OnDeleteActivate);
-
-			refreshToolButton.Clicked -= new EventHandler
-				 (currentView.OnRefreshActivate);
+//			newToolButton.Clicked -= new EventHandler
+//				 (currentView.OnNewEntryActivate);
+//
+//			propertiesToolButton.Clicked -= new EventHandler
+//				 (currentView.OnEditActivate);
+//
+//			deleteToolButton.Clicked -= new EventHandler
+//				 (currentView.OnDeleteActivate);
+//
+//			refreshToolButton.Clicked -= new EventHandler
+//				 (currentView.OnRefreshActivate);
 		}
 
 		private void cleanupView ()
 		{
-			if (currentView != null) {
-
-				removeButtonHandlers ();
-				currentView.RemoveDndHandlers ();
-				currentView.RemoveHandlers ();
-				currentView = null;
-			}
+//			if (currentView != null) {
+//
+//				removeButtonHandlers ();
+//				currentView.RemoveDndHandlers ();
+//				currentView.RemoveHandlers ();
+//				currentView = null;
+//			}
 		}
 
 		private void changeView (string name)
 		{
-			cleanupView ();
-
-			currentView = serverViewFactory.Create (name);
-
-			if (currentView != null)
-				currentView.Populate ();
-
-			newToolButton.Clicked += new EventHandler
-				(currentView.OnNewEntryActivate);
-
-			propertiesToolButton.Clicked += new EventHandler
-				(currentView.OnEditActivate);
-
-			deleteToolButton.Clicked += new EventHandler
-				(currentView.OnDeleteActivate);
-
-			refreshToolButton.Clicked += new EventHandler
-				(currentView.OnRefreshActivate);
-
-			toggleButtons (true);
+//			cleanupView ();
+//
+//			currentView = serverViewFactory.Create (name);
+//
+//			if (currentView != null)
+//				currentView.Populate ();
+//
+//			newToolButton.Clicked += new EventHandler
+//				(currentView.OnNewEntryActivate);
+//
+//			propertiesToolButton.Clicked += new EventHandler
+//				(currentView.OnEditActivate);
+//
+//			deleteToolButton.Clicked += new EventHandler
+//				(currentView.OnDeleteActivate);
+//
+//			refreshToolButton.Clicked += new EventHandler
+//				(currentView.OnRefreshActivate);
+//
+//			toggleButtons (true);
 		}
 
 		private void clearValues ()
 		{
-			if (valuesStore != null) {
-				valuesStore.Clear ();
-				valuesStore = null;
-			}
-
-			foreach (TreeViewColumn col in valuesListview.Columns)
-				valuesListview.RemoveColumn (col);
+//			if (valuesStore != null) {
+//				valuesStore.Clear ();
+//				valuesStore = null;
+//			}
+//
+//			foreach (TreeViewColumn col in valuesListview.Columns)
+//				valuesListview.RemoveColumn (col);
 		}
 
 		private void notebookViewChanged (object o, SwitchPageArgs args)
@@ -816,34 +834,34 @@ namespace lat
 
 		public void OnNewActivate (object o, EventArgs args)
 		{
-			if (viewNotebook.CurrentPage == 0)
-				if (currentView != null)
-					currentView.OnNewEntryActivate (o, args);
-			else if (viewNotebook.CurrentPage == 1)
-				_ldapTreeview.OnNewEntryActivate (o, args);
+//			if (viewNotebook.CurrentPage == 0)
+//				if (currentView != null)
+//					currentView.OnNewEntryActivate (o, args);
+//			else if (viewNotebook.CurrentPage == 1)
+//				_ldapTreeview.OnNewEntryActivate (o, args);
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args)
 		{
-			if (viewNotebook.CurrentPage == 0)
-				if (currentView != null)
-					currentView.OnDeleteActivate (o, args);
-			else if (viewNotebook.CurrentPage == 1)
-				_ldapTreeview.OnDeleteActivate (o, args);
+//			if (viewNotebook.CurrentPage == 0)
+//				if (currentView != null)
+//					currentView.OnDeleteActivate (o, args);
+//			else if (viewNotebook.CurrentPage == 1)
+//				_ldapTreeview.OnDeleteActivate (o, args);
 		}
 
 		public void OnPropertiesActivate (object o, EventArgs args)
 		{
-			if (viewNotebook.CurrentPage == 0)
-				if (currentView != null)
-					currentView.OnEditActivate (o, args);
+//			if (viewNotebook.CurrentPage == 0)
+//				if (currentView != null)
+//					currentView.OnEditActivate (o, args);
 		}
 
 		public void OnRefreshActivate (object o, EventArgs args)
 		{
-			if (viewNotebook.CurrentPage == 0)
-				if (currentView != null)
-					currentView.OnRefreshActivate (o, args);
+//			if (viewNotebook.CurrentPage == 0)
+//				if (currentView != null)
+//					currentView.OnRefreshActivate (o, args);
 		}
 
 		public void OnReloginActivate (object o, EventArgs args)

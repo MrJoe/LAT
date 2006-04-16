@@ -29,7 +29,8 @@ public class Global
 	public static Gdk.Pixbuf latIcon;
 	public static bool Debug = false;
 	public static TemplateManager theTemplateManager;
-	public static ViewManager viewManager;
+
+	public static ViewPluginManager viewPluginManager;
 }
 
 public class LdapAdministrationTool
@@ -105,10 +106,13 @@ public class LdapAdministrationTool
 
 		Global.latIcon = Gdk.Pixbuf.LoadFromResource ("lat.png");
 
-		Global.theTemplateManager = new TemplateManager ();
-		Global.theTemplateManager.Load ();
+//		Global.theTemplateManager = new TemplateManager ();
+//		Global.theTemplateManager.Load ();
 
-		Global.viewManager = new ViewManager ();
+//		Global.viewManager = new ViewManager ();
+
+		Global.viewPluginManager = new ViewPluginManager ("FIXME");
+		Global.viewPluginManager.LoadPlugins ();
 
 		Global.latProgram = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 
@@ -117,8 +121,8 @@ public class LdapAdministrationTool
 		new ConnectDialog ();	
 		Global.latProgram.Run ();
 
-		Global.theTemplateManager.Save ();
-		Global.viewManager.SaveViews ();
+//		Global.theTemplateManager.Save ();
+//		Global.viewManager.SaveViews ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}

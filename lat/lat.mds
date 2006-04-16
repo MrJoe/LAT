@@ -1,12 +1,12 @@
 <Combine name="lat" fileversion="2.0">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
-      <Entry configuration="Debug" build="True" name="lat" />
-      <Entry configuration="Debug" build="True" name="gnome-keyring-glue" />
+      <Entry build="True" name="lat" configuration="Debug" />
+      <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
-      <Entry configuration="Debug" build="True" name="lat" />
-      <Entry configuration="Debug" build="True" name="gnome-keyring-glue" />
+      <Entry build="True" name="lat" configuration="Debug" />
+      <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="lat" single="True">
