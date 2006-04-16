@@ -3,7 +3,7 @@ SUBDIRS = gnome-keyring-glue lat po desktop resources help
 EXTRA_DIST = \
 	README \
 	COPYING \
-	COPYING-DOCS \	
+	COPYING-DOCS \
 	AUTHORS \
 	ChangeLog \
 	INSTALL \

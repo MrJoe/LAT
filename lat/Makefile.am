@@ -92,7 +92,6 @@ EXTRA_DIST = \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
 	$(ASSEMBLY).in \
-	$(ASSEMBLY).sources \
 	$(ASSEMBLY).resources
 
 CLEANFILES = \
