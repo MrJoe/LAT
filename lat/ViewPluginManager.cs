@@ -61,8 +61,14 @@ namespace lat {
 
 		public void LoadPlugins ()
 		{
-			PosixUserViewPlugin vp = new PosixUserViewPlugin ();
-			pluginList.Add (vp);
+			pluginList.Add (new PosixUserViewPlugin ());
+			pluginList.Add (new PosixGroupViewPlugin ());
+			pluginList.Add (new PosixContactsViewPlugin ());
+			pluginList.Add (new PosixComputerViewPlugin ());
+			pluginList.Add (new ActiveDirectoryUserViewPlugin ());
+			pluginList.Add (new ActiveDirectoryGroupViewPlugin ());
+			pluginList.Add (new ActiveDirectoryContactsViewPlugin ());
+			pluginList.Add (new ActiveDirectoryComputerViewPlugin ());
 		}
 
 		public ViewPlugin Find (string name)

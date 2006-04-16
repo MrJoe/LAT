@@ -5,6 +5,10 @@ ASSEMBLY = lat
 CSFILES = \
 	adUserViewDialog.cs \
 	AboutDialog.cs \
+	ActiveDirectoryComputerViewPlugin.cs \
+	ActiveDirectoryContactsViewPlugin.cs \
+	ActiveDirectoryGroupViewPlugin.cs \
+	ActiveDirectoryUserViewPlugin.cs \
 	AssemblyInfo.cs \
 	AddAttributeDialog.cs \
 	AddObjectClassDialog.cs \
@@ -32,6 +36,9 @@ CSFILES = \
 	NewEntryDialog.cs \
 	NewUserViewDialog.cs \
 	PasswordDialog.cs \
+	PosixComputerViewPlugin.cs \
+	PosixContactsViewPlugin.cs \
+	PosixGroupViewPlugin.cs \
 	PosixUserViewPlugin.cs \
 	Preferences.cs \
 	ProfileDialog.cs \
@@ -52,7 +59,6 @@ CSFILES = \
 	Util.cs \
 	ViewDataTreeView.cs \
 	ViewDialog.cs \
-	ViewDialogFactory.cs \
 	ViewPluginManager.cs \
 	ViewsTreeView.cs \
 	Window.cs
