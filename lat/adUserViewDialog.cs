@@ -84,7 +84,7 @@ namespace lat
 						"title", "postOfficeBox", "homeDirectory",
 						"profilePath", "scriptPath", "userPrincipalName" };
 
-		public adUserViewDialog (LdapServer ldapServer) : base (ldapServer)
+		public adUserViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();
 
@@ -105,7 +105,7 @@ namespace lat
 			adUserDialog.Destroy ();
 		}
 
-		public adUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
+		public adUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
 			_modList = new ArrayList ();

@@ -31,10 +31,12 @@ namespace lat
 		protected Gtk.Dialog viewDialog;
 		protected bool missingValues = false;
 		protected bool errorOccured = false;
-
-		public ViewDialog (LdapServer ldapServer)
+		protected string defaultNewContainer = null;
+		
+		public ViewDialog (LdapServer ldapServer, string newContainer)
 		{
 			server = ldapServer;
+			defaultNewContainer = newContainer;
 		}
 
 		public static ArrayList getAttributes (string[] objClass, string[] attrs, Hashtable entryInfo)

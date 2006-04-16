@@ -42,7 +42,7 @@ namespace lat
 
 		private static string[] contactAttrs = { "givenName", "sn", "initials", "cn", "displayName" };
 
-		public NewContactsViewDialog (LdapServer ldapServer) : base (ldapServer)
+		public NewContactsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();
 
@@ -134,21 +134,26 @@ namespace lat
 			attr = new LdapAttribute ("cn", fullName);
 			attrList.Add (attr);
 
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, newContactDialog);
+			string userDN = null;			
+			if (this.defaultNewContainer == null) {
+			
+				SelectContainerDialog scd =	new SelectContainerDialog (server, newContactDialog);
+				scd.Title = "Save Contact";
+				scd.Message = String.Format (
+					"Where in the directory would\nyou like save the contact\n{0}?",
+					fullName);
 
-			scd.Title = "Save Contact";
-			scd.Message = String.Format (
-				"Where in the directory would\nyou like save the contact\n{0}?",
-				fullName);
+				scd.Run ();
 
-			scd.Run ();
+				if (scd.DN == "")
+					return;
 
-			if (scd.DN == "")
-				return;
-
-			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
-
+				userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
+			} else {
+			
+				userDN = String.Format ("cn={0},{1}", fullName, this.defaultNewContainer);
+			}
+			
 			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
 				errorOccured = true;
 				return;

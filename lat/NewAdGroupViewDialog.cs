@@ -39,7 +39,7 @@ namespace lat
 			"description",
 		};
 
-		public NewAdGroupViewDialog (LdapServer ldapServer) : base (ldapServer)
+		public NewAdGroupViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();
 
@@ -107,20 +107,27 @@ namespace lat
 
 			ArrayList attrList = getAttributes (objClass, groupAttrs, cgi);
 
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, newAdGroupDialog);
+			string userDN = null;
+			if (this.defaultNewContainer == null) {
+			
+				SelectContainerDialog scd =	new SelectContainerDialog (server, newAdGroupDialog);
 
-			scd.Title = "Save Group";
-			scd.Message = String.Format (
-				"Where in the directory would\nyou like save the group\n{0}?",
-				(string)cgi["cn"]);
+				scd.Title = "Save Group";
+				scd.Message = String.Format (
+					"Where in the directory would\nyou like save the group\n{0}?",
+					(string)cgi["cn"]);
 
-			scd.Run ();
+				scd.Run ();
 
-			if (scd.DN == "")
-				return;
+				if (scd.DN == "")
+					return;
 
-			string userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
+				userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
+				
+			} else {
+			
+				userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], this.defaultNewContainer);
+			}
 
 			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
 				errorOccured = true;

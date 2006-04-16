@@ -60,8 +60,7 @@ namespace lat
 						"operatingSystemServicePack", "location", 
 						"managedBy"};
 
-		public EditAdComputerViewDialog (LdapServer ldapServer, LdapEntry le) : 
-						 base (ldapServer)
+		public EditAdComputerViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
 			_modList = new ArrayList ();

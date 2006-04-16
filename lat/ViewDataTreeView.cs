@@ -55,12 +55,13 @@ namespace lat {
 
 		public void Populate ()
 		{
-			// FIXME: configurable search base
-			string searchBase = server.DirectoryRoot;
-			LdapEntry[] data = server.Search (searchBase, viewPlugin.Filter);
+			if (viewPlugin.SearchBase == null)
+				viewPlugin.SearchBase = server.DirectoryRoot;
+				
+			LdapEntry[] data = server.Search (viewPlugin.SearchBase, viewPlugin.Filter);
 
 			Logger.Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
-					searchBase, viewPlugin.Filter, data.Length);
+					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
 
 			DoInsert (data, viewPlugin.ColumnAttributes);
 		}

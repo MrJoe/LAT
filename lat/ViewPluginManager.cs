@@ -36,6 +36,7 @@ namespace lat {
 		public string[] ColumnAttributes;
 		public string DefaultNewContainer;
 		public string Filter;
+		public string SearchBase;
 	}
 
 	public abstract class ViewPlugin
@@ -108,6 +109,12 @@ namespace lat {
 			get { return config.Filter; }
 			set { config.Filter = value; }
 		}
+
+		public string SearchBase
+		{
+			get { return config.SearchBase; }
+			set { config.SearchBase = value; }
+		}
 		
 		public abstract string[] Authors { get; }		
 		public abstract string Copyright { get; }
@@ -154,6 +161,11 @@ namespace lat {
 			pluginList.Add (new ActiveDirectoryGroupViewPlugin ());
 			pluginList.Add (new ActiveDirectoryContactsViewPlugin ());
 			pluginList.Add (new ActiveDirectoryComputerViewPlugin ());
+			
+			foreach (ViewPlugin vp in pluginList) {
+				string fileName = vp.GetType() + ".state";
+				vp.Deserialize (Path.Combine (pluginStateDirectory, fileName));
+			}
 		}
 
 		public void SavePluginsState ()
@@ -167,10 +179,148 @@ namespace lat {
 		public ViewPlugin[] Plugins
 		{
 			get { return (ViewPlugin[]) pluginList.ToArray (typeof (ViewPlugin)); }
+		}		
+	}
+	
+	public class PluginManagerDialog
+	{
+		Glade.XML ui;
+
+		[Glade.Widget] Gtk.Dialog pluginManagerDialog;
+		[Glade.Widget] Gtk.Entry colNamesEntry;
+		[Glade.Widget] Gtk.Entry colAttrsEntry;
+		[Glade.Widget] Gtk.Entry filterEntry;
+		[Glade.Widget] Gtk.Button newContainerButton;
+		[Glade.Widget] Gtk.Button searchBaseButton;
+		[Glade.Widget] TreeView pluginTreeView; 
+
+		ListStore pluginStore;
+		LdapServer server;
+		Gtk.Window parent;
+
+		string lastSelected;
+	
+		public PluginManagerDialog (LdapServer ldapServer, Gtk.Window parentWindow)
+		{
+			server = ldapServer;
+			parent = parentWindow;
+			
+			ui = new Glade.XML (null, "lat.glade", "pluginManagerDialog", null);
+			ui.Autoconnect (this);
+
+			pluginStore = new ListStore (typeof (bool), typeof (string));
+
+			CellRendererToggle crt = new CellRendererToggle();
+			crt.Activatable = true;
+			crt.Toggled += OnClassToggled;
+
+			pluginTreeView.AppendColumn ("Enabled", crt, "active", 0);
+			pluginTreeView.AppendColumn ("Name", new CellRendererText (), "text", 1);
+			
+			pluginTreeView.Model = pluginStore;
+			
+			foreach (ViewPlugin vp in Global.viewPluginManager.Plugins) {
+				pluginStore.AppendValues (true, vp.Name);
+			}
+			
+			pluginTreeView.Selection.Changed += OnSelectionChanged;
+			
+			pluginManagerDialog.Icon = Global.latIcon;
+			pluginManagerDialog.Run ();
+			pluginManagerDialog.Destroy ();
+		}
+
+		void OnClassToggled (object o, ToggledArgs args)
+		{
+			TreeIter iter;
+
+			if (pluginStore.GetIter (out iter, new TreePath(args.Path))) {
+				bool old = (bool) pluginStore.GetValue (iter,0);
+//				string name = (string) pluginStore.GetValue (iter, 1);
+
+//				if (!old)
+//					objectClasses.Add (name);
+//				else
+//					objectClasses.Remove (name);
+
+				pluginStore.SetValue(iter,0,!old);
+			}
+		}
+
+		void OnSelectionChanged (object o, EventArgs args)
+		{
+			Gtk.TreeIter iter;
+			Gtk.TreeModel model;
+			
+			if (pluginTreeView.Selection.GetSelected (out model, out iter))  {
+				
+				if (lastSelected != null) {
+					ViewPlugin p = Global.viewPluginManager.Find (lastSelected);
+					
+					p.Filter = filterEntry.Text;
+					p.DefaultNewContainer = newContainerButton.Label;
+					p.SearchBase = searchBaseButton.Label;
+				}
+			
+				string name = (string) model.GetValue (iter, 1);
+				lastSelected = name;
+				
+				ViewPlugin vp = Global.viewPluginManager.Find (name);
+				if (vp != null) {
+					colNamesEntry.Text = vp.ColumnNames.ToString ();
+					colAttrsEntry.Text = vp.ColumnAttributes.ToString ();
+					filterEntry.Text = vp.Filter;
+					newContainerButton.Label = vp.DefaultNewContainer;
+					searchBaseButton.Label = vp.SearchBase;
+				}
+			}
+		}
+
+		public void OnFilterBuildClicked (object o, EventArgs args)
+		{
+			SearchBuilderDialog sbd = new SearchBuilderDialog ();
+			filterEntry.Text = sbd.UserFilter;
+		}
+
+		public void OnNewContainerClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (server, parent);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString ("Select a container for new objects"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+				newContainerButton.Label = scd.DN;		
 		}
 		
-		// Find plugins
-		// Load plugins
-		// Show views in viewTreeview
+		public void OnSearchBaseClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = 
+				new SelectContainerDialog (server, parent);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString ("Select a search base"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+				searchBaseButton.Label = scd.DN;
+		}
+		
+		public void OnCloseClicked (object o, EventArgs args)
+		{
+			if (lastSelected != null) {
+				ViewPlugin p = Global.viewPluginManager.Find (lastSelected);
+
+				p.Filter = filterEntry.Text;
+				p.DefaultNewContainer = newContainerButton.Label;
+				p.SearchBase = searchBaseButton.Label;
+			}		
+		}
 	}
 }

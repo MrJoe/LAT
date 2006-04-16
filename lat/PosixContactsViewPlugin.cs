@@ -40,7 +40,7 @@ namespace lat {
 
 		public override void OnAddEntry (LdapServer server)
 		{
-			new NewContactsViewDialog (server);
+			new NewContactsViewDialog (server, this.DefaultNewContainer);
 		}		
 
 		public override void OnEditEntry (LdapServer server, LdapEntry le)

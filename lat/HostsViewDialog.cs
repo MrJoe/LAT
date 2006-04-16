@@ -43,7 +43,7 @@ namespace lat
 
 		private static string[] hostAttrs = { "cn", "ipHostNumber", "description" };
 
-		public HostsViewDialog (LdapServer ldapServer) : base (ldapServer)
+		public HostsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();
 
@@ -64,7 +64,7 @@ namespace lat
 			hostDialog.Destroy ();
 		}
 
-		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
+		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
 			_modList = new ArrayList ();

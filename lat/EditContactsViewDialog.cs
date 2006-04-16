@@ -87,8 +87,7 @@ namespace lat
 
 		private static string[] contactAttrs;
 
-		public EditContactsViewDialog (LdapServer ldapServer, LdapEntry le) : 
-			base (ldapServer)
+		public EditContactsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null) 
 		{
 			_le = le;
 			_modList = new ArrayList ();

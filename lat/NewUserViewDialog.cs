@@ -64,7 +64,7 @@ namespace lat
 
 		private ComboBox primaryGroupComboBox;
 
-		public NewUserViewDialog (LdapServer ldapServer) : base (ldapServer)
+		public NewUserViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();		
 
@@ -393,19 +393,27 @@ namespace lat
 				}
 			}
 
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, newUserDialog);
+			string userDN = null;
 
-			scd.Title = "Save User";
-			scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", fullName);
+			if (this.defaultNewContainer == null) {
+				SelectContainerDialog scd = 
+					new SelectContainerDialog (server, newUserDialog);
 
-			scd.Run ();
+				scd.Title = "Save User";
+				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", fullName);
 
-			if (scd.DN == "")
-				return;
+				scd.Run ();
 
-			string userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
-
+				if (scd.DN == "")
+					return;
+					
+				userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
+				
+			} else {
+			
+				userDN = String.Format ("cn={0},{1}", fullName, this.defaultNewContainer);
+			}
+			
 			updateGroupMembership ();
 
 			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {

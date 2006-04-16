@@ -201,6 +201,11 @@ namespace lat
 			LoadPreference (args.Key);
 		}
 		
+		public void OnPluginManagerClicked (object o, EventArgs args)
+		{
+			new PluginManagerDialog (server, mainWindow);			
+		}
+	
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
 			ViewPlugin vp = Global.viewPluginManager.Find (args.Name);

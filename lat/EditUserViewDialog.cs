@@ -118,7 +118,7 @@ namespace lat
 
 		private ListStore _memberOfStore;
 
-		public EditUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer)
+		public EditUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
 			_modList = new ArrayList ();

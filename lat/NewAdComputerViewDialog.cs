@@ -37,7 +37,7 @@ namespace lat
 
 		private static string[] hostAttrs = { "cn", "dNSHostName" };
 
-		public NewAdComputerViewDialog (LdapServer ldapServer) : base (ldapServer)
+		public NewAdComputerViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();
 
@@ -96,18 +96,25 @@ namespace lat
 
 			ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
 
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, newAdComputerDialog);
+			string userDN = null;
+			if (this.defaultNewContainer == null) {
+			
+				SelectContainerDialog scd =	new SelectContainerDialog (server, newAdComputerDialog);
 
-			scd.Title = "Save Computer";
-			scd.Message = String.Format ("Where in the directory would\nyou like save the computer\n{0}?", (string)chi["cn"]);
+				scd.Title = "Save Computer";
+				scd.Message = String.Format ("Where in the directory would\nyou like save the computer\n{0}?", (string)chi["cn"]);
 
-			scd.Run ();
+				scd.Run ();
 
-			if (scd.DN == "")
-				return;
+				if (scd.DN == "")
+					return;
 
-			string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
+				userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
+				
+			} else {
+			
+				userDN = String.Format ("cn={0},{1}", (string)chi["cn"], this.defaultNewContainer);
+			}
 
 			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
 				errorOccured = true;
