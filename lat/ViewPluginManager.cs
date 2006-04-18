@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -125,13 +126,14 @@ namespace lat {
 	
 	public class ViewPluginManager
 	{
-//		string pluginDirectory;
-		string pluginStateDirectory;
+		string pluginDirectory;
+		string pluginStateDirectory;		
 		ArrayList pluginList;
+//		FileSystemWatcher sysPluginWatch;
+//		FileSystemWatcher usrPluginWatch;
 	
-		public ViewPluginManager (string directory)
-		{
-//			pluginDirectory = directory;			
+		public ViewPluginManager ()
+		{		
 			pluginList = new ArrayList ();
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
@@ -140,6 +142,51 @@ namespace lat {
 				di.Create ();
 				
 			pluginStateDirectory = homeDir;
+			pluginDirectory = Path.Combine (homeDir, "plugins");
+
+			DirectoryInfo dir = new System.IO.DirectoryInfo (pluginDirectory);
+			foreach (FileInfo f in dir.GetFiles("*.dll")) {
+				Console.WriteLine ("file: {0}", f.FullName);
+				Assembly asm = Assembly.LoadFrom (f.FullName);
+				
+				Type [] types = asm.GetTypes ();
+				foreach (Type type in types) {
+					if (type.IsSubclassOf (typeof (ViewPlugin))) {						
+						ViewPlugin plugin = (ViewPlugin) Activator.CreateInstance (type);						
+						if (plugin == null)
+							continue;
+						
+						pluginList.Add (plugin);
+						Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);
+					}
+				}
+   			}
+
+			foreach (ViewPlugin vp in pluginList) {
+				string fileName = vp.GetType() + ".state";
+				vp.Deserialize (Path.Combine (pluginStateDirectory, fileName));
+			}
+
+			
+//			try {
+//			
+//				usrPluginWatch = new FileSystemWatcher (pluginDirectory, "*.dll");
+//				usrPluginWatch.Created += OnPluginCreated;
+//				usrPluginWatch.Changed += OnPluginChanged;
+//				usrPluginWatch.Deleted += OnPluginDeleted;
+//				usrPluginWatch.Renamed += OnPluginRenamed;
+//				usrPluginWatch.EnableRaisingEvents = true;
+			
+//				sysPluginWatch = new FileSystemWatcher (Defines.SYS_PLUGIN_DIR, "*.dll");
+//				sysPluginWatch.Created += OnPluginCreated;
+//				sysPluginWatch.Deleted += OnPluginDeleted;
+//				sysPluginWatch.EnableRaisingEvents = true;
+			
+//			} catch (Exception e) {
+			
+//				Console.WriteLine (e);
+			
+//			}
 		}
 
 		public ViewPlugin Find (string name)
@@ -149,23 +196,6 @@ namespace lat {
 						return vp;
 						
 			return null;
-		}
-
-		public void LoadPlugins ()
-		{
-//			pluginList.Add (new PosixUserViewPlugin ());
-//			pluginList.Add (new PosixGroupViewPlugin ());
-//			pluginList.Add (new PosixContactsViewPlugin ());
-//			pluginList.Add (new PosixComputerViewPlugin ());
-//			pluginList.Add (new ActiveDirectoryUserViewPlugin ());
-//			pluginList.Add (new ActiveDirectoryGroupViewPlugin ());
-//			pluginList.Add (new ActiveDirectoryContactsViewPlugin ());
-//			pluginList.Add (new ActiveDirectoryComputerViewPlugin ());
-			
-			foreach (ViewPlugin vp in pluginList) {
-				string fileName = vp.GetType() + ".state";
-				vp.Deserialize (Path.Combine (pluginStateDirectory, fileName));
-			}
 		}
 
 		public void SavePluginsState ()
@@ -179,7 +209,12 @@ namespace lat {
 		public ViewPlugin[] Plugins
 		{
 			get { return (ViewPlugin[]) pluginList.ToArray (typeof (ViewPlugin)); }
-		}		
+		}
+		
+//		void OnPluginCreated (object o, FileSystemEventArgs args)
+//		{
+//			Console.WriteLine ("args.FullPath: {0}", args.FullPath);
+//		}
 	}
 	
 	public class PluginManagerDialog

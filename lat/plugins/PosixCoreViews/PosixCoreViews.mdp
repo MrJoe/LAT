@@ -1,0 +1,47 @@
+<Project name="PosixCoreViews" fileversion="2.0" language="C#" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="./bin/Debug" assembly="PosixCoreViews" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="./bin/Release" assembly="PosixCoreViews" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <DeploymentInformation strategy="File">
+    <excludeFiles />
+  </DeploymentInformation>
+  <Contents>
+    <File name="./EditContactsViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./EditUserViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./GroupsViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./HostsViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./NewContactsViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./NewUserViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="./PosixComputerViewPlugin.cs" subtype="Code" buildaction="Compile" />
+    <File name="./PosixContactsViewPlugin.cs" subtype="Code" buildaction="Compile" />
+    <File name="./PosixGroupViewPlugin.cs" subtype="Code" buildaction="Compile" />
+    <File name="./PosixUserViewPlugin.cs" subtype="Code" buildaction="Compile" />
+    <File name="../../../resources/contact-new.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="../../../resources/contact-new-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="../../../resources/locked16x16.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="../../../resources/stock_person.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="../../../resources/users.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="../../../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="../../../resources/x-directory-remote-workgroup.png" subtype="Code" buildaction="EmbedAsResource" />
+  </Contents>
+  <References>
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Security, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference type="Gac" localcopy="True" refto="Novell.Directory.Ldap, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference type="Project" localcopy="True" refto="lat" />
+    <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="gdk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="glade-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </References>
+</Project>

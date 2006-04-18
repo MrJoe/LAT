@@ -23,11 +23,6 @@
     <File name="./CertificateDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./CreateEntryDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./Defines.cs" subtype="Code" buildaction="Compile" />
-    <File name="./EditAdComputerViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./EditContactsViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./EditUserViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./GroupsViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./HostsViewDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./LDIF.cs" subtype="Code" buildaction="Compile" />
     <File name="./LdapSearch.cs" subtype="Code" buildaction="Compile" />
     <File name="./LdapServer.cs" subtype="Code" buildaction="Compile" />
@@ -36,12 +31,7 @@
     <File name="./LoginDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./Main.cs" subtype="Code" buildaction="Compile" />
     <File name="./MassEditDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NewAdComputerViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NewAdGroupViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NewAdUserViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NewContactsViewDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./NewEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NewUserViewDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./PasswordDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./Preferences.cs" subtype="Code" buildaction="Compile" />
     <File name="./ProfileDialog.cs" subtype="Code" buildaction="Compile" />
@@ -63,7 +53,6 @@
     <File name="./ViewDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./ViewsTreeView.cs" subtype="Code" buildaction="Compile" />
     <File name="./Window.cs" subtype="Code" buildaction="Compile" />
-    <File name="./adUserViewDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="../resources/contact-new.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/contact-new-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/document-save.png" subtype="Code" buildaction="EmbedAsResource" />
@@ -86,15 +75,7 @@
     <File name="./ConnectDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./AddObjectClassDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./ViewPluginManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="./PosixUserViewPlugin.cs" subtype="Code" buildaction="Compile" />
     <File name="./ViewDataTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="./PosixGroupViewPlugin.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ActiveDirectoryUserViewPlugin.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ActiveDirectoryGroupViewPlugin.cs" subtype="Code" buildaction="Compile" />
-    <File name="./PosixContactsViewPlugin.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ActiveDirectoryContactsViewPlugin.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ActiveDirectoryComputerViewPlugin.cs" subtype="Code" buildaction="Compile" />
-    <File name="./PosixComputerViewPlugin.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

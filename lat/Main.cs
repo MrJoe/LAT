@@ -109,8 +109,7 @@ public class LdapAdministrationTool
 		Global.theTemplateManager = new TemplateManager ();
 		Global.theTemplateManager.Load ();
 
-		Global.viewPluginManager = new ViewPluginManager ("FIXME");
-		Global.viewPluginManager.LoadPlugins ();
+		Global.viewPluginManager = new ViewPluginManager ();
 
 		Global.latProgram = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 

@@ -1,4 +1,4 @@
-
+	* Modified plugin manager to load .dlls
 	* Build plugins outside main program
 
 1.1.0
