@@ -1,3 +1,6 @@
+
+	* Build plugins outside main program
+
 1.1.0
 
 	* Started conversion of views into plugins

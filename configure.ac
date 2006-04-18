@@ -65,6 +65,9 @@ lat/AssemblyInfo.cs
 lat/Defines.cs
 lat/Makefile
 lat/lat
+lat/plugins/Makefile
+lat/plugins/PosixCoreViews/Makefile
+lat/plugins/ActiveDirectoryCoreViews/Makefile
 po/Makefile.in
 help/Makefile
 help/C/Makefile

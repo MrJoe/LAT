@@ -1,14 +1,11 @@
+SUBDIRS = . plugins
+
 CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS)
 
 ASSEMBLY = lat
 
 CSFILES = \
-	adUserViewDialog.cs \
 	AboutDialog.cs \
-	ActiveDirectoryComputerViewPlugin.cs \
-	ActiveDirectoryContactsViewPlugin.cs \
-	ActiveDirectoryGroupViewPlugin.cs \
-	ActiveDirectoryUserViewPlugin.cs \
 	AssemblyInfo.cs \
 	AddAttributeDialog.cs \
 	AddObjectClassDialog.cs \
@@ -16,11 +13,6 @@ CSFILES = \
 	ConnectDialog.cs \
 	CreateEntryDialog.cs \
 	Defines.cs \
-	EditAdComputerViewDialog.cs \
-	EditContactsViewDialog.cs \
-	EditUserViewDialog.cs \
-	GroupsViewDialog.cs \
-	HostsViewDialog.cs \
 	LDIF.cs \
 	LdapSearch.cs \
 	LdapServer.cs \
@@ -29,17 +21,8 @@ CSFILES = \
 	LoginDialog.cs \
 	Main.cs \
 	MassEditDialog.cs \
-	NewAdComputerViewDialog.cs \
-	NewAdGroupViewDialog.cs \
-	NewAdUserViewDialog.cs \
-	NewContactsViewDialog.cs \
 	NewEntryDialog.cs \
-	NewUserViewDialog.cs \
 	PasswordDialog.cs \
-	PosixComputerViewPlugin.cs \
-	PosixContactsViewPlugin.cs \
-	PosixGroupViewPlugin.cs \
-	PosixUserViewPlugin.cs \
 	Preferences.cs \
 	ProfileDialog.cs \
 	ProfileManager.cs \

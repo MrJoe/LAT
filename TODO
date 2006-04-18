@@ -1,4 +1,3 @@
-- Build plugins outside main program
 - Create .pc to allow 3rd party plugins
 - Update plugin manager to load DLLs
 - Create new attribute editor widget for browser

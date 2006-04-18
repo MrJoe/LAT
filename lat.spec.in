@@ -65,6 +65,7 @@ scrollkeeper-update -q || :
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/application-registry/%{name}.applications
 %{_datadir}/pixmaps/*
+%exclude /var/scrollkeeper
 
 %changelog
 * Mon Sep 19 2005 Loren Bandiera <lorenb@mmgsecurity.com>
