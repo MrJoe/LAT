@@ -147,7 +147,7 @@ namespace lat
 
 		private void Init ()
 		{
-			ui = new Glade.XML (null, "lat.glade", "editAdComputerDialog", null);
+			ui = new Glade.XML (null, "dialogs.glade", "editAdComputerDialog", null);
 			ui.Autoconnect (this);
 
 			viewDialog = editAdComputerDialog;
