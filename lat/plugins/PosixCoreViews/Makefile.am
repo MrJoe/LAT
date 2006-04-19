@@ -25,6 +25,7 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 RESOURCES = \
+	dialogs.glade \
 	$(top_builddir)/resources/contact-new-48x48.png \
 	$(top_builddir)/resources/x-directory-remote-server-48x48.png \
 	$(top_builddir)/resources/x-directory-remote-workgroup.png \
@@ -44,7 +45,8 @@ ASSEMBLYlibdir = $(prefix)/lib/lat/plugins
 ASSEMBLYlib_DATA = $(ASSEMBLY).dll
 
 EXTRA_DIST = \
-	$(CSFILES)
+	$(CSFILES) \
+	dialogs.glade
 
 CLEANFILES = \
 	$(ASSEMBLY).dll \

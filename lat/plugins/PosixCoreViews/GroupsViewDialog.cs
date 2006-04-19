@@ -158,7 +158,7 @@ namespace lat
 
 		private void Init ()
 		{
-			ui = new Glade.XML (null, "lat.glade", "groupDialog", null);
+			ui = new Glade.XML (null, "dialogs.glade", "groupDialog", null);
 			ui.Autoconnect (this);
 
 			viewDialog = groupDialog;

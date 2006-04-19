@@ -30,6 +30,7 @@
     <File name="../../../resources/stock_person.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../../../resources/users.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../../../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="./dialogs.glade" subtype="Code" buildaction="EmbedAsResource" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="glade-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

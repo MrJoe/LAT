@@ -314,7 +314,7 @@ namespace lat
 			_allGroupGids = new Hashtable ();
 			_modsGroup = new Hashtable ();
 
-			ui = new Glade.XML (null, "lat.glade", "editUserDialog", null);
+			ui = new Glade.XML (null, "dialogs.glade", "editUserDialog", null);
 			ui.Autoconnect (this);
 
 			viewDialog = editUserDialog;
