@@ -59,7 +59,7 @@ namespace lat
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
 		[Glade.Widget] Gtk.RadioMenuItem schemaView;
-		[Glade.Widget] Gtk.Button applyButton;
+//		[Glade.Widget] Gtk.Button applyButton;
 		[Glade.Widget] Notebook infoNotebook;
 		[Glade.Widget] Gtk.TextView objNameTextview;
 		[Glade.Widget] Gtk.Entry objDescriptionEntry;
@@ -84,7 +84,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry attrSyntaxEntry;		
 
 		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
-		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
+//		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
 
@@ -137,9 +137,13 @@ namespace lat
 			viewScrolledWindow.AddWithViewport (viewsTreeView);
 			viewScrolledWindow.Show ();
 
-			viewDataTreeView = new ViewDataTreeView (server, mainWindow);
-			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
-			valuesScrolledWindow.Show ();
+//			viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+//			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
+//			valuesScrolledWindow.Show ();
+
+			AttributeEditorWidget aew = new AttributeEditorWidget ();
+			valuesScrolledWindow.AddWithViewport (aew);
+			valuesScrolledWindow.Show ();			
 
 //			serverViewFactory = new ServerViewFactory (valuesStore, 
 //				valuesListview, mainWindow, server);
@@ -176,7 +180,7 @@ namespace lat
 			// handlers		
 			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
 
-			applyButton.Sensitive = false;
+//			applyButton.Sensitive = false;
 
 			// setup schema
 
@@ -260,11 +264,11 @@ namespace lat
 		{
 			if (show) {
 				infoNotebook.Show ();
-				hbuttonbox3.Hide ();
+//				hbuttonbox3.Hide ();
 				valuesScrolledWindow.Hide ();
 			} else {
 				infoNotebook.Hide ();
-				hbuttonbox3.Show ();
+//				hbuttonbox3.Show ();
 				valuesScrolledWindow.Show ();
 			}
 		}
@@ -317,7 +321,7 @@ namespace lat
 
 			_modList.Add (lm);
 
-			applyButton.Sensitive = true;
+//			applyButton.Sensitive = true;
 		}
 
 		private void schemaDNSelected (object o, schemaSelectedEventArgs args)
@@ -468,7 +472,7 @@ namespace lat
 
 			Util.ModifyEntry (server, mainWindow, dn, _modList, true);
 
-			applyButton.Sensitive = false;
+//			applyButton.Sensitive = false;
 		}
 
 		private void showConnectionAttributes ()

@@ -3170,33 +3170,6 @@ you wish to connect to.</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkHButtonBox" id="hbuttonbox3">
-			  <property name="border_width">5</property>
-			  <property name="visible">True</property>
-			  <property name="layout_style">GTK_BUTTONBOX_END</property>
-			  <property name="spacing">10</property>
-
-			  <child>
-			    <widget class="GtkButton" id="applyButton">
-			      <property name="visible">True</property>
-			      <property name="can_default">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="label">gtk-apply</property>
-			      <property name="use_stock">True</property>
-			      <property name="relief">GTK_RELIEF_NORMAL</property>
-			      <property name="focus_on_click">True</property>
-			      <signal name="clicked" handler="OnApplyClicked" last_modification_time="Sun, 02 Oct 2005 02:30:55 GMT"/>
-			    </widget>
-			  </child>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">False</property>
-			  <property name="fill">True</property>
-			</packing>
-		      </child>
-
-		      <child>
 			<widget class="GtkNotebook" id="infoNotebook">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>

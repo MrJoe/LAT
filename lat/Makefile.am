@@ -9,6 +9,7 @@ CSFILES = \
 	AssemblyInfo.cs \
 	AddAttributeDialog.cs \
 	AddObjectClassDialog.cs \
+	AttributeEditorWidget.cs \
 	CertificateDialog.cs \
 	ConnectDialog.cs \
 	CreateEntryDialog.cs \
