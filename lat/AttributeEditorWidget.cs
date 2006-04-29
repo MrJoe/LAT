@@ -30,9 +30,16 @@ namespace lat
 	{
 		Label nameLabel;
 		Entry valueEntry;
+		bool removed;
+		bool added;
+		bool modified;
 	
 		public AttributeItem (string attrName, string attrValue, bool withAddButton, bool required) : base ()
 		{
+			removed = false;
+			added = false;
+			modified = false;
+		
 			this.BorderWidth = 6;
 			this.Spacing = 6;
 			
@@ -70,6 +77,7 @@ namespace lat
 			
 			valueEntry = new Gtk.Entry ();
 			valueEntry.Text = attrValue;
+			valueEntry.Changed += new EventHandler (OnEntryChanged);
 			valueEntry.Show ();
 			v.PackStart (valueEntry, true, true, 0);
 
@@ -85,15 +93,45 @@ namespace lat
 			this.ShowAll ();
 		}
 		
+		void OnEntryChanged (object o, EventArgs args)
+		{
+			modified = true;
+		}
+		
 		void OnAddClicked (object o, EventArgs args)
 		{
-			Console.WriteLine ("ADD: {0}", nameLabel.Text);
+//			added = true;
 		}
 
 		void OnRemoveClicked (object o, EventArgs args)
 		{
-			Console.WriteLine ("REMOVE: {0}", nameLabel.Text);
+			removed = true;
 			this.Destroy ();
+		}
+		
+		public string AttributeName
+		{
+			get { return nameLabel.Text; }
+		}
+		
+		public string AttributeValue
+		{
+			get { return valueEntry.Text; }
+		}
+		
+		public bool WasAdded
+		{
+			get { return added; }
+		}
+		
+		public bool WasRemoved
+		{
+			get { return removed; }
+		}
+		
+		public bool WasModified
+		{
+			get { return modified; }
 		}
 	}
 	
@@ -101,9 +139,14 @@ namespace lat
 	{
 		ScrolledWindow sw;
 		VBox mainVBox;
+		ArrayList attributeItems;
+		LdapServer currentServer;
+		string currentDN;
 	
 		public AttributeEditorWidget() : base ()
 		{
+			attributeItems = new ArrayList ();
+		
 			sw = new ScrolledWindow ();
 			sw.HscrollbarPolicy = PolicyType.Automatic;
 			sw.VscrollbarPolicy = PolicyType.Automatic;
@@ -113,21 +156,51 @@ namespace lat
 			sw.Show ();
 			
 			Button button = new Button ("Apply");
+			button.Clicked += new EventHandler (OnApplyClicked);
 			button.Show ();
 			
 			this.PackStart (sw, true, true, 0);
-//			this.PackStart (button, false, false, 0);
+			this.PackStart (button, false, false, 0);
 		
 			this.ShowAll ();
 		}
 	
-		public void Show (LdapServer server, LdapEntry entry)
+		void OnApplyClicked (object o, EventArgs args)
+		{
+			ArrayList modList = new ArrayList ();
+		
+			foreach (AttributeItem ai in attributeItems) {
+				LdapAttribute attribute = new LdapAttribute (ai.AttributeName, ai.AttributeValue);
+			
+				if (ai.WasRemoved) {
+					LdapModification lm = new LdapModification (LdapModification.DELETE, attribute);
+					modList.Add (lm);
+				}
+				
+				if (ai.WasAdded) {				
+					LdapModification lm = new LdapModification (LdapModification.ADD, attribute);
+					modList.Add (lm);				
+				}
+				
+				if (ai.WasModified) {
+					LdapModification lm = new LdapModification (LdapModification.REPLACE, attribute);
+					modList.Add (lm);
+				}
+			}
+			
+			Util.ModifyEntry (currentServer, null, currentDN, modList, true);
+		}
+	
+		public void Show (LdapServer server, LdapEntry entry, bool showAll)
 		{
 			if (mainVBox != null) {
 				mainVBox.Destroy ();
 				mainVBox = new VBox ();
 				sw.AddWithViewport (mainVBox);
 			}
+			
+			currentServer = server;
+			currentDN = entry.DN;
 		
 			ArrayList allAttrs = new ArrayList ();
 		
@@ -145,6 +218,8 @@ namespace lat
 				
 				mainVBox.PackStart (ai, true, true, 5);				
 
+				attributeItems.Add (ai);
+				
 				string[] attrs = server.GetAllAttributes (o);
 				
 				foreach (string at in attrs)
@@ -167,16 +242,20 @@ namespace lat
 				foreach (string s in attr.StringValueArray) {
 					AttributeItem ai = new AttributeItem (attr.Name, s, !sp.Single, false);
 					mainVBox.PackStart (ai, true, true, 5);
+					attributeItems.Add (ai);
 				}
 			}
 			
 			mainVBox.ShowAll ();
 			
-//			if (!showAllAttributes.Active)
-//				return;
+			if (!showAll)
+				return;
 
-//			foreach (string n in allAttrs)
-//				valuesStore.AppendValues (n, "");		
+			foreach (string n in allAttrs) {
+					AttributeItem ai = new AttributeItem (n, "", false, false);
+					mainVBox.PackStart (ai, true, true, 5);
+					attributeItems.Add (ai);
+			}					
 		}		
 	}
 	

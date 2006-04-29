@@ -353,7 +353,7 @@ namespace lat
 			}
 
 			LdapEntry entry = server.GetEntry (args.DN);
-			attributeEditor.Show (server, entry);
+			attributeEditor.Show (server, entry, showAllAttributes.Active);
 //			showEntryAttributes (entry);
 		}
 
@@ -383,43 +383,6 @@ namespace lat
 			Close ();
 			args.RetVal = true;
 		}
-
-//		private void OnAttributeEdit (object o, EditedArgs args)
-//		{
-//			TreeIter iter;
-//
-//			if (!valuesStore.GetIterFromString (out iter, args.Path))
-//				return;
-//
-//			string oldText = (string) valuesStore.GetValue (iter, 1);
-//
-//			if (oldText.Equals (args.NewText))
-//				return;
-//			
-//			string _name = (string) valuesStore.GetValue (iter, 0);
-//
-//			string dn = null;
-//
-//			if (viewNotebook.CurrentPage == 1)
-//				dn = _ldapTreeview.getSelectedDN ();
-//			else if (viewNotebook.CurrentPage == 2)
-//				dn = _searchTreeView.SelectedResult;
-//		
-//			if (dn == null)
-//				return;
-//			
-//			if (dn.Equals (server.Host))
-//				return;
-//
-//			valuesStore.SetValue (iter, 1, args.NewText);
-//
-//			LdapAttribute attribute = new LdapAttribute (_name, args.NewText);
-//			LdapModification lm = new LdapModification (LdapModification.REPLACE, attribute);
-//
-//			_modList.Add (lm);
-//
-//			applyButton.Sensitive = true;		
-//		}
 		
 		public void OnSearchBuilderClicked (object o, EventArgs args)
 		{
@@ -466,15 +429,6 @@ namespace lat
 
 			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				searchBaseButton.Label = scd.DN;
-		}
-
-		public void OnApplyClicked (object o, EventArgs args)
-		{
-			string dn = _ldapTreeview.getSelectedDN ();
-
-			Util.ModifyEntry (server, mainWindow, dn, _modList, true);
-
-//			applyButton.Sensitive = false;
 		}
 
 		private void showConnectionAttributes ()
@@ -581,9 +535,9 @@ namespace lat
 
 				if (dn == null)
 					return;
-		
-				LdapEntry le = server.GetEntry (dn);
-				showEntryAttributes (le);
+
+				LdapEntry entry = server.GetEntry (dn);
+				attributeEditor.Show (server, entry, showAllAttributes.Active);
 			}
 		}
 
