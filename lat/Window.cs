@@ -31,6 +31,7 @@ namespace lat
 	{
 		ViewsTreeView viewsTreeView;
 		ViewDataTreeView viewDataTreeView;
+		AttributeEditorWidget attributeEditor;
 	
 		// =================
 	
@@ -141,8 +142,8 @@ namespace lat
 //			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
 //			valuesScrolledWindow.Show ();
 
-			AttributeEditorWidget aew = new AttributeEditorWidget ();
-			valuesScrolledWindow.AddWithViewport (aew);
+			attributeEditor = new AttributeEditorWidget ();
+			valuesScrolledWindow.AddWithViewport (attributeEditor);
 			valuesScrolledWindow.Show ();			
 
 //			serverViewFactory = new ServerViewFactory (valuesStore, 
@@ -347,12 +348,13 @@ namespace lat
 		private void ldapDNSelected (object o, dnSelectedEventArgs args)
 		{
 			if (args.IsHost) {
-				showConnectionAttributes ();
+//				showConnectionAttributes ();
 				return;
 			}
 
 			LdapEntry entry = server.GetEntry (args.DN);
-			showEntryAttributes (entry);
+			attributeEditor.Show (server, entry);
+//			showEntryAttributes (entry);
 		}
 
 		private void Close ()
