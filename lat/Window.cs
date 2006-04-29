@@ -138,12 +138,8 @@ namespace lat
 			viewScrolledWindow.AddWithViewport (viewsTreeView);
 			viewScrolledWindow.Show ();
 
-//			viewDataTreeView = new ViewDataTreeView (server, mainWindow);
-//			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
-//			valuesScrolledWindow.Show ();
-
-			attributeEditor = new AttributeEditorWidget ();
-			valuesScrolledWindow.AddWithViewport (attributeEditor);
+			viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
 			valuesScrolledWindow.Show ();			
 
 //			serverViewFactory = new ServerViewFactory (valuesStore, 
@@ -166,8 +162,7 @@ namespace lat
 
 			// Setup search
 			_searchTreeView = new SearchResultsTreeView (server);
-			_searchTreeView.SearchResultSelected += 
-				new SearchResultSelectedHandler (OnSearchSelected);
+			_searchTreeView.SearchResultSelected += new SearchResultSelectedHandler (OnSearchSelected);
 
 			resultsScrolledWindow.AddWithViewport (_searchTreeView);
 			resultsScrolledWindow.Show ();
@@ -242,8 +237,8 @@ namespace lat
 		{
 			LdapEntry entry = server.GetEntry (args.DN);
 
-			if (entry != null)
-				showEntryAttributes (entry);
+			if (entry != null) 
+				attributeEditor.Show (server, entry, showAllAttributes.Active);
 		}
 
 		private void updateStatusBar ()
@@ -431,99 +426,63 @@ namespace lat
 				searchBaseButton.Label = scd.DN;
 		}
 
-		private void showConnectionAttributes ()
-		{
-			valuesStore.Clear ();
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Host"), server.Host);
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Port"), server.Port.ToString());
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("User"), server.AuthDN);
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Base DN"), server.DirectoryRoot);
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Connected"),
-					 server.Connected.ToString());
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Bound"), server.Bound.ToString());
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("TLS/SSL"), server.UseSSL.ToString());
-
-			valuesStore.AppendValues (
-				Mono.Unix.Catalog.GetString ("Protocol Version"),
-					 server.Protocol.ToString());
-
-			if (server.ServerType == LdapServerType.ActiveDirectory) {
-
-				valuesStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("DNS Host Name"),
-					server.ADInfo.DnsHostName);
-
-				valuesStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("Domain Controller Functionality"),
-					server.ADInfo.DomainControllerFunctionality);
-
-				valuesStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("Forest Functionality"),
-					server.ADInfo.ForestFunctionality);
-
-				valuesStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("Domain Functionality"),
-					server.ADInfo.DomainFunctionality);
-
-				valuesStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("Global Catalog Ready"),
-					server.ADInfo.IsGlobalCatalogReady.ToString());
-
-				valuesStore.AppendValues (
-					Mono.Unix.Catalog.GetString ("Synchronized"),
-					server.ADInfo.IsSynchronized.ToString());
-			}
-		}
-
-		private void showEntryAttributes (LdapEntry entry)
-		{
-			valuesStore.Clear ();
-			_modList.Clear ();
-
-			ArrayList allAttrs = new ArrayList ();
-		
-			LdapAttribute a = entry.getAttribute ("objectClass");
-
-			foreach (string o in a.StringValueArray) {
-
-				string[] attrs = server.GetAllAttributes (o);
-				
-				foreach (string at in attrs)
-					if (!allAttrs.Contains (at))
-						allAttrs.Add (at);
-			}
-
-			LdapAttributeSet attributeSet = entry.getAttributeSet ();
-
-			foreach (LdapAttribute attr in attributeSet) {
-
-				if (allAttrs.Contains (attr.Name))
-					allAttrs.Remove (attr.Name);
-
-				foreach (string s in attr.StringValueArray)
-					valuesStore.AppendValues (attr.Name, s);
-			}
-
-			if (!showAllAttributes.Active)
-				return;
-
-			foreach (string n in allAttrs)
-				valuesStore.AppendValues (n, "");
-		}
+//		private void showConnectionAttributes ()
+//		{
+//			valuesStore.Clear ();
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("Host"), server.Host);
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("Port"), server.Port.ToString());
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("User"), server.AuthDN);
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("Base DN"), server.DirectoryRoot);
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("Connected"),
+//					 server.Connected.ToString());
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("Bound"), server.Bound.ToString());
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("TLS/SSL"), server.UseSSL.ToString());
+//
+//			valuesStore.AppendValues (
+//				Mono.Unix.Catalog.GetString ("Protocol Version"),
+//					 server.Protocol.ToString());
+//
+//			if (server.ServerType == LdapServerType.ActiveDirectory) {
+//
+//				valuesStore.AppendValues (
+//					Mono.Unix.Catalog.GetString ("DNS Host Name"),
+//					server.ADInfo.DnsHostName);
+//
+//				valuesStore.AppendValues (
+//					Mono.Unix.Catalog.GetString ("Domain Controller Functionality"),
+//					server.ADInfo.DomainControllerFunctionality);
+//
+//				valuesStore.AppendValues (
+//					Mono.Unix.Catalog.GetString ("Forest Functionality"),
+//					server.ADInfo.ForestFunctionality);
+//
+//				valuesStore.AppendValues (
+//					Mono.Unix.Catalog.GetString ("Domain Functionality"),
+//					server.ADInfo.DomainFunctionality);
+//
+//				valuesStore.AppendValues (
+//					Mono.Unix.Catalog.GetString ("Global Catalog Ready"),
+//					server.ADInfo.IsGlobalCatalogReady.ToString());
+//
+//				valuesStore.AppendValues (
+//					Mono.Unix.Catalog.GetString ("Synchronized"),
+//					server.ADInfo.IsSynchronized.ToString());
+//			}
+//		}
 
 		public void OnShowAllAttributes (object o, EventArgs args)
 		{
@@ -610,29 +569,6 @@ namespace lat
 			} catch {}
 		}
 
-		private void setNameValueView ()
-		{
-//			TreeViewColumn col;
-//
-//			valuesStore = new ListStore (typeof (string), typeof (string));
-//			valuesListview.Model = valuesStore;
-//
-//			col = valuesListview.AppendColumn (
-//				Mono.Unix.Catalog.GetString ("Name"), 
-//				new CellRendererText (), "text", 0);
-//
-//			col.SortColumnId = 0;
-//
-//			CellRendererText cell = new CellRendererText ();
-//			cell.Editable = true;
-//			cell.Edited += new EditedHandler (OnAttributeEdit);
-//
-//			col = valuesListview.AppendColumn (
-//				Mono.Unix.Catalog.GetString ("Value"), cell, "text", 1);
-//		
-//			valuesStore.SetSortColumnId (0, SortType.Ascending);
-		}
-
 //		private void removeButtonHandlers ()
 //		{
 //			newToolButton.Clicked -= new EventHandler
@@ -704,6 +640,17 @@ namespace lat
 				toggleButtons (false);
 				toggleInfoNotebook (false);
 
+				if (attributeEditor != null) {
+					attributeEditor.Destroy ();
+					attributeEditor = null;
+				}
+
+				if (viewDataTreeView == null) {
+					viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+					valuesScrolledWindow.AddWithViewport (viewDataTreeView);
+					valuesScrolledWindow.Show ();
+				}
+
 				templateToolButton.Hide ();
 
 			} else if (args.PageNum == 1) {
@@ -717,7 +664,16 @@ namespace lat
 				propertiesToolButton.Hide ();
 				refreshToolButton.Hide ();
 
-				setNameValueView ();
+				if (viewDataTreeView != null) {
+					viewDataTreeView.Destroy ();
+					viewDataTreeView = null;
+				}
+				
+				if (attributeEditor == null) {
+					attributeEditor = new AttributeEditorWidget ();
+					valuesScrolledWindow.AddWithViewport (attributeEditor);
+					valuesScrolledWindow.Show ();
+				}
 
 				_ldapTreeview.setToolbarHandlers (newToolButton, deleteToolButton);
 
@@ -727,7 +683,17 @@ namespace lat
 
 				_ldapTreeview.removeToolbarHandlers ();
 
-				setNameValueView ();	
+				if (viewDataTreeView != null) {
+					viewDataTreeView.Destroy ();
+					viewDataTreeView = null;
+				}
+				
+				if (attributeEditor == null) {
+					attributeEditor = new AttributeEditorWidget ();
+					valuesScrolledWindow.AddWithViewport (attributeEditor);
+					valuesScrolledWindow.Show ();
+				}
+				
 				toggleButtons (false);
 				toggleInfoNotebook (false);
 

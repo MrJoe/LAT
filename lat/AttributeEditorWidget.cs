@@ -155,12 +155,19 @@ namespace lat
 			sw.AddWithViewport (mainVBox);
 			sw.Show ();
 			
-			Button button = new Button ("Apply");
+			HButtonBox hb = new HButtonBox ();			
+			hb.Layout = ButtonBoxStyle.End;
+			
+			Button button = new Button ();
+			button.Label = "Apply";
+			button.Image = new Gtk.Image (Stock.Apply, IconSize.Button);
 			button.Clicked += new EventHandler (OnApplyClicked);
-			button.Show ();
+			
+			hb.Add (button);
+
 			
 			this.PackStart (sw, true, true, 0);
-			this.PackStart (button, false, false, 0);
+			this.PackStart (hb, false, false, 5);
 		
 			this.ShowAll ();
 		}
