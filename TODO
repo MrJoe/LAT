@@ -1,5 +1,4 @@
 - Create .pc to allow 3rd party plugins
-- Create new attribute editor widget for browser
 - Improve schema browser
 - Add support for NetworkManager
 - Find a way to change a AD users password (need SSL support)

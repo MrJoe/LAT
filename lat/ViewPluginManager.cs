@@ -146,7 +146,7 @@ namespace lat {
 
 			DirectoryInfo dir = new System.IO.DirectoryInfo (pluginDirectory);
 			foreach (FileInfo f in dir.GetFiles("*.dll")) {
-				Console.WriteLine ("file: {0}", f.FullName);
+				
 				Assembly asm = Assembly.LoadFrom (f.FullName);
 				
 				Type [] types = asm.GetTypes ();

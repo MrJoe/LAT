@@ -1,3 +1,4 @@
+	* Added start of new attribute editor widget
 	* Modified plugin manager to load .dlls
 	* Build plugins outside main program
 

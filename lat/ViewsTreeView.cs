@@ -86,8 +86,15 @@ namespace lat
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
 
-			foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
-				viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);			
+			if (server.ServerType == LdapServerType.OpenLDAP || server.ServerType == LdapServerType.Generic) {
+				foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
+					if (!(vp.Name.StartsWith ("Active")))
+						viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);
+			} else {
+				foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
+					if ((vp.Name.StartsWith ("Active")))
+						viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);			
+			}
 		}
 
 //		[ConnectBefore]
