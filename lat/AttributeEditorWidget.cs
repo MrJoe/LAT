@@ -22,13 +22,85 @@ using System;
 using System.Collections;
 using Gtk;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Utilclass;
 
 namespace lat
-{	
+{
+	public class AttributeItem : Gtk.HBox
+	{
+		Label nameLabel;
+		Entry valueEntry;
+	
+		public AttributeItem (string attrName, string attrValue, bool withAddButton, bool required) : base ()
+		{
+			this.BorderWidth = 6;
+			this.Spacing = 6;
+			
+			VBox v = new VBox ();
+			v.Spacing = 6;
+			this.PackStart (v, true, true, 0);
+			
+			nameLabel = new Label (attrName);
+			nameLabel.Xalign = 0;
+			v.PackStart (nameLabel, true, false, 0);
+			
+			if (required) {
+				v = new VBox ();
+				v.Spacing = 6;
+				this.PackStart (v, false, false, 0);
+				
+				Gtk.Image image = new Gtk.Image (Stock.Info, IconSize.Button);
+				v.PackStart (image, true, false, 0);
+			}
+			
+			if (withAddButton) {
+				v = new VBox ();
+				v.Spacing = 6;
+				this.PackStart (v, false, false, 0);
+				
+				Gtk.Button button = new Gtk.Button ();
+				button.Image = new Gtk.Image (Stock.Add, IconSize.Button);
+				button.Clicked += new EventHandler (OnAddClicked);
+				v.PackStart (button, true, false, 0);
+			}
+
+			v = new VBox ();
+			v.Spacing = 6;
+			this.PackStart (v, true, true, 0);			
+			
+			valueEntry = new Gtk.Entry ();
+			valueEntry.Text = attrValue;
+			valueEntry.Show ();
+			v.PackStart (valueEntry, true, true, 0);
+
+			v = new VBox ();
+			v.Spacing = 6;
+			this.PackStart (v, false, false, 0);
+
+			Gtk.Button button2 = new Gtk.Button ();
+			button2.Image = new Gtk.Image (Stock.Remove, IconSize.Button);
+			button2.Clicked += new EventHandler (OnRemoveClicked);
+			v.PackStart (button2, true, false, 0);			
+			
+			this.ShowAll ();
+		}
+		
+		void OnAddClicked (object o, EventArgs args)
+		{
+			Console.WriteLine ("ADD: {0}", nameLabel.Text);
+		}
+
+		void OnRemoveClicked (object o, EventArgs args)
+		{
+			Console.WriteLine ("REMOVE: {0}", nameLabel.Text);
+			this.Destroy ();
+		}
+	}
+	
 	public class AttributeEditorWidget : Gtk.VBox
 	{
 		ScrolledWindow sw;
-		Table table;
+		VBox mainVBox;
 	
 		public AttributeEditorWidget() : base ()
 		{
@@ -36,8 +108,8 @@ namespace lat
 			sw.HscrollbarPolicy = PolicyType.Automatic;
 			sw.VscrollbarPolicy = PolicyType.Automatic;
 
-			table = new Table (0, 0, false);
-			sw.AddWithViewport (table);
+			mainVBox = new VBox ();
+			sw.AddWithViewport (mainVBox);
 			sw.Show ();
 			
 			Button button = new Button ("Apply");
@@ -48,53 +120,30 @@ namespace lat
 		
 			this.ShowAll ();
 		}
-
-		void AddAttributeItem (string attrName, string attrValue)
-		{
-			uint rowNum = table.NRows + 1;
-			uint topAttachNum = rowNum - 1;
-		
-			table.Resize (rowNum + 1, 5);
-			table.ColumnSpacing = 10;
-			table.RowSpacing = 5;
-			
-			Label label = new Label (attrName);
-			table.Attach (label, 0, 1, topAttachNum, rowNum, AttachOptions.Fill, AttachOptions.Expand, 0, 0); 
-
-			Gtk.Image image = new Gtk.Image (Stock.Info, IconSize.Button);
-			table.Attach (image, 1, 2, topAttachNum, rowNum, AttachOptions.Fill, AttachOptions.Expand, 0, 0);
-			
-			Gtk.Button button = new Gtk.Button ();
-			button.Image = new Gtk.Image (Stock.Add, IconSize.Button);
-			table.Attach (button, 2, 3, topAttachNum, rowNum, AttachOptions.Fill, AttachOptions.Expand, 0, 0);
-			
-			Gtk.Entry attrEntry = new Gtk.Entry ();
-			attrEntry.Text = attrValue;
-			attrEntry.Show ();
-			table.Attach (attrEntry, 3, 4, topAttachNum, rowNum, AttachOptions.Fill, AttachOptions.Expand, 0, 0);
-
-			Gtk.Button button2 = new Gtk.Button ();
-			button2.Image = new Gtk.Image (Stock.Remove, IconSize.Button);
-			table.Attach (button2, 4, 5, topAttachNum, rowNum, AttachOptions.Fill, AttachOptions.Expand, 0, 0);
-
-			table.ShowAll ();			
-		}
-		
+	
 		public void Show (LdapServer server, LdapEntry entry)
 		{
-			if (table != null) {
-				table.Destroy ();
-				table = new Table (1, 5, false);
-				sw.AddWithViewport (table);
+			if (mainVBox != null) {
+				mainVBox.Destroy ();
+				mainVBox = new VBox ();
+				sw.AddWithViewport (mainVBox);
 			}
 		
 			ArrayList allAttrs = new ArrayList ();
 		
 			LdapAttribute a = entry.getAttribute ("objectClass");
 
-			foreach (string o in a.StringValueArray) {
+			for (int i = 0; i < a.StringValueArray.Length; i++) {
+			
+				string o = (string) a.StringValueArray[i];
+				AttributeItem ai;
 
-				AddAttributeItem ("objectClass", o);
+				if (i == 0)			
+					ai = new AttributeItem ("objectClass", o, true, true);
+				else 
+					ai = new AttributeItem ("objectClass", o, false, false);
+				
+				mainVBox.PackStart (ai, true, true, 5);				
 
 				string[] attrs = server.GetAllAttributes (o);
 				
@@ -102,7 +151,7 @@ namespace lat
 					if (!allAttrs.Contains (at))
 						allAttrs.Add (at);
 			}
-
+			
 			LdapAttributeSet attributeSet = entry.getAttributeSet ();
 
 			foreach (LdapAttribute attr in attributeSet) {
@@ -113,9 +162,15 @@ namespace lat
 				if (attr.Name.ToLower() == "objectclass")
 					continue;
 
-				foreach (string s in attr.StringValueArray)
-					AddAttributeItem (attr.Name, s);
+				SchemaParser sp = server.GetAttributeTypeSchema (attr.Name);
+
+				foreach (string s in attr.StringValueArray) {
+					AttributeItem ai = new AttributeItem (attr.Name, s, !sp.Single, false);
+					mainVBox.PackStart (ai, true, true, 5);
+				}
 			}
+			
+			mainVBox.ShowAll ();
 			
 //			if (!showAllAttributes.Active)
 //				return;
