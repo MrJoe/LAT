@@ -53,30 +53,6 @@ namespace lat
 		}
 	}
 
-	public class AddAttributeEventArgs : EventArgs
-	{
-		private string _name;
-		private string _value;
-
-		public AddAttributeEventArgs (string attrName, string attrValue)
-		{
-			_name = attrName;
-			_value = attrValue;
-		}
-
-		public string Name
-		{
-			get { return _name; }
-		}
-
-		public string Value
-		{
-			get { return _value; }
-		}
-	}
-
-	public delegate void AttributeAddedHandler (object o, AddAttributeEventArgs args);
-
 	public delegate void dnSelectedHandler (object o, dnSelectedEventArgs args);
 
 	public class LdapTreeView : Gtk.TreeView
@@ -93,7 +69,6 @@ namespace lat
 
 		private enum TreeCols { Icon, DN, RDN };
 
-		public event AttributeAddedHandler AttributeAdded;
 		public event dnSelectedHandler dnSelected;
 
 		private static TargetEntry[] _sourceTable = new TargetEntry[]
@@ -160,12 +135,6 @@ namespace lat
 		{
 			if (dnSelected != null)
 				dnSelected (this, new dnSelectedEventArgs (dn, host));
-		}
-
-		private void DispatchAddAttributeEvent (string attrName, string attrValue)
-		{
-			if (AttributeAdded != null && attrName != null)
-				AttributeAdded (this, new AddAttributeEventArgs (attrName, attrValue));
 		}
 
 		public string getSelectedDN ()
@@ -410,38 +379,6 @@ namespace lat
 			catch {}
 		}
 
-		public void OnAddObjActivate (object o, EventArgs args)
-		{
-			string dn = getSelectedDN ();
-
-			if (dn == server.Host)
-				return;
-
-			DispatchDNSelectedEvent (dn, false);
-
-			AddObjectClassDialog dlg = new AddObjectClassDialog (server);
-
-			foreach (string s in dlg.ObjectClasses)	
-				DispatchAddAttributeEvent ("objectClass", s);
-		}
-
-		public void OnAddAttrActivate (object o, EventArgs args)
-		{
-			string dn = getSelectedDN ();
-
-			if (dn == server.Host)
-				return;
-
-			DispatchDNSelectedEvent (dn, false);
-
-			AddAttributeDialog aad = new AddAttributeDialog (server, dn);
-	
-			Logger.Log.Debug ("LdapTreeView.OnAddAttr: name: {0} - value: {1}", 
-				aad.Name, aad.Value);
-
-			DispatchAddAttributeEvent (aad.Name, aad.Value);
-		}
-
 		private void DoPopUp()
 		{
 			Menu popup = new Menu();
@@ -450,18 +387,6 @@ namespace lat
 			newItem.Activated += new EventHandler (OnNewEntryActivate);
 			newItem.Show ();
 			popup.Append (newItem);
-
-			MenuItem addAttrItem = new MenuItem ("Add Attribute...");
-			addAttrItem.Activated += new EventHandler (OnAddAttrActivate);
-			addAttrItem.Show ();
-
-			popup.Append (addAttrItem);
-
-			MenuItem addObjItem = new MenuItem ("Add Object Class...");
-			addObjItem.Activated += new EventHandler (OnAddObjActivate);
-			addObjItem.Show ();
-
-			popup.Append (addObjItem);
 
 			MenuItem renameItem = new MenuItem ("Rename...");
 			renameItem.Activated += new EventHandler (OnRenameActivate);

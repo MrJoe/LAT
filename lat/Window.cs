@@ -60,7 +60,6 @@ namespace lat
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
 		[Glade.Widget] Gtk.RadioMenuItem schemaView;
-//		[Glade.Widget] Gtk.Button applyButton;
 		[Glade.Widget] Notebook infoNotebook;
 		[Glade.Widget] Gtk.TextView objNameTextview;
 		[Glade.Widget] Gtk.Entry objDescriptionEntry;
@@ -94,12 +93,6 @@ namespace lat
 		private SearchResultsTreeView _searchTreeView;
 
 		private LdapServer server;
-//		private ServerViewFactory serverViewFactory;
-//		private ServerView currentView;
-
-		private ArrayList _modList;
-
-		private ListStore valuesStore;
 
 		private ListStore objRequiredStore;
 		private ListStore objOptionalStore;
@@ -113,7 +106,6 @@ namespace lat
 		public latWindow (LdapServer ldapServer) 
 		{
 			server = ldapServer;
-			_modList = new ArrayList ();
 
 			ui = new Glade.XML (null, "lat.glade", "mainWindow", null);
 			ui.Autoconnect (this);
@@ -142,13 +134,9 @@ namespace lat
 			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
 			valuesScrolledWindow.Show ();			
 
-//			serverViewFactory = new ServerViewFactory (valuesStore, 
-//				valuesListview, mainWindow, server);
-
 			// Setup browser			
 			_ldapTreeview = new LdapTreeView (server, mainWindow);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
-			_ldapTreeview.AttributeAdded += new AttributeAddedHandler (ldapAttrAdded);
 
 			browserScrolledWindow.AddWithViewport (_ldapTreeview);
 			browserScrolledWindow.Show ();
@@ -175,8 +163,6 @@ namespace lat
 
 			// handlers		
 			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
-
-//			applyButton.Sensitive = false;
 
 			// setup schema
 
@@ -308,18 +294,6 @@ namespace lat
 			refreshToolButton.Show ();
 		}
 
-		private void ldapAttrAdded (object o, AddAttributeEventArgs args)
-		{
-			valuesStore.AppendValues (args.Name, args.Value);
-
-			LdapAttribute attribute = new LdapAttribute (args.Name, args.Value);
-			LdapModification lm = new LdapModification (LdapModification.ADD, attribute);
-
-			_modList.Add (lm);
-
-//			applyButton.Sensitive = true;
-		}
-
 		private void schemaDNSelected (object o, schemaSelectedEventArgs args)
 		{
 			if (args.Name == "Object Classes" || args.Name == "Attribute Types")
@@ -349,7 +323,6 @@ namespace lat
 
 			LdapEntry entry = server.GetEntry (args.DN);
 			attributeEditor.Show (server, entry, showAllAttributes.Active);
-//			showEntryAttributes (entry);
 		}
 
 		private void Close ()
