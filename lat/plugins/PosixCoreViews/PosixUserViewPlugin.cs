@@ -103,6 +103,11 @@ namespace lat {
 			get { return "Users"; } 
 		}
 		
+		public override string Version 
+		{ 
+			get { return "0.1"; } 
+		}
+		
 		public override Gdk.Pixbuf Icon 
 		{
 			get { return Pixbuf.LoadFromResource ("stock_person.png"); }

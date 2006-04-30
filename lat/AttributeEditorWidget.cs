@@ -195,7 +195,7 @@ namespace lat
 				}
 			}
 			
-			Util.ModifyEntry (currentServer, null, currentDN, modList, true);
+			Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
 		}
 	
 		public void Show (LdapServer server, LdapEntry entry, bool showAll)

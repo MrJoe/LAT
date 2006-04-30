@@ -1,3 +1,4 @@
+	* Added preferences dialog
 	* Added start of new attribute editor widget
 	* Modified plugin manager to load .dlls
 	* Build plugins as seperate .dlls

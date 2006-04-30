@@ -28,8 +28,9 @@ public class Global
 	public static Gnome.Program latProgram;
 	public static Gdk.Pixbuf latIcon;
 	public static bool Debug = false;
+	public static bool VerboseMessages;
+	
 	public static TemplateManager theTemplateManager;
-
 	public static ViewPluginManager viewPluginManager;
 }
 

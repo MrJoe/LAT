@@ -18,7 +18,6 @@
   </DeploymentInformation>
   <Contents>
     <File name="./AboutDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./AddAttributeDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
     <File name="./CertificateDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./CreateEntryDialog.cs" subtype="Code" buildaction="Compile" />
@@ -73,7 +72,6 @@
     <File name="../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/x-directory-remote-workgroup.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./ConnectDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./AddObjectClassDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./ViewPluginManager.cs" subtype="Code" buildaction="Compile" />
     <File name="./ViewDataTreeView.cs" subtype="Code" buildaction="Compile" />
     <File name="./AttributeEditorWidget.cs" subtype="Code" buildaction="Compile" />

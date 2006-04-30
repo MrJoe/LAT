@@ -75,6 +75,11 @@ namespace lat {
 			get { return "Active Directory Groups"; } 
 		}
 		
+		public override string Version 
+		{ 
+			get { return "0.1"; } 
+		}
+		
 		public override Gdk.Pixbuf Icon 
 		{
 			get { return Pixbuf.LoadFromResource ("users.png"); }

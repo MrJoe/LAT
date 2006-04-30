@@ -80,7 +80,7 @@ namespace lat
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
 
-		private LdapTreeView _ldapTreeview;
+		private LdapTreeView ldapTreeView;
 		private SchemaTreeView _schemaTreeview;
 		private SearchResultsTreeView _searchTreeView;
 
@@ -116,6 +116,8 @@ namespace lat
 			LoadPreference (Preferences.MAIN_WINDOW_MAXIMIZED);
 			LoadPreference (Preferences.MAIN_WINDOW_HPANED);
 
+			LoadPreference (Preferences.DISPLAY_VERBOSE_MESSAGES);
+
 			// Watch for any changes
 			Preferences.SettingChanged += OnPreferencesChanged;
 
@@ -131,11 +133,13 @@ namespace lat
 			valuesScrolledWindow.Show ();			
 
 			// Setup browser			
-			_ldapTreeview = new LdapTreeView (server, mainWindow);
-			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
+			ldapTreeView = new LdapTreeView (server, mainWindow);
+			ldapTreeView.dnSelected += new dnSelectedHandler (ldapDNSelected);
 
-			browserScrolledWindow.AddWithViewport (_ldapTreeview);
+			browserScrolledWindow.AddWithViewport (ldapTreeView);
 			browserScrolledWindow.Show ();
+
+			LoadPreference (Preferences.BROWSER_SELECTION);
 
 			// Setup schema browser
 			_schemaTreeview = new SchemaTreeView (server, mainWindow);
@@ -183,9 +187,9 @@ namespace lat
 			LoadPreference (args.Key);
 		}
 		
-		public void OnPluginManagerClicked (object o, EventArgs args)
+		public void OnPreferencesActivate (object sender, EventArgs args)
 		{
-			new PluginManagerDialog (server, mainWindow);			
+			new PreferencesDialog (server);
 		}
 	
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
@@ -336,6 +340,8 @@ namespace lat
 			}
 
 			Preferences.Set (Preferences.MAIN_WINDOW_HPANED, hpaned1.Position);
+			Preferences.Set (Preferences.BROWSER_SELECTION, ldapTreeView.BrowserSelectionMethod);
+			Preferences.Set (Preferences.DISPLAY_VERBOSE_MESSAGES, Global.VerboseMessages);
 
 			Application.Quit ();
 		}
@@ -457,7 +463,7 @@ namespace lat
 
 			if (viewNotebook.CurrentPage == 1) {
 
-				dn = _ldapTreeview.getSelectedDN ();
+				dn = ldapTreeView.getSelectedDN ();
 
 				if (dn == null)
 					return;
@@ -603,7 +609,7 @@ namespace lat
 
 			if (args.PageNum == 0) {
 
-				_ldapTreeview.removeToolbarHandlers ();
+				ldapTreeView.removeToolbarHandlers ();
 				toggleButtons (false);
 				toggleInfoNotebook (false);
 
@@ -642,13 +648,13 @@ namespace lat
 					valuesScrolledWindow.Show ();
 				}
 
-				_ldapTreeview.setToolbarHandlers (newToolButton, deleteToolButton);
+				ldapTreeView.setToolbarHandlers (newToolButton, deleteToolButton);
 
 			} else if (args.PageNum == 2) {
 
 				cleanupView ();
 
-				_ldapTreeview.removeToolbarHandlers ();
+				ldapTreeView.removeToolbarHandlers ();
 
 				if (viewDataTreeView != null) {
 					viewDataTreeView.Destroy ();
@@ -722,8 +728,15 @@ namespace lat
 				break;
 
 			case Preferences.MAIN_WINDOW_HPANED:
-				hpaned1.Position = (int) Preferences.Get(
-					Preferences.MAIN_WINDOW_HPANED);
+				hpaned1.Position = (int) Preferences.Get (Preferences.MAIN_WINDOW_HPANED);
+				break;
+				
+			case Preferences.BROWSER_SELECTION:
+				ldapTreeView.BrowserSelectionMethod = (int) val; 
+				break;
+				
+			case Preferences.DISPLAY_VERBOSE_MESSAGES:
+				Global.VerboseMessages = (bool) val;
 				break;
 			}
 		}
@@ -736,7 +749,7 @@ namespace lat
 //				if (currentView != null)
 //					currentView.OnNewEntryActivate (o, args);
 //			else if (viewNotebook.CurrentPage == 1)
-//				_ldapTreeview.OnNewEntryActivate (o, args);
+//				ldapTreeView.OnNewEntryActivate (o, args);
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args)
@@ -745,7 +758,7 @@ namespace lat
 //				if (currentView != null)
 //					currentView.OnDeleteActivate (o, args);
 //			else if (viewNotebook.CurrentPage == 1)
-//				_ldapTreeview.OnDeleteActivate (o, args);
+//				ldapTreeView.OnDeleteActivate (o, args);
 		}
 
 		public void OnPropertiesActivate (object o, EventArgs args)
@@ -851,8 +864,8 @@ namespace lat
 			if (!(viewNotebook.Page == 1))
 				return;
 
-			_cutDN = _ldapTreeview.getSelectedDN ();
-			_cutIter = _ldapTreeview.getSelectedIter ();
+			_cutDN = ldapTreeView.getSelectedDN ();
+			_cutIter = ldapTreeView.getSelectedIter ();
 
 			Logger.Log.Debug ("cut - dn: {0}", _cutDN);
 		}
@@ -862,7 +875,7 @@ namespace lat
 			if (!(viewNotebook.Page == 1))
 				return;
 
-			_cutDN = _ldapTreeview.getSelectedDN ();
+			_cutDN = ldapTreeView.getSelectedDN ();
 
 			_isCopy = true;
 
@@ -874,7 +887,7 @@ namespace lat
 			if (!(viewNotebook.Page == 1))
 				return;
 
-			_pasteDN = _ldapTreeview.getSelectedDN ();
+			_pasteDN = ldapTreeView.getSelectedDN ();
 
 			if (_pasteDN.Equals (null))
 				return;
@@ -916,7 +929,7 @@ namespace lat
 				dialog.Destroy ();
 
 				if (!_isCopy)
-					_ldapTreeview.RemoveRow (_cutIter);
+					ldapTreeView.RemoveRow (_cutIter);
 
 			} catch (Exception e) {
 

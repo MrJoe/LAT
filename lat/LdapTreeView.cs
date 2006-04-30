@@ -57,17 +57,19 @@ namespace lat
 
 	public class LdapTreeView : Gtk.TreeView
 	{
-		private TreeStore browserStore;
-		private TreeIter ldapRootIter;
+		TreeStore browserStore;
+		TreeIter ldapRootIter;
 
-		private LdapServer server;
-		private Gtk.Window _parent;
+		LdapServer server;
+		Gtk.Window _parent;
 
-		private bool _handlersSet = false;
-		private Gtk.ToolButton _newButton = null;
-		private Gtk.ToolButton _deleteButton = null;
+		bool _handlersSet = false;
+		Gtk.ToolButton _newButton = null;
+		Gtk.ToolButton _deleteButton = null;
 
-		private enum TreeCols { Icon, DN, RDN };
+		int browserSelectionMethod = 0;
+
+		enum TreeCols { Icon, DN, RDN };
 
 		public event dnSelectedHandler dnSelected;
 
@@ -92,9 +94,10 @@ namespace lat
 			this.Model = browserStore;
 			this.HeadersVisible = false;
 
-			this.RowActivated += new RowActivatedHandler (ldapRowActivated);
+			this.RowActivated += new RowActivatedHandler (OnRowActivated);
 			this.RowCollapsed += new RowCollapsedHandler (ldapRowCollapsed);
 			this.RowExpanded += new RowExpandedHandler (ldapRowExpanded);
+			this.Selection.Changed += OnSelectionChanged;
 
 			Gtk.Drag.DestSet (this, DestDefaults.All, _targetsTable,
 					Gdk.DragAction.Copy);
@@ -167,8 +170,32 @@ namespace lat
 			browserStore.Remove (ref iter);
 		}
 
-		private void ldapRowActivated (object o, RowActivatedArgs args)
-		{	
+		void OnSelectionChanged (object o, EventArgs args)
+		{
+			if (this.BrowserSelectionMethod == 2)
+				return;
+		
+			Gtk.TreeIter iter;
+			Gtk.TreeModel model;
+			
+			if (this.Selection.GetSelected (out model, out iter))  {
+					
+				string dn = (string) model.GetValue (iter, (int)TreeCols.DN);
+				
+				if (dn.Equals (server.Host)) {
+					DispatchDNSelectedEvent (server.Host, true);
+					return;
+				}
+
+				DispatchDNSelectedEvent (dn, false);
+			}
+		}
+
+		void OnRowActivated (object o, RowActivatedArgs args)
+		{
+			if (this.BrowserSelectionMethod == 1)
+				return;
+		
 			TreePath path = args.Path;
 			TreeIter iter;
 			
@@ -481,6 +508,12 @@ namespace lat
 			Gtk.Drag.Finish (args.Context, success, false, args.Time);
 
 			Logger.Log.Debug ("END OnDragDataReceived");
+		}
+		
+		public int BrowserSelectionMethod
+		{
+			get { return browserSelectionMethod; }
+			set { browserSelectionMethod = value; }
 		}
 	}
 }

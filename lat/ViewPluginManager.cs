@@ -121,6 +121,7 @@ namespace lat {
 		public abstract string Copyright { get; }
 		public abstract string Description { get; }		
 		public abstract string Name { get; }
+		public abstract string Version { get; }
 		public abstract Gdk.Pixbuf Icon { get; }		
 	}
 	
