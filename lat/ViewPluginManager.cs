@@ -130,8 +130,9 @@ namespace lat {
 		string pluginDirectory;
 		string pluginStateDirectory;		
 		ArrayList pluginList;
-//		FileSystemWatcher sysPluginWatch;
-//		FileSystemWatcher usrPluginWatch;
+
+		FileSystemWatcher sysPluginWatch;
+		FileSystemWatcher usrPluginWatch;
 	
 		public ViewPluginManager ()
 		{		
@@ -141,53 +142,78 @@ namespace lat {
 			DirectoryInfo di = new DirectoryInfo (homeDir);
 			if (!di.Exists)
 				di.Create ();
-				
+
+			// Load any plugins in sys dir
+			DirectoryInfo dir = new System.IO.DirectoryInfo (Defines.SYS_PLUGIN_DIR);
+			if (dir.Exists)
+				foreach (FileInfo f in dir.GetFiles("*.dll"))
+					LoadPluginsFromFile (f.FullName);
+			
+			// Load any plugins in home dir
 			pluginStateDirectory = homeDir;
 			pluginDirectory = Path.Combine (homeDir, "plugins");
 
-			DirectoryInfo dir = new System.IO.DirectoryInfo (pluginDirectory);
-			foreach (FileInfo f in dir.GetFiles("*.dll")) {
-				
-				Assembly asm = Assembly.LoadFrom (f.FullName);
-				
-				Type [] types = asm.GetTypes ();
-				foreach (Type type in types) {
-					if (type.IsSubclassOf (typeof (ViewPlugin))) {						
-						ViewPlugin plugin = (ViewPlugin) Activator.CreateInstance (type);						
-						if (plugin == null)
-							continue;
-						
-						pluginList.Add (plugin);
-						Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);
-					}
-				}
-   			}
+			dir = new System.IO.DirectoryInfo (pluginDirectory);
+			if (dir.Exists)
+				foreach (FileInfo f in dir.GetFiles("*.dll"))
+					LoadPluginsFromFile (f.FullName);
 
 			foreach (ViewPlugin vp in pluginList) {
 				string fileName = vp.GetType() + ".state";
 				vp.Deserialize (Path.Combine (pluginStateDirectory, fileName));
 			}
 
+			// Watch for any plugins to be added/removed
+			try {
+					
+				sysPluginWatch = new FileSystemWatcher (Defines.SYS_PLUGIN_DIR, "*.dll");
+				sysPluginWatch.Created += OnPluginCreated;
+				sysPluginWatch.Deleted += OnPluginDeleted;
+				sysPluginWatch.EnableRaisingEvents = true;
 			
-//			try {
-//			
-//				usrPluginWatch = new FileSystemWatcher (pluginDirectory, "*.dll");
-//				usrPluginWatch.Created += OnPluginCreated;
-//				usrPluginWatch.Changed += OnPluginChanged;
-//				usrPluginWatch.Deleted += OnPluginDeleted;
-//				usrPluginWatch.Renamed += OnPluginRenamed;
-//				usrPluginWatch.EnableRaisingEvents = true;
+			} catch (Exception e) {			
+				Logger.Log.Debug ("Plugin system watch error: {0}", e);			
+			}
+
+			try {
 			
-//				sysPluginWatch = new FileSystemWatcher (Defines.SYS_PLUGIN_DIR, "*.dll");
-//				sysPluginWatch.Created += OnPluginCreated;
-//				sysPluginWatch.Deleted += OnPluginDeleted;
-//				sysPluginWatch.EnableRaisingEvents = true;
+				usrPluginWatch = new FileSystemWatcher (pluginDirectory, "*.dll");
+				usrPluginWatch.Created += OnPluginCreated;
+				usrPluginWatch.Deleted += OnPluginDeleted;
+				usrPluginWatch.EnableRaisingEvents = true;
 			
-//			} catch (Exception e) {
-			
-//				Console.WriteLine (e);
-			
-//			}
+			} catch (Exception e) {			
+				Logger.Log.Debug ("Plugin user dir watch error: {0}", e);			
+			}
+		}
+
+		void OnPluginCreated (object sender, FileSystemEventArgs args)
+		{
+			Logger.Log.Debug ("New plugin found: {0}", Path.GetFileName (args.FullPath));			
+			LoadPluginsFromFile (args.FullPath);
+		}
+		
+		void OnPluginDeleted (object sender, FileSystemEventArgs args)
+		{
+			// FIXME: remmove plugin
+//			Logger.Log.Debug ("Plugin deleted: {0}", Path.GetFileName (args.FullPath));			
+		}
+
+		void LoadPluginsFromFile (string fileName)
+		{
+			Assembly asm = Assembly.LoadFrom (fileName);
+				
+			Type [] types = asm.GetTypes ();
+			foreach (Type type in types) {
+				if (type.IsSubclassOf (typeof (ViewPlugin))) {						
+					ViewPlugin plugin = (ViewPlugin) Activator.CreateInstance (type);						
+					if (plugin == null)
+						continue;
+						
+					pluginList.Add (plugin);
+					Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);
+				}
+			}		
 		}
 
 		public ViewPlugin Find (string name)
@@ -210,11 +236,6 @@ namespace lat {
 		public ViewPlugin[] Plugins
 		{
 			get { return (ViewPlugin[]) pluginList.ToArray (typeof (ViewPlugin)); }
-		}
-		
-//		void OnPluginCreated (object o, FileSystemEventArgs args)
-//		{
-//			Console.WriteLine ("args.FullPath: {0}", args.FullPath);
-//		}
+		}		
 	}
 }

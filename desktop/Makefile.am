@@ -12,11 +12,18 @@ appicondir = $(datadir)/pixmaps
 applicationsdir = $(datadir)/application-registry
 applications_DATA = lat.applications
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_in_files = lat-plugins.pc.in
+pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=.pc)
+
 EXTRA_DIST =			\
 	$(desktop_in_files)	\
 	$(desktop_DATA)		\
 	$(applications_DATA)	\
-	$(appicon_DATA)
+	$(appicon_DATA)		\
+	$(pkgconfig_in_files)
 
 CLEANFILES = 		\
-	$(desktop_DATA)
+	$(desktop_DATA) \
+	$(applications_DATA) \
+	$(pkgconfig_DATA)

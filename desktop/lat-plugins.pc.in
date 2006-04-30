@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+pluginsdir=@libdir@/lat/plugins
+
+Name: LAT Plugin Library
+Description: Library providing the interfaces for LAT plugins
+Requires: gtk-sharp
+Version: @VERSION@
+Libs: -r:${libdir}/lat/lat.exe

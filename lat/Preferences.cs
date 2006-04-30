@@ -227,13 +227,7 @@ namespace lat
 
 			if (pluginStore.GetIter (out iter, new TreePath(args.Path))) {
 				bool old = (bool) pluginStore.GetValue (iter,0);
-//				string name = (string) pluginStore.GetValue (iter, 1);
-
-//				if (!old)
-//					objectClasses.Add (name);
-//				else
-//					objectClasses.Remove (name);
-
+				// FIXME: disable the plugin
 				pluginStore.SetValue(iter,0,!old);
 			}
 		}

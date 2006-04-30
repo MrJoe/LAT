@@ -1,4 +1,4 @@
-AC_INIT(lat, 1.1.0, http://dev.mmgsecurity.com/bugs/)
+AC_INIT(lat, 1.1.1, http://dev.mmgsecurity.com/bugs/)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
@@ -60,6 +60,7 @@ AC_OUTPUT([
 Makefile
 lat.spec
 desktop/Makefile
+desktop/lat-plugins.pc
 gnome-keyring-glue/Makefile
 lat/AssemblyInfo.cs
 lat/Defines.cs

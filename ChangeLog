@@ -1,7 +1,10 @@
+1.1.1
+
 	* Added preferences dialog
 	* Added start of new attribute editor widget
 	* Modified plugin manager to load .dlls
 	* Build plugins as seperate .dlls
+	* Created lat-plugins.pc file for 3rd party plugins
 	* Code cleanup
 
 1.1.0
