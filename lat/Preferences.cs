@@ -19,6 +19,7 @@
 //
 
 using System;
+using System.Collections;
 using Gtk;
 
 namespace lat
@@ -211,6 +212,13 @@ namespace lat
 		
 		public void OnConfigureClicked (object o, EventArgs args)
 		{
+			TreeModel model;
+			TreeIter iter;
+		
+			if (pluginTreeView.Selection.GetSelected (out model, out iter)) {	
+				string name = (string) pluginStore.GetValue (iter, 1);		
+				new PluginConfigureDialog (server, name);
+			}
 		}
 		
 		void OnClassToggled (object o, ToggledArgs args)
@@ -228,6 +236,158 @@ namespace lat
 
 				pluginStore.SetValue(iter,0,!old);
 			}
+		}
+	}
+	
+	public class PluginConfigureDialog
+	{
+		Glade.XML ui;
+		
+		[Glade.Widget] Gtk.Dialog pluginConfigureDialog;
+		[Glade.Widget] Gtk.Entry filterEntry;
+		[Glade.Widget] Gtk.Button newContainerButton;
+		[Glade.Widget] Gtk.Button searchBaseButton;
+		[Glade.Widget] TreeView columnsTreeView; 
+
+		ListStore columnStore;
+		LdapServer server;
+		ViewPlugin vp;
+		ArrayList colNames;
+		ArrayList colAttrs;
+			
+		public PluginConfigureDialog (LdapServer ldapServer, string pluginName)
+		{
+			server = ldapServer;
+			colNames = new ArrayList ();
+			colAttrs = new ArrayList ();
+		
+			ui = new Glade.XML (null, "lat.glade", "pluginConfigureDialog", null);
+			ui.Autoconnect (this);
+
+			columnStore = new ListStore (typeof (string), typeof (string));
+			
+			CellRendererText cell = new CellRendererText ();
+			cell.Editable = true;
+			cell.Edited += new EditedHandler (OnNameEdit);			
+			columnsTreeView.AppendColumn ("Name", cell, "text", 0);
+			
+			cell = new CellRendererText ();
+			cell.Editable = true;
+			cell.Edited += new EditedHandler (OnAttributeEdit);			
+			columnsTreeView.AppendColumn ("Attribute", cell, "text", 1);
+			
+			columnsTreeView.Model = columnStore;
+			
+			vp = Global.viewPluginManager.Find (pluginName);
+			if (vp != null) {			
+				for (int i = 0; i < vp.ColumnNames.Length; i++) {  
+					columnStore.AppendValues (vp.ColumnNames[i], vp.ColumnAttributes[i]);
+					colNames.Add (vp.ColumnNames[i]);
+					colAttrs.Add (vp.ColumnAttributes[i]);
+				}
+					
+				filterEntry.Text = vp.Filter;
+					
+				if (vp.DefaultNewContainer != "")
+					newContainerButton.Label = vp.DefaultNewContainer;
+
+				if (vp.SearchBase != "")
+					searchBaseButton.Label = vp.SearchBase;					
+			}
+										
+			pluginConfigureDialog.Icon = Global.latIcon;
+			pluginConfigureDialog.Resize (300, 400);
+			pluginConfigureDialog.Run ();
+			pluginConfigureDialog.Destroy ();
+		}
+
+		void OnAttributeEdit (object o, EditedArgs args)
+		{
+			TreeIter iter;
+
+			if (!columnStore.GetIterFromString (out iter, args.Path))
+				return;
+				
+			string oldAttr = (string) columnStore.GetValue (iter, 1);		
+			colAttrs.Remove (oldAttr);
+			colAttrs.Add (args.NewText);
+			
+			columnStore.SetValue (iter, 1, args.NewText);
+		}
+		
+		void OnNameEdit (object o, EditedArgs args)
+		{
+			TreeIter iter;
+
+			if (!columnStore.GetIterFromString (out iter, args.Path))
+				return;
+				
+			string oldName = (string) columnStore.GetValue (iter, 0);		
+			colNames.Remove (oldName);	
+			colNames.Add (args.NewText);
+			
+			columnStore.SetValue (iter, 0, args.NewText);
+		}
+		
+		public void OnOkClicked (object o, EventArgs args)
+		{
+			vp.ColumnNames = (string[]) colNames.ToArray (typeof (string));
+			vp.ColumnAttributes = (string[]) colAttrs.ToArray (typeof (string));
+		
+			vp.Filter = filterEntry.Text;
+					
+			if (newContainerButton.Label != "")
+				vp.DefaultNewContainer = newContainerButton.Label;
+
+			if (searchBaseButton.Label != "")
+				vp.SearchBase = searchBaseButton.Label;		
+		}
+		
+		public void OnAddClicked (object o, EventArgs args)
+		{
+			columnStore.AppendValues ("Untitiled", "Unknown");
+		}
+		
+		public void OnRemoveClicked (object o, EventArgs args)
+		{
+			TreeModel model;
+			TreeIter iter;
+
+			if (columnsTreeView.Selection.GetSelected (out model, out iter)) {
+				string name = (string) columnStore.GetValue (iter, 0);
+				string attr = (string) columnStore.GetValue (iter, 1);
+				colNames.Remove (name);
+				colAttrs.Remove (attr);
+				columnStore.Remove (ref iter);
+			}
+		}
+		
+		public void OnFilterBuildClicked (object o, EventArgs args)
+		{
+			SearchBuilderDialog sbd = new SearchBuilderDialog ();
+			filterEntry.Text = sbd.UserFilter;
+		}
+
+		public void OnNewContainerClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = new SelectContainerDialog (server, null);
+			scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Select a container for new objects"));
+			scd.Title = Mono.Unix.Catalog.GetString ("Select container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+				newContainerButton.Label = scd.DN;
+		}
+		
+		public void OnSearchBaseClicked (object o, EventArgs args)
+		{
+			SelectContainerDialog scd = new SelectContainerDialog (server, null);
+			scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Select a search base"));
+			scd.Title = Mono.Unix.Catalog.GetString ("Select container");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+				searchBaseButton.Label = scd.DN;
 		}
 	}
 }

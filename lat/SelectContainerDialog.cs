@@ -41,6 +41,7 @@ namespace lat
 
 			_ldapTreeview = new LdapTreeView (ldapServer, parent);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
+			_ldapTreeview.BrowserSelectionMethod = (int)Preferences.Get (Preferences.BROWSER_SELECTION);
 
 			browserScrolledWindow.AddWithViewport (_ldapTreeview);
 			browserScrolledWindow.Show ();

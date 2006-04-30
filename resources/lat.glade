@@ -9153,7 +9153,6 @@ Make sure you are logged in as the administator.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCloseClicked" last_modification_time="Sun, 16 Apr 2006 21:57:00 GMT"/>
 	    </widget>
 	  </child>
 
