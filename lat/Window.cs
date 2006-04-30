@@ -28,13 +28,7 @@ using Novell.Directory.Ldap.Utilclass;
 namespace lat 
 {
 	public class latWindow
-	{
-		ViewsTreeView viewsTreeView;
-		ViewDataTreeView viewDataTreeView;
-		AttributeEditorWidget attributeEditor;
-	
-		// =================
-	
+	{	
 		Glade.XML ui;
 
 		[Glade.Widget] Gtk.Window mainWindow;
@@ -44,7 +38,6 @@ namespace lat
 		[Glade.Widget] Gtk.ScrolledWindow resultsScrolledWindow;
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
-//		[Glade.Widget] TreeView valuesListview;
 		[Glade.Widget] Notebook viewNotebook;
 		[Glade.Widget] HPaned hpaned1;
 		[Glade.Widget] Gtk.ToolButton newToolButton;
@@ -84,7 +77,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry attrSyntaxEntry;		
 
 		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
-//		[Glade.Widget] Gtk.HButtonBox hbuttonbox3;
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
 
@@ -102,6 +94,10 @@ namespace lat
 
 		private string _pasteDN = null;
 		private bool _isCopy = false;
+
+		ViewsTreeView viewsTreeView;
+		ViewDataTreeView viewDataTreeView;
+		AttributeEditorWidget attributeEditor;
 
 		public latWindow (LdapServer ldapServer) 
 		{
@@ -246,11 +242,9 @@ namespace lat
 		{
 			if (show) {
 				infoNotebook.Show ();
-//				hbuttonbox3.Hide ();
 				valuesScrolledWindow.Hide ();
 			} else {
 				infoNotebook.Hide ();
-//				hbuttonbox3.Show ();
 				valuesScrolledWindow.Show ();
 			}
 		}
