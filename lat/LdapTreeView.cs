@@ -373,7 +373,19 @@ namespace lat
 			if (dn == server.Host)
 				return;
 
-			new RenameEntryDialog (server, dn);		
+			RenameEntryDialog red = new RenameEntryDialog (server, dn);
+
+			TreeModel model;
+			TreeIter iter, parentIter;
+
+			if (red.RenameHappened) {
+				if (this.Selection.GetSelected (out model, out iter)) {
+					browserStore.IterParent (out parentIter, iter);
+					TreePath tp = browserStore.GetPath (parentIter);
+					this.CollapseRow (tp);								
+					this.ExpandRow (tp, false);
+				}
+			}	
 		}
 
 		private void OnExportActivate (object o, EventArgs args) 

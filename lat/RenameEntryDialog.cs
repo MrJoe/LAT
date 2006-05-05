@@ -35,11 +35,13 @@ namespace lat
 
 		private LdapServer server;
 		private string _selectedDN;
+		bool renameHappened;
 
 		public RenameEntryDialog (LdapServer ldapServer, string selectedDN)
 		{
 			server = ldapServer;
 			_selectedDN = selectedDN;
+			renameHappened = false;
 
 			ui = new Glade.XML (null, "lat.glade", "renameEntryDialog", null);
 			ui.Autoconnect (this);
@@ -77,6 +79,8 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
+				renameHappened = true;
+
 			} catch (Exception e) {
 
 				string errorMsg =
@@ -107,6 +111,11 @@ namespace lat
 		public void OnDlgDelete (object o, DeleteEventArgs args)
 		{
 			renameEntryDialog.HideAll ();
+		}
+
+		public bool RenameHappened
+		{
+			get { return renameHappened; }
 		}
 	}
 }
