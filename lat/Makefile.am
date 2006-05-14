@@ -6,6 +6,7 @@ ASSEMBLY = lat
 
 CSFILES = \
 	AboutDialog.cs \
+	AddObjectClassDialog.cs \
 	AssemblyInfo.cs \
 	AttributeEditorWidget.cs \
 	CertificateDialog.cs \

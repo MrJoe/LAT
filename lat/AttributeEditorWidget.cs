@@ -37,6 +37,8 @@ namespace lat
 
 		LdapServer currentServer;
 		string currentDN;
+		
+		ArrayList allAttrs;
 		NameValueCollection currentAttributes;
 
 		public AttributeEditorWidget() : base ()
@@ -170,7 +172,7 @@ namespace lat
 			
 //			store.Clear ();
 		
-			ArrayList allAttrs = new ArrayList ();		
+			allAttrs = new ArrayList ();
 			LdapAttribute a = entry.getAttribute ("objectClass");
 
 			for (int i = 0; i < a.StringValueArray.Length; i++) {
@@ -291,9 +293,36 @@ namespace lat
 			DeleteAttribute ();
 		}
 
+		void OnAddObjectClassActivate (object o, EventArgs args)
+		{
+			AddObjectClassDialog dlg = new AddObjectClassDialog (currentServer);
+				
+			foreach (string s in dlg.ObjectClasses) {
+				string[] req = currentServer.GetRequiredAttrs (s);
+				store.AppendValues ("objectClass", s);
+				
+				foreach (string r in req) {
+					if (allAttrs.Contains (r))
+						allAttrs.Remove (r);						
+
+					string m = currentAttributes[r];
+					if (m == null) {
+						store.AppendValues (r, "");
+						currentAttributes.Add (r, "");
+					}
+				}
+			}
+		}
+
 		void DoPopUp()
 		{
 			Menu popup = new Menu();
+
+			ImageMenuItem newObjectClassItem = new ImageMenuItem ("Add object class(es)");
+			newObjectClassItem.Image = new Gtk.Image (Stock.Add, IconSize.Menu);
+			newObjectClassItem.Activated += new EventHandler (OnAddObjectClassActivate);
+			newObjectClassItem.Show ();
+			popup.Append (newObjectClassItem);
 
 			ImageMenuItem newItem = new ImageMenuItem ("Insert attribute");
 			newItem.Image = new Gtk.Image (Stock.New, IconSize.Menu);
