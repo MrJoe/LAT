@@ -46,10 +46,7 @@ namespace lat
 		[Glade.Widget] Gtk.ToolButton refreshToolButton;
 		[Glade.Widget] Gtk.ToolButton templateToolButton;
 		[Glade.Widget] Gtk.CheckMenuItem showAllAttributes;
-		[Glade.Widget] Gtk.RadioMenuItem userView;
-		[Glade.Widget] Gtk.RadioMenuItem groupView;
-		[Glade.Widget] Gtk.RadioMenuItem computersView;
-		[Glade.Widget] Gtk.RadioMenuItem contactView;
+		[Glade.Widget] Gtk.RadioMenuItem viewsView;
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
 		[Glade.Widget] Gtk.RadioMenuItem schemaView;
@@ -231,7 +228,7 @@ namespace lat
 				attributeEditor.Show (server, entry, showAllAttributes.Active);
 		}
 
-		private void updateStatusBar ()
+		void updateStatusBar ()
 		{
 			string msg = null;
 
@@ -246,7 +243,7 @@ namespace lat
 			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
 		}
 
-		private void toggleInfoNotebook (bool show)
+		void toggleInfoNotebook (bool show)
 		{
 			if (show) {
 				infoNotebook.Show ();
@@ -257,7 +254,7 @@ namespace lat
 			}
 		}
 
-		private void setInfoNotePage (int page)
+		void setInfoNotePage (int page)
 		{
 			if (page == 0) {
 
@@ -285,7 +282,7 @@ namespace lat
 			}
 		}
 	
-		private void toggleButtons (bool btnState)
+		void toggleButtons (bool btnState)
 		{
 			newToolButton.Sensitive = btnState;
 			propertiesToolButton.Sensitive = btnState;
@@ -296,7 +293,7 @@ namespace lat
 			refreshToolButton.Show ();
 		}
 
-		private void schemaDNSelected (object o, schemaSelectedEventArgs args)
+		void schemaDNSelected (object o, schemaSelectedEventArgs args)
 		{
 			if (args.Name == "Object Classes" || args.Name == "Attribute Types")
 				return;
@@ -530,8 +527,8 @@ namespace lat
 //			}
 		}
 
-		private void changeView (string name)
-		{
+//		void changeView (string name)
+//		{
 //			cleanupView ();
 //
 //			currentView = serverViewFactory.Create (name);
@@ -552,23 +549,10 @@ namespace lat
 //				(currentView.OnRefreshActivate);
 //
 //			toggleButtons (true);
-		}
-
-		private void clearValues ()
-		{
-//			if (valuesStore != null) {
-//				valuesStore.Clear ();
-//				valuesStore = null;
-//			}
-//
-//			foreach (TreeViewColumn col in valuesListview.Columns)
-//				valuesListview.RemoveColumn (col);
-		}
+//		}
 
 		private void notebookViewChanged (object o, SwitchPageArgs args)
 		{
-			clearValues ();
-
 			if (args.PageNum == 0) {
 
 				ldapTreeView.removeToolbarHandlers ();
@@ -946,26 +930,9 @@ namespace lat
 
 		public void OnViewChanged (object o, EventArgs args)
 		{
-			clearValues ();
-
-			string viewPrefix = Util.GetServerPrefix (server);
-
-			if (userView.Active) {
+			if (viewsView.Active) {
 				viewNotebook.Page = 0;
 				toggleInfoNotebook (false);
-				changeView (viewPrefix + "Users");
-			} else if (groupView.Active) {
-				viewNotebook.Page = 0;
-				toggleInfoNotebook (false);
-				changeView (viewPrefix + "Groups");
-			} else if (computersView.Active) {
-				viewNotebook.Page = 0;
-				toggleInfoNotebook (false);
-				changeView (viewPrefix + "Computers");
-			} else if (contactView.Active) {
-				viewNotebook.Page = 0;
-				toggleInfoNotebook (false);
-				changeView (viewPrefix + "Contacts");
 			} else if (browserView.Active) {
 				viewNotebook.Page = 1;
 				toggleInfoNotebook (false);

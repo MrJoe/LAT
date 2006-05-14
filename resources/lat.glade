@@ -1993,7 +1993,7 @@ you wish to connect to.</property>
 		      <signal name="activate" handler="OnDeleteActivate" last_modification_time="Tue, 05 Jul 2005 10:28:41 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image751">
+			<widget class="GtkImage" id="image787">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-delete</property>
 			  <property name="icon_size">1</property>
@@ -2021,7 +2021,7 @@ you wish to connect to.</property>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image752">
+			<widget class="GtkImage" id="image788">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
@@ -2043,7 +2043,7 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image753">
+			<widget class="GtkImage" id="image789">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
 			  <property name="icon_size">1</property>
@@ -2071,7 +2071,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image754">
+			<widget class="GtkImage" id="image790">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -2093,7 +2093,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image755">
+			<widget class="GtkImage" id="image791">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2229,55 +2229,13 @@ you wish to connect to.</property>
 		<widget class="GtkMenu" id="menuitem7_menu">
 
 		  <child>
-		    <widget class="GtkRadioMenuItem" id="userView">
+		    <widget class="GtkRadioMenuItem" id="viewsView">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Users</property>
+		      <property name="label" translatable="yes">Views</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:00 GMT"/>
+		      <property name="active">True</property>
+		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 14 May 2006 23:10:37 GMT"/>
 		      <accelerator key="1" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkRadioMenuItem" id="groupView">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Groups</property>
-		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <property name="group">userView</property>
-		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:08 GMT"/>
-		      <accelerator key="2" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkRadioMenuItem" id="computersView">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Computers</property>
-		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <property name="group">userView</property>
-		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:15 GMT"/>
-		      <accelerator key="3" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkRadioMenuItem" id="contactView">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Contacts</property>
-		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <property name="group">userView</property>
-		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:22 GMT"/>
-		      <accelerator key="4" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkSeparatorMenuItem" id="separator2">
-		      <property name="visible">True</property>
 		    </widget>
 		  </child>
 
@@ -2287,9 +2245,9 @@ you wish to connect to.</property>
 		      <property name="label" translatable="yes">Browser</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
-		      <property name="group">userView</property>
+		      <property name="group">viewsView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:28 GMT"/>
-		      <accelerator key="b" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		      <accelerator key="2" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 		    </widget>
 		  </child>
 
@@ -2299,9 +2257,9 @@ you wish to connect to.</property>
 		      <property name="label" translatable="yes">Search</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
-		      <property name="group">userView</property>
+		      <property name="group">viewsView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Sun, 13 Mar 2005 04:18:34 GMT"/>
-		      <accelerator key="f" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		      <accelerator key="3" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 		    </widget>
 		  </child>
 
@@ -2310,10 +2268,10 @@ you wish to connect to.</property>
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Schema</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
-		      <property name="group">userView</property>
+		      <property name="active">False</property>
+		      <property name="group">viewsView</property>
 		      <signal name="activate" handler="OnViewChanged" last_modification_time="Mon, 08 Aug 2005 03:16:19 GMT"/>
-		      <accelerator key="z" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		      <accelerator key="4" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 		    </widget>
 		  </child>
 
@@ -2346,9 +2304,10 @@ you wish to connect to.</property>
 		      <property name="label" translatable="yes">Refresh</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnRefreshActivate" last_modification_time="Tue, 05 Jul 2005 10:43:17 GMT"/>
+		      <accelerator key="F5" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image756">
+			<widget class="GtkImage" id="image792">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -2383,7 +2342,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image757">
+			<widget class="GtkImage" id="image793">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>

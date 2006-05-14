@@ -1,5 +1,9 @@
-	* Added ServerInfoView widget
+1.1.2
+
 	* Re-implemented attribute editor widget
+	* Support adding/deleting multiple values for an attribute
+	* Fixed view menu in main window
+	* Added ServerInfoView widget
 	* Code cleanup
 
 1.1.1

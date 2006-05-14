@@ -138,7 +138,7 @@ namespace lat
 			_allGroups = new Hashtable ();
 			_allGroupGids = new Hashtable ();
 
-			ui = new Glade.XML (null, "lat.glade", "newUserDialog", null);
+			ui = new Glade.XML (null, "dialogs.glade", "newUserDialog", null);
 			ui.Autoconnect (this);
 
 			viewDialog = newUserDialog;
