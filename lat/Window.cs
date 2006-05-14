@@ -84,7 +84,7 @@ namespace lat
 		private SchemaTreeView _schemaTreeview;
 		private SearchResultsTreeView _searchTreeView;
 
-		private LdapServer server;
+		LdapServer server;
 
 		private ListStore objRequiredStore;
 		private ListStore objOptionalStore;
@@ -98,6 +98,7 @@ namespace lat
 		ViewsTreeView viewsTreeView;
 		ViewDataTreeView viewDataTreeView;
 		AttributeEditorWidget attributeEditor;
+		ServerInfoView serverInfoView;
 
 		public latWindow (LdapServer ldapServer) 
 		{
@@ -197,26 +198,29 @@ namespace lat
 			ViewPlugin vp = Global.viewPluginManager.Find (args.Name);
 			
 			if (vp == null) {
-				Logger.Log.Debug ("OnViewSelected: ViewPlugin == null");
+				if (viewDataTreeView != null) {
+					viewDataTreeView.Destroy ();
+					viewDataTreeView = null;
+				}
+			
+				serverInfoView = new ServerInfoView (server);
+				valuesScrolledWindow.AddWithViewport (serverInfoView);
+				valuesScrolledWindow.ShowAll ();
+				
 				return;
+			}
+
+			if (viewDataTreeView == null) {
+				serverInfoView.Destroy ();
+				serverInfoView = null;
+				
+				viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+				valuesScrolledWindow.AddWithViewport (viewDataTreeView);
+				valuesScrolledWindow.ShowAll ();			
 			}
 		
 			viewDataTreeView.ConfigureView (vp);
 			viewDataTreeView.Populate ();
-			
-//			clearValues ();
-//
-//			if (args.Name.Equals (server.Host)) {
-//
-//				// FIXME: Need a way to remove the handlers
-//
-//				setNameValueView ();
-//				showConnectionAttributes ();
-//
-//				return;
-//			}
-//
-//			changeView (args.Name);
 		}
 
 		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
@@ -312,19 +316,34 @@ namespace lat
 			}
 		}
 
-		private void ldapDNSelected (object o, dnSelectedEventArgs args)
+		void ldapDNSelected (object o, dnSelectedEventArgs args)
 		{
 			if (args.IsHost) {
-//				showConnectionAttributes ();
+				if (attributeEditor != null)
+					attributeEditor.Destroy ();
+			
+				serverInfoView = new ServerInfoView (server);
+				valuesScrolledWindow.AddWithViewport (serverInfoView);
+				valuesScrolledWindow.ShowAll ();
+				
 				return;
 			}
 
+			if (serverInfoView != null) {
+				serverInfoView.Destroy ();
+				serverInfoView = null;
+				
+				attributeEditor = new AttributeEditorWidget ();
+				valuesScrolledWindow.AddWithViewport (attributeEditor);
+				valuesScrolledWindow.ShowAll ();				
+			}
+			
 			LdapEntry entry = server.GetEntry (args.DN);			
 			if (entry != null)
 				attributeEditor.Show (server, entry, showAllAttributes.Active);
 		}
 
-		private void Close ()
+		void Close ()
 		{
 			int x, y, width, height;
 			mainWindow.GetPosition (out x, out y);
@@ -399,64 +418,6 @@ namespace lat
 			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
 				searchBaseButton.Label = scd.DN;
 		}
-
-//		private void showConnectionAttributes ()
-//		{
-//			valuesStore.Clear ();
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("Host"), server.Host);
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("Port"), server.Port.ToString());
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("User"), server.AuthDN);
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("Base DN"), server.DirectoryRoot);
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("Connected"),
-//					 server.Connected.ToString());
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("Bound"), server.Bound.ToString());
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("TLS/SSL"), server.UseSSL.ToString());
-//
-//			valuesStore.AppendValues (
-//				Mono.Unix.Catalog.GetString ("Protocol Version"),
-//					 server.Protocol.ToString());
-//
-//			if (server.ServerType == LdapServerType.ActiveDirectory) {
-//
-//				valuesStore.AppendValues (
-//					Mono.Unix.Catalog.GetString ("DNS Host Name"),
-//					server.ADInfo.DnsHostName);
-//
-//				valuesStore.AppendValues (
-//					Mono.Unix.Catalog.GetString ("Domain Controller Functionality"),
-//					server.ADInfo.DomainControllerFunctionality);
-//
-//				valuesStore.AppendValues (
-//					Mono.Unix.Catalog.GetString ("Forest Functionality"),
-//					server.ADInfo.ForestFunctionality);
-//
-//				valuesStore.AppendValues (
-//					Mono.Unix.Catalog.GetString ("Domain Functionality"),
-//					server.ADInfo.DomainFunctionality);
-//
-//				valuesStore.AppendValues (
-//					Mono.Unix.Catalog.GetString ("Global Catalog Ready"),
-//					server.ADInfo.IsGlobalCatalogReady.ToString());
-//
-//				valuesStore.AppendValues (
-//					Mono.Unix.Catalog.GetString ("Synchronized"),
-//					server.ADInfo.IsSynchronized.ToString());
-//			}
-//		}
 
 		public void OnShowAllAttributes (object o, EventArgs args)
 		{
@@ -614,6 +575,11 @@ namespace lat
 				toggleButtons (false);
 				toggleInfoNotebook (false);
 
+				if (serverInfoView != null) {
+					serverInfoView.Destroy ();
+					serverInfoView = null;
+				}
+
 				if (attributeEditor != null) {
 					attributeEditor.Destroy ();
 					attributeEditor = null;
@@ -638,6 +604,11 @@ namespace lat
 				propertiesToolButton.Hide ();
 				refreshToolButton.Hide ();
 
+				if (serverInfoView != null) {
+					serverInfoView.Destroy ();
+					serverInfoView = null;
+				}
+
 				if (viewDataTreeView != null) {
 					viewDataTreeView.Destroy ();
 					viewDataTreeView = null;
@@ -656,6 +627,11 @@ namespace lat
 				cleanupView ();
 
 				ldapTreeView.removeToolbarHandlers ();
+
+				if (serverInfoView != null) {
+					serverInfoView.Destroy ();
+					serverInfoView = null;
+				}
 
 				if (viewDataTreeView != null) {
 					viewDataTreeView.Destroy ();
@@ -1036,6 +1012,38 @@ namespace lat
 		public void OnAboutActivate (object o, EventArgs args) 
 		{
 			AboutDialog.Show ();
+		}
+	}
+	
+	public class ServerInfoView : Gtk.TreeView
+	{
+		public ServerInfoView (LdapServer server) : base ()
+		{	
+			ListStore store = new ListStore (typeof (string), typeof (string));
+			this.Model = store;
+
+			this.AppendColumn ("Name", new CellRendererText (), "text", 0); 
+			this.AppendColumn ("Value", new CellRendererText (), "text", 1); 
+
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Host"), server.Host);
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Port"), server.Port.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("User"), server.AuthDN);
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Base DN"), server.DirectoryRoot);
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Connected"), server.Connected.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Bound"), server.Bound.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("TLS/SSL"), server.UseSSL.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Protocol Version"), server.Protocol.ToString());
+
+			if (server.ServerType == LdapServerType.ActiveDirectory) {
+				store.AppendValues (Mono.Unix.Catalog.GetString ("DNS Host Name"), server.ADInfo.DnsHostName);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Controller Functionality"), server.ADInfo.DomainControllerFunctionality);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Forest Functionality"),	server.ADInfo.ForestFunctionality);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Functionality"),	server.ADInfo.DomainFunctionality);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Global Catalog Ready"),	server.ADInfo.IsGlobalCatalogReady.ToString());
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Synchronized"),	server.ADInfo.IsSynchronized.ToString());
+			}
+
+			this.ShowAll ();
 		}
 	}
 }
