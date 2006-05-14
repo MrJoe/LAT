@@ -319,8 +319,9 @@ namespace lat
 				return;
 			}
 
-			LdapEntry entry = server.GetEntry (args.DN);
-			attributeEditor.Show (server, entry, showAllAttributes.Active);
+			LdapEntry entry = server.GetEntry (args.DN);			
+			if (entry != null)
+				attributeEditor.Show (server, entry, showAllAttributes.Active);
 		}
 
 		private void Close ()

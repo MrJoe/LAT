@@ -20,215 +20,166 @@
 
 using System;
 using System.Collections;
+using System.Collections.Specialized;
 using Gtk;
+using GLib;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace lat
 {
-	public class AttributeItem : Gtk.HBox
-	{
-		Label nameLabel;
-		Entry valueEntry;
-		bool removed;
-		bool added;
-		bool modified;
-	
-		public AttributeItem (string attrName, string attrValue, bool withAddButton, bool required) : base ()
-		{
-			removed = false;
-			added = false;
-			modified = false;
-		
-			this.BorderWidth = 6;
-			this.Spacing = 6;
-			
-			VBox v = new VBox ();
-			v.Spacing = 6;
-			this.PackStart (v, true, true, 0);
-			
-			nameLabel = new Label (attrName);
-			nameLabel.Xalign = 0;
-			v.PackStart (nameLabel, true, false, 0);
-			
-			if (required) {
-				v = new VBox ();
-				v.Spacing = 6;
-				this.PackStart (v, false, false, 0);
-				
-				Gtk.Image image = new Gtk.Image (Stock.Info, IconSize.Button);
-				v.PackStart (image, true, false, 0);
-			}
-			
-			if (withAddButton) {
-				v = new VBox ();
-				v.Spacing = 6;
-				this.PackStart (v, false, false, 0);
-				
-				Gtk.Button button = new Gtk.Button ();
-				button.Image = new Gtk.Image (Stock.Add, IconSize.Button);
-				button.Clicked += new EventHandler (OnAddClicked);
-				v.PackStart (button, true, false, 0);
-			}
-
-			v = new VBox ();
-			v.Spacing = 6;
-			this.PackStart (v, true, true, 0);			
-			
-			valueEntry = new Gtk.Entry ();
-			valueEntry.Text = attrValue;
-			valueEntry.Changed += new EventHandler (OnEntryChanged);
-			valueEntry.Show ();
-			v.PackStart (valueEntry, true, true, 0);
-
-			v = new VBox ();
-			v.Spacing = 6;
-			this.PackStart (v, false, false, 0);
-
-			Gtk.Button button2 = new Gtk.Button ();
-			button2.Image = new Gtk.Image (Stock.Remove, IconSize.Button);
-			button2.Clicked += new EventHandler (OnRemoveClicked);
-			v.PackStart (button2, true, false, 0);			
-			
-			this.ShowAll ();
-		}
-		
-		void OnEntryChanged (object o, EventArgs args)
-		{
-			modified = true;
-		}
-		
-		void OnAddClicked (object o, EventArgs args)
-		{
-//			added = true;
-		}
-
-		void OnRemoveClicked (object o, EventArgs args)
-		{
-			removed = true;
-			this.Destroy ();
-		}
-		
-		public string AttributeName
-		{
-			get { return nameLabel.Text; }
-		}
-		
-		public string AttributeValue
-		{
-			get { return valueEntry.Text; }
-		}
-		
-		public bool WasAdded
-		{
-			get { return added; }
-		}
-		
-		public bool WasRemoved
-		{
-			get { return removed; }
-		}
-		
-		public bool WasModified
-		{
-			get { return modified; }
-		}
-	}
-	
 	public class AttributeEditorWidget : Gtk.VBox
 	{
 		ScrolledWindow sw;
-		VBox mainVBox;
-		ArrayList attributeItems;
+		Button applyButton;
+		TreeView tv;
+		ListStore store;
+
 		LdapServer currentServer;
 		string currentDN;
-	
+		NameValueCollection currentAttributes;
+
 		public AttributeEditorWidget() : base ()
 		{
-			attributeItems = new ArrayList ();
-		
 			sw = new ScrolledWindow ();
 			sw.HscrollbarPolicy = PolicyType.Automatic;
 			sw.VscrollbarPolicy = PolicyType.Automatic;
 
-			mainVBox = new VBox ();
-			sw.AddWithViewport (mainVBox);
-			sw.Show ();
+			store = new ListStore (typeof (string), typeof(string));
+			store.SetSortColumnId (0, SortType.Ascending);
 			
+			tv = new TreeView ();
+			tv.Model = store;
+			
+			TreeViewColumn col;
+			col = tv.AppendColumn ("Name", new CellRendererText (), "text", 0);
+			col.SortColumnId = 0;
+
+			CellRendererText cell = new CellRendererText ();
+			cell.Editable = true;
+			cell.Edited += new EditedHandler (OnAttributeEdit);
+			
+			tv.AppendColumn ("Value", cell, "text", 1);						
+			
+			tv.KeyPressEvent += new KeyPressEventHandler (OnKeyPress);
+			tv.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
+			
+			sw.AddWithViewport (tv);			
+					
 			HButtonBox hb = new HButtonBox ();			
 			hb.Layout = ButtonBoxStyle.End;
 			
-			Button button = new Button ();
-			button.Label = "Apply";
-			button.Image = new Gtk.Image (Stock.Apply, IconSize.Button);
-			button.Clicked += new EventHandler (OnApplyClicked);
+			applyButton = new Button ();
+			applyButton.Label = "Apply";
+			applyButton.Image = new Gtk.Image (Stock.Apply, IconSize.Button);
+			applyButton.Clicked += new EventHandler (OnApplyClicked);
+			applyButton.Sensitive = false;
 			
-			hb.Add (button);
-
+			hb.Add (applyButton);
 			
 			this.PackStart (sw, true, true, 0);
 			this.PackStart (hb, false, false, 5);
 		
 			this.ShowAll ();
 		}
-	
+
 		void OnApplyClicked (object o, EventArgs args)
 		{
 			ArrayList modList = new ArrayList ();
-		
-			foreach (AttributeItem ai in attributeItems) {
-				LdapAttribute attribute = new LdapAttribute (ai.AttributeName, ai.AttributeValue);
+			NameValueCollection newAttributes = new NameValueCollection ();
 			
-				if (ai.WasRemoved) {
-					LdapModification lm = new LdapModification (LdapModification.DELETE, attribute);
+			foreach (object[] row in this.store) {
+			
+				string newValue = row[1].ToString();
+				
+				if (newValue == "" || newValue == null)
+					continue;
+					
+				newAttributes.Add (row[0].ToString(), newValue);
+			}
+
+			foreach (string key in newAttributes.AllKeys) {
+			
+				string[] newValues = newAttributes.GetValues(key);
+				string[] oldValues = currentAttributes.GetValues (key);
+				LdapAttribute la = new LdapAttribute (key, newValues);
+				
+				if (oldValues == null) {					
+					LdapModification lm = new LdapModification (LdapModification.ADD, la);
 					modList.Add (lm);
-				}
-				
-				if (ai.WasAdded) {				
-					LdapModification lm = new LdapModification (LdapModification.ADD, attribute);
-					modList.Add (lm);				
-				}
-				
-				if (ai.WasModified) {
-					LdapModification lm = new LdapModification (LdapModification.REPLACE, attribute);
+				} else {
+										
+					foreach (string nv in newValues) {
+					
+						bool foundMatch = false;
+						foreach (string ov in oldValues)
+							if (ov == nv)
+								foundMatch = true;
+								
+						if (!foundMatch) {
+							LdapModification lm = new LdapModification (LdapModification.REPLACE, la);
+							modList.Add (lm);
+						}
+					}
+				}				
+			}
+
+			foreach (string key in currentAttributes.AllKeys) {
+				string[] newValues = newAttributes.GetValues (key);
+								
+				if (newValues == null) {
+					string[] oldValues = currentAttributes.GetValues (key);
+					LdapAttribute la = new LdapAttribute (key, oldValues);
+					LdapModification lm = new LdapModification (LdapModification.DELETE, la);
+					modList.Add (lm);
+				} else {
+					LdapAttribute la = new LdapAttribute (key, newValues);
+					LdapModification lm = new LdapModification (LdapModification.REPLACE, la);
 					modList.Add (lm);
 				}
 			}
-			
+
 			Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
+		}
+	
+		void OnAttributeEdit (object o, EditedArgs args)
+		{
+			TreeIter iter;
+
+			if (!store.GetIterFromString (out iter, args.Path))
+				return;
+
+			string oldText = (string) store.GetValue (iter, 1);
+			if (oldText == args.NewText)
+				return;
+				
+			store.SetValue (iter, 1, args.NewText);
+			applyButton.Sensitive = true;
 		}
 	
 		public void Show (LdapServer server, LdapEntry entry, bool showAll)
 		{
-			if (mainVBox != null) {
-				mainVBox.Destroy ();
-				mainVBox = new VBox ();
-				sw.AddWithViewport (mainVBox);
-			}
-			
 			currentServer = server;
 			currentDN = entry.DN;
+			currentAttributes = new NameValueCollection ();
+
+			// FIXME: crashes after an apply if I don't re-create the store;	
+			store = new ListStore (typeof (string), typeof(string));
+			store.SetSortColumnId (0, SortType.Ascending);
+			tv.Model = store;
+			
+//			store.Clear ();
 		
-			ArrayList allAttrs = new ArrayList ();
-		
+			ArrayList allAttrs = new ArrayList ();		
 			LdapAttribute a = entry.getAttribute ("objectClass");
 
 			for (int i = 0; i < a.StringValueArray.Length; i++) {
 			
-				string o = (string) a.StringValueArray[i];
-				AttributeItem ai;
-
-				if (i == 0)			
-					ai = new AttributeItem ("objectClass", o, true, true);
-				else 
-					ai = new AttributeItem ("objectClass", o, false, false);
+				string o = (string) a.StringValueArray[i];	
+				store.AppendValues ("objectClass", o);
+				currentAttributes.Add ("objectClass", o);
 				
-				mainVBox.PackStart (ai, true, true, 5);				
-
-				attributeItems.Add (ai);
-				
-				string[] attrs = server.GetAllAttributes (o);
-				
+				string[] attrs = server.GetAllAttributes (o);				
 				foreach (string at in attrs)
 					if (!allAttrs.Contains (at))
 						allAttrs.Add (at);
@@ -244,26 +195,120 @@ namespace lat
 				if (attr.Name.ToLower() == "objectclass")
 					continue;
 
-				SchemaParser sp = server.GetAttributeTypeSchema (attr.Name);
-
 				foreach (string s in attr.StringValueArray) {
-					AttributeItem ai = new AttributeItem (attr.Name, s, !sp.Single, false);
-					mainVBox.PackStart (ai, true, true, 5);
-					attributeItems.Add (ai);
+					store.AppendValues (attr.Name, s);
+					currentAttributes.Add (attr.Name, s);
 				}
 			}
-			
-			mainVBox.ShowAll ();
-			
+
 			if (!showAll)
 				return;
 
-			foreach (string n in allAttrs) {
-					AttributeItem ai = new AttributeItem (n, "", false, false);
-					mainVBox.PackStart (ai, true, true, 5);
-					attributeItems.Add (ai);
-			}					
-		}		
+			foreach (string n in allAttrs)
+				store.AppendValues (n, "");
+		}
+		
+		void InsertAttribute ()
+		{
+			string attrName;
+			TreeModel model;
+			TreeIter iter;
+
+			if (!tv.Selection.GetSelected (out model, out iter))
+				return;
+				
+			attrName = (string) store.GetValue (iter, 0);
+						
+			if (attrName == null)
+				return;
+								
+			SchemaParser sp = currentServer.GetAttributeTypeSchema (attrName);
+			
+			if (!sp.Single) {
+				TreeIter newRow = store.InsertAfter (iter);
+				store.SetValue (newRow, 0, attrName);
+				applyButton.Sensitive = true;
+			} else {
+			
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					null,
+					0,
+					Gtk.MessageType.Info,
+					Gtk.ButtonsType.Ok,
+					"Unable to insert value",
+					"Multiple values not supported by this attribute");
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}						
+		}
+		
+		void DeleteAttribute ()
+		{
+			TreeModel model;
+			TreeIter iter;
+
+			if (!tv.Selection.GetSelected (out model, out iter))
+				return;
+				
+			store.Remove (ref iter);
+			applyButton.Sensitive = true;
+		}
+		
+		void OnKeyPress (object o, KeyPressEventArgs args)
+		{
+			switch (args.Event.Key) {
+			
+			case Gdk.Key.Insert:
+			case Gdk.Key.KP_Insert:
+				InsertAttribute ();
+				break;
+				
+			case Gdk.Key.Delete:
+			case Gdk.Key.KP_Delete:
+				DeleteAttribute ();
+				break;
+				
+			default:
+				break;
+			}				
+		}
+		
+		[ConnectBefore]
+		void OnRightClick (object o, ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 3)
+				DoPopUp ();
+		}
+
+		void OnInsertActivate (object o, EventArgs args)
+		{
+			InsertAttribute ();
+		}
+		
+		void OnDeleteActivate (object o, EventArgs args)
+		{
+			DeleteAttribute ();
+		}
+
+		void DoPopUp()
+		{
+			Menu popup = new Menu();
+
+			ImageMenuItem newItem = new ImageMenuItem ("Insert attribute");
+			newItem.Image = new Gtk.Image (Stock.New, IconSize.Menu);
+			newItem.Activated += new EventHandler (OnInsertActivate);			
+			newItem.Show ();
+			popup.Append (newItem);
+
+			ImageMenuItem deleteItem = new ImageMenuItem ("Delete attribute");
+			deleteItem.Image = new Gtk.Image (Stock.Delete, IconSize.Menu);
+			deleteItem.Activated += new EventHandler (OnDeleteActivate);
+			deleteItem.Show ();
+			popup.Append (deleteItem);
+
+			popup.Popup(null, null, null, 3, Gtk.Global.CurrentEventTime);
+		}
 	}
 	
 }
