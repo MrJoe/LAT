@@ -10,7 +10,7 @@ CSFILES = \
 	EditAdComputerViewDialog.cs \
 	NewAdComputerViewDialog.cs \
 	NewAdGroupViewDialog.cs \
-	NewAdUserViewDialog.cs\ 
+	NewAdUserViewDialog.cs \
 	adUserViewDialog.cs
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
