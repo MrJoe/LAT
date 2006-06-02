@@ -8,7 +8,7 @@ dnl Checks for programs
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 AC_PROG_CXX
-AC_PROG_INTLTOOL([0.21])
+AC_PROG_INTLTOOL([0.23])
 
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test "x$PKG_CONFIG" = "xno"; then
@@ -16,7 +16,7 @@ if test "x$PKG_CONFIG" = "xno"; then
 fi
 
 AC_PATH_PROG(MONO, mono)
-AC_PATH_PROG(MCS, mcs, no)
+AC_PATH_PROG(MCS, gmcs, no)
 if test "x$MCS" = "xno"; then
 	AC_MSG_ERROR([You need to install mcs])
 fi
