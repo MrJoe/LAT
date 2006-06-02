@@ -53,21 +53,21 @@ namespace lat
 
 	public class SchemaTreeView : Gtk.TreeView
 	{
-		private TreeStore browserStore;
-		private TreeIter objIter;
-		private TreeIter attrIter;
+		TreeStore browserStore;
+		TreeIter objIter;
+		TreeIter attrIter;
+		TreeIter matIter;
+		TreeIter synIter;
 
-		private LdapServer server;
-//		private Gtk.Window _parent;
+		LdapServer server;
 
-		private enum TreeCols { Icon, DN };
+		enum TreeCols { Icon, DN };
 
 		public event schemaSelectedHandler schemaSelected;
 
 		public SchemaTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
 			server = ldapServer;
-//			_parent = parent;
 
 			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 
@@ -126,6 +126,34 @@ namespace lat
 			foreach (string n in tmp)
 				browserStore.AppendValues (attrIter, genIcon, n);
 
+			tmp.Clear ();
+
+			matIter = browserStore.AppendValues (iter, folderIcon, "Matching Rules");
+			string[] matchingRules = server.GetMatchingRules ();
+			foreach (string s in matchingRules) {
+				SchemaParser sp = new SchemaParser (s);
+				tmp.Add (sp.Names[0]);
+			}
+
+			tmp.Sort ();
+					
+			foreach (string n in tmp)
+				browserStore.AppendValues (matIter, genIcon, n);
+
+			tmp.Clear ();
+			
+			synIter = browserStore.AppendValues (iter, folderIcon, "LDAP Syntaxes");
+			string[] ldapSyntaxes = server.GetLDAPSyntaxes ();
+			foreach (string s in ldapSyntaxes) {
+				SchemaParser sp = new SchemaParser (s);
+				tmp.Add (sp.Description);
+			}
+
+			tmp.Sort ();
+					
+			foreach (string n in tmp)
+				browserStore.AppendValues (synIter, genIcon, n);
+				
 			this.ShowAll ();
 		}
 

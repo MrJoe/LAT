@@ -1,4 +1,3 @@
-- Improve schema browser
 - Add support for NetworkManager
 - Find a way to change a AD users password (need SSL support)
 - Edit/view AD group info

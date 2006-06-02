@@ -432,6 +432,94 @@ namespace lat {
 			return null;			
 		}
 
+		/// <summary>Gets the servers LDAP syntaxes (if available).
+		/// </summary>
+		/// <returns>matching rules</returns>
+		public string[] GetLDAPSyntaxes ()
+		{
+			if (!conn.Connected)
+				return null;
+
+			string[] attrs = new string[] { "ldapSyntaxes" };
+
+			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
+			if (le == null)
+				return null;
+				
+			LdapAttribute la = le[0].getAttribute ("ldapSyntaxes");
+			return la.StringValueArray;			
+		}
+
+		/// <summary>Gets the schema information for a given ldap syntax
+		/// </summary>
+		/// <param name="attrType">LDAP syntax</param>
+		/// <returns>schema information</returns>
+		public SchemaParser GetLdapSyntax (string synName)
+		{
+			if (!conn.Connected)
+				return null;
+
+			string[] attrs = new string[] { "ldapSyntaxes" };
+
+			LdapEntry[] entries = Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
+			if (entries == null)
+				return null;
+			
+			LdapAttribute la = entries[0].getAttribute ("ldapSyntaxes");
+			foreach (string s in la.StringValueArray) {
+				SchemaParser sp = new SchemaParser (s);
+				if (synName.Equals (sp.Description))
+						return sp;
+			}
+			
+			return null;
+		}
+
+		/// <summary>Gets the servers matching rules (if available).
+		/// </summary>
+		/// <returns>matching rules</returns>
+		public string[] GetMatchingRules ()
+		{
+			if (!conn.Connected)
+				return null;
+
+			string[] attrs = new string[] { "matchingRules" };
+
+			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
+			if (le == null)
+				return null;
+				
+			LdapAttribute la = le[0].getAttribute ("matchingRules");
+			return la.StringValueArray;			
+		}
+
+		/// <summary>Gets the schema information for a given matching rule
+		/// </summary>
+		/// <param name="attrType">Matching rule</param>
+		/// <returns>schema information</returns>
+		public SchemaParser GetMatchingRule (string matName)
+		{
+			if (!conn.Connected)
+				return null;
+
+			string[] attrs = new string[] { "matchingRules" };
+
+			LdapEntry[] entries = Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
+			if (entries == null)
+				return null;
+			
+			LdapAttribute la = entries[0].getAttribute ("matchingRules");
+			foreach (string s in la.StringValueArray) {
+				SchemaParser sp = new SchemaParser (s);
+
+				foreach (string a in sp.Names)
+					if (matName.Equals (a))
+							return sp;
+			}
+			
+			return null;
+		}
+
 		/// <summary>Gets the next available gidNumber
 		/// </summary>
 		/// <returns>The next group number</returns>

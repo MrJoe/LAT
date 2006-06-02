@@ -73,6 +73,13 @@ namespace lat
 		[Glade.Widget] Gtk.Entry attrSubstringEntry;
 		[Glade.Widget] Gtk.Entry attrSyntaxEntry;		
 
+		[Glade.Widget] Gtk.Entry matNameEntry;
+		[Glade.Widget] Gtk.Entry matOIDEntry;
+		[Glade.Widget] Gtk.Entry matSyntaxEntry;
+		
+		[Glade.Widget] Gtk.Entry synDescriptionEntry;
+		[Glade.Widget] Gtk.Entry synOIDEntry;
+
 		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
@@ -256,29 +263,77 @@ namespace lat
 
 		void setInfoNotePage (int page)
 		{
-			if (page == 0) {
-
-				Gtk.Widget w = infoNotebook.GetNthPage (1);
+			Gtk.Widget w = null;
+		
+			switch (page) {
+			
+			case 0:
+				w = infoNotebook.GetNthPage (3);
+				w.HideAll ();
+				
+				w = infoNotebook.GetNthPage (2);
+				w.HideAll ();
+				
+				w = infoNotebook.GetNthPage (1);
 				w.HideAll ();
 
 				w = infoNotebook.GetNthPage (0);
 				w.ShowAll ();
 
 				infoNotebook.Show ();
-
-			} else if (page == 1) {
-
-				Gtk.Widget w = infoNotebook.GetNthPage (1);
+				break;
+					
+			case 1:
+				w = infoNotebook.GetNthPage (3);
+				w.HideAll ();
+				
+				w = infoNotebook.GetNthPage (2);
+				w.HideAll ();
+				
+				w = infoNotebook.GetNthPage (1);
 				w.ShowAll ();
 
 				w = infoNotebook.GetNthPage (0);
 				w.HideAll ();
 
 				infoNotebook.Show ();
+				break;
 
-			} else {
+			case 2:
+				w = infoNotebook.GetNthPage (3);
+				w.HideAll ();
+				
+				w = infoNotebook.GetNthPage (2);
+				w.ShowAll ();
+				
+				w = infoNotebook.GetNthPage (1);
+				w.HideAll ();
 
+				w = infoNotebook.GetNthPage (0);
+				w.HideAll ();
+
+				infoNotebook.Show ();			
+				break;
+				
+			case 3:
+				w = infoNotebook.GetNthPage (3);
+				w.ShowAll ();
+				
+				w = infoNotebook.GetNthPage (2);
+				w.HideAll ();
+				
+				w = infoNotebook.GetNthPage (1);
+				w.HideAll ();
+
+				w = infoNotebook.GetNthPage (0);
+				w.HideAll ();
+
+				infoNotebook.Show ();			
+				break;
+				
+			default:
 				infoNotebook.HideAll ();
+				break;
 			}
 		}
 	
@@ -295,7 +350,7 @@ namespace lat
 
 		void schemaDNSelected (object o, schemaSelectedEventArgs args)
 		{
-			if (args.Name == "Object Classes" || args.Name == "Attribute Types")
+			if (args.Name == "Object Classes" || args.Name == "Attribute Types" || args.Name == "Matching Rules" || args.Name == "LDAP Syntaxes")
 				return;
 
 			if (args.Parent == "Object Classes") {
@@ -310,6 +365,18 @@ namespace lat
 
 				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
 				showAttrTypeSchema (sp);
+				
+			} else if (args.Parent == "Matching Rules") {
+
+				setInfoNotePage (2);
+				SchemaParser sp = server.GetMatchingRule (args.Name);
+				showMatchingRule (sp);				
+			
+			} else if (args.Parent == "LDAP Syntaxes") {
+			
+				setInfoNotePage (3);
+				SchemaParser sp = server.GetLdapSyntax (args.Name);
+				showLdapSyntax (sp);
 			}
 		}
 
@@ -430,6 +497,25 @@ namespace lat
 				LdapEntry entry = server.GetEntry (dn);
 				attributeEditor.Show (server, entry, showAllAttributes.Active);
 			}
+		}
+
+		void showMatchingRule (SchemaParser sp)
+		{
+			if (sp == null)
+				return;
+				
+			matNameEntry.Text = sp.Names[0];
+			matOIDEntry.Text = sp.ID;
+			matSyntaxEntry.Text = sp.Syntax;
+		}
+
+		void showLdapSyntax (SchemaParser sp)
+		{
+			if (sp == null)
+				return;
+				
+			synDescriptionEntry.Text = sp.Description;
+			synOIDEntry.Text = sp.ID;
 		}
 
 		private void showAttrTypeSchema (SchemaParser sp)
