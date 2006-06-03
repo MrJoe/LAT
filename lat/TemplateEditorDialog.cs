@@ -221,25 +221,6 @@ namespace lat
 				attrListStore.Remove (ref iter);
 		}
 
-		bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
-		{
-			if (!attrListStore.IterIsValid (iter))
-				return true;
-
-			string _name = null;
-			string _value = null;
-
-			_name = (string) attrListStore.GetValue (iter, 0);
-			_value = (string) attrListStore.GetValue (iter, 2);
-
-			if (_name == null || _value == null || _value == "")
-				return false;
-
-			t.AddAttribute (_name, _value);
-
-			return false;
-		}
-
 		public void OnOkClicked (object o, EventArgs args)
 		{
 			if (_isEdit) {
@@ -252,7 +233,15 @@ namespace lat
 
 			t.AddClass (_objectClass);	
 
-			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
+			foreach (object[] row in attrListStore) {
+				string nam = (string) row[0];
+				string val = (string) row[2];
+				
+				if (nam == null || val == null || val == "")
+					continue;
+					
+				t.AddAttribute (nam, val);
+			}
 		}
 
 		public Template UserTemplate
