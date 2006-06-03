@@ -53,7 +53,9 @@ namespace lat
 
 	public class SchemaTreeView : Gtk.TreeView
 	{
-		TreeStore browserStore;
+		Gtk.Window parentWindow;
+		
+		TreeStore schemaStore;
 		TreeIter objIter;
 		TreeIter attrIter;
 		TreeIter matIter;
@@ -61,155 +63,180 @@ namespace lat
 
 		LdapServer server;
 
-		enum TreeCols { Icon, DN };
+		enum TreeCols { Icon, ObjectName };
 
 		public event schemaSelectedHandler schemaSelected;
 
 		public SchemaTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
 		{
 			server = ldapServer;
+			parentWindow = parent;
+			
+			schemaStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 
-			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
-
-			this.Model = browserStore;
+			this.Model = schemaStore;
 			this.HeadersVisible = false;
 
-			this.RowActivated += new RowActivatedHandler (ldapRowActivated);
-
+			this.RowActivated += new RowActivatedHandler (OnRowActivated);
+			this.RowExpanded += new RowExpandedHandler (OnRowExpanded);
+			
 			this.AppendColumn ("icon", new CellRendererPixbuf (), "pixbuf", (int)TreeCols.Icon);
-			this.AppendColumn ("ldapRoot", new CellRendererText (), "text", (int)TreeCols.DN);
+			this.AppendColumn ("ldapRoot", new CellRendererText (), "text", (int)TreeCols.ObjectName);
 
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			Gdk.Pixbuf folderIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-normal.png");
-			Gdk.Pixbuf genIcon = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
 
 			TreeIter iter;
-			iter = browserStore.AppendValues (dirIcon, server.Host);
+			iter = schemaStore.AppendValues (dirIcon, server.Host);
 
-			objIter = browserStore.AppendValues (iter, folderIcon, "Object Classes");
-			LdapEntry[] objEntries = server.GetObjectClasses ();
-
-			ArrayList tmp = new ArrayList ();
-
-			foreach (LdapEntry le in objEntries) {
-
-				LdapAttribute la = le.getAttribute ("objectclasses");
-						
-				foreach (string s in la.StringValueArray) {
-					SchemaParser sp = new SchemaParser (s);
-					tmp.Add (sp.Names[0]);
-				}
-			}
-
-			tmp.Sort ();
-
-			foreach (string n in tmp)
-				browserStore.AppendValues (objIter, genIcon, n);
-
-			tmp.Clear ();
-
-			attrIter = browserStore.AppendValues (iter, folderIcon, "Attribute Types");
-			LdapEntry[] attrEntries = server.GetAttributeTypes ();
-
-			foreach (LdapEntry le in attrEntries) {
-
-				LdapAttribute la = le.getAttribute ("attributetypes");
-						
-				foreach (string s in la.StringValueArray) {
-					SchemaParser sp = new SchemaParser (s);
-					tmp.Add (sp.Names[0]);
-				}
-			}
-
-			tmp.Sort ();
-
-			foreach (string n in tmp)
-				browserStore.AppendValues (attrIter, genIcon, n);
-
-			tmp.Clear ();
-
-			matIter = browserStore.AppendValues (iter, folderIcon, "Matching Rules");
-			string[] matchingRules = server.GetMatchingRules ();
-			foreach (string s in matchingRules) {
-				SchemaParser sp = new SchemaParser (s);
-				tmp.Add (sp.Names[0]);
-			}
-
-			tmp.Sort ();
-					
-			foreach (string n in tmp)
-				browserStore.AppendValues (matIter, genIcon, n);
-
-			tmp.Clear ();
+			objIter = schemaStore.AppendValues (iter, folderIcon, "Object Classes");
+			schemaStore.AppendValues (objIter, null, "");
 			
-			synIter = browserStore.AppendValues (iter, folderIcon, "LDAP Syntaxes");
-			string[] ldapSyntaxes = server.GetLDAPSyntaxes ();
-			foreach (string s in ldapSyntaxes) {
-				SchemaParser sp = new SchemaParser (s);
-				tmp.Add (sp.Description);
-			}
-
-			tmp.Sort ();
-					
-			foreach (string n in tmp)
-				browserStore.AppendValues (synIter, genIcon, n);
+			attrIter = schemaStore.AppendValues (iter, folderIcon, "Attribute Types");
+			schemaStore.AppendValues (attrIter, null, "");
+			
+			matIter = schemaStore.AppendValues (iter, folderIcon, "Matching Rules");
+			schemaStore.AppendValues (matIter, null, "");
+				
+			synIter = schemaStore.AppendValues (iter, folderIcon, "LDAP Syntaxes");
+			schemaStore.AppendValues (synIter, null, "");
 				
 			this.ShowAll ();
 		}
 
-		private void DispatchDNSelectedEvent (string name, string parent)
+		void DispatchDNSelectedEvent (string name, string parent)
 		{
 			if (schemaSelected != null)
 				schemaSelected (this, new schemaSelectedEventArgs (name, parent));
 		}
 
-		public string getSelectedDN ()
-		{
-			TreeModel ldapModel;
-			TreeIter ldapIter;
-			string dn;
-
-			if (this.Selection.GetSelected (out ldapModel, out ldapIter)) {
-				dn = (string) browserStore.GetValue (ldapIter, (int)TreeCols.DN);
-				return dn;
-			}
-
-			return null;
-		}
-
-		public TreeIter getSelectedIter ()
-		{
-			TreeModel ldapModel;
-			TreeIter ldapIter;
-
-			if (this.Selection.GetSelected (out ldapModel, out ldapIter)) {
-				return ldapIter;
-			}
-
-			return ldapIter;
-		}
-
-		private void ldapRowActivated (object o, RowActivatedArgs args)
+		void OnRowActivated (object o, RowActivatedArgs args)
 		{	
 			TreePath path = args.Path;
 			TreeIter iter;
 			
-			if (browserStore.GetIter (out iter, path)) {
+			if (schemaStore.GetIter (out iter, path)) {
 
 				string name = null;
-				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
+				name = (string) schemaStore.GetValue (iter, (int)TreeCols.ObjectName);
 
 				if (name.Equals (server.Host))
 					return;
 
 				TreeIter parent;
-				browserStore.IterParent (out parent, iter);
+				schemaStore.IterParent (out parent, iter);
 
 				string parentName = null;
-				parentName = (string) browserStore.GetValue (parent, (int)TreeCols.DN);
+				parentName = (string) schemaStore.GetValue (parent, (int)TreeCols.ObjectName);
 
 				DispatchDNSelectedEvent (name, parentName);
 			} 		
+		}
+		
+		TreeIter GetParent (string parentName)
+		{
+			switch (parentName) {
+			
+			case "Object Classes":
+				return objIter;
+				
+			case "Attribute Types":
+				return attrIter;
+				
+			case "Matching Rules":
+				return matIter;
+			
+			case "LDAP Syntaxes":
+				return synIter;
+				
+			default:
+				throw new ArgumentOutOfRangeException (parentName);
+			}		
+		}
+
+		string[] GetChildren (string parentName)
+		{
+			string[] childValues = null;
+		
+			switch (parentName) {
+			
+			case "Object Classes":
+				childValues = server.GetObjectClasses ();
+				break;
+				
+			case "Attribute Types":
+				childValues = server.GetAttributeTypes ();
+				break;
+				
+			case "Matching Rules":
+				childValues = server.GetMatchingRules ();			
+				break;
+			
+			case "LDAP Syntaxes":
+				childValues = server.GetLDAPSyntaxes ();
+				break;
+				
+			default:
+				break;
+			}
+			
+			return childValues;			
+		}
+		
+		void OnRowExpanded (object o, RowExpandedArgs args)
+		{
+			string name = null;
+			bool firstPass = false;
+			
+			name = (string) schemaStore.GetValue (args.Iter, (int)TreeCols.ObjectName);
+			if (name == server.Host)
+				return;
+
+			TreeIter parent, child;
+			schemaStore.IterParent (out parent, args.Iter);
+			schemaStore.IterChildren (out child, args.Iter);
+
+			string childName = (string)schemaStore.GetValue (child, (int)TreeCols.ObjectName);
+			
+			if (childName == "")
+				firstPass = true;
+			else
+				return;
+
+			try {
+
+				Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
+		 		
+		 		string[] kids = GetChildren (name);
+				foreach (string s in kids) {
+								
+					if (firstPass) {
+						schemaStore.SetValue (child, (int)TreeCols.Icon, pb);
+						schemaStore.SetValue (child, (int)TreeCols.ObjectName, s);
+						
+						firstPass = false;
+						
+					} else {
+						schemaStore.AppendValues (GetParent(name), pb, s);
+					}								
+				}
+
+			} catch {
+
+				string	msg = Mono.Unix.Catalog.GetString (
+					"Unable to read schema information from server");
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parentWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Server error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
 		}
 	}
 }

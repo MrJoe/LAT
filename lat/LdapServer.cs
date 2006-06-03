@@ -47,16 +47,16 @@ namespace lat {
 	/// </summary>
 	public class LdapServer
 	{
-		private string 			host;
-		private int			port;
-		private string			rootDN;
-		private string			schemaDN;
-		private string			defaultSearchFilter;
-		private string			sType;
-		private EncryptionType		encryption;
-		private ActiveDirectoryInfo	adInfo;
-		private LdapServerType		ldapServerType;
-		private LdapConnection		conn;
+		string host;
+		int	port;
+		string rootDN;
+		string schemaDN;
+		string defaultSearchFilter;
+		string sType;
+		EncryptionType encryption;
+		ActiveDirectoryInfo	adInfo;
+		LdapServerType ldapServerType;
+		LdapConnection conn;
 
 		public LdapServer (string hostName, int hostPort, string serverType)
 		{
@@ -274,16 +274,27 @@ namespace lat {
 		/// directory.
 		/// </summary>
 		/// <returns>An array of LdapEntry objects</returns>
-		public LdapEntry[] GetAttributeTypes ()
+		public string[] GetAttributeTypes ()
 		{
 			if (!conn.Connected)
 				return null;
 
 			string[] attrs = new string[] { "attributetypes" };
 
-			return Search (schemaDN, 
-				LdapConnection.SCOPE_BASE,
-	 			defaultSearchFilter, attrs);
+			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, defaultSearchFilter, attrs);
+			if (le == null)
+				return null;
+
+			ArrayList tmp = new ArrayList ();				
+			LdapAttribute la = le[0].getAttribute ("attributetypes");		
+
+			foreach (string s in la.StringValueArray) {
+				SchemaParser sp = new SchemaParser (s);
+				tmp.Add (sp.Names[0]);
+			}
+
+			tmp.Sort ();				
+			return (string[]) tmp.ToArray (typeof (string));
 		}
 
 		/// <summary>Gets the schema for a given attribute type
@@ -446,8 +457,16 @@ namespace lat {
 			if (le == null)
 				return null;
 				
-			LdapAttribute la = le[0].getAttribute ("ldapSyntaxes");
-			return la.StringValueArray;			
+			ArrayList tmp = new ArrayList ();				
+			LdapAttribute la = le[0].getAttribute ("ldapSyntaxes");		
+
+			foreach (string s in la.StringValueArray) {
+				SchemaParser sp = new SchemaParser (s);
+				tmp.Add (sp.Description);
+			}
+			
+			tmp.Sort ();
+			return (string[]) tmp.ToArray (typeof (string));				
 		}
 
 		/// <summary>Gets the schema information for a given ldap syntax
@@ -489,8 +508,16 @@ namespace lat {
 			if (le == null)
 				return null;
 				
-			LdapAttribute la = le[0].getAttribute ("matchingRules");
-			return la.StringValueArray;			
+			ArrayList tmp = new ArrayList ();
+			LdapAttribute la = le[0].getAttribute ("matchingRules");			
+
+			foreach (string s in la.StringValueArray) {
+				SchemaParser sp = new SchemaParser (s);
+				tmp.Add (sp.Names[0]);
+			}
+
+			tmp.Sort ();				
+			return (string[]) tmp.ToArray (typeof (string));			
 		}
 
 		/// <summary>Gets the schema information for a given matching rule
@@ -567,12 +594,27 @@ namespace lat {
 		/// <summary>Gets a list of object classes supported on the directory.
 		/// </summary>
 		/// <returns>A list of object class entries</returns>
-		public LdapEntry[] GetObjectClasses ()
+		public string[] GetObjectClasses ()
 		{
+			if (!conn.Connected)
+				return null;
+
 			string[] attrs = new string[] { "objectclasses" };
 
-			return Search (schemaDN, LdapConnection.SCOPE_BASE, 
-				       defaultSearchFilter, attrs);
+			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, defaultSearchFilter, attrs);
+			if (le == null)
+				return null;
+
+			ArrayList tmp = new ArrayList ();
+			LdapAttribute la = le[0].getAttribute ("objectclasses");			
+
+			foreach (string s in la.StringValueArray) {
+				SchemaParser sp = new SchemaParser (s);
+				tmp.Add (sp.Names[0]);
+			}
+
+			tmp.Sort ();				
+			return (string[]) tmp.ToArray (typeof (string));			
 		}
 
 		/// <summary>Gets the schema of a given object class.

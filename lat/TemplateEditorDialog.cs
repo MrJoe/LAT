@@ -130,21 +130,8 @@ namespace lat
 			// class
 			attrClassComboBox = ComboBox.NewText ();
 			
-			LdapEntry[] ocs = server.GetObjectClasses ();			
-			ArrayList tmp = new ArrayList ();
-
-			foreach (LdapEntry le in ocs) {
-				LdapAttribute la = le.getAttribute ("objectclasses");
-						
-				foreach (string s in la.StringValueArray) {
-					SchemaParser sp = new SchemaParser (s);
-					tmp.Add (sp.Names[0]);
-				}
-			}
-
-			tmp.Sort ();
-
-			foreach (string n in tmp)
+			string[] ocs = server.GetObjectClasses ();			
+			foreach (string n in ocs)
 				attrClassComboBox.AppendText (n);
 
 			attrClassComboBox.Active = 0;
