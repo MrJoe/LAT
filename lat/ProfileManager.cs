@@ -20,13 +20,14 @@
 
 using System;
 using System.Collections;
+using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
 using GnomeKeyring;
 
 namespace lat
 {
-	public struct ConnectionProfile 
+	public class ConnectionProfile 
 	{
 		public string Name;
 		public string Host;
@@ -37,70 +38,98 @@ namespace lat
 		public bool DontSavePassword;
 		public EncryptionType Encryption;
 		public string ServerType;
+		public ArrayList ActiveViews;
+		
+		public ConnectionProfile ()
+		{
+		}
+		
+		public void SetDefaultViews ()
+		{
+			ActiveViews = null;
+			ActiveViews = new ArrayList ();
+
+			switch (this.ServerType) {
+			
+			case "OpenLDAP":
+			case "Generic LDAP server":
+				ActiveViews.Add ("lat.PosixComputerViewPlugin");
+				ActiveViews.Add ("lat.PosixContactsViewPlugin");
+				ActiveViews.Add ("lat.PosixGroupViewPlugin");
+				ActiveViews.Add ("lat.PosixUserViewPlugin");
+				break;
+				
+			case "Microsoft Active Directory":
+				ActiveViews.Add ("lat.ActiveDirectoryComputerViewPlugin");
+				ActiveViews.Add ("lat.ActiveDirectoryContactsViewPlugin");
+				ActiveViews.Add ("lat.ActiveDirectoryGroupViewPlugin");
+				ActiveViews.Add ("lat.ActiveDirectoryUserViewPlugin");			
+				break;
+			}
+		}
 	}
 
-	public class ProfileManager 
+	public class ProfileManager : IEnumerable
 	{
-		private string _configFile;
-		private Hashtable _profiles;
-
+		string configFileName;
+		ListDictionary profileDictionary;
+		
 		public ProfileManager ()
 		{
-			_profiles = new Hashtable ();
-		
+			profileDictionary = new ListDictionary ();
+			
 			string dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			string tmp = Path.Combine (dir, ".lat");
 			
-			_configFile = Path.Combine (tmp, "profiles.xml");
+			configFileName = Path.Combine (tmp, "profiles.xml");
 
 			DirectoryInfo di = new DirectoryInfo (tmp);
 			if (!di.Exists)
 				di.Create ();
 
-			FileInfo fi = new FileInfo (_configFile);
+			FileInfo fi = new FileInfo (configFileName);
 			if (!fi.Exists)
 				return;
 			
-			loadProfiles ();		
+			LoadProfiles ();		
 		}
 		
-		public string[] getProfileNames ()
+		public string[] GetProfileNames ()
 		{
-			string[] retVal = new string [_profiles.Count];
+			string[] retVal = new string [profileDictionary.Count];
 			int count = 0;
-			
-			foreach (string s in _profiles.Keys) {
 
-				ConnectionProfile cp = (ConnectionProfile) _profiles[s];
-				retVal [count] = cp.Name;
-				
+			foreach (string s in profileDictionary.Keys) {
+				ConnectionProfile cp = (ConnectionProfile) profileDictionary[s];
+				retVal [count] = cp.Name;				
 				count++;
 			}
 			
 			return retVal;
 		}
 		
-		public ConnectionProfile Lookup (string name)
+		public int Length
 		{
-			return (ConnectionProfile) _profiles[name];
+			get { return profileDictionary.Count; }
 		}
 		
-		public void addProfile (ConnectionProfile cp)
+		public IEnumerator GetEnumerator ()
 		{
-			_profiles.Add (cp.Name, cp);
+			return profileDictionary.GetEnumerator ();
 		}
 		
-		public void updateProfile (ConnectionProfile cp)
+		public ConnectionProfile this [string name]
 		{
-			_profiles[cp.Name] = cp;
+			get { return (ConnectionProfile) profileDictionary[name]; }
+			set { profileDictionary[name] = value; }
 		}
 		
-		public void deleteProfile (string name)
+		public void Remove (string profileName)
 		{
-			_profiles.Remove (name);
+			profileDictionary.Remove (profileName);
 		}
 
-		private void ParseProfile (XmlElement profileElement)
+		void ParseProfile (XmlElement profileElement)
 		{
 			EncryptionType e = EncryptionType.None;
 			bool savePassword = false;
@@ -129,26 +158,31 @@ namespace lat
 			cp.Encryption = e;
 			cp.ServerType = profileElement.GetAttribute ("server_type");
 
+			XmlNodeList nl = profileElement.GetElementsByTagName ("server_view");
+			if ((nl.Count > 0)) {
+				cp.ActiveViews = new ArrayList ();
+				foreach (XmlElement sv in nl)
+					cp.ActiveViews.Add (sv.InnerText);
+			}
+
 			GnomeKeyring.Result gkr;
 			NetworkPasswordData[] list;
 
-			gkr = GnomeKeyring.Global.FindNetworkPassword (
-				cp.User, out list );
-
+			gkr = GnomeKeyring.Global.FindNetworkPassword (cp.User, out list);
 			Logger.Log.Debug ("gnome-keyring-result: {0}", gkr);
 						
-			foreach (NetworkPasswordData i in list) 
+			foreach (NetworkPasswordData i in list)
 				cp.Pass = i.Password;
 
-			_profiles.Add (cp.Name, cp);
+			profileDictionary.Add (cp.Name, cp);
 		}
 		
-		public void loadProfiles ()
+		public void LoadProfiles ()
 		{
 			try {
 
 				XmlDocument doc = new XmlDocument ();
-				doc.Load (_configFile);
+				doc.Load (configFileName);
 
 				XmlElement profileRoot = doc.DocumentElement;
 				XmlNodeList nl = profileRoot.GetElementsByTagName ("profile");
@@ -167,73 +201,76 @@ namespace lat
 			}
 		}
 		
-		private static void myCallback (Result result, uint val) 
+		static void KeyringCallback (Result result, uint val) 
 		{
 			Logger.Log.Debug ("gnome-keyring-callback: result: {0} - ID: {1}", result, val);
 		}
 
-		public void saveProfiles ()	
-		{	
-			XmlTextWriter writer = new XmlTextWriter(_configFile,
-						System.Text.Encoding.UTF8);
-						
-			writer.Formatting = Formatting.Indented;
-			writer.WriteStartDocument(false);
+		public void SaveProfiles ()	
+		{
+			XmlDocument doc = new XmlDocument ();
+			XmlNode xmlnode = doc.CreateNode (XmlNodeType.XmlDeclaration,"","");
+			doc.AppendChild (xmlnode);
 			
-			writer.WriteStartElement("profiles");
-			
-			foreach (string name in _profiles.Keys) {
-		     			 	
-				ConnectionProfile cp = (ConnectionProfile) _profiles[name];
-		 	
-				writer.WriteStartElement("profile", null);
-			 		
-				writer.WriteAttributeString ("name", cp.Name);
-				writer.WriteAttributeString ("host", cp.Host);
-				writer.WriteAttributeString ("port", cp.Port.ToString());
-				writer.WriteAttributeString ("base", cp.LdapRoot);
-				writer.WriteAttributeString ("user", cp.User);
-				writer.WriteAttributeString ("save_password", cp.DontSavePassword.ToString());
-
+			XmlElement profiles = doc.CreateElement ("profiles");
+			doc.AppendChild (profiles);
+		
+			foreach (string s in profileDictionary.Keys) {
+				ConnectionProfile cp = (ConnectionProfile) profileDictionary[s];
+				
+				XmlElement profile = doc.CreateElement ("profile");
+				profile.SetAttribute ("name", cp.Name);
+				profile.SetAttribute ("host", cp.Host);
+				profile.SetAttribute ("port", cp.Port.ToString());
+				profile.SetAttribute ("base", cp.LdapRoot);
+				profile.SetAttribute ("user", cp.User);
+				profile.SetAttribute ("save_password", cp.DontSavePassword.ToString());
+				
 				switch (cp.Encryption) {
 
 				case EncryptionType.TLS:
-					writer.WriteAttributeString ("encryption", "tls");
+					profile.SetAttribute ("encryption", "tls");
 					break;
 
 				case EncryptionType.SSL:
-					writer.WriteAttributeString ("encryption", "ssl");
+					profile.SetAttribute ("encryption", "ssl");
 					break;
 
 				case EncryptionType.None:
-					writer.WriteAttributeString ("encryption", "none");
+					profile.SetAttribute ("encryption", "none");
 					break;
 
 				default:
 					break;
-				}
-
-				writer.WriteAttributeString ("server_type", cp.ServerType);
+				}				
 				
-	        		writer.WriteEndElement();
-
-				OperationGetIntCallback theCallback = new OperationGetIntCallback (myCallback);
-
+				profile.SetAttribute ("server_type", cp.ServerType);
+				
+				if (cp.ActiveViews == null)
+					cp.SetDefaultViews ();
+				
+				XmlElement server_views = doc.CreateElement ("server_views");
+				foreach (string sv in cp.ActiveViews) {
+					XmlElement server_view = doc.CreateElement ("server_view");
+					server_view.InnerText = sv;
+					server_views.AppendChild (server_view);
+				}
+				
+				profile.AppendChild (server_views);				
+				profiles.AppendChild (profile);
+				
+				OperationGetIntCallback theCallback = new OperationGetIntCallback (KeyringCallback);
 				GnomeKeyring.Global.SetNetworkPassword(
 					cp.User,			// user
 					cp.Host,			// server 
 					"ldap", 			// protocol
-					(uint)cp.Port, 			// port
+					(uint)cp.Port, 		// port
 					cp.Pass,	 		// password
-					theCallback 			// callback
-				);
+					theCallback 		// callback
+				);				
 			}
-	    		
-			writer.WriteEndElement();
-			
-			writer.Flush();
-			writer.Close();	
+	
+			doc.Save (configFileName);
 		}
-		
 	}
 }

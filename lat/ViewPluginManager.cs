@@ -61,7 +61,7 @@ namespace lat {
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("ViewPlugin.Deserialize: {0}", e.Message);
+				Logger.Log.Debug (e.ToString());
 			}
 		}
 		
@@ -77,7 +77,7 @@ namespace lat {
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("ViewPlugin.Serialize: {0}", e.Message);
+				Logger.Log.Debug (e.ToString());
 			}
 		}
 		

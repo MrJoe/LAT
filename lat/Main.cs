@@ -32,6 +32,7 @@ public class Global
 	
 	public static TemplateManager theTemplateManager;
 	public static ViewPluginManager viewPluginManager;
+	public static ProfileManager profileManager;
 }
 
 public class LdapAdministrationTool

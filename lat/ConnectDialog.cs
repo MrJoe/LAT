@@ -44,23 +44,20 @@ namespace lat
 		[Glade.Widget] TreeView profileListview;
 		[Glade.Widget] Gtk.Image image5;
 		
-		private bool haveProfiles = false;
-		private EncryptionType encryption;
+		bool haveProfiles = false;
+		EncryptionType encryption;
 
-		private ProfileManager profileManager;
-		private ListStore profileListStore;
-
-		private ComboBox serverTypeComboBox;
+		ListStore profileListStore;
+		ComboBox serverTypeComboBox;
 
 		public ConnectDialog ()
 		{
-			profileManager = new ProfileManager ();
+			Global.profileManager = new ProfileManager ();
 		
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
 			ui.Autoconnect (this);
 
-			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource (
-				"x-directory-remote-server-48x48.png");
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
 			image5.Pixbuf = pb;
 
 			connectionDialog.Icon = Global.latIcon;
@@ -121,7 +118,7 @@ namespace lat
 			string profileName = GetSelectedProfileName ();
 
 			if (profileName != null)
-				cp = profileManager.Lookup (profileName); 
+				cp = Global.profileManager [profileName]; 
 	
 			return cp;
 		}
@@ -141,7 +138,7 @@ namespace lat
 
 		private void updateProfileList ()
 		{
-			string[] names = profileManager.getProfileNames ();
+			string[] names = Global.profileManager.GetProfileNames ();
 			
 			if (names.Length > 1)
 				haveProfiles = true;
@@ -154,7 +151,7 @@ namespace lat
 
 		public void OnProfileAdd (object o, EventArgs args)
 		{
-			new ProfileDialog (profileManager);
+			new ProfileDialog ();
 			updateProfileList ();		
 		}
 
@@ -164,9 +161,9 @@ namespace lat
 
 			if (profileName != null) {
 
-				ConnectionProfile cp = profileManager.Lookup (profileName);
+				ConnectionProfile cp = Global.profileManager [profileName];
 			
-				new ProfileDialog (profileManager, cp);
+				new ProfileDialog (cp);
 
 				updateProfileList ();
 			}		
@@ -186,8 +183,8 @@ namespace lat
 				
 				if (Util.AskYesNo (connectionDialog, msg)) {
 
-					profileManager.deleteProfile (profileName);
-					profileManager.saveProfiles ();
+					Global.profileManager.Remove (profileName);
+					Global.profileManager.SaveProfiles ();
 					updateProfileList ();				
 				}
 			}
@@ -309,8 +306,7 @@ namespace lat
 			if (!serverTypeComboBox.GetActiveIter (out iter))
 				return;
 
-			string serverType = (string) 
-				serverTypeComboBox.Model.GetValue (iter, 0);
+			string serverType = (string) serverTypeComboBox.Model.GetValue (iter, 0);
 
 			if (ldapBaseEntry.Text != "") {
 
@@ -357,8 +353,7 @@ namespace lat
 
 			if (cp.LdapRoot == "") {
 
-				server = new LdapServer (cp.Host, cp.Port, 
-						 cp.ServerType);
+				server = new LdapServer (cp.Host, cp.Port, cp.ServerType);
 
 			} else {
 
@@ -367,6 +362,7 @@ namespace lat
 						 cp.ServerType);
 			}
 
+			server.ProfileName = cp.Name;			
 			encryption = cp.Encryption;
 
 			if (cp.DontSavePassword) {

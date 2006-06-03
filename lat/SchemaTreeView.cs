@@ -221,7 +221,9 @@ namespace lat
 					}								
 				}
 
-			} catch {
+			} catch (Exception e) {
+
+				Logger.Log.Debug (e.ToString());
 
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read schema information from server");

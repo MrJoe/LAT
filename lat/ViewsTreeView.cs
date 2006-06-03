@@ -81,20 +81,33 @@ namespace lat
 			this.ShowAll ();
 		}
 
-		private void AddViews ()
+		void AddViews ()
 		{
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
 
-			if (server.ServerType == LdapServerType.OpenLDAP || server.ServerType == LdapServerType.Generic) {
-				foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
-					if (!(vp.Name.StartsWith ("Active")))
-						viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);
-			} else {
-				foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
-					if ((vp.Name.StartsWith ("Active")))
-						viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);			
-			}
+			ConnectionProfile cp = null;
+			if (server.ProfileName == null) 
+				cp = new ConnectionProfile ();
+			else
+				cp = Global.profileManager [server.ProfileName];
+			
+			if (cp.ServerType == null)
+				cp.ServerType = server.ServerTypeString;
+			
+			if (cp.ActiveViews == null) 
+				cp.SetDefaultViews ();
+				
+			foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
+				if (cp.ActiveViews.Contains (vp.GetType().ToString()))
+					viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);
+		}
+
+		public void Refresh ()
+		{
+			viewsStore.Clear ();
+			AddViews ();
+			this.ExpandAll ();
 		}
 
 //		[ConnectBefore]

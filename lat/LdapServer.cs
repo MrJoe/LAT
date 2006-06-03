@@ -53,6 +53,7 @@ namespace lat {
 		string schemaDN;
 		string defaultSearchFilter;
 		string sType;
+		string profileName;
 		EncryptionType encryption;
 		ActiveDirectoryInfo	adInfo;
 		LdapServerType ldapServerType;
@@ -1011,6 +1012,12 @@ namespace lat {
 			set { port = value; }
 		}
 
+		public string ProfileName
+		{
+			get { return profileName; }
+			set { profileName = value; }
+		}
+
 		public int Protocol
 		{
 			get { return conn.ProtocolVersion; }
@@ -1019,6 +1026,26 @@ namespace lat {
 		public LdapServerType ServerType
 		{
 			get { return ldapServerType; }
+		}
+
+		public string ServerTypeString
+		{
+			get {
+				switch (ldapServerType) {
+
+				case LdapServerType.ActiveDirectory:
+					return "Microsoft Active Directory";
+					
+				case LdapServerType.OpenLDAP:
+					return "OpenLDAP";
+					
+				case LdapServerType.Generic:
+					return "Generic LDAP server";
+					
+				default:
+					return "Generic LDAP server";
+				}				
+			}
 		}
 
 		public bool UseSSL

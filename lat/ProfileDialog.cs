@@ -42,29 +42,27 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
 		[Glade.Widget] Gtk.HBox stHBox;
 		[Glade.Widget] Gtk.Image image7;
-			
-		private EncryptionType encryption = EncryptionType.None;
-		private bool _isEdit = false;
-		private ProfileManager _pm;
-	
-		private string _oldName = null;
+		
+		ComboBox serverTypeComboBox;
+		EncryptionType encryption = EncryptionType.None;
+		bool isEdit = false;
+		string oldName = null;	
 
-		private ComboBox serverTypeComboBox;
-
-		public ProfileDialog (ProfileManager pm)
+		public ProfileDialog ()
 		{
-			Init (pm);
+			Init ();
 
 			portEntry.Text = "389";
 
 			profileDialog.Run ();
+			profileDialog.Destroy ();
 		}
 		
-		public ProfileDialog (ProfileManager pm, ConnectionProfile cp)
+		public ProfileDialog (ConnectionProfile cp)
 		{
-			Init (pm);
+			Init ();
 			
-			_oldName = cp.Name;
+			oldName = cp.Name;
 
 			profileNameEntry.Text = cp.Name;
 			hostEntry.Text = cp.Host;
@@ -95,15 +93,14 @@ namespace lat
 				
 			comboSetActive (serverTypeComboBox, cp.ServerType.ToLower());
 
-			_isEdit = true;
+			isEdit = true;
 
 			profileDialog.Run ();
+			profileDialog.Destroy ();
 		}
 			
-		private void Init (ProfileManager pm)
+		void Init ()
 		{
-			_pm = pm;
-		
 			ui = new Glade.XML (null, "lat.glade", "profileDialog", null);
 			ui.Autoconnect (this);		
 
@@ -117,7 +114,7 @@ namespace lat
 			profileDialog.Icon = Global.latIcon;
 		}	
 
-		private static void comboSetActive (ComboBox cb, string name)
+		static void comboSetActive (ComboBox cb, string name)
 		{		
 			if (name.Equals ("generic ldap server"))
 				cb.Active = 2;
@@ -127,7 +124,7 @@ namespace lat
 				cb.Active = 1;
 		}
 
-		private void createCombo ()
+		void createCombo ()
 		{
 			serverTypeComboBox = ComboBox.NewText ();
 			serverTypeComboBox.AppendText ("OpenLDAP");
@@ -186,31 +183,24 @@ namespace lat
 			else
 				profile.Pass = passEntry.Text;
 
-			if (_isEdit) {
+			if (isEdit) {
 
-				if (!_oldName.Equals (profile.Name)) {
+				if (!oldName.Equals (profile.Name)) {
 
-					_pm.deleteProfile (_oldName);
-					_pm.addProfile (profile);
+					Global.profileManager.Remove (oldName);
+					Global.profileManager[profile.Name] = profile;
 
 				} else {
 
-					_pm.updateProfile (profile);
+					Global.profileManager[profile.Name] = profile;
 				}
 
 			} else {
 
-				_pm.addProfile (profile);
+				Global.profileManager[profile.Name] = profile;
 			}
 			
-			_pm.saveProfiles ();
-			
-			profileDialog.HideAll ();
-		}
-		
-		public void OnCancelClicked (object o, EventArgs args)
-		{
-			profileDialog.HideAll ();		
+			Global.profileManager.SaveProfiles ();
 		}
 	}
 }

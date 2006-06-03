@@ -1,3 +1,4 @@
+	* Server views can be enabled/disabled per profile
 	* Added matching rules and ldap syntaxes to schema browser
 	* Switch to gmcs compiler (C# 2.0)
 

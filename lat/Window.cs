@@ -195,6 +195,8 @@ namespace lat
 		public void OnPreferencesActivate (object sender, EventArgs args)
 		{
 			new PreferencesDialog (server);
+			viewsTreeView.Refresh ();
+			Global.profileManager.SaveProfiles ();
 		}
 	
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
@@ -354,15 +356,14 @@ namespace lat
 				return;
 
 			if (args.Parent == "Object Classes") {
+				
 				setInfoNotePage (0);
-
 				SchemaParser sp = server.GetObjectClassSchema (args.Name);
 				showEntrySchema (sp);
 
 			} else if (args.Parent == "Attribute Types") {
 
 				setInfoNotePage (1);
-
 				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
 				showAttrTypeSchema (sp);
 				

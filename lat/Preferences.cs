@@ -133,9 +133,15 @@ namespace lat
 			pluginTreeView.AppendColumn ("Name", new CellRendererText (), "text", 1);
 			
 			pluginTreeView.Model = pluginStore;
-			
-			foreach (ViewPlugin vp in Global.viewPluginManager.Plugins) {
-				pluginStore.AppendValues (true, vp.Name);
+
+			if (server.ProfileName != null) {
+				ConnectionProfile cp = Global.profileManager [server.ProfileName];			
+				foreach (ViewPlugin vp in Global.viewPluginManager.Plugins) {
+					if (cp.ActiveViews.Contains (vp.GetType().ToString()))
+						pluginStore.AppendValues (true, vp.Name);
+					else
+						pluginStore.AppendValues (false, vp.Name);
+				}
 			}
 					
 			LoadPreference (Preferences.BROWSER_SELECTION);
@@ -222,12 +228,23 @@ namespace lat
 		}
 		
 		void OnClassToggled (object o, ToggledArgs args)
-		{
+		{			
 			TreeIter iter;
 
 			if (pluginStore.GetIter (out iter, new TreePath(args.Path))) {
+			
 				bool old = (bool) pluginStore.GetValue (iter,0);
-				// FIXME: disable the plugin
+				string name = (string) pluginStore.GetValue (iter, 1);
+				
+				ConnectionProfile cp = Global.profileManager [server.ProfileName];
+				ViewPlugin vp = Global.viewPluginManager.Find (name);
+				
+				if (!cp.ActiveViews.Contains (vp.GetType().ToString()))
+					cp.ActiveViews.Add (vp.GetType().ToString());
+				else
+					cp.ActiveViews.Remove (vp.GetType().ToString());
+				
+				Global.profileManager [server.ProfileName] = cp;				
 				pluginStore.SetValue(iter,0,!old);
 			}
 		}

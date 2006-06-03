@@ -886,7 +886,6 @@ you wish to connect to.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
