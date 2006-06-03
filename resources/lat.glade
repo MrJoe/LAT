@@ -8133,7 +8133,6 @@ Make sure you are logged in as the administator.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Sat, 01 Oct 2005 16:19:36 GMT"/>
 	    </widget>
 	  </child>
 
@@ -8190,7 +8189,7 @@ Make sure you are logged in as the administator.</property>
 		  <property name="angle">0</property>
 		</widget>
 		<packing>
-		  <property name="padding">0</property>
+		  <property name="padding">5</property>
 		  <property name="expand">False</property>
 		  <property name="fill">False</property>
 		</packing>
@@ -8253,62 +8252,6 @@ Make sure you are logged in as the administator.</property>
 		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
-		      <property name="padding">0</property>
-		      <property name="expand">False</property>
-		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-		</widget>
-		<packing>
-		  <property name="padding">10</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkHBox" id="hbox379">
-		  <property name="visible">True</property>
-		  <property name="homogeneous">False</property>
-		  <property name="spacing">0</property>
-
-		  <child>
-		    <widget class="GtkHBox" id="attrClassHBox">
-		      <property name="visible">True</property>
-		      <property name="homogeneous">False</property>
-		      <property name="spacing">0</property>
-
-		      <child>
-			<placeholder/>
-		      </child>
-		    </widget>
-		    <packing>
-		      <property name="padding">10</property>
-		      <property name="expand">True</property>
-		      <property name="fill">True</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkHButtonBox" id="hbuttonbox12">
-		      <property name="visible">True</property>
-		      <property name="layout_style">GTK_BUTTONBOX_DEFAULT_STYLE</property>
-		      <property name="spacing">0</property>
-
-		      <child>
-			<widget class="GtkButton" id="addButton">
-			  <property name="visible">True</property>
-			  <property name="can_default">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label">gtk-add</property>
-			  <property name="use_stock">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <signal name="clicked" handler="OnAddClicked" last_modification_time="Sat, 01 Oct 2005 16:30:46 GMT"/>
-			</widget>
-		      </child>
-		    </widget>
-		    <packing>
 		      <property name="padding">5</property>
 		      <property name="expand">False</property>
 		      <property name="fill">False</property>
@@ -8335,6 +8278,19 @@ Make sure you are logged in as the administator.</property>
 		      <property name="spacing">5</property>
 
 		      <child>
+			<widget class="GtkButton" id="objAddButton">
+			  <property name="visible">True</property>
+			  <property name="can_default">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label">gtk-add</property>
+			  <property name="use_stock">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <signal name="clicked" handler="OnObjAddClicked" last_modification_time="Sat, 03 Jun 2006 19:40:24 GMT"/>
+			</widget>
+		      </child>
+
+		      <child>
 			<widget class="GtkButton" id="objRemoveButton">
 			  <property name="visible">True</property>
 			  <property name="can_default">True</property>
@@ -8343,12 +8299,12 @@ Make sure you are logged in as the administator.</property>
 			  <property name="use_stock">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
-			  <signal name="clicked" handler="OnObjRemoveClicked" last_modification_time="Sat, 01 Oct 2005 16:33:24 GMT"/>
+			  <signal name="clicked" handler="OnObjRemoveClicked" last_modification_time="Sat, 03 Jun 2006 19:39:51 GMT"/>
 			</widget>
 		      </child>
 
 		      <child>
-			<widget class="GtkButton" id="objClearButton">
+			<widget class="GtkButton" id="button14">
 			  <property name="visible">True</property>
 			  <property name="can_default">True</property>
 			  <property name="can_focus">True</property>
@@ -8356,7 +8312,7 @@ Make sure you are logged in as the administator.</property>
 			  <property name="use_stock">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>
-			  <signal name="clicked" handler="OnObjClearClicked" last_modification_time="Sat, 01 Oct 2005 16:33:34 GMT"/>
+			  <signal name="clicked" handler="OnObjClearClicked" last_modification_time="Sat, 03 Jun 2006 19:39:26 GMT"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -8442,7 +8398,7 @@ Make sure you are logged in as the administator.</property>
 		      <property name="angle">0</property>
 		    </widget>
 		    <packing>
-		      <property name="padding">0</property>
+		      <property name="padding">5</property>
 		      <property name="expand">False</property>
 		      <property name="fill">False</property>
 		    </packing>

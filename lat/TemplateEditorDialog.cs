@@ -32,7 +32,6 @@ namespace lat
 
 		[Glade.Widget] Gtk.Dialog templateEditorDialog;
 		[Glade.Widget] Gtk.Entry nameEntry;
-		[Glade.Widget] Gtk.HBox attrClassHBox;
 		[Glade.Widget] TreeView objTreeView; 
 		[Glade.Widget] TreeView attrTreeView; 
 
@@ -43,7 +42,6 @@ namespace lat
 		private Template t = null;
 
 		private LdapServer server;
-		private ComboBox attrClassComboBox;
 		private bool _isEdit = false;
 
 		public TemplateEditorDialog (LdapServer ldapServer)
@@ -73,7 +71,7 @@ namespace lat
 				_objectClass.Add (s);
 			}
 
-			showAttributes ();
+			ShowAttributes ();
 
 			templateEditorDialog.Run ();
 			templateEditorDialog.Destroy ();
@@ -86,7 +84,6 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "templateEditorDialog", null);
 			ui.Autoconnect (this);
 			
-			createCombos ();
 			setupTreeViews ();
 	
 			templateEditorDialog.Icon = Global.latIcon;
@@ -125,22 +122,7 @@ namespace lat
 			attrListStore.SetSortColumnId (0, SortType.Ascending);
 		}
 
-		private void createCombos ()
-		{
-			// class
-			attrClassComboBox = ComboBox.NewText ();
-			
-			string[] ocs = server.GetObjectClasses ();			
-			foreach (string n in ocs)
-				attrClassComboBox.AppendText (n);
-
-			attrClassComboBox.Active = 0;
-			attrClassComboBox.Show ();
-
-			attrClassHBox.PackStart (attrClassComboBox, true, true, 5);
-		}
-
-		private void OnAttributeEdit (object o, EditedArgs args)
+		void OnAttributeEdit (object o, EditedArgs args)
 		{
 			TreeIter iter;
 
@@ -155,7 +137,7 @@ namespace lat
 			attrListStore.SetValue (iter, 2, args.NewText);		
 		}
 
-		private void showAttributes ()
+		void ShowAttributes ()
 		{
 			attrListStore.Clear ();
 
@@ -188,22 +170,18 @@ namespace lat
 			}
 		}
 
-		public void OnAddClicked (object o, EventArgs args)
+		public void OnObjAddClicked (object o, EventArgs args)
 		{
-			TreeIter iter;
-				
-			if (!attrClassComboBox.GetActiveIter (out iter))
-				return;
+			AddObjectClassDialog dlg = new AddObjectClassDialog (server);				
+			foreach (string s in dlg.ObjectClasses) {
+				if (_objectClass.Contains (s))
+					continue;
+	
+				_objectClass.Add (s);
+				objListStore.AppendValues (s);			
+			}
 
-			string objClass = (string) attrClassComboBox.Model.GetValue (iter, 0);
-
-			if (_objectClass.Contains (objClass))
-				return;
-
-			_objectClass.Add (objClass);
-			objListStore.AppendValues (objClass);
-
-			showAttributes ();
+			ShowAttributes ();
 		}
 
 		public void OnObjRemoveClicked (object o, EventArgs args)
@@ -217,7 +195,7 @@ namespace lat
 
 				objListStore.Remove (ref iter);
 
-				showAttributes ();
+				ShowAttributes ();
 			}
 		}
 
@@ -243,7 +221,7 @@ namespace lat
 				attrListStore.Remove (ref iter);
 		}
 
-		private bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
+		bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
 		{
 			if (!attrListStore.IterIsValid (iter))
 				return true;
@@ -275,13 +253,6 @@ namespace lat
 			t.AddClass (_objectClass);	
 
 			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
-
-			templateEditorDialog.HideAll ();
-		}
-
-		public void OnCancelClicked (object o, EventArgs args)
-		{
-			templateEditorDialog.HideAll ();
 		}
 
 		public Template UserTemplate
