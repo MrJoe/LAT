@@ -197,9 +197,17 @@ namespace lat
 				if (attr.Name.ToLower() == "objectclass")
 					continue;
 
-				foreach (string s in attr.StringValueArray) {
-					store.AppendValues (attr.Name, s);
-					currentAttributes.Add (attr.Name, s);
+				try {
+				
+					foreach (string s in attr.StringValueArray) {
+						store.AppendValues (attr.Name, s);
+						currentAttributes.Add (attr.Name, s);
+					}
+					
+				} catch (ArgumentOutOfRangeException e) {					
+					// FIXME: this only happens with gmcs
+					store.AppendValues (attr.Name, "");
+					Logger.Log.Debug ("Show attribute arugment out of range: {0}", attr.Name);
 				}
 			}
 
