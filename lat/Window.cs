@@ -606,7 +606,7 @@ namespace lat
 		{
 			Tooltips t = new Tooltips ();
 			string tipMsg = null;
-			
+
 			tipMsg = String.Format ("Create a new {0}", vp.Name.ToLower());
 			newToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 			newToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
@@ -626,7 +626,22 @@ namespace lat
 			toggleButtons (true);
 		}
 
-		private void notebookViewChanged (object o, SwitchPageArgs args)
+		void SetBrowserTooltips ()
+		{
+			Tooltips t = new Tooltips ();
+			string tipMsg = null;
+
+			tipMsg = "Create a new directory entry";
+			newToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+
+			tipMsg = "Delete an entry from the directory";
+			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+
+			tipMsg = "Manage templates for creating new entries";
+			templateToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+		}
+
+		void notebookViewChanged (object o, SwitchPageArgs args)
 		{
 			if (args.PageNum == 0) {
 
@@ -662,7 +677,7 @@ namespace lat
 				templateToolButton.Show ();
 				propertiesToolButton.Hide ();
 				refreshToolButton.Hide ();
-
+				
 				if (serverInfoView != null) {
 					serverInfoView.Destroy ();
 					serverInfoView = null;
@@ -680,6 +695,7 @@ namespace lat
 				}
 
 				ldapTreeView.setToolbarHandlers (newToolButton, deleteToolButton);
+				SetBrowserTooltips ();
 
 			} else if (args.PageNum == 2) {
 
