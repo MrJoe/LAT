@@ -1,5 +1,5 @@
 // 
-// lat - JpegAttributeViewPlugin.cs
+// lat - JpegAttributeViewer.cs
 // Author: Loren Bandiera
 // Copyright 2006 MMG Security, Inc.
 //
@@ -27,34 +27,37 @@ namespace lat {
 
 	public class JpegAttributeViewPlugin : AttributeViewPlugin
 	{
-		string stringData = null;
+		byte[] jpegData = null;
 	
 		public JpegAttributeViewPlugin () : base ()
 		{
 		}
 	
-		public override void Init ()
-		{
-		}
-
 		public override void OnActivate (string attributeData)
 		{
 		}
 		
 		public override void OnActivate (byte[] attributeData)
 		{
+			jpegData = null;
+			
 			ViewerDialog vd = new ViewerDialog (attributeData);
-			stringData = vd.EncodedFile;
+			jpegData = vd.RawFileBytes;
 		}
 
-		public override void GetData (out string userData)
+		public override ViewerDataType DataType 
 		{
-			userData = stringData;
+			get { return ViewerDataType.Binary; }
+		}
+
+		public override string StringValue 
+		{
+			get { return null; }
 		}
 		
-		public override void GetData (out byte[] userData)
+		public override byte[] ByteValue 
 		{
-			userData = null;
+			get { return jpegData; }
 		}
 		
 		public override string AttributeName 
@@ -100,7 +103,7 @@ namespace lat {
 		[Glade.Widget] Gtk.Image jpegImage;
 		[Glade.Widget] Gtk.Entry filenameEntry;
 
-		string encodedFile = null;
+		byte[] rawBytes = null;
 
 		public ViewerDialog (byte[] imageData) 
 		{
@@ -168,17 +171,16 @@ namespace lat {
 			try {
 			
 				FileStream fs = File.OpenRead(filenameEntry.Text);
-				byte[] rawbytes = ReadFile (fs);
-				encodedFile = System.Convert.ToBase64String (rawbytes, 0, rawbytes.Length);
+				rawBytes = ReadFile (fs);				
 				
 			} catch (Exception e) {
 				Logger.Log.Debug (e.ToString());
 			}
 		}
 		
-		public string EncodedFile
+		public byte[] RawFileBytes
 		{
-			get { return encodedFile; }
+			get { return rawBytes; }
 		}
 	}
 }

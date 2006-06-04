@@ -38,35 +38,45 @@ namespace lat
 		public bool DontSavePassword;
 		public EncryptionType Encryption;
 		public string ServerType;
-		public ArrayList ActiveViews;
+		public ArrayList ActiveServerViews;
+		public ArrayList ActiveAttributeViewers;
 		
 		public ConnectionProfile ()
 		{
 		}
 		
-		public void SetDefaultViews ()
+		public void SetDefaultServerViews ()
 		{
-			ActiveViews = null;
-			ActiveViews = new ArrayList ();
+			ActiveServerViews = null;
+			ActiveServerViews = new ArrayList ();
 
 			switch (this.ServerType) {
 			
 			case "OpenLDAP":
 			case "Generic LDAP server":
-				ActiveViews.Add ("lat.PosixComputerViewPlugin");
-				ActiveViews.Add ("lat.PosixContactsViewPlugin");
-				ActiveViews.Add ("lat.PosixGroupViewPlugin");
-				ActiveViews.Add ("lat.PosixUserViewPlugin");
+				ActiveServerViews.Add ("lat.PosixComputerViewPlugin");
+				ActiveServerViews.Add ("lat.PosixContactsViewPlugin");
+				ActiveServerViews.Add ("lat.PosixGroupViewPlugin");
+				ActiveServerViews.Add ("lat.PosixUserViewPlugin");
 				break;
 				
 			case "Microsoft Active Directory":
-				ActiveViews.Add ("lat.ActiveDirectoryComputerViewPlugin");
-				ActiveViews.Add ("lat.ActiveDirectoryContactsViewPlugin");
-				ActiveViews.Add ("lat.ActiveDirectoryGroupViewPlugin");
-				ActiveViews.Add ("lat.ActiveDirectoryUserViewPlugin");			
+				ActiveServerViews.Add ("lat.ActiveDirectoryComputerViewPlugin");
+				ActiveServerViews.Add ("lat.ActiveDirectoryContactsViewPlugin");
+				ActiveServerViews.Add ("lat.ActiveDirectoryGroupViewPlugin");
+				ActiveServerViews.Add ("lat.ActiveDirectoryUserViewPlugin");			
 				break;
 			}
 		}
+
+		public void SetDefaultAttributeViewers ()
+		{
+			ActiveAttributeViewers = null;
+			ActiveAttributeViewers = new ArrayList ();
+
+			ActiveAttributeViewers.Add ("lat.JpegAttributeViewPlugin");
+			ActiveAttributeViewers.Add ("lat.PassswordAttributeViewPlugin");
+		}		
 	}
 
 	public class ProfileManager : IEnumerable
@@ -160,9 +170,16 @@ namespace lat
 
 			XmlNodeList nl = profileElement.GetElementsByTagName ("server_view");
 			if ((nl.Count > 0)) {
-				cp.ActiveViews = new ArrayList ();
+				cp.ActiveServerViews = new ArrayList ();
 				foreach (XmlElement sv in nl)
-					cp.ActiveViews.Add (sv.InnerText);
+					cp.ActiveServerViews.Add (sv.InnerText);
+			}
+
+			nl = profileElement.GetElementsByTagName ("attribute_viewer");
+			if ((nl.Count > 0)) {
+				cp.ActiveAttributeViewers = new ArrayList ();
+				foreach (XmlElement av in nl)
+					cp.ActiveAttributeViewers.Add (av.InnerText);
 			}
 
 			GnomeKeyring.Result gkr;
@@ -246,17 +263,28 @@ namespace lat
 				
 				profile.SetAttribute ("server_type", cp.ServerType);
 				
-				if (cp.ActiveViews == null)
-					cp.SetDefaultViews ();
+				if (cp.ActiveServerViews == null)
+					cp.SetDefaultServerViews ();
 				
 				XmlElement server_views = doc.CreateElement ("server_views");
-				foreach (string sv in cp.ActiveViews) {
+				foreach (string sv in cp.ActiveServerViews) {
 					XmlElement server_view = doc.CreateElement ("server_view");
 					server_view.InnerText = sv;
 					server_views.AppendChild (server_view);
-				}
+				}				
+				profile.AppendChild (server_views);
 				
-				profile.AppendChild (server_views);				
+				if (cp.ActiveAttributeViewers == null) 
+					cp.SetDefaultAttributeViewers ();
+				
+				XmlElement attribute_viewers = doc.CreateElement ("attribute_viewers");
+				foreach (string a in cp.ActiveAttributeViewers) {
+					XmlElement av = doc.CreateElement ("attribute_viewer");
+					av.InnerText = a;
+					attribute_viewers.AppendChild (av);
+				}				
+				profile.AppendChild (attribute_viewers);
+				
 				profiles.AppendChild (profile);
 				
 				OperationGetIntCallback theCallback = new OperationGetIntCallback (KeyringCallback);

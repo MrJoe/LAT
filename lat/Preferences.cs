@@ -139,7 +139,7 @@ namespace lat
 			if (server.ProfileName != null) {
 				ConnectionProfile cp = Global.profileManager [server.ProfileName];			
 				foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins) {
-					if (cp.ActiveViews.Contains (vp.GetType().ToString()))
+					if (cp.ActiveServerViews.Contains (vp.GetType().ToString()))
 						pluginStore.AppendValues (true, vp.Name);
 					else
 						pluginStore.AppendValues (false, vp.Name);
@@ -158,15 +158,16 @@ namespace lat
 			attrViewPluginTreeView.Model = attrPluginStore;
 
 			if (server.ProfileName != null) {
-//				ConnectionProfile cp = Global.profileManager [server.ProfileName];
+				ConnectionProfile cp = Global.profileManager [server.ProfileName];				
 			
-				foreach (AttributeViewPlugin avp in Global.pluginManager.AttributeViewPlugins) {
-					attrPluginStore.AppendValues (true, avp.Name);
+				if (cp.ActiveAttributeViewers == null)
+					cp.SetDefaultAttributeViewers ();
 					
-//					if (cp.ActiveViews.Contains (vp.GetType().ToString()))
-//						attrPluginStore.AppendValues (true, vp.Name);
-//					else
-//						attrPluginStore.AppendValues (false, vp.Name);
+				foreach (AttributeViewPlugin avp in Global.pluginManager.AttributeViewPlugins) {
+					if (cp.ActiveAttributeViewers.Contains (avp.GetType().ToString()))
+						attrPluginStore.AppendValues (true, avp.Name);
+					else
+						attrPluginStore.AppendValues (false, avp.Name);
 				}
 			}
 					
@@ -285,16 +286,16 @@ namespace lat
 			
 				bool old = (bool) attrPluginStore.GetValue (iter,0);
 				
-//				string name = (string) attrPluginStore.GetValue (iter, 1);				
-//				ConnectionProfile cp = Global.profileManager [server.ProfileName];
-//				ViewPlugin vp = Global.pluginManager.FindServerView (name);
-//				
-//				if (!cp.ActiveViews.Contains (vp.GetType().ToString()))
-//					cp.ActiveViews.Add (vp.GetType().ToString());
-//				else
-//					cp.ActiveViews.Remove (vp.GetType().ToString());
-//				
-//				Global.profileManager [server.ProfileName] = cp;
+				string name = (string) attrPluginStore.GetValue (iter, 1);				
+				ConnectionProfile cp = Global.profileManager [server.ProfileName];
+				AttributeViewPlugin vp = Global.pluginManager.FindAttributeView (name);
+				
+				if (!cp.ActiveAttributeViewers.Contains (vp.GetType().ToString()))
+					cp.ActiveAttributeViewers.Add (vp.GetType().ToString());
+				else
+					cp.ActiveAttributeViewers.Remove (vp.GetType().ToString());
+				
+				Global.profileManager [server.ProfileName] = cp;
 				
 				attrPluginStore.SetValue(iter,0,!old);
 			}
@@ -312,10 +313,10 @@ namespace lat
 				ConnectionProfile cp = Global.profileManager [server.ProfileName];
 				ViewPlugin vp = Global.pluginManager.FindServerView (name);
 				
-				if (!cp.ActiveViews.Contains (vp.GetType().ToString()))
-					cp.ActiveViews.Add (vp.GetType().ToString());
+				if (!cp.ActiveServerViews.Contains (vp.GetType().ToString()))
+					cp.ActiveServerViews.Add (vp.GetType().ToString());
 				else
-					cp.ActiveViews.Remove (vp.GetType().ToString());
+					cp.ActiveServerViews.Remove (vp.GetType().ToString());
 				
 				Global.profileManager [server.ProfileName] = cp;				
 				pluginStore.SetValue(iter,0,!old);

@@ -236,13 +236,11 @@ namespace lat
 			}
 
 			GeneratePassword ();
-
-			passwordDialog.HideAll ();
 		}
 
 		public void OnCancelClicked (object o, EventArgs args)
 		{
-			passwordDialog.HideAll ();
+			_unix = null;	
 		}
 
 		public ResponseType UserResponse

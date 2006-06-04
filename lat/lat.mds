@@ -5,12 +5,16 @@
       <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
       <Entry build="True" name="PosixCoreViews" configuration="Debug" />
       <Entry build="True" name="ActiveDirectoryCoreViews" configuration="Debug" />
+      <Entry build="True" name="JpegAttributeViewer" configuration="Debug" />
+      <Entry build="True" name="PasswordAttributeViewer" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="lat" configuration="Debug" />
       <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
       <Entry build="True" name="PosixCoreViews" configuration="Debug" />
       <Entry build="True" name="ActiveDirectoryCoreViews" configuration="Debug" />
+      <Entry build="True" name="JpegAttributeViewer" configuration="Debug" />
+      <Entry build="True" name="PasswordAttributeViewer" configuration="Debug" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="lat" single="True">
@@ -18,11 +22,15 @@
     <Execute type="None" entry="gnome-keyring-glue" />
     <Execute type="None" entry="PosixCoreViews" />
     <Execute type="None" entry="ActiveDirectoryCoreViews" />
+    <Execute type="None" entry="JpegAttributeViewer" />
+    <Execute type="None" entry="PasswordAttributeViewer" />
   </StartMode>
   <Entries>
     <Entry filename="./lat.mdp" />
     <Entry filename="../gnome-keyring-glue/gnome-keyring-glue.mdp" />
     <Entry filename="./plugins/PosixCoreViews/PosixCoreViews.mdp" />
     <Entry filename="./plugins/ActiveDirectoryCoreViews/ActiveDirectoryCoreViews.mdp" />
+    <Entry filename="./plugins/JpegAttributeViewer/JpegAttributeViewer.mdp" />
+    <Entry filename="./plugins/PasswordAttributeViewer/PasswordAttributeViewer.mdp" />
   </Entries>
 </Combine>

@@ -95,11 +95,11 @@ namespace lat
 			if (cp.ServerType == null)
 				cp.ServerType = server.ServerTypeString;
 			
-			if (cp.ActiveViews == null) 
-				cp.SetDefaultViews ();
+			if (cp.ActiveServerViews == null) 
+				cp.SetDefaultServerViews ();
 				
 			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)
-				if (cp.ActiveViews.Contains (vp.GetType().ToString()))
+				if (cp.ActiveServerViews.Contains (vp.GetType().ToString()))
 					viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);
 		}
 

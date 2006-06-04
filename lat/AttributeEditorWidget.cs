@@ -37,6 +37,7 @@ namespace lat
 
 		LdapServer currentServer;
 		string currentDN;
+		bool displayAll;
 		
 		ArrayList allAttrs;
 		NameValueCollection currentAttributes;
@@ -162,8 +163,9 @@ namespace lat
 	
 		public void Show (LdapServer server, LdapEntry entry, bool showAll)
 		{
+			displayAll = showAll;
 			currentServer = server;
-			currentDN = entry.DN;
+			currentDN = entry.DN;			
 			currentAttributes = new NameValueCollection ();
 
 			// FIXME: crashes after an apply if I don't re-create the store;	
@@ -292,6 +294,54 @@ namespace lat
 				DoPopUp ();
 		}
 
+		void RunViewerPlugin (AttributeViewPlugin avp, string attributeName)
+		{
+			LdapEntry le = currentServer.GetEntry (currentDN);
+			LdapAttribute la = le.getAttribute (attributeName);
+			
+			bool existing = false;
+			if (la != null)
+				existing = true; 
+
+			LdapAttribute newla = new LdapAttribute (attributeName);
+									
+			switch (avp.DataType) {
+			
+			case ViewerDataType.Binary:
+				if (existing)
+					avp.OnActivate (Util.ConvertSbyteToByte(la.ByteValue));					
+				else
+					avp.OnActivate (new byte[0]);
+				break;
+
+			case ViewerDataType.String:
+				if (existing)
+					avp.OnActivate (la.StringValue);
+				else
+					avp.OnActivate ("");
+				break;				
+			}
+		
+			if (avp.ByteValue != null)
+				newla.addBase64Value (System.Convert.ToBase64String (avp.ByteValue, 0, avp.ByteValue.Length));
+			else if (avp.StringValue != null)
+				newla.addValue (avp.StringValue);
+			else
+				return;
+			
+			LdapModification lm;
+			if (existing)
+				lm = new LdapModification (LdapModification.REPLACE, newla);
+			else
+				lm = new LdapModification (LdapModification.ADD, newla);
+
+			ArrayList modList = new ArrayList ();
+			modList.Add (lm);
+			Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
+
+			this.Show (currentServer, currentServer.GetEntry (currentDN), displayAll);
+		}
+
 		void OnRowActivated (object o, RowActivatedArgs args)
 		{
 			TreePath path = args.Path;
@@ -302,37 +352,12 @@ namespace lat
 				string name = null;
 				name = (string) store.GetValue (iter, 0);
 
-				foreach (AttributeViewPlugin avp in Global.pluginManager.AttributeViewPlugins) {
-					if (avp.AttributeName == name) {
-						LdapEntry le = currentServer.GetEntry (currentDN);
-						LdapAttribute la = le.getAttribute (name);
-						
-						if (la == null)
-							avp.OnActivate (new byte[1]);
-						else
-							avp.OnActivate (Util.ConvertSbyteToByte(la.ByteValue));
-						
-						string newVal = null;
-						avp.GetData (out newVal);
-						
-						if (newVal == null)
-							return;
-
-						LdapAttribute newla = new LdapAttribute (name);
-						newla.addBase64Value (newVal);
-						LdapModification lm;
-									
-						if (la == null)
-							lm = new LdapModification (LdapModification.ADD, newla);
-						else
-							lm = new LdapModification (LdapModification.REPLACE, newla);
-						
-						ArrayList modList = new ArrayList ();
-						modList.Add (lm);
-						
-						Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
-					}
-				}				
+				ConnectionProfile cp = Global.profileManager [currentServer.ProfileName];							
+					
+				foreach (AttributeViewPlugin avp in Global.pluginManager.AttributeViewPlugins)
+					if (avp.AttributeName == name)
+						if (cp.ActiveAttributeViewers.Contains (avp.GetType().ToString()))
+							RunViewerPlugin (avp, name);
 			} 		
 		}
 

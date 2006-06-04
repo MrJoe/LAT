@@ -125,21 +125,23 @@ namespace lat {
 		public abstract Gdk.Pixbuf Icon { get; }		
 	}
 
+	public enum ViewerDataType : int { Binary, String };
+
 	public abstract class AttributeViewPlugin
 	{
 		public AttributeViewPlugin ()
 		{
 		}
-		
-		public abstract void Init ();
-		
+			
 		public abstract void OnActivate (string attributeData);
 		public abstract void OnActivate (byte[] attributeData);
-
-		public abstract void GetData (out string userData);
-		public abstract void GetData (out byte[] userData);	
-		
+	
 		public abstract string AttributeName { get; }
+		public abstract string StringValue { get; }
+		public abstract byte[] ByteValue { get; }
+
+		public abstract ViewerDataType DataType { get; }
+				
 		public abstract string[] Authors { get; }		
 		public abstract string Copyright { get; }
 		public abstract string Description { get; }		

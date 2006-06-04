@@ -69,7 +69,8 @@ lat/lat
 lat/plugins/Makefile
 lat/plugins/PosixCoreViews/Makefile
 lat/plugins/ActiveDirectoryCoreViews/Makefile
-lat/plugins/JpegAttributeViewPlugin/Makefile
+lat/plugins/JpegAttributeViewer/Makefile
+lat/plugins/PasswordAttributeViewer/Makefile
 po/Makefile.in
 help/Makefile
 help/C/Makefile
