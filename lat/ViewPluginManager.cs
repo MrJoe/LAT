@@ -258,10 +258,10 @@ namespace lat {
 			return null;
 		}
 
-		public AttributeViewPlugin FindAttibuteView (string name)
+		public AttributeViewPlugin FindAttributeView (string name)
 		{
 			foreach (AttributeViewPlugin avp in attrPluginList)
-				if (avp.AttributeName == name)
+				if (avp.Name == name)
 						return avp;
 						
 			return null;
