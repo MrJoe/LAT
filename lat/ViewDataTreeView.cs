@@ -166,7 +166,10 @@ namespace lat {
 		public void ShowNewItemDialog (string viewName)
 		{
 			viewPlugin = null;
+			
 			viewPlugin = Global.pluginManager.FindServerView (viewName);
+			if (viewPlugin == null)
+				return;
 			
 			ConfigureView (viewPlugin);
 			
