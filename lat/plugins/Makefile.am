@@ -1,1 +1,5 @@
-SUBDIRS = PosixCoreViews ActiveDirectoryCoreViews JpegAttributeViewPlugin
+SUBDIRS = \
+	PosixCoreViews \
+	ActiveDirectoryCoreViews \
+	JpegAttributeViewer \
+	PasswordAttributeViewer
