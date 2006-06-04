@@ -136,7 +136,7 @@ namespace lat
 
 			if (server.ProfileName != null) {
 				ConnectionProfile cp = Global.profileManager [server.ProfileName];			
-				foreach (ViewPlugin vp in Global.viewPluginManager.Plugins) {
+				foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins) {
 					if (cp.ActiveViews.Contains (vp.GetType().ToString()))
 						pluginStore.AppendValues (true, vp.Name);
 					else
@@ -199,7 +199,7 @@ namespace lat
 			if (pluginTreeView.Selection.GetSelected (out model, out iter)) {
 							
 				string name = (string) pluginStore.GetValue (iter, 1);
-				ViewPlugin vp = Global.viewPluginManager.Find (name);
+				ViewPlugin vp = Global.pluginManager.FindServerView (name);
 				
 				if (vp != null) {
 					Gtk.AboutDialog ab = new Gtk.AboutDialog ();
@@ -237,7 +237,7 @@ namespace lat
 				string name = (string) pluginStore.GetValue (iter, 1);
 				
 				ConnectionProfile cp = Global.profileManager [server.ProfileName];
-				ViewPlugin vp = Global.viewPluginManager.Find (name);
+				ViewPlugin vp = Global.pluginManager.FindServerView (name);
 				
 				if (!cp.ActiveViews.Contains (vp.GetType().ToString()))
 					cp.ActiveViews.Add (vp.GetType().ToString());
@@ -289,7 +289,7 @@ namespace lat
 			
 			columnsTreeView.Model = columnStore;
 			
-			vp = Global.viewPluginManager.Find (pluginName);
+			vp = Global.pluginManager.FindServerView (pluginName);
 			if (vp != null) {			
 				for (int i = 0; i < vp.ColumnNames.Length; i++) {  
 					columnStore.AppendValues (vp.ColumnNames[i], vp.ColumnAttributes[i]);

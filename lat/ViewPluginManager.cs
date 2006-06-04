@@ -124,19 +124,44 @@ namespace lat {
 		public abstract string Version { get; }
 		public abstract Gdk.Pixbuf Icon { get; }		
 	}
+
+	public abstract class AttributeViewPlugin
+	{
+		public AttributeViewPlugin ()
+		{
+		}
+		
+		public abstract void Init ();
+		
+		public abstract void OnActivate (string attributeData);
+		public abstract void OnActivate (byte[] attributeData);
+
+		public abstract void GetData (out string userData);
+		public abstract void GetData (out byte[] userData);	
+		
+		public abstract string AttributeName { get; }
+		public abstract string[] Authors { get; }		
+		public abstract string Copyright { get; }
+		public abstract string Description { get; }		
+		public abstract string Name { get; }
+		public abstract string Version { get; }		
+	}
 	
-	public class ViewPluginManager
+	public class PluginManager
 	{
 		string pluginDirectory;
 		string pluginStateDirectory;		
-		ArrayList pluginList;
+		
+		ArrayList viewPluginList;
+		ArrayList attrPluginList;
 
 		FileSystemWatcher sysPluginWatch;
 		FileSystemWatcher usrPluginWatch;
 	
-		public ViewPluginManager ()
+		public PluginManager ()
 		{		
-			pluginList = new ArrayList ();
+			viewPluginList = new ArrayList ();
+			attrPluginList = new ArrayList ();
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
 			DirectoryInfo di = new DirectoryInfo (homeDir);
@@ -158,7 +183,7 @@ namespace lat {
 				foreach (FileInfo f in dir.GetFiles("*.dll"))
 					LoadPluginsFromFile (f.FullName);
 
-			foreach (ViewPlugin vp in pluginList) {
+			foreach (ViewPlugin vp in viewPluginList) {
 				string fileName = vp.GetType() + ".state";
 				vp.Deserialize (Path.Combine (pluginStateDirectory, fileName));
 			}
@@ -210,32 +235,54 @@ namespace lat {
 					if (plugin == null)
 						continue;
 						
-					pluginList.Add (plugin);
+					viewPluginList.Add (plugin);
 					Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);
+					
+				} else if (type.IsSubclassOf (typeof (AttributeViewPlugin))) {
+					AttributeViewPlugin plugin = (AttributeViewPlugin) Activator.CreateInstance (type);						
+					if (plugin == null)
+						continue;
+						
+					attrPluginList.Add (plugin);
+					Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);				
 				}
 			}		
 		}
 
-		public ViewPlugin Find (string name)
+		public ViewPlugin FindServerView (string name)
 		{
-			foreach (ViewPlugin vp in pluginList)
+			foreach (ViewPlugin vp in viewPluginList)
 				if (vp.Name == name)
 						return vp;
 						
 			return null;
 		}
 
+		public AttributeViewPlugin FindAttibuteView (string name)
+		{
+			foreach (AttributeViewPlugin avp in attrPluginList)
+				if (avp.AttributeName == name)
+						return avp;
+						
+			return null;
+		}
+
 		public void SavePluginsState ()
 		{
-			foreach (ViewPlugin vp in pluginList) {
+			foreach (ViewPlugin vp in viewPluginList) {
 				string fileName = vp.GetType() + ".state";
 				vp.Serialize (Path.Combine (pluginStateDirectory, fileName));
 			}
 		}
 
-		public ViewPlugin[] Plugins
+		public ViewPlugin[] ServerViewPlugins
 		{
-			get { return (ViewPlugin[]) pluginList.ToArray (typeof (ViewPlugin)); }
-		}		
+			get { return (ViewPlugin[]) viewPluginList.ToArray (typeof (ViewPlugin)); }
+		}
+		
+		public AttributeViewPlugin[] AttributeViewPlugins
+		{
+			get { return (AttributeViewPlugin[]) attrPluginList.ToArray (typeof (AttributeViewPlugin)); }
+		}
 	}
 }

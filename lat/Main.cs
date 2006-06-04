@@ -31,7 +31,7 @@ public class Global
 	public static bool VerboseMessages;
 	
 	public static TemplateManager theTemplateManager;
-	public static ViewPluginManager viewPluginManager;
+	public static PluginManager pluginManager;
 	public static ProfileManager profileManager;
 }
 
@@ -111,7 +111,7 @@ public class LdapAdministrationTool
 		Global.theTemplateManager = new TemplateManager ();
 		Global.theTemplateManager.Load ();
 
-		Global.viewPluginManager = new ViewPluginManager ();
+		Global.pluginManager = new PluginManager ();
 
 		Global.latProgram = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 
@@ -121,7 +121,7 @@ public class LdapAdministrationTool
 		Global.latProgram.Run ();
 
 		Global.theTemplateManager.Save ();
-		Global.viewPluginManager.SavePluginsState ();
+		Global.pluginManager.SavePluginsState ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}

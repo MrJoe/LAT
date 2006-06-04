@@ -65,6 +65,7 @@ namespace lat
 			
 			tv.KeyPressEvent += new KeyPressEventHandler (OnKeyPress);
 			tv.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
+			tv.RowActivated += new RowActivatedHandler (OnRowActivated);
 			
 			sw.AddWithViewport (tv);			
 					
@@ -289,6 +290,20 @@ namespace lat
 		{
 			if (args.Event.Button == 3)
 				DoPopUp ();
+		}
+
+		void OnRowActivated (object o, RowActivatedArgs args)
+		{
+			TreePath path = args.Path;
+			TreeIter iter;
+			
+			if (store.GetIter (out iter, path)) {
+			
+				string name = null;
+				name = (string) store.GetValue (iter, 0);
+
+				Console.WriteLine ("{0} activated", name);
+			} 		
 		}
 
 		void OnInsertActivate (object o, EventArgs args)

@@ -98,7 +98,7 @@ namespace lat
 			if (cp.ActiveViews == null) 
 				cp.SetDefaultViews ();
 				
-			foreach (ViewPlugin vp in Global.viewPluginManager.Plugins)
+			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)
 				if (cp.ActiveViews.Contains (vp.GetType().ToString()))
 					viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);
 		}

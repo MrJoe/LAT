@@ -201,7 +201,7 @@ namespace lat
 	
 		public void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
-			ViewPlugin vp = Global.viewPluginManager.Find (args.Name);
+			ViewPlugin vp = Global.pluginManager.FindServerView (args.Name);
 			
 			if (vp == null) {
 				if (viewDataTreeView != null) {
