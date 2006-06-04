@@ -1,7 +1,7 @@
 	* Added start of support for binary attributes
 	* Added attribute viewer plugins (jpegPhoto, userPassword)
 	* Server views / Attribute viewers can be enabled/disabled per profile
-	* Re-enabled toolbar for server views
+	* Re-enabled menu and toolbar items (new, properties, delete, refresh)
 	* Added matching rules and ldap syntaxes to schema browser
 	* Use AddObjectClassDialog in template editor
 	* Various code cleanups

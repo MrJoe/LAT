@@ -230,7 +230,7 @@ namespace lat
 
 			viewDataTreeView.ConfigureView (vp);
 			viewDataTreeView.Populate ();
-			SetupToolbar ();
+			SetupToolbar (vp);
 		}
 
 		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
@@ -602,11 +602,25 @@ namespace lat
 			}
 		}
 
-		void SetupToolbar ()
+		void SetupToolbar (ViewPlugin vp)
 		{
+			Tooltips t = new Tooltips ();
+			string tipMsg = null;
+			
+			tipMsg = String.Format ("Create a new {0}", vp.Name.ToLower());
+			newToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 			newToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
+
+			tipMsg = String.Format ("Edit the properties of a {0}", vp.Name.ToLower());
+			propertiesToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 			propertiesToolButton.Clicked += new EventHandler (viewDataTreeView.OnEditActivate);
+			
+			tipMsg = String.Format ("Delete a {0} from the directory", vp.Name.ToLower());
+			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 			deleteToolButton.Clicked += new EventHandler (viewDataTreeView.OnDeleteActivate);
+
+			tipMsg = "Refreshes the data from the server";
+			refreshToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 			refreshToolButton.Clicked += new EventHandler (viewDataTreeView.OnRefreshActivate);
 
 			toggleButtons (true);
@@ -767,34 +781,34 @@ namespace lat
 
 		public void OnNewActivate (object o, EventArgs args)
 		{
-//			if (viewNotebook.CurrentPage == 0)
-//				if (currentView != null)
-//					currentView.OnNewEntryActivate (o, args);
-//			else if (viewNotebook.CurrentPage == 1)
-//				ldapTreeView.OnNewEntryActivate (o, args);
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnNewEntryActivate (o, args);
+			else if (viewNotebook.CurrentPage == 1)
+				ldapTreeView.OnNewEntryActivate (o, args);
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args)
 		{
-//			if (viewNotebook.CurrentPage == 0)
-//				if (currentView != null)
-//					currentView.OnDeleteActivate (o, args);
-//			else if (viewNotebook.CurrentPage == 1)
-//				ldapTreeView.OnDeleteActivate (o, args);
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnDeleteActivate (o, args);
+			else if (viewNotebook.CurrentPage == 1)
+				ldapTreeView.OnDeleteActivate (o, args);
 		}
 
 		public void OnPropertiesActivate (object o, EventArgs args)
 		{
-//			if (viewNotebook.CurrentPage == 0)
-//				if (currentView != null)
-//					currentView.OnEditActivate (o, args);
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnEditActivate (o, args);
 		}
 
 		public void OnRefreshActivate (object o, EventArgs args)
 		{
-//			if (viewNotebook.CurrentPage == 0)
-//				if (currentView != null)
-//					currentView.OnRefreshActivate (o, args);
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnRefreshActivate (o, args);
 		}
 
 		public void OnReloginActivate (object o, EventArgs args)
