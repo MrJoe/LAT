@@ -108,10 +108,13 @@ namespace lat {
 			ui.Autoconnect (this);
 			
 			if (imageData != null) {
-				Gdk.Pixbuf pb = new Gdk.Pixbuf (imageData);
-				jpegImage.Pixbuf = pb;
+				try {
+					Gdk.Pixbuf pb = new Gdk.Pixbuf (imageData);
+					jpegImage.Pixbuf = pb;
+				} catch {}
 			}
 			
+			jpegAttributeViewDialog.Resize (300, 400);
 			jpegAttributeViewDialog.Run ();
 			jpegAttributeViewDialog.Destroy ();
 		}
@@ -132,6 +135,11 @@ namespace lat {
 			ResponseType response = (ResponseType) fcd.Run();
 			if (response == ResponseType.Ok) {
 				filenameEntry.Text = fcd.Filename;
+				
+				try {
+					Gdk.Pixbuf pb = new Gdk.Pixbuf (fcd.Filename);
+					jpegImage.Pixbuf = pb;
+				} catch {}
 			} 
 		
 			fcd.Destroy();		

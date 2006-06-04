@@ -302,7 +302,37 @@ namespace lat
 				string name = null;
 				name = (string) store.GetValue (iter, 0);
 
-				Console.WriteLine ("{0} activated", name);
+				foreach (AttributeViewPlugin avp in Global.pluginManager.AttributeViewPlugins) {
+					if (avp.AttributeName == name) {
+						LdapEntry le = currentServer.GetEntry (currentDN);
+						LdapAttribute la = le.getAttribute (name);
+						
+						if (la == null)
+							avp.OnActivate (new byte[1]);
+						else
+							avp.OnActivate (Util.ConvertSbyteToByte(la.ByteValue));
+						
+						string newVal = null;
+						avp.GetData (out newVal);
+						
+						if (newVal == null)
+							return;
+
+						LdapAttribute newla = new LdapAttribute (name);
+						newla.addBase64Value (newVal);
+						LdapModification lm;
+									
+						if (la == null)
+							lm = new LdapModification (LdapModification.ADD, newla);
+						else
+							lm = new LdapModification (LdapModification.REPLACE, newla);
+						
+						ArrayList modList = new ArrayList ();
+						modList.Add (lm);
+						
+						Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
+					}
+				}				
 			} 		
 		}
 
