@@ -25,5 +25,4 @@ EXTRA_DIST =			\
 
 CLEANFILES = 		\
 	$(desktop_DATA) \
-	$(applications_DATA) \
 	$(pkgconfig_DATA)

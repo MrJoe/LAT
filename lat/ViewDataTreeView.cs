@@ -162,6 +162,17 @@ namespace lat {
 			viewPlugin.OnAddEntry (server);
 			Populate ();
 		}
+		
+		public void ShowNewItemDialog (string viewName)
+		{
+			viewPlugin = null;
+			viewPlugin = Global.pluginManager.FindServerView (viewName);
+			
+			ConfigureView (viewPlugin);
+			
+			viewPlugin.OnAddEntry (server);
+			Populate ();
+		}
 
 		public void OnEditActivate (object o, EventArgs args) 
 		{

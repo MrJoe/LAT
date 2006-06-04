@@ -924,17 +924,11 @@ namespace lat {
 			}
 		}
 
-		private static bool SSLHandler (Syscert.X509Certificate certificate,
-						int[] certificateErrors)
+		static bool SSLHandler (Syscert.X509Certificate certificate, int[] certificateErrors)
 		{
-//			X509Store store = null;
-//			X509Stores stores = X509StoreManager.CurrentUser;
-//			store = stores.TrustedRoot;
 			bool retVal = true;
-
-			//Import the details of the certificate from the server.
 			X509Certificate x509 = null;
-//			X509CertificateCollection coll = new X509CertificateCollection ();
+
 			byte[] data = certificate.GetRawCertData();
 			if (data != null)			
 				x509 = new X509Certificate (data);
@@ -951,29 +945,8 @@ namespace lat {
 			msg += "\nUnique Hash:   " + CryptoConvert.ToHex (x509.Hash);
 
 			Logger.Log.Debug ("Certificate info:\n{0}", msg);
-/*
-			FIXME: Import certificates into user database. This crashes because it can't 
-			FIXME: load the cert dialog. I think it's the context the code is being executed 
-			FIXME: in. Not sure how to resolve. For now just connect to server.
+			Logger.Log.Debug ("Certificate errors:\n{0}", certificateErrors.Length);
 
-			CertificateDialog cd = new CertificateDialog (msg);
-
-			Logger.Log.Debug ("CertificateDialog.UserResponse: {0}", cd.UserResponse);
-
-			if (cd.UserResponse == CertDialogResponse.Import) 
-			{
-				if (x509 != null)
-					coll.Add (x509);
-
-				store.Import (x509);
-
-				Logger.Log.Debug ("Certificate successfully imported.");
-			} 
-			else if (cd.UserResponse == CertDialogResponse.Cancel)
-			{
-				retVal = false;
-			}
-*/
 			return retVal;
 		}
 

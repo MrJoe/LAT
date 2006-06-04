@@ -45,6 +45,7 @@ namespace lat
 		[Glade.Widget] Gtk.ToolButton deleteToolButton;
 		[Glade.Widget] Gtk.ToolButton refreshToolButton;
 		[Glade.Widget] Gtk.ToolButton templateToolButton;
+		[Glade.Widget] Gtk.MenuItem newMenuItem;
 		[Glade.Widget] Gtk.CheckMenuItem showAllAttributes;
 		[Glade.Widget] Gtk.RadioMenuItem viewsView;
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
@@ -163,14 +164,7 @@ namespace lat
 			searchBaseButton.Label = server.DirectoryRoot;
 			toggleButtons (false);
 
-			// status bar			
-			updateStatusBar ();
-
-			// handlers		
-			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
-
 			// setup schema
-
 			objRequiredStore = new ListStore (typeof (string));
 			objRequiredTreeview.Model = objRequiredStore;
 
@@ -181,10 +175,17 @@ namespace lat
 			objOptionalTreeview.AppendColumn ("Optional Attributes", new CellRendererText (), "text", 0);
 
 			infoVpaned1.Position = 150;
-
 			toggleInfoNotebook (false);
-
 			templateToolButton.Hide ();
+
+			// setup menu
+			GenerateNewMenu ();
+
+			// status bar			
+			updateStatusBar ();
+
+			// handlers		
+			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
 		}
 
 		public void OnPreferencesChanged (object sender, GConf.NotifyEventArgs args)
@@ -195,7 +196,10 @@ namespace lat
 		public void OnPreferencesActivate (object sender, EventArgs args)
 		{
 			new PreferencesDialog (server);
+
 			viewsTreeView.Refresh ();
+			GenerateNewMenu ();
+			
 			Global.profileManager.SaveProfiles ();
 		}
 	
@@ -239,6 +243,32 @@ namespace lat
 
 			if (entry != null) 
 				attributeEditor.Show (server, entry, showAllAttributes.Active);
+		}
+
+		void GenerateNewMenu ()
+		{
+			Gtk.Menu newMenu = new Gtk.Menu ();	
+
+			ConnectionProfile cp = Global.profileManager [server.ProfileName];	
+			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)
+					if (cp.ActiveServerViews.Contains (vp.GetType().ToString())) {
+						ImageMenuItem menuitem = new ImageMenuItem (vp.Name);
+						menuitem.Image = new Gtk.Image (vp.Icon);
+						menuitem.Activated += OnNewMenuItemActivate;
+						menuitem.Show ();						
+						newMenu.Append (menuitem);
+					}
+
+			newMenuItem.Submenu = null;
+			newMenuItem.Submenu = newMenu;
+		}
+
+		void OnNewMenuItemActivate (object o, EventArgs args)
+		{
+			ImageMenuItem mi = (ImageMenuItem) o;
+			Gtk.Label l = (Gtk.Label) mi.Child;
+			
+			viewDataTreeView.ShowNewItemDialog (l.Text);
 		}
 
 		void updateStatusBar ()
@@ -795,14 +825,14 @@ namespace lat
 
 		// Menu
 
-		public void OnNewActivate (object o, EventArgs args)
-		{
-			if (viewNotebook.CurrentPage == 0)
-				if (viewDataTreeView != null)
-					viewDataTreeView.OnNewEntryActivate (o, args);
-			else if (viewNotebook.CurrentPage == 1)
-				ldapTreeView.OnNewEntryActivate (o, args);
-		}
+//		public void OnNewActivate (object o, EventArgs args)
+//		{
+//			if (viewNotebook.CurrentPage == 0)
+//				if (viewDataTreeView != null)
+//					viewDataTreeView.OnNewEntryActivate (o, args);
+//			else if (viewNotebook.CurrentPage == 1)
+//				ldapTreeView.OnNewEntryActivate (o, args);
+//		}
 
 		public void OnDeleteActivate (object o, EventArgs args)
 		{
