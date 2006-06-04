@@ -1,8 +1,10 @@
 	* Added start of support for binary attributes
 	* Added attribute viewer plugins (jpegPhoto, userPassword)
-	* Server views can be enabled/disabled per profile
+	* Server views / Attribute viewers can be enabled/disabled per profile
+	* Re-enabled toolbar for server views
 	* Added matching rules and ldap syntaxes to schema browser
 	* Use AddObjectClassDialog in template editor
+	* Various code cleanups
 	* Switch to gmcs compiler (C# 2.0)
 
 1.1.2

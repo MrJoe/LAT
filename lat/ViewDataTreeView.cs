@@ -157,13 +157,13 @@ namespace lat {
 			return null;
 		}
 
-		void OnNewEntryActivate (object o, EventArgs args) 
+		public void OnNewEntryActivate (object o, EventArgs args) 
 		{
 			viewPlugin.OnAddEntry (server);
 			Populate ();
 		}
 
-		void OnEditActivate (object o, EventArgs args) 
+		public void OnEditActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
 			TreePath[] tp = this.Selection.GetSelectedRows (out model);
@@ -200,7 +200,7 @@ namespace lat {
 			} catch {}
 		}
 
-		void OnDeleteActivate (object o, EventArgs args) 
+		public void OnDeleteActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
 			TreePath[] tp = this.Selection.GetSelectedRows (out model);
@@ -220,6 +220,11 @@ namespace lat {
 				Util.ExportData (server, parentWindow, le.DN);
 			}
 			catch {}
+		}
+
+		public void OnRefreshActivate (object o, EventArgs args)
+		{
+			Populate ();
 		}
 
 		[ConnectBefore]

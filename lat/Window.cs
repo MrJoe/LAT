@@ -204,10 +204,11 @@ namespace lat
 			ViewPlugin vp = Global.pluginManager.FindServerView (args.Name);
 			
 			if (vp == null) {
-				if (viewDataTreeView != null) {
+				if (viewDataTreeView != null) {					
 					viewDataTreeView.Destroy ();
 					viewDataTreeView = null;
 				}
+							
 			
 				serverInfoView = new ServerInfoView (server);
 				valuesScrolledWindow.AddWithViewport (serverInfoView);
@@ -215,6 +216,8 @@ namespace lat
 				
 				return;
 			}
+
+			cleanupView ();
 
 			if (viewDataTreeView == null) {
 				serverInfoView.Destroy ();
@@ -224,9 +227,10 @@ namespace lat
 				valuesScrolledWindow.AddWithViewport (viewDataTreeView);
 				valuesScrolledWindow.ShowAll ();			
 			}
-		
+
 			viewDataTreeView.ConfigureView (vp);
 			viewDataTreeView.Populate ();
+			SetupToolbar ();
 		}
 
 		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
@@ -588,55 +592,25 @@ namespace lat
 			} catch {}
 		}
 
-//		private void removeButtonHandlers ()
-//		{
-//			newToolButton.Clicked -= new EventHandler
-//				 (currentView.OnNewEntryActivate);
-//
-//			propertiesToolButton.Clicked -= new EventHandler
-//				 (currentView.OnEditActivate);
-//
-//			deleteToolButton.Clicked -= new EventHandler
-//				 (currentView.OnDeleteActivate);
-//
-//			refreshToolButton.Clicked -= new EventHandler
-//				 (currentView.OnRefreshActivate);
-//		}
-
-		private void cleanupView ()
+		void cleanupView ()
 		{
-//			if (currentView != null) {
-//
-//				removeButtonHandlers ();
-//				currentView.RemoveDndHandlers ();
-//				currentView.RemoveHandlers ();
-//				currentView = null;
-//			}
+			if (viewDataTreeView != null) {
+				newToolButton.Clicked -= new EventHandler (viewDataTreeView.OnNewEntryActivate);
+				propertiesToolButton.Clicked -= new EventHandler (viewDataTreeView.OnEditActivate);
+				deleteToolButton.Clicked -= new EventHandler (viewDataTreeView.OnDeleteActivate);
+				refreshToolButton.Clicked -= new EventHandler (viewDataTreeView.OnRefreshActivate);
+			}
 		}
 
-//		void changeView (string name)
-//		{
-//			cleanupView ();
-//
-//			currentView = serverViewFactory.Create (name);
-//
-//			if (currentView != null)
-//				currentView.Populate ();
-//
-//			newToolButton.Clicked += new EventHandler
-//				(currentView.OnNewEntryActivate);
-//
-//			propertiesToolButton.Clicked += new EventHandler
-//				(currentView.OnEditActivate);
-//
-//			deleteToolButton.Clicked += new EventHandler
-//				(currentView.OnDeleteActivate);
-//
-//			refreshToolButton.Clicked += new EventHandler
-//				(currentView.OnRefreshActivate);
-//
-//			toggleButtons (true);
-//		}
+		void SetupToolbar ()
+		{
+			newToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
+			propertiesToolButton.Clicked += new EventHandler (viewDataTreeView.OnEditActivate);
+			deleteToolButton.Clicked += new EventHandler (viewDataTreeView.OnDeleteActivate);
+			refreshToolButton.Clicked += new EventHandler (viewDataTreeView.OnRefreshActivate);
+
+			toggleButtons (true);
+		}
 
 		private void notebookViewChanged (object o, SwitchPageArgs args)
 		{
