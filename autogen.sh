@@ -59,6 +59,18 @@ if test "$DIE" -eq 1; then
 	exit 1
 fi
 
+if [ ! -f omf.make ]; then
+   ln -s "`pkg-config --variable=datadir gnome-doc-utils`/gnome-common/data/omf.make"
+fi
+
+if [ ! -f xmldocs.make ]; then
+   ln -s "`pkg-config --variable=datadir gnome-doc-utils`/gnome-common/data/xmldocs.make"
+fi
+
+if [ ! -d m4 ]; then
+   mkdir m4
+fi
+
 test $TEST_TYPE $FILE || {
 	echo "You must run this script in the top-level $PROJECT directory"
 	exit 1
@@ -139,14 +151,6 @@ do
     )
   fi
 done
-
-if [ ! -f omf.make ]; then
-   ln -s "`pkg-config --variable=datadir gnome-doc-utils`/gnome-common/data/omf.make"
-fi
-
-if [ ! -f xmldocs.make ]; then
-   ln -s "`pkg-config --variable=datadir gnome-doc-utils`/gnome-common/data/xmldocs.make"
-fi
 
 conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
 

@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = gnome-keyring-glue lat po desktop resources help
 
 EXTRA_DIST = \
