@@ -79,6 +79,16 @@ namespace lat {
 		{ 
 			get { return "0.1"; } 
 		}
+
+		public override string MenuLabel 
+		{
+			get { return "Computer"; }
+		}
+		
+		public override AccelKey MenuKey 
+		{
+			get { return new AccelKey (Gdk.Key.Key_1, Gdk.ModifierType.ControlMask, AccelFlags.Visible); }
+		}
 		
 		public override Gdk.Pixbuf Icon 
 		{

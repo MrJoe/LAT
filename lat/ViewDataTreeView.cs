@@ -168,8 +168,9 @@ namespace lat {
 			viewPlugin = null;
 			
 			viewPlugin = Global.pluginManager.FindServerView (viewName);
-			if (viewPlugin == null)
+			if (viewPlugin == null) {
 				return;
+			}
 			
 			ConfigureView (viewPlugin);
 			

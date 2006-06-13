@@ -78,6 +78,16 @@ namespace lat {
 		{ 
 			get { return "0.1"; } 
 		}
+
+		public override string MenuLabel 
+		{
+			get { return "Group"; }
+		}
+
+		public override AccelKey MenuKey 
+		{
+			get { return new AccelKey (Gdk.Key.Key_3, Gdk.ModifierType.ControlMask, AccelFlags.Visible); }
+		}
 		
 		public override Gdk.Pixbuf Icon 
 		{

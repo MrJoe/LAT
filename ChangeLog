@@ -1,3 +1,6 @@
+	* Changed new toolbar button to menu toolbar button
+	* Add MenuLabel and MenuKey attributes to server view plugins
+
 1.1.3
 
 	* Added start of support for binary attributes

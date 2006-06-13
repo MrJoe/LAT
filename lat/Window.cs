@@ -40,7 +40,7 @@ namespace lat
 		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
 		[Glade.Widget] Notebook viewNotebook;
 		[Glade.Widget] HPaned hpaned1;
-		[Glade.Widget] Gtk.ToolButton newToolButton;
+		[Glade.Widget] Gtk.MenuToolButton newMenuToolButton;
 		[Glade.Widget] Gtk.ToolButton propertiesToolButton;
 		[Glade.Widget] Gtk.ToolButton deleteToolButton;
 		[Glade.Widget] Gtk.ToolButton refreshToolButton;
@@ -85,14 +85,14 @@ namespace lat
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
 
-		private LdapTreeView ldapTreeView;
-		private SchemaTreeView _schemaTreeview;
-		private SearchResultsTreeView _searchTreeView;
+		LdapTreeView ldapTreeView;
+		SchemaTreeView schemaTreeview;
+		SearchResultsTreeView searchTreeView;
 
 		LdapServer server;
-
-		private ListStore objRequiredStore;
-		private ListStore objOptionalStore;
+		
+		ListStore objRequiredStore;
+		ListStore objOptionalStore;
 
 		private string _cutDN = null;
 		private TreeIter _cutIter;
@@ -104,6 +104,8 @@ namespace lat
 		ViewDataTreeView viewDataTreeView;
 		AttributeEditorWidget attributeEditor;
 		ServerInfoView serverInfoView;
+
+		AccelGroup newAccelGroup;
 
 		public latWindow (LdapServer ldapServer) 
 		{
@@ -148,17 +150,17 @@ namespace lat
 			LoadPreference (Preferences.BROWSER_SELECTION);
 
 			// Setup schema browser
-			_schemaTreeview = new SchemaTreeView (server, mainWindow);
-			_schemaTreeview.schemaSelected += new schemaSelectedHandler (schemaDNSelected);
+			schemaTreeview = new SchemaTreeView (server, mainWindow);
+			schemaTreeview.schemaSelected += new schemaSelectedHandler (schemaDNSelected);
 
-			schemaScrolledWindow.AddWithViewport (_schemaTreeview);
+			schemaScrolledWindow.AddWithViewport (schemaTreeview);
 			schemaScrolledWindow.Show ();
 
 			// Setup search
-			_searchTreeView = new SearchResultsTreeView (server);
-			_searchTreeView.SearchResultSelected += new SearchResultSelectedHandler (OnSearchSelected);
+			searchTreeView = new SearchResultsTreeView (server);
+			searchTreeView.SearchResultSelected += new SearchResultSelectedHandler (OnSearchSelected);
 
-			resultsScrolledWindow.AddWithViewport (_searchTreeView);
+			resultsScrolledWindow.AddWithViewport (searchTreeView);
 			resultsScrolledWindow.Show ();
 
 			searchBaseButton.Label = server.DirectoryRoot;
@@ -179,6 +181,9 @@ namespace lat
 			templateToolButton.Hide ();
 
 			// setup menu
+			newAccelGroup = new AccelGroup ();
+			mainWindow.AddAccelGroup (newAccelGroup);
+			
 			GenerateNewMenu ();
 
 			// status bar			
@@ -252,7 +257,12 @@ namespace lat
 			ConnectionProfile cp = Global.profileManager [server.ProfileName];	
 			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)
 					if (cp.ActiveServerViews.Contains (vp.GetType().ToString())) {
-						ImageMenuItem menuitem = new ImageMenuItem (vp.Name);
+						ImageMenuItem menuitem = new ImageMenuItem (vp.MenuLabel, newAccelGroup);
+						menuitem.AddAccelerator ("activate", newAccelGroup, vp.MenuKey);
+						
+						Gtk.Label l = (Gtk.Label) menuitem.Child;
+						l.Text = vp.MenuLabel;
+						
 						menuitem.Image = new Gtk.Image (vp.Icon);
 						menuitem.Activated += OnNewMenuItemActivate;
 						menuitem.Show ();						
@@ -261,13 +271,15 @@ namespace lat
 
 			newMenuItem.Submenu = null;
 			newMenuItem.Submenu = newMenu;
+			
+			newMenuToolButton.Menu = newMenu;
 		}
 
 		void OnNewMenuItemActivate (object o, EventArgs args)
 		{
 			ImageMenuItem mi = (ImageMenuItem) o;
 			Gtk.Label l = (Gtk.Label) mi.Child;
-			
+
 			viewDataTreeView.ShowNewItemDialog (l.Text);
 		}
 
@@ -375,7 +387,7 @@ namespace lat
 	
 		void toggleButtons (bool btnState)
 		{
-			newToolButton.Sensitive = btnState;
+			newMenuToolButton.Sensitive = btnState;
 			propertiesToolButton.Sensitive = btnState;
 			deleteToolButton.Sensitive = btnState;
 			refreshToolButton.Sensitive = btnState;
@@ -495,7 +507,7 @@ namespace lat
 				dialog.Destroy ();
 
 			} else if (searchResults.Length > 0 && filterEntry.Text != "") {
-				_searchTreeView.UpdateSearchResults (searchResults);
+				searchTreeView.UpdateSearchResults (searchResults);
 
 				string msg = String.Format ("Found {0} matching entries", searchResults.Length);
 				appBar.Pop ();
@@ -625,7 +637,7 @@ namespace lat
 		void cleanupView ()
 		{
 			if (viewDataTreeView != null) {
-				newToolButton.Clicked -= new EventHandler (viewDataTreeView.OnNewEntryActivate);
+				newMenuToolButton.Clicked -= new EventHandler (viewDataTreeView.OnNewEntryActivate);
 				propertiesToolButton.Clicked -= new EventHandler (viewDataTreeView.OnEditActivate);
 				deleteToolButton.Clicked -= new EventHandler (viewDataTreeView.OnDeleteActivate);
 				refreshToolButton.Clicked -= new EventHandler (viewDataTreeView.OnRefreshActivate);
@@ -638,8 +650,8 @@ namespace lat
 			string tipMsg = null;
 
 			tipMsg = String.Format ("Create a new {0}", vp.Name.ToLower());
-			newToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-			newToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
+			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			newMenuToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
 
 			tipMsg = String.Format ("Edit the properties of a {0}", vp.Name.ToLower());
 			propertiesToolButton.SetTooltip (t,  tipMsg, tipMsg);			
@@ -662,7 +674,7 @@ namespace lat
 			string tipMsg = null;
 
 			tipMsg = "Create a new directory entry";
-			newToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 
 			tipMsg = "Delete an entry from the directory";
 			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
@@ -695,6 +707,7 @@ namespace lat
 					valuesScrolledWindow.Show ();
 				}
 
+				GenerateNewMenu ();
 				templateToolButton.Hide ();
 
 			} else if (args.PageNum == 1) {
@@ -703,6 +716,9 @@ namespace lat
 
 				toggleButtons (true);
 				toggleInfoNotebook (false);
+
+				newMenuItem.Submenu = null;
+				newMenuToolButton.Menu = null;
 
 				templateToolButton.Show ();
 				propertiesToolButton.Hide ();
@@ -724,7 +740,7 @@ namespace lat
 					valuesScrolledWindow.Show ();
 				}
 
-				ldapTreeView.setToolbarHandlers (newToolButton, deleteToolButton);
+				ldapTreeView.setToolbarHandlers (newMenuToolButton, deleteToolButton);
 				SetBrowserTooltips ();
 
 			} else if (args.PageNum == 2) {
@@ -732,6 +748,9 @@ namespace lat
 				cleanupView ();
 
 				ldapTreeView.removeToolbarHandlers ();
+
+				newMenuItem.Submenu = null;
+				newMenuToolButton.Menu = null;
 
 				if (serverInfoView != null) {
 					serverInfoView.Destroy ();
@@ -759,6 +778,9 @@ namespace lat
 				cleanupView ();
 
 				toggleButtons (false);
+
+				newMenuItem.Submenu = null;
+				newMenuToolButton.Menu = null;
 
 				toggleInfoNotebook (true);
 

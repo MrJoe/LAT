@@ -120,8 +120,11 @@ namespace lat {
 		public abstract string[] Authors { get; }		
 		public abstract string Copyright { get; }
 		public abstract string Description { get; }		
-		public abstract string Name { get; }
+		public abstract string Name { get; }		
 		public abstract string Version { get; }
+		
+		public abstract string MenuLabel { get; }
+		public abstract AccelKey MenuKey { get; }
 		public abstract Gdk.Pixbuf Icon { get; }		
 	}
 
@@ -156,6 +159,7 @@ namespace lat {
 		
 		ArrayList viewPluginList;
 		ArrayList attrPluginList;
+		Hashtable viewPluginHash;
 
 		FileSystemWatcher sysPluginWatch;
 		FileSystemWatcher usrPluginWatch;
@@ -164,6 +168,7 @@ namespace lat {
 		{		
 			viewPluginList = new ArrayList ();
 			attrPluginList = new ArrayList ();
+			viewPluginHash = new Hashtable ();
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
 			DirectoryInfo di = new DirectoryInfo (homeDir);
@@ -238,6 +243,7 @@ namespace lat {
 						continue;
 						
 					viewPluginList.Add (plugin);
+					viewPluginHash.Add (plugin.MenuLabel, plugin.Name);
 					Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);
 					
 				} else if (type.IsSubclassOf (typeof (AttributeViewPlugin))) {
@@ -253,10 +259,12 @@ namespace lat {
 
 		public ViewPlugin FindServerView (string name)
 		{
+			string labelKey = (string) viewPluginHash [name];
+		
 			foreach (ViewPlugin vp in viewPluginList)
-				if (vp.Name == name)
+				if (vp.Name == name || vp.Name == labelKey)
 						return vp;
-						
+										
 			return null;
 		}
 

@@ -79,7 +79,17 @@ namespace lat {
 		{ 
 			get { return "0.1"; } 
 		}
-		
+
+		public override string MenuLabel 
+		{
+			get { return "Active Directory User"; }
+		}
+
+		public override AccelKey MenuKey 
+		{
+			get { return new AccelKey (Gdk.Key.Key_8, Gdk.ModifierType.ControlMask, AccelFlags.Visible); }
+		}
+
 		public override Gdk.Pixbuf Icon 
 		{
 			get { return Pixbuf.LoadFromResource ("stock_person.png"); }
