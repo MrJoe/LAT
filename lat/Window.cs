@@ -251,11 +251,19 @@ namespace lat
 		}
 
 		void GenerateNewMenu ()
-		{
+		{		
 			Gtk.Menu newMenu = new Gtk.Menu ();	
-
-			ConnectionProfile cp = Global.profileManager [server.ProfileName];	
-			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)
+			ConnectionProfile cp = null;
+			
+			if (server.ProfileName == null) {
+				cp = new ConnectionProfile ();
+				cp.ServerType = server.ServerTypeString;				
+				cp.SetDefaultServerViews ();		
+			} else {
+				cp = Global.profileManager [server.ProfileName];
+			}
+ 	
+			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)		
 					if (cp.ActiveServerViews.Contains (vp.GetType().ToString())) {
 						ImageMenuItem menuitem = new ImageMenuItem (vp.MenuLabel, newAccelGroup);
 						menuitem.AddAccelerator ("activate", newAccelGroup, vp.MenuKey);
@@ -267,7 +275,7 @@ namespace lat
 						menuitem.Activated += OnNewMenuItemActivate;
 						menuitem.Show ();						
 						newMenu.Append (menuitem);
-					}
+					} 
 
 			newMenuItem.Submenu = null;
 			newMenuItem.Submenu = newMenu;

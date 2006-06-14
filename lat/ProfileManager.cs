@@ -37,9 +37,9 @@ namespace lat
 		public string Pass;
 		public bool DontSavePassword;
 		public EncryptionType Encryption;
-		public string ServerType;
+		public string ServerType;		
+		public ArrayList ActiveAttributeViewers;		
 		public ArrayList ActiveServerViews;
-		public ArrayList ActiveAttributeViewers;
 		
 		public ConnectionProfile ()
 		{
@@ -47,17 +47,16 @@ namespace lat
 		
 		public void SetDefaultServerViews ()
 		{
-			ActiveServerViews = null;
 			ActiveServerViews = new ArrayList ();
 
 			switch (this.ServerType) {
 			
 			case "OpenLDAP":
-			case "Generic LDAP server":
+			case "Generic LDAP server":			
 				ActiveServerViews.Add ("lat.PosixComputerViewPlugin");
 				ActiveServerViews.Add ("lat.PosixContactsViewPlugin");
 				ActiveServerViews.Add ("lat.PosixGroupViewPlugin");
-				ActiveServerViews.Add ("lat.PosixUserViewPlugin");
+				ActiveServerViews.Add ("lat.PosixUserViewPlugin");			
 				break;
 				
 			case "Microsoft Active Directory":
@@ -66,17 +65,21 @@ namespace lat
 				ActiveServerViews.Add ("lat.ActiveDirectoryGroupViewPlugin");
 				ActiveServerViews.Add ("lat.ActiveDirectoryUserViewPlugin");			
 				break;
+				
+			default:	
+				throw new ArgumentOutOfRangeException (this.ServerType);
 			}
+			
+			Console.WriteLine ("ENTRIES: {0}", ActiveServerViews.Count);
 		}
 
 		public void SetDefaultAttributeViewers ()
 		{
-			ActiveAttributeViewers = null;
 			ActiveAttributeViewers = new ArrayList ();
 
 			ActiveAttributeViewers.Add ("lat.JpegAttributeViewPlugin");
 			ActiveAttributeViewers.Add ("lat.PassswordAttributeViewPlugin");
-		}		
+		}	
 	}
 
 	public class ProfileManager : IEnumerable
