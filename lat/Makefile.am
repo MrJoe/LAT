@@ -60,7 +60,7 @@ $(ASSEMBLY).exe: $(CSFILES)
 
 all: $(ASSEMBLY).exe
 
-ASSEMBLYlibdir = $(prefix)/lib/$(ASSEMBLY)
+ASSEMBLYlibdir = $(pkglibdir)
 ASSEMBLYlib_DATA = $(ASSEMBLY).exe
 
 man_MANS = \

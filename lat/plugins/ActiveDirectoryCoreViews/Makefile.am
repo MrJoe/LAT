@@ -37,7 +37,7 @@ $(ASSEMBLY).dll: $(CSFILES)
 
 all: $(ASSEMBLY).dll
 
-ASSEMBLYlibdir = $(prefix)/lib/lat/plugins
+ASSEMBLYlibdir = $(pkglibdir)/plugins
 ASSEMBLYlib_DATA = $(ASSEMBLY).dll
 
 EXTRA_DIST = \

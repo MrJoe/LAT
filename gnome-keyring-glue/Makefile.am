@@ -22,7 +22,7 @@ $(ASSEMBLY).dll: $(CSFILES)
 
 all: $(ASSEMBLY).dll
 
-ASSEMBLYlibdir = $(prefix)/lib/lat
+ASSEMBLYlibdir = $(pkglibdir)
 ASSEMBLYlib_DATA = $(ASSEMBLY).dll $(ASSEMBLY).dll.config
 
 EXTRA_DIST = \
