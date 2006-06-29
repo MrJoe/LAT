@@ -37,7 +37,8 @@ namespace lat
 		public string Pass;
 		public bool DontSavePassword;
 		public EncryptionType Encryption;
-		public string ServerType;		
+		public string ServerType;
+		public bool Dynamic;
 		public ArrayList ActiveAttributeViewers;		
 		public ArrayList ActiveServerViews;
 		
@@ -170,6 +171,7 @@ namespace lat
 			cp.DontSavePassword = savePassword;
 			cp.Encryption = e;
 			cp.ServerType = profileElement.GetAttribute ("server_type");
+			cp.Dynamic = false;
 
 			XmlNodeList nl = profileElement.GetElementsByTagName ("server_view");
 			if ((nl.Count > 0)) {
@@ -237,6 +239,9 @@ namespace lat
 		
 			foreach (string s in profileDictionary.Keys) {
 				ConnectionProfile cp = (ConnectionProfile) profileDictionary[s];
+				
+				if (cp.Dynamic)
+					continue;
 				
 				XmlElement profile = doc.CreateElement ("profile");
 				profile.SetAttribute ("name", cp.Name);

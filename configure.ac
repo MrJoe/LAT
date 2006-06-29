@@ -7,12 +7,7 @@ AM_CONFIG_HEADER(config.h)
 dnl Checks for programs
 AC_PROG_INSTALL
 AC_PROG_INTLTOOL([0.25])
-AC_PROG_CC
 AC_ISC_POSIX
-AC_HEADER_STDC
-
-AM_DISABLE_STATIC
-AM_PROG_LIBTOOL
 
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test "x$PKG_CONFIG" = "xno"; then
@@ -22,11 +17,11 @@ fi
 AC_PATH_PROG(MONO, mono)
 AC_PATH_PROG(MCS, gmcs, no)
 if test "x$MCS" = "xno"; then
-	AC_MSG_ERROR([You need to install mcs])
+	AC_MSG_ERROR([You need to install gmcs])
 fi
 
 dnl Version dependencies
-MONO_REQUIRED=1.1.12.1
+MONO_REQUIRED=1.1.13
 GTKSHARP_REQUIRED=2.8
 
 dnl pkgconfig checks
@@ -43,6 +38,14 @@ AC_SUBST(GTKSHARP_LIBS)
 
 dnl gnome-keyring is needed, but only at runtime. Oh well, good to check for it nonetheless
 PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
+
+PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="yes", ENABLE_AVAHI="no")
+AC_ARG_ENABLE(avahi, 
+	      [  --enable-avahi[[=no/yes]]    compile with avahi support [[default: yes]]],
+	      ENABLE_AVAHI="$enableval")
+AM_CONDITIONAL(ENABLE_AVAHI, test "$ENABLE_AVAHI" = "yes")
+AC_SUBST(AVAHI_LIBS)
+
 
 MCS_FLAGS=
 MONO_FLAGS=
@@ -80,3 +83,16 @@ help/Makefile
 help/C/Makefile
 resources/Makefile
 ])
+
+echo "
+$PACKAGE-$VERSION
+
+    Install Prefix:    ${prefix}
+    Mono C# Compiler:  ${MCS}
+    Mono Runtime:      ${MONO}
+
+    Features:
+      mDNS:            ${ENABLE_AVAHI}
+      NetworkManager:  ${ENABLE_NETWORKMANAGER}
+"
+

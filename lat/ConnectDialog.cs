@@ -24,6 +24,10 @@ using System.Net.Sockets;
 using Novell.Directory.Ldap;
 using Gtk;
 
+#if ENABLE_AVAHI
+using Avahi;
+#endif
+
 namespace lat 
 {
 	public class ConnectDialog
@@ -50,8 +54,19 @@ namespace lat
 		ListStore profileListStore;
 		ComboBox serverTypeComboBox;
 
+#if ENABLE_AVAHI
+		Client client;
+		ServiceBrowser sb;
+#endif
 		public ConnectDialog ()
 		{
+#if ENABLE_AVAHI
+			client = new Client();		
+			sb = new ServiceBrowser (client, "_ldap._tcp");
+			
+			sb.ServiceAdded += OnServiceAdded;
+			sb.ServiceRemoved += OnServiceRemoved;
+#endif		
 			Global.profileManager = new ProfileManager ();
 		
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
@@ -136,7 +151,45 @@ namespace lat
 			ProfileConnect ();
 		}
 
-		private void updateProfileList ()
+#if ENABLE_AVAHI
+
+	    void OnServiceResolved (object o, ServiceInfoArgs args) 
+		{
+			(o as ServiceResolver).Dispose ();
+
+			ConnectionProfile cp = new ConnectionProfile ();
+			cp.Name = args.Service.Name;
+			cp.Host = args.Service.Address.ToString ();
+			cp.Port = args.Service.Port;
+			cp.DontSavePassword = false;
+			cp.ServerType = "Generic LDAP server";
+			cp.Dynamic = true;
+
+			Logger.Log.Debug ("Found LDAP service {0} on {1} port {2}", 
+				args.Service.Name, args.Service.Address, args.Service.Port);
+
+			if (args.Service.Port == 636)
+				cp.Encryption = EncryptionType.SSL;
+				
+//			Global.profileManager [cp.Name] = cp;
+//			updateProfileList ();
+		}
+
+		void OnServiceAdded (object o, ServiceInfoArgs args) 
+		{
+			ServiceResolver resolver = new ServiceResolver (client, args.Service);
+			resolver.Found += OnServiceResolved;
+		}
+
+		void OnServiceRemoved (object o, ServiceInfoArgs args)
+		{
+			Global.profileManager.Remove (args.Service.Name);
+//			updateProfileList ();
+		}
+		
+#endif	
+
+		void updateProfileList ()
 		{
 			string[] names = Global.profileManager.GetProfileNames ();
 			

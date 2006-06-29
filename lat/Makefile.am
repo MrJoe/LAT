@@ -1,6 +1,10 @@
 SUBDIRS = . plugins
 
-CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS)
+if ENABLE_AVAHI
+AVAHI_CSFLAGS = -define:ENABLE_AVAHI
+endif
+
+CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(AVAHI_CSFLAGS)
 
 ASSEMBLY = lat
 
@@ -56,7 +60,7 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 $(ASSEMBLY).exe: $(CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS)
+	$(CSC) -out:$@ $(CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(AVAHI_LIBS)
 
 all: $(ASSEMBLY).exe
 
