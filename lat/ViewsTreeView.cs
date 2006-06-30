@@ -31,23 +31,29 @@ namespace lat
 	public class ViewSelectedEventArgs : EventArgs
 	{
 		string viewName;
+		string connectionName;
 
-		public ViewSelectedEventArgs (string name)
+		public ViewSelectedEventArgs (string name, string connection)
 		{
 			viewName = name;
+			connectionName = connection;
 		}
 
 		public string Name
 		{
 			get { return viewName; }
 		}
+		
+		public string ConnectionName
+		{
+			get { return connectionName; }
+		}		
 	}
 
 	public delegate void ViewSelectedHandler (object o, ViewSelectedEventArgs args);
 
 	public class ViewsTreeView : Gtk.TreeView
 	{
-		LdapServer	server;
 		TreeStore	viewsStore;
 		TreeIter	viewRootIter;
 
@@ -55,10 +61,8 @@ namespace lat
 
 		public event ViewSelectedHandler ViewSelected;
 
-		public ViewsTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
+		public ViewsTreeView () : base ()
 		{
-			server = ldapServer;
-		
 			viewsStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
 			this.Model = viewsStore;
 			this.HeadersVisible = false;
@@ -66,40 +70,62 @@ namespace lat
 			this.AppendColumn ("viewsIcon", new CellRendererPixbuf (), "pixbuf", (int)TreeCols.Icon);
 			this.AppendColumn ("viewsRoot", new CellRendererText (), "text", (int)TreeCols.Name);
 
-			AddViews ();
+			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			
+			viewRootIter = viewsStore.AppendValues (dirIcon, "Servers");
+			TreePath path = viewsStore.GetPath (viewRootIter);
+			
+			foreach (string n in Global.Profiles.GetProfileNames()) {
+				TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, n);
+				viewsStore.AppendValues (iter, null, "");				
+			}			
 
-			this.RowActivated += new RowActivatedHandler (ViewRowActivated);			
-			this.ExpandAll ();
-			this.ShowAll ();
+			this.RowExpanded += new RowExpandedHandler (OnRowExpanded);
+			this.RowActivated += new RowActivatedHandler (OnRowActivated);
+
+			this.ExpandRow (path, false);
+			this.ShowAll ();		
 		}
 
-		void AddViews ()
+		public void AddServer (ConnectionProfile cp)
 		{
-			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
-			viewRootIter = viewsStore.AppendValues (dirIcon, server.Host);
+			TreeIter iter = viewsStore.AppendValues (viewRootIter, null, cp.Name);
+			AddViews (cp.Name, iter);
+		}
 
-			ConnectionProfile cp = null;
-			if (server.ProfileName == null) 
-				cp = new ConnectionProfile ();
-			else
-				cp = Global.profileManager [server.ProfileName];
+		void OnRowExpanded (object o, RowExpandedArgs args)
+		{
+			string name = (string) viewsStore.GetValue (args.Iter, 1);
+			if (name == "Servers")
+				return;
+
+			TreeIter child;
+			viewsStore.IterChildren (out child, args.Iter);
 			
-			if (cp.ServerType == null)
-				cp.ServerType = server.ServerTypeString;
+			string childName = (string)viewsStore.GetValue (child, 1);
+			if (childName != "")
+				return;
+
+			viewsStore.Remove (ref child);
+					
+			Logger.Log.Debug ("view expanded {0}", name);
 			
+			AddViews (name, args.Iter);
+			
+			TreePath path = viewsStore.GetPath (args.Iter);
+			this.ExpandRow (path, false);
+		}
+	
+		void AddViews (string profileName, TreeIter profileIter)
+		{
+			ConnectionProfile cp = Global.Profiles [profileName];
+
 			if (cp.ActiveServerViews == null) 
 				cp.SetDefaultServerViews ();
 				
-			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)
+			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins)
 				if (cp.ActiveServerViews.Contains (vp.GetType().ToString()))
-					viewsStore.AppendValues (viewRootIter, vp.Icon, vp.Name);
-		}
-
-		public void Refresh ()
-		{
-			viewsStore.Clear ();
-			AddViews ();
-			this.ExpandAll ();
+					viewsStore.AppendValues (profileIter, vp.Icon, vp.Name);
 		}
 
 		public string GetSelectedViewName ()
@@ -116,13 +142,39 @@ namespace lat
 			return null;
 		}
 
-		void DispatchViewSelectedEvent (string name)
+		public string GetActiveServerName ()
 		{
-			if (ViewSelected != null)
-				ViewSelected (this, new ViewSelectedEventArgs (name));
+			TreeModel model;
+			TreeIter iter;
+
+			if (this.Selection.GetSelected (out model, out iter))
+				return FindServerName (iter, model);
+			
+			return null;
 		}
 
-		void ViewRowActivated (object o, RowActivatedArgs args)
+		string FindServerName (TreeIter iter, TreeModel model)
+		{
+			TreeIter parent;
+			viewsStore.IterParent (out parent, iter);
+			
+			if (!viewsStore.IterIsValid (parent))
+				return null;
+			
+			string parentName = (string)model.GetValue (parent, (int)TreeCols.Name);			
+			if (parentName == "Servers")
+				return (string)model.GetValue (iter, (int)TreeCols.Name);
+			
+			return FindServerName (parent, model);
+		}		
+
+		void DispatchViewSelectedEvent (string name, string connection)
+		{
+			if (ViewSelected != null)
+				ViewSelected (this, new ViewSelectedEventArgs (name, connection));
+		}
+
+		void OnRowActivated (object o, RowActivatedArgs args)
 		{	
 			TreePath path = args.Path;
 			TreeIter iter;
@@ -132,7 +184,12 @@ namespace lat
 				string name = null;
 				name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
 
-				DispatchViewSelectedEvent (name);
+				TreeIter parent;
+				viewsStore.IterParent (out parent, iter);
+				
+				string connection = (string) viewsStore.GetValue (parent, (int)TreeCols.Name);
+
+				DispatchViewSelectedEvent (name, connection);
 			} 		
 		}
 	}

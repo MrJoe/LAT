@@ -45,8 +45,8 @@ namespace lat
 
 	public class SearchResultsTreeView : Gtk.TreeView
 	{
-		private LdapServer server;
-		private ListStore resultsStore;
+//		LdapServer server;
+		ListStore resultsStore;
 
 		private static TargetEntry[] searchSourceTable = new TargetEntry[]
 		{
@@ -55,9 +55,9 @@ namespace lat
 
 		public event SearchResultSelectedHandler SearchResultSelected;
 
-		public SearchResultsTreeView (LdapServer ldapServer) : base ()
+		public SearchResultsTreeView () : base ()
 		{
-			server = ldapServer;
+//			server = ldapServer;
 
 			resultsStore = new ListStore (typeof (string));
 			this.Model = resultsStore;
@@ -99,21 +99,21 @@ namespace lat
 
 		private void OnSearchDragDataGet (object o, DragDataGetArgs args)
 		{
-			Gtk.TreeModel model;
-			Gtk.TreeIter iter;
-
-			if (!this.Selection.GetSelected (out model, out iter))
-				return;
-
-			string dn = (string) model.GetValue (iter, 0);
-			string data = null;
-
-			Util.ExportData (server, dn, out data);
-
-			Atom[] targets = args.Context.Targets;
-
-			args.SelectionData.Set (targets[0], 8,
-				System.Text.Encoding.UTF8.GetBytes (data));
+//			Gtk.TreeModel model;
+//			Gtk.TreeIter iter;
+//
+//			if (!this.Selection.GetSelected (out model, out iter))
+//				return;
+//
+//			string dn = (string) model.GetValue (iter, 0);
+//			string data = null;
+//
+//			Util.ExportData (server, dn, out data);
+//
+//			Atom[] targets = args.Context.Targets;
+//
+//			args.SelectionData.Set (targets[0], 8,
+//				System.Text.Encoding.UTF8.GetBytes (data));
 		}
 
 		private void DispatchSearchResultSelectedEvent (string dn)

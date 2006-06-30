@@ -25,14 +25,14 @@ using lat;
 
 public class Global
 {
-	public static Gnome.Program latProgram;
 	public static Gdk.Pixbuf latIcon;
 	public static bool Debug = false;
 	public static bool VerboseMessages;
 	
-	public static TemplateManager theTemplateManager;
-	public static PluginManager pluginManager;
-	public static ProfileManager profileManager;
+	public static ConnectionManager Connections;
+	public static PluginManager Plugins;
+	public static ProfileManager Profiles;	
+	public static TemplateManager Templates;
 }
 
 public class LdapAdministrationTool
@@ -104,24 +104,20 @@ public class LdapAdministrationTool
 			Util.SetProcessName (Defines.PACKAGE);
 		} catch {}
 
-		Application.Init ();
-
-		Global.latIcon = Gdk.Pixbuf.LoadFromResource ("lat.png");
-
-		Global.theTemplateManager = new TemplateManager ();
-		Global.theTemplateManager.Load ();
-
-		Global.pluginManager = new PluginManager ();
-
-		Global.latProgram = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
-
+		Global.Templates = new TemplateManager ();
+		Global.Templates.Load ();
+		Global.Plugins = new PluginManager ();
+		
 		Mono.Unix.Catalog.Init (Defines.PACKAGE, Defines.LOCALE_DIR);
-
-		new ConnectDialog ();	
-		Global.latProgram.Run ();
-
-		Global.theTemplateManager.Save ();
-		Global.pluginManager.SavePluginsState ();
+		
+		Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
+					
+		new MainWindow (program);
+		
+		program.Run ();
+		
+		Global.Templates.Save ();
+		Global.Plugins.SavePluginsState ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
 	}

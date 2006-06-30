@@ -352,9 +352,9 @@ namespace lat
 				string name = null;
 				name = (string) store.GetValue (iter, 0);
 
-				ConnectionProfile cp = Global.profileManager [currentServer.ProfileName];							
+				ConnectionProfile cp = Global.Profiles [currentServer.ProfileName];							
 					
-				foreach (AttributeViewPlugin avp in Global.pluginManager.AttributeViewPlugins)
+				foreach (AttributeViewPlugin avp in Global.Plugins.AttributeViewPlugins)
 					if (avp.AttributeName == name)
 						if (cp.ActiveAttributeViewers.Contains (avp.GetType().ToString()))
 							RunViewerPlugin (avp, name);

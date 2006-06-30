@@ -2,6 +2,8 @@ SUBDIRS = . plugins
 
 if ENABLE_AVAHI
 AVAHI_CSFLAGS = -define:ENABLE_AVAHI
+AVAHI_CSFILES = \
+	ServiceFinder.cs
 endif
 
 CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(AVAHI_CSFLAGS)
@@ -14,6 +16,7 @@ CSFILES = \
 	AssemblyInfo.cs \
 	AttributeEditorWidget.cs \
 	ConnectDialog.cs \
+	ConnectionManager.cs \
 	CreateEntryDialog.cs \
 	Defines.cs \
 	LDIF.cs \
@@ -59,8 +62,8 @@ REFERENCES = \
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
-$(ASSEMBLY).exe: $(CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(AVAHI_LIBS)
+$(ASSEMBLY).exe: $(CSFILES) $(AVAHI_CSFILES)
+	$(CSC) -out:$@ $(CSFILES) $(AVAHI_CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(AVAHI_LIBS)
 
 all: $(ASSEMBLY).exe
 

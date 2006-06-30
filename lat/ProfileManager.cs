@@ -50,17 +50,17 @@ namespace lat
 		{
 			ActiveServerViews = new ArrayList ();
 
-			switch (this.ServerType) {
+			switch (this.ServerType.ToLower ()) {
 			
-			case "OpenLDAP":
-			case "Generic LDAP server":			
+			case "openldap":
+			case "generic ldap server":			
 				ActiveServerViews.Add ("lat.PosixComputerViewPlugin");
 				ActiveServerViews.Add ("lat.PosixContactsViewPlugin");
 				ActiveServerViews.Add ("lat.PosixGroupViewPlugin");
 				ActiveServerViews.Add ("lat.PosixUserViewPlugin");			
 				break;
 				
-			case "Microsoft Active Directory":
+			case "microsoft active directory":
 				ActiveServerViews.Add ("lat.ActiveDirectoryComputerViewPlugin");
 				ActiveServerViews.Add ("lat.ActiveDirectoryContactsViewPlugin");
 				ActiveServerViews.Add ("lat.ActiveDirectoryGroupViewPlugin");
@@ -71,7 +71,7 @@ namespace lat
 				throw new ArgumentOutOfRangeException (this.ServerType);
 			}
 			
-			Console.WriteLine ("ENTRIES: {0}", ActiveServerViews.Count);
+			Logger.Log.Debug ("Active server views: {0}", ActiveServerViews.Count);
 		}
 
 		public void SetDefaultAttributeViewers ()
@@ -241,7 +241,7 @@ namespace lat
 				ConnectionProfile cp = (ConnectionProfile) profileDictionary[s];
 				
 				if (cp.Dynamic)
-					continue;
+					return;
 				
 				XmlElement profile = doc.CreateElement ("profile");
 				profile.SetAttribute ("name", cp.Name);

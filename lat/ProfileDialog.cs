@@ -187,20 +187,20 @@ namespace lat
 
 				if (!oldName.Equals (profile.Name)) {
 
-					Global.profileManager.Remove (oldName);
-					Global.profileManager[profile.Name] = profile;
+					Global.Profiles.Remove (oldName);
+					Global.Profiles[profile.Name] = profile;
 
 				} else {
 
-					Global.profileManager[profile.Name] = profile;
+					Global.Profiles[profile.Name] = profile;
 				}
 
 			} else {
 
-				Global.profileManager[profile.Name] = profile;
+				Global.Profiles[profile.Name] = profile;
 			}
 			
-			Global.profileManager.SaveProfiles ();
+			Global.Profiles.SaveProfiles ();
 		}
 	}
 }

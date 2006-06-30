@@ -24,10 +24,6 @@ using System.Net.Sockets;
 using Novell.Directory.Ldap;
 using Gtk;
 
-#if ENABLE_AVAHI
-using Avahi;
-#endif
-
 namespace lat 
 {
 	public class ConnectDialog
@@ -54,20 +50,9 @@ namespace lat
 		ListStore profileListStore;
 		ComboBox serverTypeComboBox;
 
-#if ENABLE_AVAHI
-		Client client;
-		ServiceBrowser sb;
-#endif
 		public ConnectDialog ()
 		{
-#if ENABLE_AVAHI
-			client = new Client();		
-			sb = new ServiceBrowser (client, "_ldap._tcp");
-			
-			sb.ServiceAdded += OnServiceAdded;
-			sb.ServiceRemoved += OnServiceRemoved;
-#endif		
-			Global.profileManager = new ProfileManager ();
+			Global.Profiles = new ProfileManager ();
 		
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
 			ui.Autoconnect (this);
@@ -89,7 +74,7 @@ namespace lat
 			col = profileListview.AppendColumn ("Name", new CellRendererText (), "text", 0);
 			col.SortColumnId = 0;
 
-			updateProfileList ();
+			UpdateProfileList ();
 
 			if (haveProfiles) {
 
@@ -133,7 +118,7 @@ namespace lat
 			string profileName = GetSelectedProfileName ();
 
 			if (profileName != null)
-				cp = Global.profileManager [profileName]; 
+				cp = Global.Profiles [profileName]; 
 	
 			return cp;
 		}
@@ -151,47 +136,9 @@ namespace lat
 			ProfileConnect ();
 		}
 
-#if ENABLE_AVAHI
-
-	    void OnServiceResolved (object o, ServiceInfoArgs args) 
+		void UpdateProfileList ()
 		{
-			(o as ServiceResolver).Dispose ();
-
-			ConnectionProfile cp = new ConnectionProfile ();
-			cp.Name = args.Service.Name;
-			cp.Host = args.Service.Address.ToString ();
-			cp.Port = args.Service.Port;
-			cp.DontSavePassword = false;
-			cp.ServerType = "Generic LDAP server";
-			cp.Dynamic = true;
-
-			Logger.Log.Debug ("Found LDAP service {0} on {1} port {2}", 
-				args.Service.Name, args.Service.Address, args.Service.Port);
-
-			if (args.Service.Port == 636)
-				cp.Encryption = EncryptionType.SSL;
-				
-//			Global.profileManager [cp.Name] = cp;
-//			updateProfileList ();
-		}
-
-		void OnServiceAdded (object o, ServiceInfoArgs args) 
-		{
-			ServiceResolver resolver = new ServiceResolver (client, args.Service);
-			resolver.Found += OnServiceResolved;
-		}
-
-		void OnServiceRemoved (object o, ServiceInfoArgs args)
-		{
-			Global.profileManager.Remove (args.Service.Name);
-//			updateProfileList ();
-		}
-		
-#endif	
-
-		void updateProfileList ()
-		{
-			string[] names = Global.profileManager.GetProfileNames ();
+			string[] names = Global.Profiles.GetProfileNames ();
 			
 			if (names.Length > 1)
 				haveProfiles = true;
@@ -205,7 +152,7 @@ namespace lat
 		public void OnProfileAdd (object o, EventArgs args)
 		{
 			new ProfileDialog ();
-			updateProfileList ();		
+			UpdateProfileList ();		
 		}
 
 		public void OnProfileEdit (object o, EventArgs args)
@@ -214,11 +161,11 @@ namespace lat
 
 			if (profileName != null) {
 
-				ConnectionProfile cp = Global.profileManager [profileName];
+				ConnectionProfile cp = Global.Profiles [profileName];
 			
 				new ProfileDialog (cp);
 
-				updateProfileList ();
+				UpdateProfileList ();
 			}		
 		}
 
@@ -236,9 +183,9 @@ namespace lat
 				
 				if (Util.AskYesNo (connectionDialog, msg)) {
 
-					Global.profileManager.Remove (profileName);
-					Global.profileManager.SaveProfiles ();
-					updateProfileList ();				
+					Global.Profiles.Remove (profileName);
+					Global.Profiles.SaveProfiles ();
+					UpdateProfileList ();				
 				}
 			}
 		}
@@ -347,7 +294,7 @@ namespace lat
 			if (CheckConnection (server, userName)) {
 
 				connectionDialog.Destroy ();
-				new latWindow (server);
+//				new latWindow (server);
 			}
 		}
 

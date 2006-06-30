@@ -58,10 +58,14 @@ namespace lat {
 			if (viewPlugin.SearchBase == null)
 				viewPlugin.SearchBase = server.DirectoryRoot;
 				
-			LdapEntry[] data = server.Search (viewPlugin.SearchBase, viewPlugin.Filter);
-
+			LdapEntry[] data = server.Search (server.DirectoryRoot, viewPlugin.Filter);
 			Logger.Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
-					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
+					server.DirectoryRoot, viewPlugin.Filter, data.Length);
+
+//			FIXME: handle state per profile			
+//			LdapEntry[] data = server.Search (viewPlugin.SearchBase, viewPlugin.Filter);
+//			Logger.Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
+//					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
 
 			DoInsert (data, viewPlugin.ColumnAttributes);
 		}
@@ -167,7 +171,7 @@ namespace lat {
 		{
 			viewPlugin = null;
 			
-			viewPlugin = Global.pluginManager.FindServerView (viewName);
+			viewPlugin = Global.Plugins.FindServerView (viewName);
 			if (viewPlugin == null) {
 				return;
 			}

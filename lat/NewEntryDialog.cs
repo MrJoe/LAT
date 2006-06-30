@@ -59,7 +59,7 @@ namespace lat
 		{
 			templateComboBox = ComboBox.NewText ();
 	
-			string[] templates = Global.theTemplateManager.GetTemplateNames ();
+			string[] templates = Global.Templates.GetTemplateNames ();
 
 			foreach (string s in templates)
 				templateComboBox.AppendText (s);
@@ -82,7 +82,7 @@ namespace lat
 
 				string name = (string) templateComboBox.Model.GetValue (iter, 0);
 
-				Template t = Global.theTemplateManager.Lookup (name);
+				Template t = Global.Templates.Lookup (name);
 
 				new CreateEntryDialog (server, t);
 

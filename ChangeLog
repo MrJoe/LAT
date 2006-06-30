@@ -1,3 +1,5 @@
+	* Added support for mulitple servers in the same window
+	* Added mDNS support (--enable-avahi)
 	* Fixed crash when using quick connect
 	* Changed new toolbar button to menu toolbar button
 	* Add MenuLabel and MenuKey attributes to server view plugins

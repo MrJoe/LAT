@@ -29,13 +29,15 @@ namespace lat
 {
 	public class schemaSelectedEventArgs : EventArgs
 	{
-		private string _name;
-		private string _parent;
+		string _name;
+		string _parent;
+		string _server;
 
-		public schemaSelectedEventArgs (string name, string parent)
+		public schemaSelectedEventArgs (string name, string parent, string server)
 		{
 			_name = name;
 			_parent = parent;
+			_server = server;
 		}
 
 		public string Name
@@ -47,6 +49,11 @@ namespace lat
 		{
 			get { return _parent; }
 		}
+
+		public string Server
+		{
+			get { return _server; }
+		}		
 	}
 
 	public delegate void schemaSelectedHandler (object o, schemaSelectedEventArgs args);
@@ -56,20 +63,14 @@ namespace lat
 		Gtk.Window parentWindow;
 		
 		TreeStore schemaStore;
-		TreeIter objIter;
-		TreeIter attrIter;
-		TreeIter matIter;
-		TreeIter synIter;
-
-		LdapServer server;
+		TreeIter rootIter;
 
 		enum TreeCols { Icon, ObjectName };
 
 		public event schemaSelectedHandler schemaSelected;
 
-		public SchemaTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
+		public SchemaTreeView (Gtk.Window parent) : base ()
 		{
-			server = ldapServer;
 			parentWindow = parent;
 			
 			schemaStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string));
@@ -86,28 +87,43 @@ namespace lat
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			Gdk.Pixbuf folderIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-normal.png");
 
-			TreeIter iter;
-			iter = schemaStore.AppendValues (dirIcon, server.Host);
+			 rootIter = schemaStore.AppendValues (dirIcon, "Servers");
 
-			objIter = schemaStore.AppendValues (iter, folderIcon, "Object Classes");
-			schemaStore.AppendValues (objIter, null, "");
-			
-			attrIter = schemaStore.AppendValues (iter, folderIcon, "Attribute Types");
-			schemaStore.AppendValues (attrIter, null, "");
-			
-			matIter = schemaStore.AppendValues (iter, folderIcon, "Matching Rules");
-			schemaStore.AppendValues (matIter, null, "");
+			foreach (string n in Global.Profiles.GetProfileNames()) {
+				TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, n);
+
+				TreeIter objIter;
+				TreeIter attrIter;
+				TreeIter matIter;
+				TreeIter synIter;
+
+				objIter = schemaStore.AppendValues (iter, folderIcon, "Object Classes");
+				schemaStore.AppendValues (objIter, null, "");
 				
-			synIter = schemaStore.AppendValues (iter, folderIcon, "LDAP Syntaxes");
-			schemaStore.AppendValues (synIter, null, "");
+				attrIter = schemaStore.AppendValues (iter, folderIcon, "Attribute Types");
+				schemaStore.AppendValues (attrIter, null, "");
+				
+				matIter = schemaStore.AppendValues (iter, folderIcon, "Matching Rules");
+				schemaStore.AppendValues (matIter, null, "");
+					
+				synIter = schemaStore.AppendValues (iter, folderIcon, "LDAP Syntaxes");
+				schemaStore.AppendValues (synIter, null, "");				
+			}
 				
 			this.ShowAll ();
 		}
 
-		void DispatchDNSelectedEvent (string name, string parent)
+		public void AddServer (ConnectionProfile cp)
+		{
+			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, cp.Name);
+			schemaStore.AppendValues (iter, null, "");
+		}
+
+		void DispatchDNSelectedEvent (string name, string parent, string server)
 		{
 			if (schemaSelected != null)
-				schemaSelected (this, new schemaSelectedEventArgs (name, parent));
+				schemaSelected (this, new schemaSelectedEventArgs (name, parent, server));
 		}
 
 		void OnRowActivated (object o, RowActivatedArgs args)
@@ -120,41 +136,22 @@ namespace lat
 				string name = null;
 				name = (string) schemaStore.GetValue (iter, (int)TreeCols.ObjectName);
 
-				if (name.Equals (server.Host))
-					return;
-
 				TreeIter parent;
 				schemaStore.IterParent (out parent, iter);
+				
+				string parentName = (string) schemaStore.GetValue (parent, (int)TreeCols.ObjectName);
+				string serverName = FindServerName (iter, schemaStore);
+				
+				if (name.Equals (serverName)) {
+					DispatchDNSelectedEvent (name, parentName, serverName);
+					return;
+				}
 
-				string parentName = null;
-				parentName = (string) schemaStore.GetValue (parent, (int)TreeCols.ObjectName);
-
-				DispatchDNSelectedEvent (name, parentName);
+				DispatchDNSelectedEvent (name, parentName, serverName);
 			} 		
 		}
 		
-		TreeIter GetParent (string parentName)
-		{
-			switch (parentName) {
-			
-			case "Object Classes":
-				return objIter;
-				
-			case "Attribute Types":
-				return attrIter;
-				
-			case "Matching Rules":
-				return matIter;
-			
-			case "LDAP Syntaxes":
-				return synIter;
-				
-			default:
-				throw new ArgumentOutOfRangeException (parentName);
-			}		
-		}
-
-		string[] GetChildren (string parentName)
+		string[] GetChildren (string parentName, LdapServer server)
 		{
 			string[] childValues = null;
 		
@@ -182,44 +179,66 @@ namespace lat
 			
 			return childValues;			
 		}
+
+		public string GetActiveServerName ()
+		{
+			TreeModel model;
+			TreeIter iter;
+
+			if (this.Selection.GetSelected (out model, out iter))
+				return FindServerName (iter, model);
+			
+			return null;
+		}
+
+		string FindServerName (TreeIter iter, TreeModel model)
+		{
+			TreeIter parent;
+			schemaStore.IterParent (out parent, iter);
+			
+			if (!schemaStore.IterIsValid (parent))
+				return null;
+			
+			string parentName = (string)model.GetValue (parent, (int)TreeCols.ObjectName);			
+			if (parentName == "Servers")
+				return (string)model.GetValue (iter, (int)TreeCols.ObjectName);
+			
+			return FindServerName (parent, model);
+		}
 		
 		void OnRowExpanded (object o, RowExpandedArgs args)
 		{
 			string name = null;
-			bool firstPass = false;
-			
-			name = (string) schemaStore.GetValue (args.Iter, (int)TreeCols.ObjectName);
-			if (name == server.Host)
+			name = (string) schemaStore.GetValue (args.Iter, (int)TreeCols.ObjectName);			
+			if (name == "Servers")
 				return;
 
-			TreeIter parent, child;
-			schemaStore.IterParent (out parent, args.Iter);
+			TreeIter child;
 			schemaStore.IterChildren (out child, args.Iter);
-
-			string childName = (string)schemaStore.GetValue (child, (int)TreeCols.ObjectName);
 			
-			if (childName == "")
-				firstPass = true;
-			else
+			string childName = (string) schemaStore.GetValue (child, (int)TreeCols.ObjectName);
+			if (childName != "")
 				return;
+					
+			schemaStore.Remove (ref child);
+					
+			Logger.Log.Debug ("Row expanded {0}", name);
+
+			string serverName = FindServerName (args.Iter, schemaStore);
+			ConnectionProfile cp = Global.Profiles [serverName];			
+			LdapServer server = Global.Connections [cp];		
 
 			try {
 
 				Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
-		 		
-		 		string[] kids = GetChildren (name);
-				foreach (string s in kids) {
-								
-					if (firstPass) {
-						schemaStore.SetValue (child, (int)TreeCols.Icon, pb);
-						schemaStore.SetValue (child, (int)TreeCols.ObjectName, s);
-						
-						firstPass = false;
-						
-					} else {
-						schemaStore.AppendValues (GetParent(name), pb, s);
-					}								
+		 				 		
+		 		string[] kids = GetChildren (name, server);
+				foreach (string s in kids) { 
+					schemaStore.AppendValues (args.Iter, pb, s);
 				}
+				
+				TreePath path = schemaStore.GetPath (args.Iter);
+				this.ExpandRow (path, false);				
 
 			} catch (Exception e) {
 

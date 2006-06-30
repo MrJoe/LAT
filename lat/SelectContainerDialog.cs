@@ -39,7 +39,7 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "selectContainerDialog", null);
 			ui.Autoconnect (this);
 
-			_ldapTreeview = new LdapTreeView (ldapServer, parent);
+			_ldapTreeview = new LdapTreeView (parent);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
 			_ldapTreeview.BrowserSelectionMethod = (int)Preferences.Get (Preferences.BROWSER_SELECTION);
 

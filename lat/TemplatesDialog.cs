@@ -58,7 +58,7 @@ namespace lat
 		{
 			_store.Clear ();
 
-			string[] names = Global.theTemplateManager.GetTemplateNames ();
+			string[] names = Global.Templates.GetTemplateNames ();
 			foreach (string n in names)
 				_store.AppendValues (n);
 		}
@@ -95,20 +95,20 @@ namespace lat
 			if (ted.UserTemplate == null)
 				return;
 
-			Global.theTemplateManager.Add (ted.UserTemplate);
+			Global.Templates.Add (ted.UserTemplate);
 			listTemplates ();
 		}
 
 		private void editTemplate (string name)
 		{
-			Template t = Global.theTemplateManager.Lookup (name);
+			Template t = Global.Templates.Lookup (name);
 
 			TemplateEditorDialog ted = new TemplateEditorDialog (server, t);
 
 			if (ted.UserTemplate == null)
 				return;
 
-			Global.theTemplateManager.Update (ted.UserTemplate);
+			Global.Templates.Update (ted.UserTemplate);
 			listTemplates ();
 		}
 
@@ -139,7 +139,7 @@ namespace lat
 			string msg = String.Format ("{0}\n\n{1}", tmp, name);
 
 			if (Util.AskYesNo (templatesDialog, msg)) {
-				Global.theTemplateManager.Delete (name);
+				Global.Templates.Delete (name);
 				listTemplates ();
 			}
 		}

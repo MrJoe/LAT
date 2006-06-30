@@ -33,12 +33,14 @@ namespace lat
 {
 	public class dnSelectedEventArgs : EventArgs
 	{
-		private string _dn;
-		private bool _isHost;
+		string _dn;
+		string _server;
+		bool _isHost;
 
-		public dnSelectedEventArgs (string dn, bool isHost)
+		public dnSelectedEventArgs (string dn, bool isHost, string server)
 		{
 			_dn = dn;
+			_server = server;
 			_isHost = isHost;
 		}
 
@@ -51,6 +53,11 @@ namespace lat
 		{
 			get { return _isHost; }
 		}
+
+		public string Server
+		{
+			get { return _server; }
+		}		
 	}
 
 	public delegate void dnSelectedHandler (object o, dnSelectedEventArgs args);
@@ -58,10 +65,9 @@ namespace lat
 	public class LdapTreeView : Gtk.TreeView
 	{
 		TreeStore browserStore;
-		TreeIter ldapRootIter;
+		TreeIter rootIter;
 
-		LdapServer server;
-		Gtk.Window _parent;
+		Gtk.Window parent;
 
 		bool _handlersSet = false;
 		Gtk.ToolButton _newButton = null;
@@ -84,10 +90,9 @@ namespace lat
 			new TargetEntry ("text/plain", 0, 1),
 		};
 
-		public LdapTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
+		public LdapTreeView (Gtk.Window parentWindow) : base ()
 		{
-			server = ldapServer;
-			_parent = parent;
+			parent = parentWindow;
 
 			browserStore = new TreeStore (typeof (Gdk.Pixbuf), typeof (string), typeof (string));
 
@@ -121,23 +126,21 @@ namespace lat
 
 			Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 
-			TreeIter iter;
-			iter = browserStore.AppendValues (dirIcon, server.Host, server.Host);
+			rootIter = browserStore.AppendValues (dirIcon, "Servers", "Servers");
 
-			ldapRootIter = browserStore.AppendValues (iter, dirIcon,
-				server.DirectoryRoot, server.DirectoryRoot);
-
-			browserStore.AppendValues (ldapRootIter, null, "", "");
+			foreach (string n in Global.Profiles.GetProfileNames()) {
+				TreeIter iter = browserStore.AppendValues (rootIter, dirIcon, n, n);
+				browserStore.AppendValues (iter, null, "");				
+			}
 
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
-
 			this.ShowAll ();
 		}
 
-		private void DispatchDNSelectedEvent (string dn, bool host)
+		void DispatchDNSelectedEvent (string dn, bool host, string serverName)
 		{
 			if (dnSelected != null)
-				dnSelected (this, new dnSelectedEventArgs (dn, host));
+				dnSelected (this, new dnSelectedEventArgs (dn, host, serverName));
 		}
 
 		public string getSelectedDN ()
@@ -152,6 +155,28 @@ namespace lat
 			}
 
 			return null;
+		}
+
+		public void GetSelectedDN (out string dn, out LdapServer server)
+		{
+			TreeModel model;
+			TreeIter iter;
+
+			if (this.Selection.GetSelected (out model, out iter)) {
+				string name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
+				string serverName =  FindServerName (iter, model);
+				
+				ConnectionProfile cp = Global.Profiles [serverName];			
+				LdapServer foundServer = Global.Connections [cp];
+				
+				dn = name;
+				server = foundServer;
+				
+				return;
+			}
+		
+			dn = null;
+			server  =null;
 		}
 
 		public TreeIter getSelectedIter ()
@@ -170,24 +195,43 @@ namespace lat
 			browserStore.Remove (ref iter);
 		}
 
+		public void AddServer (ConnectionProfile cp)
+		{
+			Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			TreeIter iter = browserStore.AppendValues (rootIter, dirIcon, cp.Name, cp.Name);
+			browserStore.AppendValues (iter, null, "");
+		}
+		
+		public string GetActiveServerName ()
+		{
+			TreeModel model;
+			TreeIter iter;
+
+			if (this.Selection.GetSelected (out model, out iter))
+				return FindServerName (iter, model);
+			
+			return null;
+		}
+		
 		void OnSelectionChanged (object o, EventArgs args)
 		{
 			if (this.BrowserSelectionMethod == 2)
 				return;
-		
+
 			Gtk.TreeIter iter;
 			Gtk.TreeModel model;
 			
 			if (this.Selection.GetSelected (out model, out iter))  {
 					
-				string dn = (string) model.GetValue (iter, (int)TreeCols.DN);
+				string dn = (string) model.GetValue (iter, (int)TreeCols.DN);				
+				string serverName = FindServerName (iter, model);
 				
-				if (dn.Equals (server.Host)) {
-					DispatchDNSelectedEvent (server.Host, true);
+				if (dn.Equals (serverName)) {
+					DispatchDNSelectedEvent (dn, true, serverName);
 					return;
 				}
 
-				DispatchDNSelectedEvent (dn, false);
+				DispatchDNSelectedEvent (dn, false, serverName);
 			}
 		}
 
@@ -204,38 +248,31 @@ namespace lat
 				string name = null;
 				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
 
-				if (name.Equals (server.Host)) {
-					DispatchDNSelectedEvent (server.Host, true);
+				string serverName = FindServerName (iter, browserStore);
+				
+				if (name.Equals (serverName)) {
+					DispatchDNSelectedEvent (name, true, serverName);
 					return;
 				}
 
-				DispatchDNSelectedEvent (name, false);
+				DispatchDNSelectedEvent (name, false, serverName);
 			} 		
 		}
 
 		private void ldapRowCollapsed (object o, RowCollapsedArgs args)
 		{
-			Logger.Log.Debug ("BEGIN ldapRowCollapsed");
+			string name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
+			string serverName = FindServerName (args.Iter, browserStore);
 
-			string name = (string) browserStore.GetValue (
-					args.Iter, (int)TreeCols.DN);
-
-			if (name == server.Host) {
-				Logger.Log.Debug ("END ldapRowCollapsed");
+			if (name == serverName) 
 				return;
-			}
 
 			Logger.Log.Debug ("collapsed row: {0}", name);
 
 			TreeIter child;
-
 			browserStore.IterChildren (out child, args.Iter);
 
-			string fcName = (string) browserStore.GetValue (
-					child, (int)TreeCols.DN);
-				
-			Logger.Log.Debug ("\tchild: {0}", fcName);
-
+//			string fcName = (string) browserStore.GetValue (child, (int)TreeCols.DN);				
 
 			TreeIter lastChild = child;
 
@@ -243,55 +280,76 @@ namespace lat
 
 				browserStore.Remove (ref lastChild);
 
-				string cn = (string) browserStore.GetValue (
-					child, (int)TreeCols.DN);
+//				string cn = (string) browserStore.GetValue (child, (int)TreeCols.DN);
 				
-				Logger.Log.Debug ("\tchild: {0}", cn);
-
 				lastChild = child;
 			}
 
 			browserStore.Remove (ref lastChild);
 
-			Gdk.Pixbuf pb = _parent.RenderIcon (Stock.Open, IconSize.Menu, "");
+			Gdk.Pixbuf pb = parent.RenderIcon (Stock.Open, IconSize.Menu, "");
 			browserStore.AppendValues (args.Iter, pb, "");
-
-			Logger.Log.Debug ("END ldapRowCollapsed");
 		}
 
-		private void ldapRowExpanded (object o, RowExpandedArgs args)
+		string FindServerName (TreeIter iter, TreeModel model)
 		{
-			Logger.Log.Debug ("BEGIN ldapRowExpanded");
-
-			string name = null;
-			bool firstPass = false;
-
-			Pixbuf pb = Pixbuf.LoadFromResource ("x-directory-normal.png");
-
-			name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
-
-			if (name == server.Host) {
-				Logger.Log.Debug ("END ldapRowExpanded");
-				return;
-			}
-
-			TreeIter parent, child;
-			browserStore.IterParent (out parent, args.Iter);
-			browserStore.IterChildren (out child, args.Iter);
-
-			string childName = (string)browserStore.GetValue (child, (int)TreeCols.DN);
+			TreeIter parent;
+			browserStore.IterParent (out parent, iter);
 			
-			if (childName == "")
-				firstPass = true;
+			if (!browserStore.IterIsValid (parent))
+				return null;
+			
+			string parentName = (string)model.GetValue (parent, (int)TreeCols.DN);			
+			if (parentName == "Servers")
+				return (string)model.GetValue (iter, (int)TreeCols.DN);
+			
+			return FindServerName (parent, model);
+		}
 
+		void ldapRowExpanded (object o, RowExpandedArgs args)
+		{		
+			string name = null;
+			name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);			
+			if (name == "Servers")
+				return;
+
+			TreeIter child;
+			browserStore.IterChildren (out child, args.Iter);
+			
+			string childName = (string)browserStore.GetValue (child, (int)TreeCols.DN);
+			if (childName != "")
+				return;			
+					
+			browserStore.Remove (ref child);
+					
+			Logger.Log.Debug ("Row expanded {0}", name);
+
+			string serverName = FindServerName (args.Iter, browserStore);
+			ConnectionProfile cp = Global.Profiles [serverName];			
+			LdapServer server = Global.Connections [cp];		
+
+			if (name == serverName) {			
+			
+				Pixbuf pb = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+				TreeIter i = browserStore.AppendValues (args.Iter, pb, server.DirectoryRoot, server.DirectoryRoot);
+				browserStore.AppendValues (i, null, "", "");
+				
+			} else {
+
+				AddEntry (name, server, args.Iter);
+				
+			}
+			
+			TreePath path = browserStore.GetPath (args.Iter);
+			this.ExpandRow (path, false);				
+		}
+
+		void AddEntry (string name, LdapServer server, TreeIter iter)
+		{		
 			try {
 
+				Pixbuf pb = Pixbuf.LoadFromResource ("x-directory-normal.png");
 		 		LdapEntry[] ldapEntries = server.GetEntryChildren (name);
-
-				if (ldapEntries.Length == 0)
-					browserStore.Remove (ref child);
-
-				Logger.Log.Debug ("expanded row: {0}", name);
 
 				foreach (LdapEntry le in ldapEntries) {
 
@@ -299,23 +357,10 @@ namespace lat
 					DN dn = new DN (le.DN);
 					RDN rdn = (RDN) dn.RDNs[0];
 
-					TreeIter _newChild;
+					TreeIter newChild;
 
-					if (firstPass) {
-
-						browserStore.SetValue (child, (int)TreeCols.Icon, pb);
-						browserStore.SetValue (child, (int)TreeCols.DN, le.DN);
-						browserStore.SetValue (child, (int)TreeCols.RDN, rdn.Value);
-
-						browserStore.AppendValues (child, pb, "");
-					
-						firstPass = false;
-
-					} else {
-
-						_newChild = browserStore.AppendValues (args.Iter, pb, le.DN, rdn.Value);
-						browserStore.AppendValues (_newChild, pb, "", "");
-					}
+					newChild = browserStore.AppendValues (iter, pb, le.DN, rdn.Value);
+					browserStore.AppendValues (newChild, pb, "", "");
 				}
 
 			} catch {
@@ -324,7 +369,7 @@ namespace lat
 					"Unable to read data from server");
 
 				HIGMessageDialog dialog = new HIGMessageDialog (
-					_parent,
+					parent,
 					0,
 					Gtk.MessageType.Error,
 					Gtk.ButtonsType.Ok,
@@ -334,8 +379,7 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 			}
-
-			Logger.Log.Debug ("END ldapRowExpanded");
+		
 		}
 
 		public void removeToolbarHandlers ()
@@ -362,13 +406,34 @@ namespace lat
 		public void OnNewEntryActivate (object o, EventArgs args) 
 		{
 			string dn = getSelectedDN ();
+			
+			TreeModel model;
+			TreeIter iter;
 
-			new NewEntryDialog (server, dn);
+			if (this.Selection.GetSelected (out model, out iter)) {
+			
+				string serverName = FindServerName (iter, model);
+				if (serverName == null)
+					return;
+					
+				ConnectionProfile cp = Global.Profiles [serverName];			
+				LdapServer server = Global.Connections [cp];
+				
+				new NewEntryDialog (server, dn);			
+			}
 		}
 
 		private void OnRenameActivate (object o, EventArgs args) 
 		{
 			string dn = getSelectedDN ();
+			TreeIter iter = getSelectedIter ();
+
+			string serverName = FindServerName (iter, browserStore);
+			if (serverName == null)
+				return;
+					
+			ConnectionProfile cp = Global.Profiles [serverName];			
+			LdapServer server = Global.Connections [cp];
 
 			if (dn == server.Host)
 				return;
@@ -376,11 +441,11 @@ namespace lat
 			RenameEntryDialog red = new RenameEntryDialog (server, dn);
 
 			TreeModel model;
-			TreeIter iter, parentIter;
+			TreeIter iter2, parentIter;
 
 			if (red.RenameHappened) {
-				if (this.Selection.GetSelected (out model, out iter)) {
-					browserStore.IterParent (out parentIter, iter);
+				if (this.Selection.GetSelected (out model, out iter2)) {
+					browserStore.IterParent (out parentIter, iter2);
 					TreePath tp = browserStore.GetPath (parentIter);
 					this.CollapseRow (tp);								
 					this.ExpandRow (tp, false);
@@ -391,11 +456,19 @@ namespace lat
 		private void OnExportActivate (object o, EventArgs args) 
 		{
 			string dn = getSelectedDN ();
-
+			
 			if (dn.Equals (null))
 				return;
 
-			Util.ExportData (server, this._parent, dn);
+			TreeIter iter = getSelectedIter ();
+			string serverName = FindServerName (iter, browserStore);
+			if (serverName == null)
+				return;
+					
+			ConnectionProfile cp = Global.Profiles [serverName];			
+			LdapServer server = Global.Connections [cp];
+
+			Util.ExportData (server, this.parent, dn);
 		}
 
 		public void OnDeleteActivate (object o, EventArgs args) 
@@ -407,12 +480,18 @@ namespace lat
 				return;
 
 			string dn = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
+			string serverName = FindServerName (iter, model);
+			if (serverName == null)
+				return;
+					
+			ConnectionProfile cp = Global.Profiles [serverName];			
+			LdapServer server = Global.Connections [cp];
 
 			if (dn == server.Host)
 				return;
 
 			try {
-				if (Util.DeleteEntry (server, _parent, dn))
+				if (Util.DeleteEntry (server, parent, dn))
 					browserStore.Remove (ref iter);
 			}
 			catch {}
@@ -464,62 +543,62 @@ namespace lat
 
 		public void OnDragDataGet (object o, DragDataGetArgs args)
 		{
-			Logger.Log.Debug ("BEGIN OnDragDataGet");
-
-			Gtk.TreeModel model;
-			Gtk.TreeIter iter;
-
-			if (!this.Selection.GetSelected (out model, out iter))
-				return;
-
-			string dn = (string) model.GetValue (iter, (int)TreeCols.DN);
-			string data = null;
-
-			Logger.Log.Debug ("Exporting entry: {0}", dn);
-
-			Util.ExportData (server, dn, out data);
-
-			Atom[] targets = args.Context.Targets;
-
-			args.SelectionData.Set (targets[0], 8,
-				System.Text.Encoding.UTF8.GetBytes (data));
-
-			Logger.Log.Debug ("END OnDragDataGet");
+//			Logger.Log.Debug ("BEGIN OnDragDataGet");
+//
+//			Gtk.TreeModel model;
+//			Gtk.TreeIter iter;
+//
+//			if (!this.Selection.GetSelected (out model, out iter))
+//				return;
+//
+//			string dn = (string) model.GetValue (iter, (int)TreeCols.DN);
+//			string data = null;
+//
+//			Logger.Log.Debug ("Exporting entry: {0}", dn);
+//
+//			Util.ExportData (server, dn, out data);
+//
+//			Atom[] targets = args.Context.Targets;
+//
+//			args.SelectionData.Set (targets[0], 8,
+//				System.Text.Encoding.UTF8.GetBytes (data));
+//
+//			Logger.Log.Debug ("END OnDragDataGet");
 		}
 
 		public void OnDragDataReceived (object o, DragDataReceivedArgs args)
 		{
-			Logger.Log.Debug ("BEGIN OnDragDataReceived");
-
-			bool success = false;
-
-			string data = System.Text.Encoding.UTF8.GetString (
-					args.SelectionData.Data);
-
-			switch (args.Info) {
-				
-			case 0:
-			{
-				string[] uri_list = Regex.Split (data, "\r\n");
-			
-				Util.ImportData (server, _parent, uri_list);
-			
-				success = true;
-				break;
-			}
-
-			case 1:
-				Util.ImportData (server, _parent, data);
-				success = true;
-				break;
-
-			}
-
-			Logger.Log.Debug ("import success: {0}", success.ToString());
-
-			Gtk.Drag.Finish (args.Context, success, false, args.Time);
-
-			Logger.Log.Debug ("END OnDragDataReceived");
+//			Logger.Log.Debug ("BEGIN OnDragDataReceived");
+//
+//			bool success = false;
+//
+//			string data = System.Text.Encoding.UTF8.GetString (
+//					args.SelectionData.Data);
+//
+//			switch (args.Info) {
+//				
+//			case 0:
+//			{
+//				string[] uri_list = Regex.Split (data, "\r\n");
+//			
+//				Util.ImportData (server, parent, uri_list);
+//			
+//				success = true;
+//				break;
+//			}
+//
+//			case 1:
+//				Util.ImportData (server, parent, data);
+//				success = true;
+//				break;
+//
+//			}
+//
+//			Logger.Log.Debug ("import success: {0}", success.ToString());
+//
+//			Gtk.Drag.Finish (args.Context, success, false, args.Time);
+//
+//			Logger.Log.Debug ("END OnDragDataReceived");
 		}
 		
 		public int BrowserSelectionMethod

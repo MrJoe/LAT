@@ -1,4 +1,4 @@
-AC_INIT(lat, 1.1.3, http://dev.mmgsecurity.com/bugs/)
+AC_INIT(lat, 1.1.4, http://dev.mmgsecurity.com/bugs/)
 AC_CONFIG_MACRO_DIR(m4)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
@@ -92,7 +92,7 @@ $PACKAGE-$VERSION
     Mono Runtime:      ${MONO}
 
     Features:
-      mDNS:            ${ENABLE_AVAHI}
+      Avahi:           ${ENABLE_AVAHI}
       NetworkManager:  ${ENABLE_NETWORKMANAGER}
 "
 

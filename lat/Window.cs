@@ -25,33 +25,40 @@ using System.Collections;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
+#if ENABLE_AVAHI
+using Avahi;
+#endif
+
 namespace lat 
 {
-	public class latWindow
-	{	
+	public class MainWindow
+	{
 		Glade.XML ui;
-
+		
 		[Glade.Widget] Gtk.Window mainWindow;
-		[Glade.Widget] Gtk.Entry filterEntry;
-		[Glade.Widget] Gtk.Button searchBaseButton;
+		[Glade.Widget] HPaned hpaned1;
+		[Glade.Widget] Notebook infoNotebook;
+		[Glade.Widget] Notebook viewNotebook;
+		
 		[Glade.Widget] Gtk.ScrolledWindow viewScrolledWindow;
-		[Glade.Widget] Gtk.ScrolledWindow resultsScrolledWindow;
+		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;		
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] ScrolledWindow schemaScrolledWindow;
-		[Glade.Widget] Notebook viewNotebook;
-		[Glade.Widget] HPaned hpaned1;
-		[Glade.Widget] Gtk.MenuToolButton newMenuToolButton;
+		[Glade.Widget] Gtk.ScrolledWindow resultsScrolledWindow;
+		
+		[Glade.Widget] Gtk.MenuItem newMenuItem;
+		[Glade.Widget] Gtk.MenuToolButton newMenuToolButton;				
 		[Glade.Widget] Gtk.ToolButton propertiesToolButton;
 		[Glade.Widget] Gtk.ToolButton deleteToolButton;
 		[Glade.Widget] Gtk.ToolButton refreshToolButton;
 		[Glade.Widget] Gtk.ToolButton templateToolButton;
-		[Glade.Widget] Gtk.MenuItem newMenuItem;
+
 		[Glade.Widget] Gtk.CheckMenuItem showAllAttributes;
 		[Glade.Widget] Gtk.RadioMenuItem viewsView;
 		[Glade.Widget] Gtk.RadioMenuItem browserView;
 		[Glade.Widget] Gtk.RadioMenuItem searchView;
 		[Glade.Widget] Gtk.RadioMenuItem schemaView;
-		[Glade.Widget] Notebook infoNotebook;
+
 		[Glade.Widget] Gtk.TextView objNameTextview;
 		[Glade.Widget] Gtk.Entry objDescriptionEntry;
 		[Glade.Widget] Gtk.Entry objIDEntry;
@@ -60,7 +67,6 @@ namespace lat
 		[Glade.Widget] TreeView objOptionalTreeview;
 		[Glade.Widget] Gtk.CheckButton objObsoleteCheckbutton;
 		[Glade.Widget] VPaned infoVpaned1;
-
 		[Glade.Widget] Gtk.TextView attrNameTextview;
 		[Glade.Widget] Gtk.Entry attrDescriptionEntry;
 		[Glade.Widget] Gtk.Entry attrIDEntry;
@@ -81,42 +87,44 @@ namespace lat
 		[Glade.Widget] Gtk.Entry synDescriptionEntry;
 		[Glade.Widget] Gtk.Entry synOIDEntry;
 
-		[Glade.Widget] Gtk.ScrolledWindow valuesScrolledWindow;
+		[Glade.Widget] Gtk.Entry filterEntry;
+		[Glade.Widget] Gtk.HBox hbox448;
+		[Glade.Widget] Gtk.Button searchBaseButton;
+
 		[Glade.Widget] Gtk.Image sslImage;
 		[Glade.Widget] Gnome.AppBar appBar;
-
+		
+		Gnome.Program program;
+		
+		AccelGroup newAccelGroup;
+		
 		LdapTreeView ldapTreeView;
+		ViewsTreeView viewsTreeView;
+		ViewDataTreeView viewDataTreeView;
+		ServerInfoView serverInfoView;
+		AttributeEditorWidget attributeEditor;
 		SchemaTreeView schemaTreeview;
 		SearchResultsTreeView searchTreeView;
 
-		LdapServer server;
-		
 		ListStore objRequiredStore;
 		ListStore objOptionalStore;
-
-		private string _cutDN = null;
-		private TreeIter _cutIter;
-
-		private string _pasteDN = null;
-		private bool _isCopy = false;
-
-		ViewsTreeView viewsTreeView;
-		ViewDataTreeView viewDataTreeView;
-		AttributeEditorWidget attributeEditor;
-		ServerInfoView serverInfoView;
-
-		AccelGroup newAccelGroup;
-
-		public latWindow (LdapServer ldapServer) 
+		
+		ComboBox serverComboBox;
+		
+		public MainWindow (Gnome.Program mainProgram)
 		{
-			server = ldapServer;
-
+			program = mainProgram;
+			
 			ui = new Glade.XML (null, "lat.glade", "mainWindow", null);
 			ui.Autoconnect (this);
 
 			// set window icon
+			Global.latIcon = Gdk.Pixbuf.LoadFromResource ("lat.png");
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			mainWindow.Icon = dirIcon;
+			
+			Global.Profiles = new ProfileManager ();			
+			Global.Connections = new ConnectionManager (mainWindow);
 
 			// Restore window positions
 			LoadPreference (Preferences.MAIN_WINDOW_WIDTH);
@@ -130,41 +138,31 @@ namespace lat
 			Preferences.SettingChanged += OnPreferencesChanged;
 
 			// Setup views
-			viewsTreeView = new ViewsTreeView (server, mainWindow);
+			viewsTreeView = new ViewsTreeView ();
 			viewsTreeView.ViewSelected += new ViewSelectedHandler (OnViewSelected);
-
 			viewScrolledWindow.AddWithViewport (viewsTreeView);
 			viewScrolledWindow.Show ();
 
-			viewDataTreeView = new ViewDataTreeView (server, mainWindow);
-			valuesScrolledWindow.AddWithViewport (viewDataTreeView);
-			valuesScrolledWindow.Show ();			
-
 			// Setup browser			
-			ldapTreeView = new LdapTreeView (server, mainWindow);
-			ldapTreeView.dnSelected += new dnSelectedHandler (ldapDNSelected);
-
+			ldapTreeView = new LdapTreeView (mainWindow);
+			ldapTreeView.dnSelected += new dnSelectedHandler (OnLdapDNSelected);
 			browserScrolledWindow.AddWithViewport (ldapTreeView);
 			browserScrolledWindow.Show ();
 
 			LoadPreference (Preferences.BROWSER_SELECTION);
 
 			// Setup schema browser
-			schemaTreeview = new SchemaTreeView (server, mainWindow);
-			schemaTreeview.schemaSelected += new schemaSelectedHandler (schemaDNSelected);
-
+			schemaTreeview = new SchemaTreeView (mainWindow);
+			schemaTreeview.schemaSelected += new schemaSelectedHandler (OnSchemaDNSelected);
 			schemaScrolledWindow.AddWithViewport (schemaTreeview);
 			schemaScrolledWindow.Show ();
 
 			// Setup search
-			searchTreeView = new SearchResultsTreeView (server);
+			searchTreeView = new SearchResultsTreeView ();
 			searchTreeView.SearchResultSelected += new SearchResultSelectedHandler (OnSearchSelected);
 
 			resultsScrolledWindow.AddWithViewport (searchTreeView);
-			resultsScrolledWindow.Show ();
-
-			searchBaseButton.Label = server.DirectoryRoot;
-			toggleButtons (false);
+			resultsScrolledWindow.Show ();			
 
 			// setup schema
 			objRequiredStore = new ListStore (typeof (string));
@@ -177,93 +175,61 @@ namespace lat
 			objOptionalTreeview.AppendColumn ("Optional Attributes", new CellRendererText (), "text", 0);
 
 			infoVpaned1.Position = 150;
-			toggleInfoNotebook (false);
-			templateToolButton.Hide ();
 
+#if ENABLE_AVAHI
+			// Watch for any services available
+			ServiceFinder finder = new ServiceFinder ();
+			finder.Found += new ServiceEventHandler (OnServerFound);
+			finder.Run ();
+#endif
+
+			ToggleButtons (false);
+			ToggleInfoNotebook (false);
+			
+			templateToolButton.Hide ();			
+						
 			// setup menu
 			newAccelGroup = new AccelGroup ();
 			mainWindow.AddAccelGroup (newAccelGroup);
 			
-			GenerateNewMenu ();
-
 			// status bar			
-			updateStatusBar ();
-
-			// handlers		
-			viewNotebook.SwitchPage += new SwitchPageHandler (notebookViewChanged);
+			UpdateStatusBar ();
+			
+			viewNotebook.SwitchPage += new SwitchPageHandler (OnNotebookViewChanged);
 		}
 
-		public void OnPreferencesChanged (object sender, GConf.NotifyEventArgs args)
+		void CleanupView ()
 		{
-			LoadPreference (args.Key);
-		}
-		
-		public void OnPreferencesActivate (object sender, EventArgs args)
-		{
-			new PreferencesDialog (server);
-
-			viewsTreeView.Refresh ();
-			GenerateNewMenu ();
-			
-			Global.profileManager.SaveProfiles ();
-		}
-	
-		public void OnViewSelected (object o, ViewSelectedEventArgs args)
-		{
-			ViewPlugin vp = Global.pluginManager.FindServerView (args.Name);
-			
-			if (vp == null) {
-				if (viewDataTreeView != null) {					
-					viewDataTreeView.Destroy ();
-					viewDataTreeView = null;
-				}
-							
-			
-				serverInfoView = new ServerInfoView (server);
-				valuesScrolledWindow.AddWithViewport (serverInfoView);
-				valuesScrolledWindow.ShowAll ();
+			if (viewDataTreeView != null) {
+				newMenuToolButton.Clicked -= new EventHandler (viewDataTreeView.OnNewEntryActivate);
+				propertiesToolButton.Clicked -= new EventHandler (viewDataTreeView.OnEditActivate);
+				deleteToolButton.Clicked -= new EventHandler (viewDataTreeView.OnDeleteActivate);
+				refreshToolButton.Clicked -= new EventHandler (viewDataTreeView.OnRefreshActivate);
 				
-				return;
+				viewDataTreeView.Destroy ();
+				viewDataTreeView = null;
 			}
-
-			cleanupView ();
-
-			if (viewDataTreeView == null) {
-				serverInfoView.Destroy ();
-				serverInfoView = null;
-				
-				viewDataTreeView = new ViewDataTreeView (server, mainWindow);
-				valuesScrolledWindow.AddWithViewport (viewDataTreeView);
-				valuesScrolledWindow.ShowAll ();			
-			}
-
-			viewDataTreeView.ConfigureView (vp);
-			viewDataTreeView.Populate ();
-			SetupToolbar (vp);
 		}
 
-		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
+		void CreateServerCombo ()
 		{
-			LdapEntry entry = server.GetEntry (args.DN);
+			serverComboBox = ComboBox.NewText ();
+			string[] names = Global.Profiles.GetProfileNames ();
+			
+			foreach (string s in names)
+				serverComboBox.AppendText (s);
 
-			if (entry != null) 
-				attributeEditor.Show (server, entry, showAllAttributes.Active);
+			serverComboBox.Active = 0;
+			serverComboBox.Show ();
+
+			hbox448.PackEnd (serverComboBox, true, true, 5);
 		}
 
-		void GenerateNewMenu ()
+		void GenerateNewMenu (ConnectionProfile cp)
 		{		
 			Gtk.Menu newMenu = new Gtk.Menu ();	
-			ConnectionProfile cp = null;
-			
-			if (server.ProfileName == null) {
-				cp = new ConnectionProfile ();
-				cp.ServerType = server.ServerTypeString;				
-				cp.SetDefaultServerViews ();		
-			} else {
-				cp = Global.profileManager [server.ProfileName];
-			}
- 	
-			foreach (ViewPlugin vp in Global.pluginManager.ServerViewPlugins)		
+ 				 	
+			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins)		
 					if (cp.ActiveServerViews.Contains (vp.GetType().ToString())) {
 						ImageMenuItem menuitem = new ImageMenuItem (vp.MenuLabel, newAccelGroup);
 						menuitem.AddAccelerator ("activate", newAccelGroup, vp.MenuKey);
@@ -277,47 +243,99 @@ namespace lat
 						newMenu.Append (menuitem);
 					} 
 
-			newMenuItem.Submenu = null;
-			newMenuItem.Submenu = newMenu;
-			
+			newMenuItem.Submenu = newMenu;			
 			newMenuToolButton.Menu = newMenu;
 		}
 
-		void OnNewMenuItemActivate (object o, EventArgs args)
+		LdapServer GetActiveServer ()
 		{
-			ImageMenuItem mi = (ImageMenuItem) o;
-			Gtk.Label l = (Gtk.Label) mi.Child;
+			string serverName = null;
+			ConnectionProfile cp = null;
+			LdapServer server = null;
+			
+			if (viewsView.Active) {
+				serverName = viewsTreeView.GetActiveServerName ();
+			} else if (browserView.Active) {
+				serverName = ldapTreeView.GetActiveServerName ();
+			} else if (schemaView.Active) {
+				serverName = schemaTreeview.GetActiveServerName ();
+			} 
+		
+			if (serverName == null)
+				return server;
 
-			viewDataTreeView.ShowNewItemDialog (l.Text);
+			cp = Global.Profiles [serverName];			
+			server = Global.Connections [cp];	
+			
+			return server;
 		}
 
-		void updateStatusBar ()
+		void LoadPreference (String key)
 		{
-			string msg = null;
+			object val = Preferences.Get (key);
 
-			if (server.AuthDN == null)
-				msg = String.Format("Bind DN: anonymous");
-			else
-				msg = String.Format("Bind DN: {0}", server.AuthDN);
+			if (val == null) {
 
-			appBar.Pop ();
-			appBar.Push (msg);
+				if (key == Preferences.MAIN_WINDOW_HPANED)
+					hpaned1.Position = 250;
 
-			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
-		}
+				return;
+			}
+			
+			Logger.Log.Debug ("Setting {0} to {1}", key, val);
 
-		void toggleInfoNotebook (bool show)
-		{
-			if (show) {
-				infoNotebook.Show ();
-				valuesScrolledWindow.Hide ();
-			} else {
-				infoNotebook.Hide ();
-				valuesScrolledWindow.Show ();
+			switch (key) {
+			case Preferences.MAIN_WINDOW_MAXIMIZED:
+				if ((bool) val)
+					mainWindow.Maximize ();
+				else
+					mainWindow.Unmaximize ();
+				break;
+
+			case Preferences.MAIN_WINDOW_X:
+			case Preferences.MAIN_WINDOW_Y:
+				mainWindow.Move((int) Preferences.Get(Preferences.MAIN_WINDOW_X),
+						(int) Preferences.Get(Preferences.MAIN_WINDOW_Y));
+				break;
+			
+			case Preferences.MAIN_WINDOW_WIDTH:
+			case Preferences.MAIN_WINDOW_HEIGHT:
+				mainWindow.SetDefaultSize((int) Preferences.Get(Preferences.MAIN_WINDOW_WIDTH),
+						(int) Preferences.Get(Preferences.MAIN_WINDOW_HEIGHT));
+
+				mainWindow.ReshowWithInitialSize();
+				break;
+
+			case Preferences.MAIN_WINDOW_HPANED:
+				hpaned1.Position = (int) Preferences.Get (Preferences.MAIN_WINDOW_HPANED);
+				break;
+				
+			case Preferences.BROWSER_SELECTION:
+				ldapTreeView.BrowserSelectionMethod = (int) val; 
+				break;
+				
+			case Preferences.DISPLAY_VERBOSE_MESSAGES:
+				Global.VerboseMessages = (bool) val;
+				break;
 			}
 		}
 
-		void setInfoNotePage (int page)
+		void SetBrowserTooltips ()
+		{
+			Tooltips t = new Tooltips ();
+			string tipMsg = null;
+
+			tipMsg = "Create a new directory entry";
+			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+
+			tipMsg = "Delete an entry from the directory";
+			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+
+			tipMsg = "Manage templates for creating new entries";
+			templateToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+		}
+
+		void SetInfoNotePage (int page)
 		{
 			Gtk.Widget w = null;
 		
@@ -392,169 +410,32 @@ namespace lat
 				break;
 			}
 		}
-	
-		void toggleButtons (bool btnState)
+
+		void SetupToolbar (ViewPlugin vp)
 		{
-			newMenuToolButton.Sensitive = btnState;
-			propertiesToolButton.Sensitive = btnState;
-			deleteToolButton.Sensitive = btnState;
-			refreshToolButton.Sensitive = btnState;
+			Tooltips t = new Tooltips ();
+			string tipMsg = null;
 
-			propertiesToolButton.Show ();
-			refreshToolButton.Show ();
-		}
+			tipMsg = String.Format ("Create a new {0}", vp.Name.ToLower());
+			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			newMenuToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
 
-		void schemaDNSelected (object o, schemaSelectedEventArgs args)
-		{
-			if (args.Name == "Object Classes" || args.Name == "Attribute Types" || args.Name == "Matching Rules" || args.Name == "LDAP Syntaxes")
-				return;
-
-			if (args.Parent == "Object Classes") {
-				
-				setInfoNotePage (0);
-				SchemaParser sp = server.GetObjectClassSchema (args.Name);
-				showEntrySchema (sp);
-
-			} else if (args.Parent == "Attribute Types") {
-
-				setInfoNotePage (1);
-				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
-				showAttrTypeSchema (sp);
-				
-			} else if (args.Parent == "Matching Rules") {
-
-				setInfoNotePage (2);
-				SchemaParser sp = server.GetMatchingRule (args.Name);
-				showMatchingRule (sp);				
+			tipMsg = String.Format ("Edit the properties of a {0}", vp.Name.ToLower());
+			propertiesToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			propertiesToolButton.Clicked += new EventHandler (viewDataTreeView.OnEditActivate);
 			
-			} else if (args.Parent == "LDAP Syntaxes") {
-			
-				setInfoNotePage (3);
-				SchemaParser sp = server.GetLdapSyntax (args.Name);
-				showLdapSyntax (sp);
-			}
+			tipMsg = String.Format ("Delete a {0} from the directory", vp.Name.ToLower());
+			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			deleteToolButton.Clicked += new EventHandler (viewDataTreeView.OnDeleteActivate);
+
+			tipMsg = "Refreshes the data from the server";
+			refreshToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			refreshToolButton.Clicked += new EventHandler (viewDataTreeView.OnRefreshActivate);
+
+			ToggleButtons (true);
 		}
 
-		void ldapDNSelected (object o, dnSelectedEventArgs args)
-		{
-			if (args.IsHost) {
-				if (attributeEditor != null)
-					attributeEditor.Destroy ();
-			
-				serverInfoView = new ServerInfoView (server);
-				valuesScrolledWindow.AddWithViewport (serverInfoView);
-				valuesScrolledWindow.ShowAll ();
-				
-				return;
-			}
-
-			if (serverInfoView != null) {
-				serverInfoView.Destroy ();
-				serverInfoView = null;
-				
-				attributeEditor = new AttributeEditorWidget ();
-				valuesScrolledWindow.AddWithViewport (attributeEditor);
-				valuesScrolledWindow.ShowAll ();				
-			}
-			
-			LdapEntry entry = server.GetEntry (args.DN);			
-			if (entry != null)
-				attributeEditor.Show (server, entry, showAllAttributes.Active);
-		}
-
-		void Close ()
-		{
-			int x, y, width, height;
-			mainWindow.GetPosition (out x, out y);
-			mainWindow.GetSize (out width, out height);
-
-			bool maximized = ((mainWindow.GdkWindow.State & Gdk.WindowState.Maximized) > 0);
-			Preferences.Set (Preferences.MAIN_WINDOW_MAXIMIZED, maximized);
-
-			if (!maximized) {
-				Preferences.Set (Preferences.MAIN_WINDOW_X, x);
-				Preferences.Set (Preferences.MAIN_WINDOW_Y, y);
-				Preferences.Set (Preferences.MAIN_WINDOW_WIDTH, width);
-				Preferences.Set (Preferences.MAIN_WINDOW_HEIGHT, height);
-			}
-
-			Preferences.Set (Preferences.MAIN_WINDOW_HPANED, hpaned1.Position);
-			Preferences.Set (Preferences.BROWSER_SELECTION, ldapTreeView.BrowserSelectionMethod);
-			Preferences.Set (Preferences.DISPLAY_VERBOSE_MESSAGES, Global.VerboseMessages);
-
-			Application.Quit ();
-		}
-
-		public void OnAppDelete (object o, DeleteEventArgs args) 
-		{	
-			Close ();
-			args.RetVal = true;
-		}
-		
-		public void OnSearchBuilderClicked (object o, EventArgs args)
-		{
-			SearchBuilderDialog sbd = new SearchBuilderDialog ();
-			filterEntry.Text = sbd.UserFilter;
-		}
-
-		public void OnSearchClicked (object o, EventArgs args)
-		{
-			LdapEntry[] searchResults = server.Search (
-				searchBaseButton.Label, filterEntry.Text);
-
-			if (searchResults == null) {
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					mainWindow,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Search error",
-					Mono.Unix.Catalog.GetString ("Invalid search filter."));
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-			} else if (searchResults.Length > 0 && filterEntry.Text != "") {
-				searchTreeView.UpdateSearchResults (searchResults);
-
-				string msg = String.Format ("Found {0} matching entries", searchResults.Length);
-				appBar.Pop ();
-				appBar.Push (msg);
-			}
-		}
-
-		public void OnSearchBaseClicked (object o, EventArgs args)
-		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, mainWindow);
-
-			scd.Message = String.Format (
-				Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
-
-			scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
-			scd.Run ();
-
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
-				searchBaseButton.Label = scd.DN;
-		}
-
-		public void OnShowAllAttributes (object o, EventArgs args)
-		{
-			string dn = null;
-
-			if (viewNotebook.CurrentPage == 1) {
-
-				dn = ldapTreeView.getSelectedDN ();
-
-				if (dn == null)
-					return;
-
-				LdapEntry entry = server.GetEntry (dn);
-				attributeEditor.Show (server, entry, showAllAttributes.Active);
-			}
-		}
-
-		void showMatchingRule (SchemaParser sp)
+		void ShowMatchingRule (SchemaParser sp)
 		{
 			if (sp == null)
 				return;
@@ -564,7 +445,7 @@ namespace lat
 			matSyntaxEntry.Text = sp.Syntax;
 		}
 
-		void showLdapSyntax (SchemaParser sp)
+		void ShowLdapSyntax (SchemaParser sp)
 		{
 			if (sp == null)
 				return;
@@ -573,7 +454,7 @@ namespace lat
 			synOIDEntry.Text = sp.ID;
 		}
 
-		private void showAttrTypeSchema (SchemaParser sp)
+		void ShowAttrTypeSchema (SchemaParser sp)
 		{
 			try {
 
@@ -607,7 +488,7 @@ namespace lat
 			} catch {}
 		}
 
-		private void showEntrySchema (SchemaParser sp)
+		void ShowEntrySchema (SchemaParser sp)
 		{
 			try {
 
@@ -642,62 +523,525 @@ namespace lat
 			} catch {}
 		}
 
-		void cleanupView ()
+		void ToggleButtons (bool btnState)
 		{
-			if (viewDataTreeView != null) {
-				newMenuToolButton.Clicked -= new EventHandler (viewDataTreeView.OnNewEntryActivate);
-				propertiesToolButton.Clicked -= new EventHandler (viewDataTreeView.OnEditActivate);
-				deleteToolButton.Clicked -= new EventHandler (viewDataTreeView.OnDeleteActivate);
-				refreshToolButton.Clicked -= new EventHandler (viewDataTreeView.OnRefreshActivate);
+			newMenuToolButton = (MenuToolButton) ui.GetWidget ("newMenuToolButton");
+			newMenuToolButton.Sensitive = btnState;
+			
+			propertiesToolButton = (ToolButton) ui.GetWidget ("propertiesToolButton");
+			propertiesToolButton.Sensitive = btnState;
+			
+			deleteToolButton = (ToolButton) ui.GetWidget ("deleteToolButton");
+			deleteToolButton.Sensitive = btnState;
+			
+			refreshToolButton = (ToolButton) ui.GetWidget ("refreshToolButton");
+			refreshToolButton.Sensitive = btnState;
+
+			propertiesToolButton.Show ();
+			refreshToolButton.Show ();
+		}
+
+		void ToggleInfoNotebook (bool show)
+		{
+			if (show) {
+				infoNotebook.Show ();
+				valuesScrolledWindow.HideAll ();
+			} else {
+				infoNotebook.Hide ();
+				valuesScrolledWindow.ShowAll ();
 			}
 		}
 
-		void SetupToolbar (ViewPlugin vp)
+		void UpdateStatusBar ()
 		{
-			Tooltips t = new Tooltips ();
-			string tipMsg = null;
+			string msg = null;
 
-			tipMsg = String.Format ("Create a new {0}", vp.Name.ToLower());
-			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-			newMenuToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
 
-			tipMsg = String.Format ("Edit the properties of a {0}", vp.Name.ToLower());
-			propertiesToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-			propertiesToolButton.Clicked += new EventHandler (viewDataTreeView.OnEditActivate);
+			if (server.AuthDN == null)
+				msg = String.Format("Bind DN: anonymous");
+			else
+				msg = String.Format("Bind DN: {0}", server.AuthDN);
+
+			appBar.Pop ();
+			appBar.Push (msg);
+
+			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
+		}
+		
+		// Handlers
+
+		public void OnAboutActivate (object o, EventArgs args) 
+		{
+			AboutDialog.Show ();
+		}
+
+		public void OnAppDelete (object o, DeleteEventArgs args) 
+		{	
+			Close ();
+			args.RetVal = true;
+		}
+
+		public void OnNewActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnNewEntryActivate (o, args);
+			else if (viewNotebook.CurrentPage == 1)
+				ldapTreeView.OnNewEntryActivate (o, args);
+		}
+
+		public void OnDeleteActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnDeleteActivate (o, args);
+			else if (viewNotebook.CurrentPage == 1)
+				ldapTreeView.OnDeleteActivate (o, args);
+		}
+
+		public void OnPropertiesActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnEditActivate (o, args);
+		}
+
+		public void OnRefreshActivate (object o, EventArgs args)
+		{
+			if (viewNotebook.CurrentPage == 0)
+				if (viewDataTreeView != null)
+					viewDataTreeView.OnRefreshActivate (o, args);
+		}
+
+		public void OnReloginActivate (object o, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;		
+		
+			string msg = Mono.Unix.Catalog.GetString (
+				"Enter the new username and password\nyou wish to re-login with");
+
+			LoginDialog ld = new LoginDialog (server, msg);
+			ld.Run ();
+
+			UpdateStatusBar ();
+		}
+
+		public void OnTemplatesClicked (object o, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
+		
+			new TemplatesDialog (server);
+		}
+
+		public void OnDisconnectActivate (object o, EventArgs args) 
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
+				
+			server.Disconnect ();
+		}
+
+		public void OnImportActivate (object o, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;		
+		
+			FileChooserDialog fcd = new FileChooserDialog (
+				Mono.Unix.Catalog.GetString ("Choose an LDIF file to import"),
+				Gtk.Stock.Open, 
+				mainWindow, 
+				FileChooserAction.Open);
+
+			fcd.AddButton (Gtk.Stock.Cancel, ResponseType.Cancel);
+			fcd.AddButton (Gtk.Stock.Open, ResponseType.Ok);
+
+			fcd.SelectMultiple = false;
+
+			ResponseType response = (ResponseType) fcd.Run();
+			if (response == ResponseType.Ok) {
+
+				UriBuilder ub = new UriBuilder ();
+				ub.Scheme = "file";
+				ub.Path = fcd.Filename;
+
+				Util.ImportData (server, mainWindow, ub.Uri);
+			} 
+		
+			fcd.Destroy();
+		}
+
+		public void OnExportActivate (object o, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
+		
+			SelectContainerDialog scd = new SelectContainerDialog (server, mainWindow);
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Export entry");
+
+			scd.Message = 
+				Mono.Unix.Catalog.GetString ("Select the container you wish to export.");
+			scd.Run ();
+
+			if (scd.DN.Equals (""))
+				return;
+
+			Util.ExportData (server, mainWindow, scd.DN);
+		}
+
+		public void OnPopulateActivate (object o, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
+				
+			new SambaPopulateDialog (server);
+		}
+
+		public void OnPreferencesActivate (object sender, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
+				
+			new PreferencesDialog (server);
 			
-			tipMsg = String.Format ("Delete a {0} from the directory", vp.Name.ToLower());
-			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-			deleteToolButton.Clicked += new EventHandler (viewDataTreeView.OnDeleteActivate);
-
-			tipMsg = "Refreshes the data from the server";
-			refreshToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-			refreshToolButton.Clicked += new EventHandler (viewDataTreeView.OnRefreshActivate);
-
-			toggleButtons (true);
+			Global.Profiles.SaveProfiles ();
 		}
 
-		void SetBrowserTooltips ()
+		public void OnCutActivate (object o, EventArgs args)
 		{
-			Tooltips t = new Tooltips ();
-			string tipMsg = null;
-
-			tipMsg = "Create a new directory entry";
-			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-
-			tipMsg = "Delete an entry from the directory";
-			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-
-			tipMsg = "Manage templates for creating new entries";
-			templateToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+//			if (!(viewNotebook.Page == 1))
+//				return;
+//
+//			_cutDN = ldapTreeView.getSelectedDN ();
+//			_cutIter = ldapTreeView.getSelectedIter ();
+//
+//			Logger.Log.Debug ("cut - dn: {0}", _cutDN);
 		}
 
-		void notebookViewChanged (object o, SwitchPageArgs args)
+		public void OnCopyActivate (object o, EventArgs args)
+		{
+//			if (!(viewNotebook.Page == 1))
+//				return;
+//
+//			_cutDN = ldapTreeView.getSelectedDN ();
+//
+//			_isCopy = true;
+//
+//			Logger.Log.Debug ("copy - dn: {0}", _cutDN);
+		}
+
+		public void OnPasteActivate (object o, EventArgs args)
+		{
+//			if (!(viewNotebook.Page == 1))
+//				return;
+//
+//			_pasteDN = ldapTreeView.getSelectedDN ();
+//
+//			if (_pasteDN.Equals (null))
+//				return;
+//
+//			DN dn = new DN (_cutDN);
+//			RDN r = (RDN) dn.RDNs[0];
+//
+//			try {
+//
+//				string msg = null;
+//
+//				if (_isCopy) {
+//
+//					server.Copy (_cutDN, r.toString(false), _pasteDN);
+//
+//					msg = String.Format (
+//						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
+//						_cutDN, _pasteDN);
+//
+//				} else {
+//
+//					server.Move (_cutDN, r.toString(false), _pasteDN);
+//
+//					msg = String.Format (
+//						Mono.Unix.Catalog.GetString ("Entry {0} moved to {1}"), 
+//						_cutDN, _pasteDN);
+//
+//				}
+//
+//				HIGMessageDialog dialog = new HIGMessageDialog (
+//					mainWindow,
+//					0,
+//					Gtk.MessageType.Info,
+//					Gtk.ButtonsType.Ok,
+//					"Paste results",
+//					msg);
+//
+//				dialog.Run ();
+//				dialog.Destroy ();
+//
+//				if (!_isCopy)
+//					ldapTreeView.RemoveRow (_cutIter);
+//
+//			} catch (Exception e) {
+//
+//				string msg = null;
+//
+//				if (_isCopy) {
+//					string txt = Mono.Unix.Catalog.GetString ("Unable to copy entry ");
+//					msg = txt + _cutDN;
+//				} else {
+//
+//					string txt = Mono.Unix.Catalog.GetString ("Unable to move entry ");
+//					msg = txt + _cutDN;
+//				}
+//
+//				msg += "\nError: " + e.Message;
+//
+//				HIGMessageDialog dialog = new HIGMessageDialog (
+//					mainWindow,
+//					0,
+//					Gtk.MessageType.Error,
+//					Gtk.ButtonsType.Ok,
+//					"Paste error",
+//					msg);
+//
+//				dialog.Run ();
+//				dialog.Destroy ();
+//			}
+//
+//			if (_isCopy)
+//				_isCopy = false;
+		}
+
+		public void OnMassEditActivate (object o, EventArgs args)
+		{
+			LdapServer server = GetActiveServer ();
+			if (server == null)
+				return;
+				
+			new MassEditDialog (server);
+		}
+
+		void Close ()
+		{
+			int x, y, width, height;
+			mainWindow.GetPosition (out x, out y);
+			mainWindow.GetSize (out width, out height);
+
+			bool maximized = ((mainWindow.GdkWindow.State & Gdk.WindowState.Maximized) > 0);
+			Preferences.Set (Preferences.MAIN_WINDOW_MAXIMIZED, maximized);
+
+			if (!maximized) {
+				Preferences.Set (Preferences.MAIN_WINDOW_X, x);
+				Preferences.Set (Preferences.MAIN_WINDOW_Y, y);
+				Preferences.Set (Preferences.MAIN_WINDOW_WIDTH, width);
+				Preferences.Set (Preferences.MAIN_WINDOW_HEIGHT, height);
+			}
+
+			Preferences.Set (Preferences.MAIN_WINDOW_HPANED, hpaned1.Position);
+			Preferences.Set (Preferences.BROWSER_SELECTION, ldapTreeView.BrowserSelectionMethod);
+			Preferences.Set (Preferences.DISPLAY_VERBOSE_MESSAGES, Global.VerboseMessages);
+
+			program.Quit ();
+		}
+
+		public void OnSearchSelected (object o, SearchResultSelectedEventArgs args)
+		{
+			TreeIter iter;
+				
+			if (!serverComboBox.GetActiveIter (out iter))
+				return;
+
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);
+			
+			ConnectionProfile cp = Global.Profiles [profileName];			
+			LdapServer server = Global.Connections [cp];
+				
+			LdapEntry entry = server.GetEntry (args.DN);
+
+			if (entry != null) 
+				attributeEditor.Show (server, entry, showAllAttributes.Active);
+		}
+		
+		public void OnSearchBuilderClicked (object o, EventArgs args)
+		{
+			SearchBuilderDialog sbd = new SearchBuilderDialog ();
+			filterEntry.Text = sbd.UserFilter;
+		}
+
+		public void OnSearchClicked (object o, EventArgs args)
+		{
+			TreeIter iter;
+				
+			if (!serverComboBox.GetActiveIter (out iter))
+				return;
+
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);
+			
+			ConnectionProfile cp = Global.Profiles [profileName];			
+			LdapServer server = Global.Connections [cp];
+			
+			LdapEntry[] searchResults = server.Search (
+				searchBaseButton.Label, filterEntry.Text);
+
+			if (searchResults == null) {
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Search error",
+					Mono.Unix.Catalog.GetString ("Invalid search filter."));
+
+				dialog.Run ();
+				dialog.Destroy ();
+
+			} else if (searchResults.Length > 0 && filterEntry.Text != "") {
+				searchTreeView.UpdateSearchResults (searchResults);
+
+				string msg = String.Format ("Found {0} matching entries", searchResults.Length);
+				appBar.Pop ();
+				appBar.Push (msg);
+			}
+		}
+
+		public void OnSearchBaseClicked (object o, EventArgs args)
+		{
+			TreeIter iter;
+				
+			if (!serverComboBox.GetActiveIter (out iter))
+				return;
+
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);
+			
+			ConnectionProfile cp = Global.Profiles [profileName];			
+			LdapServer server = Global.Connections [cp];
+		
+			SelectContainerDialog scd = new SelectContainerDialog (server, mainWindow);
+
+			scd.Message = String.Format (
+				Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
+
+			scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
+			scd.Run ();
+
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+				searchBaseButton.Label = scd.DN;
+		}
+
+		public void OnShowAllAttributes (object o, EventArgs args)
+		{
+			string dn = null;
+			LdapServer server = null;
+
+			if (viewNotebook.CurrentPage == 1) {
+
+				ldapTreeView.GetSelectedDN (out dn, out server);
+
+				if (dn == null || server == null)
+					return;
+
+				LdapEntry entry = server.GetEntry (dn);
+				attributeEditor.Show (server, entry, showAllAttributes.Active);
+			}
+		}
+
+		public void OnViewChanged (object o, EventArgs args)
+		{		
+			if (viewsView.Active) {
+				viewNotebook.Page = 0;
+				ToggleInfoNotebook (false);
+			} else if (browserView.Active) {
+				viewNotebook.Page = 1;
+				ToggleInfoNotebook (false);
+			} else if (searchView.Active) {
+				serverComboBox = null;
+				CreateServerCombo ();			
+				viewNotebook.Page = 2;
+				ToggleInfoNotebook (false);
+			} else if (schemaView.Active) {
+				viewNotebook.Page = 3;
+				ToggleInfoNotebook (true);
+				SetInfoNotePage (-1);
+			}
+		}
+
+		public void OnQuitActivate (object o, EventArgs args) 
+		{
+			Close ();
+		}
+
+		public void OnHelpContentsActivate (object o, EventArgs args)
+		{
+			try {
+
+				Gnome.Help.DisplayDesktopOnScreen (program, 
+					Defines.PACKAGE, 
+					"lat.xml", 
+					null, 
+					Gdk.Screen.Default);
+
+			} catch (Exception e) {
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Help error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
+		}
+
+		void OnLdapDNSelected (object o, dnSelectedEventArgs args)
+		{
+			ConnectionProfile cp = Global.Profiles [args.Server];
+			LdapServer server = Global.Connections [cp];
+			
+			if (args.IsHost) {
+				if (attributeEditor != null)
+					attributeEditor.Destroy ();
+			
+				serverInfoView = new ServerInfoView (server);
+				valuesScrolledWindow.AddWithViewport (serverInfoView);
+				valuesScrolledWindow.ShowAll ();
+				
+				return;
+			}
+
+			if (serverInfoView != null) {
+				serverInfoView.Destroy ();
+				serverInfoView = null;
+				
+				attributeEditor = new AttributeEditorWidget ();
+				valuesScrolledWindow.AddWithViewport (attributeEditor);
+				valuesScrolledWindow.ShowAll ();				
+			}
+			
+			LdapEntry entry = server.GetEntry (args.DN);			
+			if (entry != null)
+				attributeEditor.Show (server, entry, showAllAttributes.Active);
+		}
+
+		void OnNotebookViewChanged (object o, SwitchPageArgs args)
 		{
 			if (args.PageNum == 0) {
 
 				ldapTreeView.removeToolbarHandlers ();
-				toggleButtons (false);
-				toggleInfoNotebook (false);
+				ToggleButtons (false);
+				ToggleInfoNotebook (false);
 
 				if (serverInfoView != null) {
 					serverInfoView.Destroy ();
@@ -709,21 +1053,14 @@ namespace lat
 					attributeEditor = null;
 				}
 
-				if (viewDataTreeView == null) {
-					viewDataTreeView = new ViewDataTreeView (server, mainWindow);
-					valuesScrolledWindow.AddWithViewport (viewDataTreeView);
-					valuesScrolledWindow.Show ();
-				}
-
-				GenerateNewMenu ();
 				templateToolButton.Hide ();
 
 			} else if (args.PageNum == 1) {
 
-				cleanupView ();
+				CleanupView ();
 
-				toggleButtons (true);
-				toggleInfoNotebook (false);
+				ToggleButtons (true);
+				ToggleInfoNotebook (false);
 
 				newMenuItem.Submenu = null;
 				newMenuToolButton.Menu = null;
@@ -753,7 +1090,7 @@ namespace lat
 
 			} else if (args.PageNum == 2) {
 
-				cleanupView ();
+				CleanupView ();
 
 				ldapTreeView.removeToolbarHandlers ();
 
@@ -776,363 +1113,139 @@ namespace lat
 					valuesScrolledWindow.Show ();
 				}
 				
-				toggleButtons (false);
-				toggleInfoNotebook (false);
+				ToggleButtons (false);
+				ToggleInfoNotebook (false);
 
 				templateToolButton.Hide ();
 
+				serverComboBox = null;
+				CreateServerCombo ();
+
 			} else if (args.PageNum == 3) {
 
-				cleanupView ();
+				CleanupView ();
 
-				toggleButtons (false);
+				ToggleButtons (false);
 
 				newMenuItem.Submenu = null;
 				newMenuToolButton.Menu = null;
 
-				toggleInfoNotebook (true);
+				ToggleInfoNotebook (true);
 
-				setInfoNotePage (-1);
+				SetInfoNotePage (-1);
 
 				templateToolButton.Hide ();
 			}
 		}
 
-		public void OnTemplatesClicked (object o, EventArgs args)
+		void OnNewMenuItemActivate (object o, EventArgs args)
 		{
-			new TemplatesDialog (server);
+			ImageMenuItem mi = (ImageMenuItem) o;
+			Gtk.Label l = (Gtk.Label) mi.Child;
+
+			viewDataTreeView.ShowNewItemDialog (l.Text);
 		}
 
-		private void LoadPreference (String key)
+		public void OnPreferencesChanged (object sender, GConf.NotifyEventArgs args)
 		{
-			object val = Preferences.Get (key);
+			LoadPreference (args.Key);
+		}
 
-			if (val == null) {
-
-				if (key == Preferences.MAIN_WINDOW_HPANED)
-					hpaned1.Position = 250;
-
+		void OnSchemaDNSelected (object o, schemaSelectedEventArgs args)
+		{
+			if (args.Name == "Object Classes" || args.Name == "Attribute Types" || args.Name == "Matching Rules" || args.Name == "LDAP Syntaxes")
 				return;
-			}
-			
-			Logger.Log.Debug ("Setting {0} to {1}", key, val);
 
-			switch (key) {
-			case Preferences.MAIN_WINDOW_MAXIMIZED:
-				if ((bool) val)
-					mainWindow.Maximize ();
-				else
-					mainWindow.Unmaximize ();
-				break;
+			ConnectionProfile cp = Global.Profiles [args.Server];
+			LdapServer server = Global.Connections [cp];
 
-			case Preferences.MAIN_WINDOW_X:
-			case Preferences.MAIN_WINDOW_Y:
-				mainWindow.Move((int) Preferences.Get(Preferences.MAIN_WINDOW_X),
-						(int) Preferences.Get(Preferences.MAIN_WINDOW_Y));
-				break;
-			
-			case Preferences.MAIN_WINDOW_WIDTH:
-			case Preferences.MAIN_WINDOW_HEIGHT:
-				mainWindow.SetDefaultSize((int) Preferences.Get(Preferences.MAIN_WINDOW_WIDTH),
-						(int) Preferences.Get(Preferences.MAIN_WINDOW_HEIGHT));
-
-				mainWindow.ReshowWithInitialSize();
-				break;
-
-			case Preferences.MAIN_WINDOW_HPANED:
-				hpaned1.Position = (int) Preferences.Get (Preferences.MAIN_WINDOW_HPANED);
-				break;
+			if (args.Parent == "Object Classes") {
 				
-			case Preferences.BROWSER_SELECTION:
-				ldapTreeView.BrowserSelectionMethod = (int) val; 
-				break;
+				SetInfoNotePage (0);
+				SchemaParser sp = server.GetObjectClassSchema (args.Name);
+				ShowEntrySchema (sp);
+
+			} else if (args.Parent == "Attribute Types") {
+
+				SetInfoNotePage (1);
+				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
+				ShowAttrTypeSchema (sp);
 				
-			case Preferences.DISPLAY_VERBOSE_MESSAGES:
-				Global.VerboseMessages = (bool) val;
-				break;
+			} else if (args.Parent == "Matching Rules") {
+
+				SetInfoNotePage (2);
+				SchemaParser sp = server.GetMatchingRule (args.Name);
+				ShowMatchingRule (sp);				
+			
+			} else if (args.Parent == "LDAP Syntaxes") {
+			
+				SetInfoNotePage (3);
+				SchemaParser sp = server.GetLdapSyntax (args.Name);
+				ShowLdapSyntax (sp);
 			}
 		}
 
-		// Menu
-
-//		public void OnNewActivate (object o, EventArgs args)
-//		{
-//			if (viewNotebook.CurrentPage == 0)
-//				if (viewDataTreeView != null)
-//					viewDataTreeView.OnNewEntryActivate (o, args);
-//			else if (viewNotebook.CurrentPage == 1)
-//				ldapTreeView.OnNewEntryActivate (o, args);
-//		}
-
-		public void OnDeleteActivate (object o, EventArgs args)
+#if ENABLE_AVAHI
+		void OnServerFound (object o, ServiceEventArgs args)
 		{
-			if (viewNotebook.CurrentPage == 0)
-				if (viewDataTreeView != null)
-					viewDataTreeView.OnDeleteActivate (o, args);
-			else if (viewNotebook.CurrentPage == 1)
-				ldapTreeView.OnDeleteActivate (o, args);
+			Global.Profiles [args.Profile.Name] = args.Profile;
+			viewsTreeView.AddServer (args.Profile);
+			ldapTreeView.AddServer (args.Profile);
+			schemaTreeview.AddServer (args.Profile);
 		}
-
-		public void OnPropertiesActivate (object o, EventArgs args)
-		{
-			if (viewNotebook.CurrentPage == 0)
-				if (viewDataTreeView != null)
-					viewDataTreeView.OnEditActivate (o, args);
-		}
-
-		public void OnRefreshActivate (object o, EventArgs args)
-		{
-			if (viewNotebook.CurrentPage == 0)
-				if (viewDataTreeView != null)
-					viewDataTreeView.OnRefreshActivate (o, args);
-		}
-
-		public void OnReloginActivate (object o, EventArgs args)
-		{
-			string msg = Mono.Unix.Catalog.GetString (
-				"Enter the new username and password\nyou wish to re-login with");
-
-			LoginDialog ld = new LoginDialog (server, msg);
-			ld.Run ();
-
-			updateStatusBar ();
-		}
-
-		public void OnDisconnectActivate (object o, EventArgs args) 
-		{
-			string msg = Mono.Unix.Catalog.GetString (
-				"Are you sure you want to disconnect from\nserver: ") + server.Host;
-
-			MessageDialog md = new MessageDialog (mainWindow, 
-					DialogFlags.DestroyWithParent,
-					MessageType.Question, 
-					ButtonsType.YesNo, 
-					msg);
-	     
-			ResponseType result = (ResponseType)md.Run ();
-
-			if (result == ResponseType.Yes) {
-
-				server.Disconnect ();
-
-				mainWindow.Hide ();
-				mainWindow = null;
-
-				new ConnectDialog ();
-			}
-
-			md.Destroy ();
-		}
-
-		public void OnImportActivate (object o, EventArgs args)
-		{
-			FileChooserDialog fcd = new FileChooserDialog (
-				Mono.Unix.Catalog.GetString ("Choose an LDIF file to import"),
-				Gtk.Stock.Open, 
-				mainWindow, 
-				FileChooserAction.Open);
-
-			fcd.AddButton (Gtk.Stock.Cancel, ResponseType.Cancel);
-			fcd.AddButton (Gtk.Stock.Open, ResponseType.Ok);
-
-			fcd.SelectMultiple = false;
-
-			ResponseType response = (ResponseType) fcd.Run();
-			if (response == ResponseType.Ok) {
-
-				UriBuilder ub = new UriBuilder ();
-				ub.Scheme = "file";
-				ub.Path = fcd.Filename;
-
-				Util.ImportData (server, mainWindow, ub.Uri);
-			} 
+#endif
 		
-			fcd.Destroy();
-		}
-
-		public void OnExportActivate (object o, EventArgs args)
+		void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
-			SelectContainerDialog scd = new SelectContainerDialog (server, mainWindow);
-
-			scd.Title = Mono.Unix.Catalog.GetString ("Export entry");
-
-			scd.Message = 
-				Mono.Unix.Catalog.GetString ("Select the container you wish to export.");
-			scd.Run ();
-
-			if (scd.DN.Equals (""))
-				return;
-
-			Util.ExportData (server, mainWindow, scd.DN);
-		}
-
-		public void OnPopulateActivate (object o, EventArgs args)
-		{
-			new SambaPopulateDialog (server);
-		}
-
-		public void OnCutActivate (object o, EventArgs args)
-		{
-			if (!(viewNotebook.Page == 1))
-				return;
-
-			_cutDN = ldapTreeView.getSelectedDN ();
-			_cutIter = ldapTreeView.getSelectedIter ();
-
-			Logger.Log.Debug ("cut - dn: {0}", _cutDN);
-		}
-
-		public void OnCopyActivate (object o, EventArgs args)
-		{
-			if (!(viewNotebook.Page == 1))
-				return;
-
-			_cutDN = ldapTreeView.getSelectedDN ();
-
-			_isCopy = true;
-
-			Logger.Log.Debug ("copy - dn: {0}", _cutDN);
-		}
-
-		public void OnPasteActivate (object o, EventArgs args)
-		{
-			if (!(viewNotebook.Page == 1))
-				return;
-
-			_pasteDN = ldapTreeView.getSelectedDN ();
-
-			if (_pasteDN.Equals (null))
-				return;
-
-			DN dn = new DN (_cutDN);
-			RDN r = (RDN) dn.RDNs[0];
-
-			try {
-
-				string msg = null;
-
-				if (_isCopy) {
-
-					server.Copy (_cutDN, r.toString(false), _pasteDN);
-
-					msg = String.Format (
-						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
-						_cutDN, _pasteDN);
-
-				} else {
-
-					server.Move (_cutDN, r.toString(false), _pasteDN);
-
-					msg = String.Format (
-						Mono.Unix.Catalog.GetString ("Entry {0} moved to {1}"), 
-						_cutDN, _pasteDN);
-
+			ViewPlugin vp = Global.Plugins.FindServerView (args.Name);
+			LdapServer server = null;
+			ConnectionProfile cp = null;
+			
+			if (vp == null) {
+				if (viewDataTreeView != null) {					
+					viewDataTreeView.Destroy ();
+					viewDataTreeView = null;
 				}
 
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					mainWindow,
-					0,
-					Gtk.MessageType.Info,
-					Gtk.ButtonsType.Ok,
-					"Paste results",
-					msg);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				if (!_isCopy)
-					ldapTreeView.RemoveRow (_cutIter);
-
-			} catch (Exception e) {
-
-				string msg = null;
-
-				if (_isCopy) {
-					string txt = Mono.Unix.Catalog.GetString ("Unable to copy entry ");
-					msg = txt + _cutDN;
-				} else {
-
-					string txt = Mono.Unix.Catalog.GetString ("Unable to move entry ");
-					msg = txt + _cutDN;
+				if (serverInfoView != null) {
+					serverInfoView.Destroy ();
+					serverInfoView = null;
 				}
-
-				msg += "\nError: " + e.Message;
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					mainWindow,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Paste error",
-					msg);
-
-				dialog.Run ();
-				dialog.Destroy ();
+	
+				cp = Global.Profiles [args.Name];
+				server = Global.Connections [cp];
+				
+				serverInfoView = new ServerInfoView (server);
+				valuesScrolledWindow.AddWithViewport (serverInfoView);
+				valuesScrolledWindow.ShowAll ();
+				
+				return;
 			}
 
-			if (_isCopy)
-				_isCopy = false;
-		}
+			CleanupView ();
 
-		public void OnMassEditActivate (object o, EventArgs args)
-		{
-			new MassEditDialog (server);
-		}
-
-		public void OnViewChanged (object o, EventArgs args)
-		{
-			if (viewsView.Active) {
-				viewNotebook.Page = 0;
-				toggleInfoNotebook (false);
-			} else if (browserView.Active) {
-				viewNotebook.Page = 1;
-				toggleInfoNotebook (false);
-			} else if (searchView.Active) {
-				viewNotebook.Page = 2;
-				toggleInfoNotebook (false);
-			} else if (schemaView.Active) {
-				viewNotebook.Page = 3;
-				toggleInfoNotebook (true);
-				setInfoNotePage (-1);
+			if (viewDataTreeView == null) {
+				if (serverInfoView != null) {
+					serverInfoView.Destroy ();
+					serverInfoView = null;
+				}
+				
+				cp = Global.Profiles [args.ConnectionName];			
+				server = Global.Connections [cp];
+	
+				viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+				valuesScrolledWindow.AddWithViewport (viewDataTreeView);
+				valuesScrolledWindow.ShowAll ();			
 			}
-		}
 
-		public void OnQuitActivate (object o, EventArgs args) 
-		{
-			Close ();
-		}
-
-		public void OnHelpContentsActivate (object o, EventArgs args)
-		{
-			try {
-
-				Gnome.Help.DisplayDesktopOnScreen (Global.latProgram, 
-					Defines.PACKAGE, 
-					"lat.xml", 
-					null, 
-					Gdk.Screen.Default);
-
-			} catch (Exception e) {
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					mainWindow,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Help error",
-					e.Message);
-
-				dialog.Run ();
-				dialog.Destroy ();
-			}
-		}
-
-		public void OnAboutActivate (object o, EventArgs args) 
-		{
-			AboutDialog.Show ();
+			viewDataTreeView.ConfigureView (vp);
+			viewDataTreeView.Populate ();
+			SetupToolbar (vp);
+			
+			GenerateNewMenu (cp);
 		}
 	}
-	
+
 	public class ServerInfoView : Gtk.TreeView
 	{
 		public ServerInfoView (LdapServer server) : base ()
