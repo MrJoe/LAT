@@ -53,10 +53,14 @@ namespace lat
 
 		public void Run ()
 		{
-			client = new Client();
-			sb = new ServiceBrowser (client, "_ldap._tcp");
-			sb.ServiceAdded += OnServiceAdded;
-			sb.ServiceRemoved += OnServiceRemoved;		
+			try {
+				client = new Client();
+				sb = new ServiceBrowser (client, "_ldap._tcp");
+				sb.ServiceAdded += OnServiceAdded;
+				sb.ServiceRemoved += OnServiceRemoved;
+			} catch (ClientException ce) {
+				Logger.Log.Debug (ce.ToString());
+			}
 		}
 
 	    void OnServiceResolved (object o, ServiceInfoArgs args) 
