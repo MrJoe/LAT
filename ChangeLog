@@ -6,8 +6,8 @@
 	* Fixed crash when using quick connect
 	* Changed new toolbar button to menu toolbar button
 	* Add MenuLabel and MenuKey attributes to server view plugins
-	* Contextual export menu for search results
-	* BUGFIX: [#58] Improperly indented continuation lines in LDIF export
+	* Contextual export menu for search results [#59]
+	* Improperly indented continuation lines in LDIF export [#58]
 
 1.1.3
 
