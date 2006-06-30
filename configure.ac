@@ -39,13 +39,15 @@ AC_SUBST(GTKSHARP_LIBS)
 dnl gnome-keyring is needed, but only at runtime. Oh well, good to check for it nonetheless
 PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
 
+PKG_CHECK_MODULES(DBUS, dbus-sharp)
+AC_SUBST(DBUS_LIBS)
+
 PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="yes", ENABLE_AVAHI="no")
 AC_ARG_ENABLE(avahi, 
 	      [  --enable-avahi[[=no/yes]]    compile with avahi support [[default: yes]]],
 	      ENABLE_AVAHI="$enableval")
 AM_CONDITIONAL(ENABLE_AVAHI, test "$ENABLE_AVAHI" = "yes")
 AC_SUBST(AVAHI_LIBS)
-
 
 MCS_FLAGS=
 MONO_FLAGS=
@@ -93,6 +95,5 @@ $PACKAGE-$VERSION
 
     Features:
       Avahi:           ${ENABLE_AVAHI}
-      NetworkManager:  ${ENABLE_NETWORKMANAGER}
 "
 

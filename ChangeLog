@@ -1,4 +1,7 @@
+1.1.4
+
 	* Added support for mulitple servers in the same window
+	* Added NetworkManager support
 	* Added mDNS support (--enable-avahi)
 	* Fixed crash when using quick connect
 	* Changed new toolbar button to menu toolbar button

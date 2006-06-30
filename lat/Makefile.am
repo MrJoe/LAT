@@ -10,6 +10,11 @@ CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(AVAHI_CSFLAGS)
 
 ASSEMBLY = lat
 
+NETWORKMANAGER_SOURCES = \
+	NetworkManager/Manager.cs \
+	NetworkManager/Device.cs \
+	NetworkManager/Network.cs 
+
 CSFILES = \
 	AboutDialog.cs \
 	AddObjectClassDialog.cs \
@@ -27,6 +32,7 @@ CSFILES = \
 	LoginDialog.cs \
 	Main.cs \
 	MassEditDialog.cs \
+	NetworkDetect.cs \
 	NewEntryDialog.cs \
 	PasswordDialog.cs \
 	Preferences.cs \
@@ -50,7 +56,8 @@ CSFILES = \
 	ViewDialog.cs \
 	ViewPluginManager.cs \
 	ViewsTreeView.cs \
-	Window.cs
+	Window.cs \
+	$(NETWORKMANAGER_SOURCES)
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
@@ -63,7 +70,7 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 $(ASSEMBLY).exe: $(CSFILES) $(AVAHI_CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(AVAHI_CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(AVAHI_LIBS)
+	$(CSC) -out:$@ $(CSFILES) $(AVAHI_CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(DBUS_LIBS) $(AVAHI_LIBS)
 
 all: $(ASSEMBLY).exe
 
@@ -77,6 +84,7 @@ bin_SCRIPTS = $(ASSEMBLY)
 
 EXTRA_DIST = \
 	$(CSFILES) \
+	$(AVAHI_CSFILES) \
 	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \

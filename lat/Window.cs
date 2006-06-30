@@ -194,6 +194,9 @@ namespace lat
 			
 			// status bar			
 			UpdateStatusBar ();
+
+			Global.Network = NetworkDetect.Instance;
+			Global.Network.StateChanged += OnNetworkStateChanged;
 			
 			viewNotebook.SwitchPage += new SwitchPageHandler (OnNotebookViewChanged);
 		}
@@ -1033,6 +1036,29 @@ namespace lat
 			LdapEntry entry = server.GetEntry (args.DN);			
 			if (entry != null)
 				attributeEditor.Show (server, entry, showAllAttributes.Active);
+		}
+
+		void OnNetworkStateChanged (object o, NetworkStateChangedArgs args)
+		{
+			if (args.Connected) {
+			
+				mainWindow.Sensitive = true;
+			
+			} else {
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Info,
+					Gtk.ButtonsType.Ok,
+					"Network disconnected",
+					"The network is down. LAT will disable itself until it comes back up");
+
+				dialog.Run ();
+				dialog.Destroy ();
+				
+				mainWindow.Sensitive = false;				
+			}
 		}
 
 		void OnNotebookViewChanged (object o, SwitchPageArgs args)

@@ -33,6 +33,8 @@ public class Global
 	public static PluginManager Plugins;
 	public static ProfileManager Profiles;	
 	public static TemplateManager Templates;
+	
+	public static NetworkDetect Network;
 }
 
 public class LdapAdministrationTool

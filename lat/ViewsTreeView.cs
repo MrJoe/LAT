@@ -89,7 +89,8 @@ namespace lat
 
 		public void AddServer (ConnectionProfile cp)
 		{
-			TreeIter iter = viewsStore.AppendValues (viewRootIter, null, cp.Name);
+			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, cp.Name);
 			AddViews (cp.Name, iter);
 		}
 
