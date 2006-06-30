@@ -130,7 +130,7 @@ namespace lat
 
 			foreach (string n in Global.Profiles.GetProfileNames()) {
 				TreeIter iter = browserStore.AppendValues (rootIter, dirIcon, n, n);
-				browserStore.AppendValues (iter, null, "");				
+				browserStore.AppendValues (iter, null, "", "");				
 			}
 
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
@@ -193,6 +193,22 @@ namespace lat
 		public void RemoveRow (TreeIter iter)
 		{
 			browserStore.Remove (ref iter);
+		}
+
+		public void Refresh ()
+		{
+			browserStore.Clear ();
+			
+			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			rootIter = browserStore.AppendValues (dirIcon, "Servers");
+			TreePath path = browserStore.GetPath (rootIter);
+			
+			foreach (string n in Global.Profiles.GetProfileNames()) {
+				TreeIter iter = browserStore.AppendValues (rootIter, dirIcon, n, n);
+				browserStore.AppendValues (iter, null, "", "");
+			}			
+
+			this.ExpandRow (path, false);		
 		}
 
 		public void AddServer (ConnectionProfile cp)

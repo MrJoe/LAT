@@ -20,7 +20,6 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
-  <signal name="delete_event" handler="OnAppDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox5">
@@ -43,7 +42,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-7</property>
-	      <signal name="clicked" handler="OnCloseClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -52,74 +50,12 @@
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
 	      <signal name="clicked" handler="OnConnectClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
-
-	      <child>
-		<widget class="GtkAlignment" id="alignment2">
-		  <property name="visible">True</property>
-		  <property name="xalign">0.5</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xscale">0</property>
-		  <property name="yscale">0</property>
-		  <property name="top_padding">0</property>
-		  <property name="bottom_padding">0</property>
-		  <property name="left_padding">0</property>
-		  <property name="right_padding">0</property>
-
-		  <child>
-		    <widget class="GtkHBox" id="hbox40">
-		      <property name="visible">True</property>
-		      <property name="homogeneous">False</property>
-		      <property name="spacing">2</property>
-
-		      <child>
-			<widget class="GtkImage" id="image6">
-			  <property name="visible">True</property>
-			  <property name="stock">gtk-media-play</property>
-			  <property name="icon_size">4</property>
-			  <property name="xalign">0.5</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">False</property>
-			  <property name="fill">False</property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkLabel" id="label56">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Connect</property>
-			  <property name="use_underline">True</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">0.5</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			  <property name="width_chars">-1</property>
-			  <property name="single_line_mode">False</property>
-			  <property name="angle">0</property>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">False</property>
-			  <property name="fill">False</property>
-			</packing>
-		      </child>
-		    </widget>
-		  </child>
-		</widget>
-	      </child>
 	    </widget>
 	  </child>
 	</widget>
@@ -134,8 +70,7 @@
       <child>
 	<widget class="GtkNotebook" id="notebook1">
 	  <property name="visible">True</property>
-	  <property name="can_focus">True</property>
-	  <property name="show_tabs">True</property>
+	  <property name="show_tabs">False</property>
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
@@ -648,6 +583,57 @@ you wish to connect to.</property>
 
 			  <child>
 			    <placeholder/>
+			  </child>
+			</widget>
+			<packing>
+			  <property name="padding">5</property>
+			  <property name="expand">True</property>
+			  <property name="fill">True</property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkHBox" id="hbox449">
+			  <property name="visible">True</property>
+			  <property name="homogeneous">False</property>
+			  <property name="spacing">0</property>
+
+			  <child>
+			    <widget class="GtkCheckButton" id="saveProfileButton">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label" translatable="yes">Save as profile:</property>
+			      <property name="use_underline">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">True</property>
+			      <property name="active">False</property>
+			      <property name="inconsistent">False</property>
+			      <property name="draw_indicator">True</property>
+			    </widget>
+			    <packing>
+			      <property name="padding">5</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkEntry" id="profileNameEntry">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="editable">True</property>
+			      <property name="visibility">True</property>
+			      <property name="max_length">0</property>
+			      <property name="text" translatable="yes"></property>
+			      <property name="has_frame">True</property>
+			      <property name="invisible_char">*</property>
+			      <property name="activates_default">False</property>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">True</property>
+			      <property name="fill">True</property>
+			    </packing>
 			  </child>
 			</widget>
 			<packing>
@@ -1991,7 +1977,7 @@ you wish to connect to.</property>
 		      <signal name="activate" handler="OnDeleteActivate" last_modification_time="Tue, 05 Jul 2005 10:28:41 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image817">
+			<widget class="GtkImage" id="image841">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-delete</property>
 			  <property name="icon_size">1</property>
@@ -2011,24 +1997,12 @@ you wish to connect to.</property>
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="Relogin">
+		    <widget class="GtkMenuItem" id="connect1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Re-login...</property>
+		      <property name="label" translatable="yes">Connect</property>
 		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="OnReloginActivate" last_modification_time="Thu, 31 Mar 2005 21:33:07 GMT"/>
+		      <signal name="activate" handler="OnConnectActivate" last_modification_time="Fri, 30 Jun 2006 18:15:29 GMT"/>
 		      <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-
-		      <child internal-child="image">
-			<widget class="GtkImage" id="image818">
-			  <property name="visible">True</property>
-			  <property name="stock">gtk-dialog-authentication</property>
-			  <property name="icon_size">1</property>
-			  <property name="xalign">0.5</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-		      </child>
 		    </widget>
 		  </child>
 
@@ -2041,9 +2015,31 @@ you wish to connect to.</property>
 		      <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image819">
+			<widget class="GtkImage" id="image842">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-disconnect</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="Relogin">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Re-login...</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="OnReloginActivate" last_modification_time="Thu, 31 Mar 2005 21:33:07 GMT"/>
+		      <accelerator key="r" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image843">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-dialog-authentication</property>
 			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
@@ -2069,7 +2065,7 @@ you wish to connect to.</property>
 		      <accelerator key="o" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image820">
+			<widget class="GtkImage" id="image844">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -2091,7 +2087,7 @@ you wish to connect to.</property>
 		      <accelerator key="s" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image821">
+			<widget class="GtkImage" id="image845">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-save-as</property>
 			  <property name="icon_size">1</property>
@@ -2305,7 +2301,7 @@ you wish to connect to.</property>
 		      <accelerator key="F5" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image822">
+			<widget class="GtkImage" id="image846">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -2340,7 +2336,7 @@ you wish to connect to.</property>
 		      <accelerator key="F1" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image823">
+			<widget class="GtkImage" id="image847">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -2762,7 +2758,6 @@ you wish to connect to.</property>
 			</packing>
 		      </child>
 
-
 		      <child>
 			<widget class="GtkVBox" id="vbox61">
 			  <property name="visible">True</property>
@@ -2799,7 +2794,6 @@ you wish to connect to.</property>
 				  <property name="fill">False</property>
 				</packing>
 			      </child>
-
 
 			      <child>
 				<widget class="GtkButton" id="searchBaseButton">
@@ -2933,8 +2927,6 @@ you wish to connect to.</property>
 			  <property name="fill">True</property>
 			</packing>
 		      </child>
-
-
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>

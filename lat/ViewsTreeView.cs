@@ -94,6 +94,22 @@ namespace lat
 			AddViews (cp.Name, iter);
 		}
 
+		public void Refresh ()
+		{
+			viewsStore.Clear ();
+			
+			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			viewRootIter = viewsStore.AppendValues (dirIcon, "Servers");
+			TreePath path = viewsStore.GetPath (viewRootIter);
+			
+			foreach (string n in Global.Profiles.GetProfileNames()) {
+				TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, n);
+				viewsStore.AppendValues (iter, null, "");				
+			}			
+
+			this.ExpandRow (path, false);		
+		}
+
 		void OnRowExpanded (object o, RowExpandedArgs args)
 		{
 			string name = (string) viewsStore.GetValue (args.Iter, 1);

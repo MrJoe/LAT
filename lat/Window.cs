@@ -160,6 +160,7 @@ namespace lat
 			// Setup search
 			searchTreeView = new SearchResultsTreeView ();
 			searchTreeView.SearchResultSelected += new SearchResultSelectedHandler (OnSearchSelected);
+			searchTreeView.Export += OnSearchExport;
 
 			resultsScrolledWindow.AddWithViewport (searchTreeView);
 			resultsScrolledWindow.Show ();			
@@ -634,6 +635,29 @@ namespace lat
 			UpdateStatusBar ();
 		}
 
+		void OnSearchExport (object o, SearchResultExportEventArgs args)
+		{
+			TreeIter iter;			
+			if (!serverComboBox.GetActiveIter (out iter))
+				return;
+
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);		
+		
+			ConnectionProfile cp = Global.Profiles [profileName];
+			LdapServer server = Global.Connections [cp];
+			if (server == null)
+				return;
+		
+			if (args.IsDND) {
+				string data = null;
+				Util.ExportData (server, args.DN, out data);
+				args.Data = data;
+			} else { 
+				Util.ExportData (server, mainWindow, args.DN);
+			}			
+		}
+
+
 		public void OnTemplatesClicked (object o, EventArgs args)
 		{
 			LdapServer server = GetActiveServer ();
@@ -641,6 +665,22 @@ namespace lat
 				return;
 		
 			new TemplatesDialog (server);
+		}
+
+		public void OnConnectActivate (object o, EventArgs args)
+		{
+			new ConnectDialog ();
+			
+			viewsTreeView.Refresh ();
+			ldapTreeView.Refresh ();
+			schemaTreeview.Refresh ();
+			
+			if (serverComboBox != null) {
+				serverComboBox.Destroy ();
+				serverComboBox = null;
+			}
+			
+			CreateServerCombo ();
 		}
 
 		public void OnDisconnectActivate (object o, EventArgs args) 
@@ -967,7 +1007,12 @@ namespace lat
 				viewNotebook.Page = 1;
 				ToggleInfoNotebook (false);
 			} else if (searchView.Active) {
-				serverComboBox = null;
+			
+				if (serverComboBox != null) {
+					serverComboBox.Destroy ();
+					serverComboBox = null;
+				}
+				
 				CreateServerCombo ();			
 				viewNotebook.Page = 2;
 				ToggleInfoNotebook (false);
@@ -1144,7 +1189,11 @@ namespace lat
 
 				templateToolButton.Hide ();
 
-				serverComboBox = null;
+				if (serverComboBox != null) {
+					serverComboBox.Destroy ();
+					serverComboBox = null;
+				}
+
 				CreateServerCombo ();
 
 			} else if (args.PageNum == 3) {

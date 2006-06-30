@@ -113,6 +113,40 @@ namespace lat
 			this.ShowAll ();
 		}
 
+		public void Refresh ()
+		{
+			schemaStore.Clear ();
+			
+			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
+			Gdk.Pixbuf folderIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-normal.png");
+			
+			rootIter = schemaStore.AppendValues (dirIcon, "Servers");
+			TreePath path = schemaStore.GetPath (rootIter);
+			
+			foreach (string n in Global.Profiles.GetProfileNames()) {
+				TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, n);
+
+				TreeIter objIter;
+				TreeIter attrIter;
+				TreeIter matIter;
+				TreeIter synIter;
+
+				objIter = schemaStore.AppendValues (iter, folderIcon, "Object Classes");
+				schemaStore.AppendValues (objIter, null, "");
+				
+				attrIter = schemaStore.AppendValues (iter, folderIcon, "Attribute Types");
+				schemaStore.AppendValues (attrIter, null, "");
+				
+				matIter = schemaStore.AppendValues (iter, folderIcon, "Matching Rules");
+				schemaStore.AppendValues (matIter, null, "");
+					
+				synIter = schemaStore.AppendValues (iter, folderIcon, "LDAP Syntaxes");
+				schemaStore.AppendValues (synIter, null, "");				
+			}			
+
+			this.ExpandRow (path, false);		
+		}
+
 		public void AddServer (ConnectionProfile cp)
 		{
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");

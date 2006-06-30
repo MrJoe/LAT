@@ -18,10 +18,11 @@
 //
 //
 
-using Gtk;
-using Gdk;
 using System;
 using System.Collections;
+using GLib;
+using Gtk;
+using Gdk;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -41,11 +42,40 @@ namespace lat
 		}
 	}
 
+	public class SearchResultExportEventArgs : EventArgs
+	{
+		string entryDN;
+		string data;
+		bool dnd;
+
+		public SearchResultExportEventArgs (string dn, bool isdnd)
+		{
+			entryDN = dn;
+			dnd = isdnd;
+		}
+
+		public string DN
+		{
+			get { return entryDN; }
+		}
+				
+		public bool IsDND
+		{
+			get { return dnd; }
+		}
+				
+		public string Data
+		{
+			get { return data; }
+			set { data = value; }
+		}
+	}
+
 	public delegate void SearchResultSelectedHandler (object o, SearchResultSelectedEventArgs args);
+	public delegate void SearchResultExportHandler (object o, SearchResultExportEventArgs args);
 
 	public class SearchResultsTreeView : Gtk.TreeView
 	{
-//		LdapServer server;
 		ListStore resultsStore;
 
 		private static TargetEntry[] searchSourceTable = new TargetEntry[]
@@ -54,16 +84,16 @@ namespace lat
 		};
 
 		public event SearchResultSelectedHandler SearchResultSelected;
+		public event SearchResultExportHandler Export;
 
 		public SearchResultsTreeView () : base ()
 		{
-//			server = ldapServer;
-
 			resultsStore = new ListStore (typeof (string));
 			this.Model = resultsStore;
 
 			this.HeadersVisible = false;
 			
+			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
 			this.RowActivated += new RowActivatedHandler (resultsRowActivated);
 			this.AppendColumn ("resultDN", new CellRendererText (), "text", 0);
 
@@ -91,38 +121,77 @@ namespace lat
 				resultsStore.AppendValues (le.DN);
 		}
 
-		private void OnSearchDragBegin (object o, DragBeginArgs args)
+		[ConnectBefore]
+		void OnRightClick (object o, ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 3)
+				DoPopUp ();
+		}
+
+		void DoPopUp()
+		{
+			Menu popup = new Menu();
+			MenuItem exportItem = new MenuItem ("Export...");
+			exportItem.Activated += new EventHandler (OnExportActivate);
+			exportItem.Show ();
+
+			popup.Append (exportItem);
+
+			popup.Popup(null, null, null, 3, Gtk.Global.CurrentEventTime);
+		}
+
+		void OnExportActivate (object o, EventArgs args)
+		{
+			Gtk.TreeModel model;
+			Gtk.TreeIter iter;
+
+			if (!this.Selection.GetSelected (out model, out iter))
+				return;
+
+			string dn = (string) model.GetValue (iter, 0);
+			
+			SearchResultExportEventArgs myargs = new SearchResultExportEventArgs (dn, false);
+		
+			if (Export != null)
+				Export (this, myargs);		
+		}
+
+		void OnSearchDragBegin (object o, DragBeginArgs args)
 		{
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
 			Gtk.Drag.SetIconPixbuf (args.Context, pb, 0, 0);
 		}
 
-		private void OnSearchDragDataGet (object o, DragDataGetArgs args)
+		void OnSearchDragDataGet (object o, DragDataGetArgs args)
 		{
-//			Gtk.TreeModel model;
-//			Gtk.TreeIter iter;
-//
-//			if (!this.Selection.GetSelected (out model, out iter))
-//				return;
-//
-//			string dn = (string) model.GetValue (iter, 0);
-//			string data = null;
-//
-//			Util.ExportData (server, dn, out data);
-//
-//			Atom[] targets = args.Context.Targets;
-//
-//			args.SelectionData.Set (targets[0], 8,
-//				System.Text.Encoding.UTF8.GetBytes (data));
+			Gtk.TreeModel model;
+			Gtk.TreeIter iter;
+
+			if (!this.Selection.GetSelected (out model, out iter))
+				return;
+
+			string dn = (string) model.GetValue (iter, 0);
+			
+			SearchResultExportEventArgs myargs = new SearchResultExportEventArgs (dn, true);
+		
+			if (Export != null)
+				Export (this, myargs);
+
+			if (myargs.Data == null)
+				return;
+				
+			Atom[] targets = args.Context.Targets;
+
+			args.SelectionData.Set (targets[0], 8, System.Text.Encoding.UTF8.GetBytes (myargs.Data));
 		}
 
-		private void DispatchSearchResultSelectedEvent (string dn)
+		void DispatchSearchResultSelectedEvent (string dn)
 		{
 			if (SearchResultSelected != null)
 				SearchResultSelected (this, new SearchResultSelectedEventArgs (dn));
 		}
 
-		private string getSelectedSearchResult ()
+		string getSelectedSearchResult ()
 		{
 			TreeModel model;
 			TreeIter iter;
@@ -136,7 +205,7 @@ namespace lat
 			return name;
 		}
 
-		private void resultsRowActivated (object o, RowActivatedArgs args)
+		void resultsRowActivated (object o, RowActivatedArgs args)
 		{
 			DispatchSearchResultSelectedEvent (getSelectedSearchResult ());
 		}

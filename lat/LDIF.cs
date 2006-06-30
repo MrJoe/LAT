@@ -53,10 +53,14 @@ namespace lat
 			LdapAttributeSet las = _le.getAttributeSet ();
 
 			foreach (LdapAttribute attr in las) {
-				foreach (string v in attr.StringValueArray) {
-					retVal += String.Format ("{0}: {1}\n", 
-						attr.Name, v);
-				}
+
+				// FIXME: handle binary value exports
+				try {			
+					foreach (string v in attr.StringValueArray) {
+						string tmp = v.Replace ("\n", "\n ");
+						retVal += String.Format ("{0}: {1}\n", attr.Name, tmp.Trim());
+					}
+				} catch {}
 			}
 
 			return retVal;

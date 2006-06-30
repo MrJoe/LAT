@@ -39,15 +39,17 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton tlsRadioButton;
 		[Glade.Widget] Gtk.RadioButton sslRadioButton;
 		[Glade.Widget] Gtk.RadioButton noEncryptionRadioButton;
+		[Glade.Widget] Gtk.CheckButton saveProfileButton;
+		[Glade.Widget] Gtk.Entry profileNameEntry;
 		[Glade.Widget] Gtk.HBox stHBox;	
-		[Glade.Widget] Gtk.Notebook notebook1;
-		[Glade.Widget] TreeView profileListview;
+//		[Glade.Widget] Gtk.Notebook notebook1;
+//		[Glade.Widget] TreeView profileListview;
 		[Glade.Widget] Gtk.Image image5;
 		
-		bool haveProfiles = false;
+//		bool haveProfiles = false;
 		EncryptionType encryption;
 
-		ListStore profileListStore;
+//		ListStore profileListStore;
 		ComboBox serverTypeComboBox;
 
 		public ConnectDialog ()
@@ -66,23 +68,26 @@ namespace lat
 			portEntry.Text = "389";
 			createCombo ();			
 
-			profileListStore = new ListStore (typeof (string));
-			profileListview.Model = profileListStore;
-			profileListStore.SetSortColumnId (0, SortType.Ascending);
-			
-			TreeViewColumn col;
-			col = profileListview.AppendColumn ("Name", new CellRendererText (), "text", 0);
-			col.SortColumnId = 0;
-
-			UpdateProfileList ();
-
-			if (haveProfiles) {
-
-				notebook1.CurrentPage = 1;
-				connectionDialog.Resizable = true;
-			}
+//			profileListStore = new ListStore (typeof (string));
+//			profileListview.Model = profileListStore;
+//			profileListStore.SetSortColumnId (0, SortType.Ascending);
+//			
+//			TreeViewColumn col;
+//			col = profileListview.AppendColumn ("Name", new CellRendererText (), "text", 0);
+//			col.SortColumnId = 0;
+//
+//			UpdateProfileList ();
+//
+//			if (haveProfiles) {
+//
+//				notebook1.CurrentPage = 1;
+//				connectionDialog.Resizable = true;
+//			}
 			
 			noEncryptionRadioButton.Active = true;
+			
+			connectionDialog.Run ();
+			connectionDialog.Destroy ();
 		}
 
 		private void createCombo ()
@@ -98,96 +103,96 @@ namespace lat
 			stHBox.PackStart (serverTypeComboBox, true, true, 5);
 		}
 
-		private string GetSelectedProfileName ()
-		{
-			TreeIter iter;
-			TreeModel model;
-
-			if (profileListview.Selection.GetSelected (out model, out iter))  {
-
-				string name = (string) model.GetValue (iter, 0);
-				return name;
-			}
-
-			return null;
-		}
-
-		private ConnectionProfile GetSelectedProfile ()
-		{
-			ConnectionProfile cp = new ConnectionProfile();
-			string profileName = GetSelectedProfileName ();
-
-			if (profileName != null)
-				cp = Global.Profiles [profileName]; 
-	
-			return cp;
-		}
+//		private string GetSelectedProfileName ()
+//		{
+//			TreeIter iter;
+//			TreeModel model;
+//
+//			if (profileListview.Selection.GetSelected (out model, out iter))  {
+//
+//				string name = (string) model.GetValue (iter, 0);
+//				return name;
+//			}
+//
+//			return null;
+//		}
+//
+//		private ConnectionProfile GetSelectedProfile ()
+//		{
+//			ConnectionProfile cp = new ConnectionProfile();
+//			string profileName = GetSelectedProfileName ();
+//
+//			if (profileName != null)
+//				cp = Global.Profiles [profileName]; 
+//	
+//			return cp;
+//		}
 
 		public void OnPageSwitch (object o, SwitchPageArgs args)
 		{
-			if (args.PageNum == 0)
-				connectionDialog.Resizable = false;
-			else if (args.PageNum == 1)
-				connectionDialog.Resizable = true;
+//			if (args.PageNum == 0)
+//				connectionDialog.Resizable = false;
+//			else if (args.PageNum == 1)
+//				connectionDialog.Resizable = true;
 		}
 
 		public void OnRowDoubleClicked (object o, RowActivatedArgs args) 
 		{
-			ProfileConnect ();
+//			ProfileConnect ();
 		}
 
-		void UpdateProfileList ()
-		{
-			string[] names = Global.Profiles.GetProfileNames ();
-			
-			if (names.Length > 1)
-				haveProfiles = true;
-
-			profileListStore.Clear ();
-			
-			foreach (string s in names) 
-				profileListStore.AppendValues (s);
-		}
-
+//		void UpdateProfileList ()
+//		{
+//			string[] names = Global.Profiles.GetProfileNames ();
+//			
+//			if (names.Length > 1)
+//				haveProfiles = true;
+//
+//			profileListStore.Clear ();
+//			
+//			foreach (string s in names) 
+//				profileListStore.AppendValues (s);
+//		}
+//
 		public void OnProfileAdd (object o, EventArgs args)
 		{
-			new ProfileDialog ();
-			UpdateProfileList ();		
+//			new ProfileDialog ();
+//			UpdateProfileList ();		
 		}
 
 		public void OnProfileEdit (object o, EventArgs args)
 		{	
-			string profileName = GetSelectedProfileName ();
-
-			if (profileName != null) {
-
-				ConnectionProfile cp = Global.Profiles [profileName];
-			
-				new ProfileDialog (cp);
-
-				UpdateProfileList ();
-			}		
+//			string profileName = GetSelectedProfileName ();
+//
+//			if (profileName != null) {
+//
+//				ConnectionProfile cp = Global.Profiles [profileName];
+//			
+//				new ProfileDialog (cp);
+//
+//				UpdateProfileList ();
+//			}		
 		}
 
 		public void OnProfileRemove (object o, EventArgs args)
 		{
-			string profileName = GetSelectedProfileName ();
-			string msg = null;
-			
-			if (profileName != null) {
-
-				msg = String.Format ("{0} {1}",
-					Mono.Unix.Catalog.GetString (
-					"Are you sure you want to delete the profile:"),
-					profileName);
-				
-				if (Util.AskYesNo (connectionDialog, msg)) {
-
-					Global.Profiles.Remove (profileName);
-					Global.Profiles.SaveProfiles ();
-					UpdateProfileList ();				
-				}
-			}
+//			string profileName = GetSelectedProfileName ();
+//			string msg = null;
+//			
+//			if (profileName != null) {
+//
+//				msg = String.Format ("{0} {1}",
+//					Mono.Unix.Catalog.GetString (
+//					"Are you sure you want to delete the profile:"),
+//					profileName);
+//				
+//				if (Util.AskYesNo (connectionDialog, msg)) {
+//
+//					Global.Profiles.Remove (profileName);
+//					Global.Profiles.SaveProfiles ();
+//					UpdateProfileList ();				
+//				}
+//			}
 		}
 
 		public void OnEncryptionToggled (object obj, EventArgs args)
@@ -204,103 +209,63 @@ namespace lat
 			}
 		}
 
-		private bool CheckConnection (LdapServer server, string userName)
+//		private void ProfileConnect ()
+//		{
+//			LdapServer server = null;
+//			ConnectionProfile cp = GetSelectedProfile ();
+//
+//			if (cp.Host == null) {
+//
+//				string	msg = Mono.Unix.Catalog.GetString (
+//					"No profile selected");
+//
+//				HIGMessageDialog dialog = new HIGMessageDialog (
+//					connectionDialog,
+//					0,
+//					Gtk.MessageType.Error,
+//					Gtk.ButtonsType.Ok,
+//					"Profile error",
+//					msg);
+//
+//				dialog.Run ();
+//				dialog.Destroy ();
+//
+//				return;
+//			}
+//
+//			if (cp.LdapRoot == "") {
+//
+//				server = new LdapServer (cp.Host, cp.Port, cp.ServerType);
+//
+//			} else {
+//
+//				server = new LdapServer (cp.Host, cp.Port, 
+//						 cp.LdapRoot, 
+//						 cp.ServerType);
+//			}
+//
+//			server.ProfileName = cp.Name;			
+//			encryption = cp.Encryption;
+//
+//			if (cp.DontSavePassword) {
+//
+//				LoginDialog ld = new LoginDialog (
+//					Mono.Unix.Catalog.GetString ("Enter your password"), 
+//					cp.User);
+//
+//				ld.Run ();
+//
+//				if (ld.UserPass != null)
+//					DoConnect (server, ld.UserName, ld.UserPass);
+//
+//			} else {
+//
+//				DoConnect (server, cp.User, cp.Pass);
+//			}
+//		}
+
+		public void OnConnectClicked (object o, EventArgs args) 
 		{
-			string msg = null;
-
-			if (server == null)
-				return false;
-
-			if (!server.Connected) {
-
-				msg = String.Format (
-					Mono.Unix.Catalog.GetString (
-					"Unable to connect to: ldap://{0}:{1}"),
-					server.Host, server.Port);
-			}
-
-			if (!server.Bound && msg == null && userName != "") {
-
-				msg = String.Format (
-					Mono.Unix.Catalog.GetString (
-					"Unable to bind to: ldap://{0}:{1}"),
-					server.Host, server.Port);
-			}
-
-			if (msg != null) {
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					connectionDialog,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Connection Error",
-					msg);
-
-				dialog.Run ();
-				dialog.Destroy ();
-			
-				return false;
-			}
-		
-			return true;
-		}
-
-		private void DoConnect (LdapServer server, string userName, string userPass)
-		{
-			try {
-				server.Connect (encryption);
-				server.Bind (userName, userPass);
-
-			} catch (SocketException se) {
-
-				Logger.Log.Debug ("Socket error: {0}", se.Message);
-
-			} catch (LdapException le) {
-
-				Logger.Log.Debug ("Ldap error: {0}", le.Message);
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					connectionDialog,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Connection error",
-					le.Message);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				return;
-
-			} catch (Exception e) {
-
-				Logger.Log.Debug ("Unknown error: {0}", e.Message);
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					connectionDialog,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Unknown connection error",
-					Mono.Unix.Catalog.GetString ("An unknown error occured: ") + e.Message);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				return;
-			}
-
-			if (CheckConnection (server, userName)) {
-
-				connectionDialog.Destroy ();
-//				new latWindow (server);
-			}
-		}
-
-		private void QuickConnect ()
-		{
-			LdapServer server = null;
 			TreeIter iter;
 				
 			if (!serverTypeComboBox.GetActiveIter (out iter))
@@ -308,102 +273,25 @@ namespace lat
 
 			string serverType = (string) serverTypeComboBox.Model.GetValue (iter, 0);
 
-			if (ldapBaseEntry.Text != "") {
+			ConnectionProfile cp = new ConnectionProfile ();
+			cp.Host = hostEntry.Text;
+			cp.Port = int.Parse (portEntry.Text);
+			cp.User = userEntry.Text;
+			cp.Pass = passEntry.Text;
+			cp.LdapRoot = ldapBaseEntry.Text;
+			cp.ServerType = serverType;			
+			cp.DontSavePassword = false;
+			cp.Encryption = encryption;
 
-				server = new LdapServer (
-					hostEntry.Text, 
-					int.Parse (portEntry.Text), 
-					ldapBaseEntry.Text,
-					serverType);
-
+			if (saveProfileButton.Active) {
+				cp.Name = profileNameEntry.Text;
+				cp.Dynamic = false;
 			} else {
-
-				server = new LdapServer (
-					hostEntry.Text, 
-					int.Parse (portEntry.Text), 
-					serverType);
+				cp.Name = String.Format ("{0}:{1}", cp.Host, cp.Port);
+				cp.Dynamic = true;
 			}
-
-			DoConnect (server, userEntry.Text, passEntry.Text);
-		}
-
-		private void ProfileConnect ()
-		{
-			LdapServer server = null;
-			ConnectionProfile cp = GetSelectedProfile ();
-
-			if (cp.Host == null) {
-
-				string	msg = Mono.Unix.Catalog.GetString (
-					"No profile selected");
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					connectionDialog,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Profile error",
-					msg);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				return;
-			}
-
-			if (cp.LdapRoot == "") {
-
-				server = new LdapServer (cp.Host, cp.Port, cp.ServerType);
-
-			} else {
-
-				server = new LdapServer (cp.Host, cp.Port, 
-						 cp.LdapRoot, 
-						 cp.ServerType);
-			}
-
-			server.ProfileName = cp.Name;			
-			encryption = cp.Encryption;
-
-			if (cp.DontSavePassword) {
-
-				LoginDialog ld = new LoginDialog (
-					Mono.Unix.Catalog.GetString ("Enter your password"), 
-					cp.User);
-
-				ld.Run ();
-
-				if (ld.UserPass != null)
-					DoConnect (server, ld.UserName, ld.UserPass);
-
-			} else {
-
-				DoConnect (server, cp.User, cp.Pass);
-			}
-		}
-
-		public void OnConnectClicked (object o, EventArgs args) 
-		{
-			if (notebook1.CurrentPage == 0)
-				QuickConnect ();
-			else if (notebook1.CurrentPage == 1)
-				ProfileConnect ();
-		}
-
-		public void OnCloseClicked (object o, EventArgs args) 
-		{
-			exitApp ();
-		}
-
-		public void OnAppDelete (object o, DeleteEventArgs args) 
-		{
-			exitApp ();
-		}
-
-		private void exitApp ()
-		{
-			connectionDialog.Destroy ();
-			Application.Quit ();
+			
+			Global.Profiles [cp.Name] = cp;
 		}
 	}
 }

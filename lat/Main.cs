@@ -119,6 +119,7 @@ public class LdapAdministrationTool
 		program.Run ();
 		
 		Global.Templates.Save ();
+		Global.Profiles.SaveProfiles ();
 		Global.Plugins.SavePluginsState ();
 
 		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
