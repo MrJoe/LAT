@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -93,9 +93,9 @@ namespace lat
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
 
-		private Hashtable getCurrentContactInfo ()
+		Dictionary<string,string> getCurrentContactInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("givenName", gnFirstNameEntry.Text);
 			retVal.Add ("initials", gnInitialsEntry.Text);
@@ -107,7 +107,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cci = getCurrentContactInfo ();
+			Dictionary<string,string> cci = getCurrentContactInfo ();
 
 			string[] objClass;
 			string[] missing = null;
@@ -124,7 +124,7 @@ namespace lat
 				return;
 			}
 
-			ArrayList attrList = getAttributes (objClass, contactAttrs, cci);
+			List<LdapAttribute> attrList = getAttributes (objClass, contactAttrs, cci);
 
 			string fullName = (string)cci["displayName"];
 			cci["cn"] = fullName;

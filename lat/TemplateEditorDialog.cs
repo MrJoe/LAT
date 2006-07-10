@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -38,7 +38,7 @@ namespace lat
 		private ListStore objListStore;
 		private ListStore attrListStore;
 
-		private ArrayList _objectClass;
+		private List<string> _objectClass;
 		private Template t = null;
 
 		private LdapServer server;
@@ -77,9 +77,9 @@ namespace lat
 			templateEditorDialog.Destroy ();
 		}
 
-		private void Init ()
+		void Init ()
 		{
-			_objectClass = new ArrayList ();
+			_objectClass = new List<string> ();
 
 			ui = new Glade.XML (null, "lat.glade", "templateEditorDialog", null);
 			ui.Autoconnect (this);
@@ -90,7 +90,7 @@ namespace lat
 			templateEditorDialog.Resize (640, 480);
 		}
 
-		private void setupTreeViews ()
+		void setupTreeViews ()
 		{
 			// Object class
 			objListStore = new ListStore (typeof (string));

@@ -59,7 +59,7 @@ namespace lat
 				sb.ServiceAdded += OnServiceAdded;
 				sb.ServiceRemoved += OnServiceRemoved;
 			} catch (ClientException ce) {
-				Logger.Log.Debug (ce.ToString());
+				Log.Debug (ce.ToString());
 			}
 		}
 
@@ -75,7 +75,7 @@ namespace lat
 			cp.ServerType = "Generic LDAP server";
 			cp.Dynamic = true;
 
-			Logger.Log.Debug ("Found LDAP service {0} on {1} port {2}", 
+			Log.Debug ("Found LDAP service {0} on {1} port {2}", 
 				args.Service.Name, args.Service.Address, args.Service.Port);
 
 			if (args.Service.Port == 636)

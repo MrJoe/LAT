@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Syscert = System.Security.Cryptography.X509Certificates;
 using Mono.Security.X509;
 using Mono.Security.Cryptography;
@@ -92,17 +92,17 @@ namespace lat {
 		/// <param name="dn">The distinguished name of the new entry.</param>
 		/// <param name="attributes">An arraylist of string attributes for the 
 		/// new ldap entry.</param>
-		public void Add (string dn, ArrayList attributes)
+		public void Add (string dn, List<LdapAttribute> attributes)
 		{
-			Logger.Log.Debug ("START Connection.Add ()");
-			Logger.Log.Debug ("dn: {0}", dn);
+			Log.Debug ("START Connection.Add ()");
+			Log.Debug ("dn: {0}", dn);
 
 			LdapAttributeSet attributeSet = new LdapAttributeSet();
 
 			foreach (LdapAttribute attr in attributes) {
 
 				foreach (string v in attr.StringValueArray)
-					Logger.Log.Debug ("{0}:{1}", attr.Name, v);
+					Log.Debug ("{0}:{1}", attr.Name, v);
 				
 				attributeSet.Add (attr);
 			}
@@ -111,7 +111,7 @@ namespace lat {
 
 			conn.Add (newEntry);
 
-			Logger.Log.Debug ("END Connection.Add ()");
+			Log.Debug ("END Connection.Add ()");
 		}
 
 		/// <summary>Binds to the directory server with the given user
@@ -123,7 +123,7 @@ namespace lat {
 		{
 			conn.Bind (userName, userPass);
 
-			Logger.Log.Debug ("Bound to directory as: {0}", userName);
+			Log.Debug ("Bound to directory as: {0}", userName);
 		}
 
 		/// <summary>Connects to the directory server.
@@ -153,9 +153,9 @@ namespace lat {
 			if (rootDN == null)
 				QueryRootDSE ();
 
-			Logger.Log.Debug ("Connected to '{0}' on port {1}", host, port);
-			Logger.Log.Debug ("Base: {0}", rootDN);
-			Logger.Log.Debug ("Using encryption type: {0}", encryptionType.ToString());
+			Log.Debug ("Connected to '{0}' on port {1}", host, port);
+			Log.Debug ("Base: {0}", rootDN);
+			Log.Debug ("Using encryption type: {0}", encryptionType.ToString());
 		}
 
 		/// <summary>Copy a directory entry
@@ -183,7 +183,7 @@ namespace lat {
 			conn.Disconnect ();
 			conn = null;
 
-			Logger.Log.Debug ("Disconnected from '{0}'", host);
+			Log.Debug ("Disconnected from '{0}'", host);
 		}
 
 		/// <summary>Gets a list of required and optional attributes for
@@ -192,7 +192,7 @@ namespace lat {
 		/// <param name="objClass">List of object classes</param>
 		/// <param name="required">Required attributes</param>
 		/// <param name="optional">Optional attributes</param>
-		public void GetAllAttributes (ArrayList objClass, 
+		public void GetAllAttributes (List<string> objClass, 
 					 out string[] required, out string[] optional)
 		{
 			try {
@@ -200,8 +200,8 @@ namespace lat {
 				LdapSchema schema;
 				LdapObjectClassSchema ocs;
 				
-				ArrayList r_attrs = new ArrayList ();
-				ArrayList o_attrs = new ArrayList ();
+				List<string> r_attrs = new List<string> ();
+				List<string> o_attrs = new List<string> ();
 
 				schema = conn.FetchSchema ( conn.GetSchemaDN() );
 		
@@ -223,15 +223,15 @@ namespace lat {
 					}
 				}
 
-				required = (string[]) r_attrs.ToArray (typeof (string));
-				optional = (string[]) o_attrs.ToArray (typeof (string));
+				required = r_attrs.ToArray ();
+				optional = o_attrs.ToArray ();
 
 			} catch (Exception e) {
 
 				required = null;
 				optional = null;
 
-				Logger.Log.Debug ("getAllAttrs: {0}", e.Message);
+				Log.Debug ("getAllAttrs: {0}", e.Message);
 			}
 		}
 
@@ -245,7 +245,7 @@ namespace lat {
 				LdapSchema schema;
 				LdapObjectClassSchema ocs;
 				
-				ArrayList attrs = new ArrayList ();
+				List<string> attrs = new List<string> ();
 
 				schema = conn.FetchSchema ( conn.GetSchemaDN() );	
 				ocs = schema.getObjectClassSchema ( objClass );
@@ -264,7 +264,7 @@ namespace lat {
 
 				attrs.Sort ();
 
-				return (string[]) attrs.ToArray (typeof (string));
+				return attrs.ToArray ();
 
 			} catch	{
 				return null;
@@ -286,7 +286,7 @@ namespace lat {
 			if (le == null)
 				return null;
 
-			ArrayList tmp = new ArrayList ();				
+			List<string> tmp = new List<string> ();				
 			LdapAttribute la = le[0].getAttribute ("attributetypes");		
 
 			foreach (string s in la.StringValueArray) {
@@ -295,7 +295,7 @@ namespace lat {
 			}
 
 			tmp.Sort ();				
-			return (string[]) tmp.ToArray (typeof (string));
+			return tmp.ToArray ();
 		}
 
 		/// <summary>Gets the schema for a given attribute type
@@ -358,7 +358,7 @@ namespace lat {
 			if (le == null || attrs == null)
 				throw new ArgumentNullException ();
 
-			ArrayList retVal = new ArrayList ();
+			List<string> retVal = new List<string> ();
 
 			foreach (string n in attrs) {
 
@@ -370,7 +370,7 @@ namespace lat {
 					retVal.Add ("");
 			}
 
-			return (string[]) retVal.ToArray (typeof (string));
+			return retVal.ToArray ();
 		}
 
 		/// <summary>Gets the value of the given attribute for the given
@@ -378,14 +378,14 @@ namespace lat {
 		/// </summary>
 		/// <param name="le">LdapEntry</param>
 		/// <param name="attrs">List of attributes to lookup</param>
-		/// <param name="entryInfo">Hashtable to populate values with</returns>
+		/// <param name="entryInfo">Dictionary<string,string> to populate values with</returns>
 		public void GetAttributeValuesFromEntry (LdapEntry le, string[] attrs, 
-							 out Hashtable entryInfo)
+							 out Dictionary<string,string> entryInfo)
 		{
 			if (le == null || attrs == null)
 				throw new ArgumentNullException ();
 
-			entryInfo = new Hashtable ();
+			entryInfo = new Dictionary<string,string> ();
 
 			foreach (string n in attrs) {
 
@@ -458,7 +458,7 @@ namespace lat {
 			if (le == null)
 				return null;
 				
-			ArrayList tmp = new ArrayList ();				
+			List<string> tmp = new List<string> ();				
 			LdapAttribute la = le[0].getAttribute ("ldapSyntaxes");		
 
 			foreach (string s in la.StringValueArray) {
@@ -467,7 +467,7 @@ namespace lat {
 			}
 			
 			tmp.Sort ();
-			return (string[]) tmp.ToArray (typeof (string));				
+			return tmp.ToArray ();				
 		}
 
 		/// <summary>Gets the schema information for a given ldap syntax
@@ -509,7 +509,7 @@ namespace lat {
 			if (le == null)
 				return null;
 				
-			ArrayList tmp = new ArrayList ();
+			List<string> tmp = new List<string> ();
 			LdapAttribute la = le[0].getAttribute ("matchingRules");			
 
 			foreach (string s in la.StringValueArray) {
@@ -518,7 +518,7 @@ namespace lat {
 			}
 
 			tmp.Sort ();				
-			return (string[]) tmp.ToArray (typeof (string));			
+			return tmp.ToArray ();			
 		}
 
 		/// <summary>Gets the schema information for a given matching rule
@@ -553,7 +553,7 @@ namespace lat {
 		/// <returns>The next group number</returns>
 		public int GetNextGID ()
 		{
-			ArrayList gids = new ArrayList ();
+			List<int> gids = new List<int> ();
 
 			LdapEntry[] groups = Search (rootDN, LdapConnection.SCOPE_SUB,
 						    "gidNumber=*", null);
@@ -575,7 +575,7 @@ namespace lat {
 		/// <returns>The next user number</returns>
 		public int GetNextUID ()
 		{
-			ArrayList uids = new ArrayList ();
+			List<int> uids = new List<int> ();
 
 			LdapEntry[] users = Search (rootDN, LdapConnection.SCOPE_SUB,
 						    "uidNumber=*", null);
@@ -606,7 +606,7 @@ namespace lat {
 			if (le == null)
 				return null;
 
-			ArrayList tmp = new ArrayList ();
+			List<string> tmp = new List<string> ();
 			LdapAttribute la = le[0].getAttribute ("objectclasses");			
 
 			foreach (string s in la.StringValueArray) {
@@ -615,7 +615,7 @@ namespace lat {
 			}
 
 			tmp.Sort ();				
-			return (string[]) tmp.ToArray (typeof (string));			
+			return tmp.ToArray ();			
 		}
 
 		/// <summary>Gets the schema of a given object class.
@@ -679,8 +679,8 @@ namespace lat {
 			if (!conn.Connected || objClasses == null)
 				return null;
 
-			ArrayList retVal = new ArrayList ();
-			Hashtable retHash = new Hashtable ();
+			List<string> retVal = new List<string> ();
+			Dictionary<string,string> retHash = new Dictionary<string,string> ();
 
 			LdapSchema schema;
 			schema = conn.FetchSchema ( conn.GetSchemaDN() );
@@ -696,10 +696,10 @@ namespace lat {
 						retHash.Add (c, c);
 			}
 
-			foreach (string key in retHash.Keys)
-				retVal.Add (key);
+			foreach (KeyValuePair<string, string> kvp in retHash)
+				retVal.Add (kvp.Key);
 
-			return (string[]) retVal.ToArray (typeof (string));
+			return retVal.ToArray ();
 		}
 
 		/// <summary>Modifies the specified entry
@@ -766,7 +766,7 @@ namespace lat {
 
 			try {
 
-				ArrayList retVal = new ArrayList ();
+				List<LdapEntry> retVal = new List<LdapEntry> ();
 
 				LdapSearchQueue queue = conn.Search (searchBase,
 						searchScope,
@@ -786,11 +786,11 @@ namespace lat {
 					}
 				}
 
-				return (LdapEntry[]) retVal.ToArray (typeof (LdapEntry));
+				return retVal.ToArray ();
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("LdapServer.Search error: {0}", e.Message);
+				Log.Debug ("LdapServer.Search error: {0}", e.Message);
 				return null;
 			}
 		}
@@ -894,7 +894,7 @@ namespace lat {
 
 			} else {
 
-				Logger.Log.Debug ("Unable to find directory namingContexts");
+				Log.Debug ("Unable to find directory namingContexts");
 			}
 		}
 
@@ -944,8 +944,8 @@ namespace lat {
 			msg += "\nValid Until:   " + x509.ValidUntil;
 			msg += "\nUnique Hash:   " + CryptoConvert.ToHex (x509.Hash);
 
-			Logger.Log.Debug ("Certificate info:\n{0}", msg);
-			Logger.Log.Debug ("Certificate errors:\n{0}", certificateErrors.Length);
+			Log.Debug ("Certificate info:\n{0}", msg);
+			Log.Debug ("Certificate errors:\n{0}", certificateErrors.Length);
 
 			return retVal;
 		}

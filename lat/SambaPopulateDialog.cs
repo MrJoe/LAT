@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat 
@@ -144,7 +144,7 @@ namespace lat
 
 		private void createOU (string dn)
 		{
-			ArrayList attrList = new ArrayList ();
+			List<LdapAttribute> attrList = new List<LdapAttribute> ();
 
 			attrList.Add (new LdapAttribute ("objectclass", "organizationalUnit"));
 			attrList.Add (new LdapAttribute ("ou", getCN (dn)));
@@ -156,7 +156,7 @@ namespace lat
 					 string flags, string uid, string gid, 
 					 string urid, string grid, string gecos)
 		{
-			ArrayList attrList = new ArrayList ();
+			List<LdapAttribute> attrList = new List<LdapAttribute> ();
 			LdapAttribute a = new LdapAttribute ("objectclass", "inetOrgPerson");
 			a.addValue ("sambaSAMAccount");
 			a.addValue ("posixAccount");
@@ -191,7 +191,7 @@ namespace lat
 					  string sid, string grid, string gtype, 
 					  string memberuid)
 		{
-			ArrayList attrList = new ArrayList ();
+			List<LdapAttribute> attrList = new List<LdapAttribute> ();
 			LdapAttribute a = new LdapAttribute ("objectclass", "posixGroup");
 			a.addValue ("sambaGroupMapping");
 			attrList.Add (a);
@@ -209,9 +209,9 @@ namespace lat
 			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
 		}
 
-		private void createDomain (string dn, string domain, string sid)
+		void createDomain (string dn, string domain, string sid)
 		{
-			ArrayList attrList = new ArrayList ();
+			List<LdapAttribute> attrList = new List<LdapAttribute> ();
 			LdapAttribute a = new LdapAttribute ("objectclass", "sambaDomain");
 //			a.addValue ("sambaUnixIdPool");
 			attrList.Add (a);

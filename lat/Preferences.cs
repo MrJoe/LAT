@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Gtk;
 
 namespace lat
@@ -337,14 +337,14 @@ namespace lat
 		ListStore columnStore;
 		LdapServer server;
 		ViewPlugin vp;
-		ArrayList colNames;
-		ArrayList colAttrs;
+		List<string> colNames;
+		List<string> colAttrs;
 			
 		public PluginConfigureDialog (LdapServer ldapServer, string pluginName)
 		{
 			server = ldapServer;
-			colNames = new ArrayList ();
-			colAttrs = new ArrayList ();
+			colNames = new List<string> ();
+			colAttrs = new List<string> ();
 		
 			ui = new Glade.XML (null, "lat.glade", "pluginConfigureDialog", null);
 			ui.Autoconnect (this);
@@ -416,8 +416,8 @@ namespace lat
 		
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			vp.ColumnNames = (string[]) colNames.ToArray (typeof (string));
-			vp.ColumnAttributes = (string[]) colAttrs.ToArray (typeof (string));
+			vp.ColumnNames = colNames.ToArray ();
+			vp.ColumnAttributes = colAttrs.ToArray ();
 		
 			vp.Filter = filterEntry.Text;
 					

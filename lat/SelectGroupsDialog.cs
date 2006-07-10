@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace lat
 {
@@ -32,14 +32,14 @@ namespace lat
 		[Glade.Widget] Gtk.TreeView allGroupsTreeview;
 		
 		private ListStore store;
-		private ArrayList groups;
+		private List<string> groups;
 
 		public SelectGroupsDialog (string[] allGroups)
 		{
 			ui = new Glade.XML (null, "lat.glade", "selectGroupsDialog", null);
 			ui.Autoconnect (this);
 
-			groups = new ArrayList ();
+			groups = new List<string> ();
 
 			TreeViewColumn col;
 
@@ -86,7 +86,7 @@ namespace lat
 
 		public string[] SelectedGroupNames 
 		{
-			get { return (string[]) groups.ToArray (typeof (string)); }
+			get { return groups.ToArray (); }
 		}
 	}
 }

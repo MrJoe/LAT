@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -61,7 +61,7 @@ namespace lat {
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug (e.ToString());
+				Log.Debug (e.ToString());
 			}
 		}
 		
@@ -77,7 +77,7 @@ namespace lat {
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug (e.ToString());
+				Log.Debug (e.ToString());
 			}
 		}
 		
@@ -157,18 +157,18 @@ namespace lat {
 		string pluginDirectory;
 		string pluginStateDirectory;		
 		
-		ArrayList viewPluginList;
-		ArrayList attrPluginList;
-		Hashtable viewPluginHash;
+		List<ViewPlugin> viewPluginList;
+		List<AttributeViewPlugin> attrPluginList;
+		Dictionary<string,string> viewPluginHash;
 
 		FileSystemWatcher sysPluginWatch;
 		FileSystemWatcher usrPluginWatch;
 	
 		public PluginManager ()
 		{		
-			viewPluginList = new ArrayList ();
-			attrPluginList = new ArrayList ();
-			viewPluginHash = new Hashtable ();
+			viewPluginList = new List<ViewPlugin> ();
+			attrPluginList = new List<AttributeViewPlugin> ();
+			viewPluginHash = new Dictionary<string,string> ();
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
 			DirectoryInfo di = new DirectoryInfo (homeDir);
@@ -204,7 +204,7 @@ namespace lat {
 				sysPluginWatch.EnableRaisingEvents = true;
 			
 			} catch (Exception e) {			
-				Logger.Log.Debug ("Plugin system watch error: {0}", e);			
+				Log.Debug ("Plugin system watch error: {0}", e);			
 			}
 
 			try {
@@ -215,20 +215,20 @@ namespace lat {
 				usrPluginWatch.EnableRaisingEvents = true;
 			
 			} catch (Exception e) {			
-				Logger.Log.Debug ("Plugin user dir watch error: {0}", e);			
+				Log.Debug ("Plugin user dir watch error: {0}", e);			
 			}
 		}
 
 		void OnPluginCreated (object sender, FileSystemEventArgs args)
 		{
-			Logger.Log.Debug ("New plugin found: {0}", Path.GetFileName (args.FullPath));			
+			Log.Debug ("New plugin found: {0}", Path.GetFileName (args.FullPath));			
 			LoadPluginsFromFile (args.FullPath);
 		}
 		
 		void OnPluginDeleted (object sender, FileSystemEventArgs args)
 		{
 			// FIXME: remmove plugin
-//			Logger.Log.Debug ("Plugin deleted: {0}", Path.GetFileName (args.FullPath));			
+//			Log.Debug ("Plugin deleted: {0}", Path.GetFileName (args.FullPath));			
 		}
 
 		void LoadPluginsFromFile (string fileName)
@@ -243,8 +243,8 @@ namespace lat {
 						continue;
 						
 					viewPluginList.Add (plugin);
-					viewPluginHash.Add (plugin.MenuLabel, plugin.Name);
-					Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);
+					viewPluginHash.Add (plugin.MenuLabel, plugin.Name);			
+					Log.Debug ("Loaded plugin: {0}", type.FullName);
 					
 				} else if (type.IsSubclassOf (typeof (AttributeViewPlugin))) {
 					AttributeViewPlugin plugin = (AttributeViewPlugin) Activator.CreateInstance (type);						
@@ -252,19 +252,22 @@ namespace lat {
 						continue;
 						
 					attrPluginList.Add (plugin);
-					Logger.Log.Debug ("Loaded plugin: {0}", type.FullName);				
+					Log.Debug ("Loaded plugin: {0}", type.FullName);				
 				}
 			}		
 		}
 
 		public ViewPlugin FindServerView (string name)
 		{
-			string labelKey = (string) viewPluginHash [name];
-		
+			string labelKey = null;
+			try { 
+				labelKey = viewPluginHash [name]; 
+			} catch {} 
+			
 			foreach (ViewPlugin vp in viewPluginList)
 				if (vp.Name == name || vp.Name == labelKey)
-						return vp;
-										
+					return vp;
+
 			return null;
 		}
 
@@ -287,12 +290,12 @@ namespace lat {
 
 		public ViewPlugin[] ServerViewPlugins
 		{
-			get { return (ViewPlugin[]) viewPluginList.ToArray (typeof (ViewPlugin)); }
+			get { return viewPluginList.ToArray (); }
 		}
 		
 		public AttributeViewPlugin[] AttributeViewPlugins
 		{
-			get { return (AttributeViewPlugin[]) attrPluginList.ToArray (typeof (AttributeViewPlugin)); }
+			get { return attrPluginList.ToArray (); }
 		}
 	}
 }

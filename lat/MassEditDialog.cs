@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -36,15 +36,15 @@ namespace lat
 		[Glade.Widget] Gtk.HBox actionHBox;
 		[Glade.Widget] TreeView modListView; 
 
-		private ListStore modListStore;
-		private ArrayList _modList;
-		private LdapServer server;
+		ListStore modListStore;
+		List<LdapModification> _modList;
+		LdapServer server;
 
-		private ComboBox actionComboBox;
+		ComboBox actionComboBox;
 
 		public MassEditDialog (LdapServer ldapServer)
 		{
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 			server = ldapServer;
 
 			ui = new Glade.XML (null, "lat.glade", "massEditDialog", null);
@@ -120,54 +120,43 @@ namespace lat
 				modListStore.Remove (ref iter);
 		}
 
-		private bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
-		{
-			if (!modListStore.IterIsValid (iter))
-				return true;
-
-			string _name = null;
-			string _value = null;
-			string _action = null;
-
-			_action = (string) modListStore.GetValue (iter, 0);
-			_name = (string) modListStore.GetValue (iter, 1);
-			_value = (string) modListStore.GetValue (iter, 2);
-
-			LdapAttribute a = new LdapAttribute (_name, _value);
-			LdapModification m;
-
-			switch (_action) {
-
-			case "Add":
-				m = new LdapModification (LdapModification.ADD, a);
-				break;
-
-			case "Delete":
-				m = new LdapModification (LdapModification.DELETE, a);
-				break;
-
-			case "Replace":
-				m = new LdapModification (LdapModification.REPLACE, a);
-				break;
-
-			default:
-				return true;
-			}
-
-			_modList.Add (m);
-
-			return false;
-		}
-
 		public void OnOkClicked (object o, EventArgs args)
 		{
 			LdapEntry[] sr = server.Search (server.DirectoryRoot, searchEntry.Text);
+			
+			foreach (object[] row in modListStore) {
 
-			modListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
+				string _action = (string) row[0];
+				string _name = (string) row[1];
+				string _value = (string) row[2];
+				
+				LdapAttribute a = new LdapAttribute (_name, _value);
+				LdapModification m = null;
 
+				switch (_action.ToLower()) {
+
+				case "add":
+					m = new LdapModification (LdapModification.ADD, a);
+					break;
+
+				case "delete":
+					m = new LdapModification (LdapModification.DELETE, a);
+					break;
+
+				case "replace":
+					m = new LdapModification (LdapModification.REPLACE, a);
+					break;
+
+				default:
+					break;
+				}
+
+				if (m != null)
+					_modList.Add (m);		
+			}
+			
 			foreach (LdapEntry e in sr) {
-				ArrayList tmp = (ArrayList) _modList.Clone ();
-				Util.ModifyEntry (server, massEditDialog, e.DN, tmp, false);
+				Util.ModifyEntry (server, massEditDialog, e.DN, _modList, false);
 			}
 
 			massEditDialog.HideAll ();

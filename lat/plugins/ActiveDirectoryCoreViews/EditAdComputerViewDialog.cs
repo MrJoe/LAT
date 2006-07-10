@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -51,9 +51,9 @@ namespace lat
 		[Glade.Widget] Gtk.Label manFaxNumberLabel;
 		[Glade.Widget] Gtk.Image image178;
 
-		private LdapEntry _le;
-		private ArrayList _modList;
-		private Hashtable _hi;
+		LdapEntry _le;
+		List<LdapModification> _modList;
+		Dictionary<string,string> _hi;
 
 		private static string[] hostAttrs = { "cn", "description", "dNSHostName", 
 						"operatingSystem", "operatingSystemVersion",
@@ -63,7 +63,7 @@ namespace lat
 		public EditAdComputerViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 
 			Init ();
 
@@ -106,7 +106,7 @@ namespace lat
 			editAdComputerDialog.Destroy ();
 		}
 
-		private void updateManagedBy (string dn)
+		void updateManagedBy (string dn)
 		{
 			try {
 
@@ -145,7 +145,7 @@ namespace lat
 			}
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "dialogs.glade", "editAdComputerDialog", null);
 			ui.Autoconnect (this);
@@ -169,9 +169,9 @@ namespace lat
 			image178.Pixbuf = pb;
 		}
 
-		private Hashtable getCurrentHostInfo ()
+		Dictionary<string,string> getCurrentHostInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("description", descriptionEntry.Text);
 			retVal.Add ("managedBy", manNameEntry.Text);
@@ -207,7 +207,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable chi = getCurrentHostInfo ();
+			Dictionary<string,string> chi = getCurrentHostInfo ();
 
 			string[] missing = null;
 			string[] objClass = {"top", "computer"};

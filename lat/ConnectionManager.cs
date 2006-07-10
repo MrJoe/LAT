@@ -50,9 +50,12 @@ namespace lat
 		public LdapServer this [ConnectionProfile cp]
 		{
 			get { 
+		
 				LdapServer srv = (LdapServer) serverDictionary [cp.Name];
 				if (srv == null) {
 			
+					Log.Debug ("Starting connection to {0}", cp.Host);
+					
 					if (cp.LdapRoot == "")
 						srv = new LdapServer (cp.Host, cp.Port, cp.ServerType);
 					else
@@ -138,11 +141,11 @@ namespace lat
 
 			} catch (SocketException se) {
 
-				Logger.Log.Debug ("Socket error: {0}", se.Message);
+				Log.Debug ("Socket error: {0}", se.Message);
 
 			} catch (LdapException le) {
 
-				Logger.Log.Debug ("Ldap error: {0}", le.Message);
+				Log.Debug ("Ldap error: {0}", le.Message);
 
 				HIGMessageDialog dialog = new HIGMessageDialog (
 					parent,
@@ -159,7 +162,7 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("Unknown error: {0}", e.Message);
+				Log.Debug ("Unknown error: {0}", e.Message);
 
 				HIGMessageDialog dialog = new HIGMessageDialog (
 					parent,

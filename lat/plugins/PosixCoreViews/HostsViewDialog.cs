@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -35,13 +35,13 @@ namespace lat
 		[Glade.Widget] Gtk.Entry descriptionEntry;
 		[Glade.Widget] Gtk.Image image31;
 
-		private bool _isEdit;
+		bool _isEdit;
 		
-		private LdapEntry _le;
-		private ArrayList _modList;
-		private Hashtable _hi;
+		LdapEntry _le;
+		List<LdapModification> _modList;
+		Dictionary<string,string> _hi;
 
-		private static string[] hostAttrs = { "cn", "ipHostNumber", "description" };
+		static string[] hostAttrs = { "cn", "ipHostNumber", "description" };
 
 		public HostsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -67,7 +67,7 @@ namespace lat
 		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 
 			_isEdit = true;
 
@@ -87,7 +87,7 @@ namespace lat
 			hostDialog.Destroy ();
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "dialogs.glade", "hostDialog", null);
 			ui.Autoconnect (this);
@@ -98,9 +98,9 @@ namespace lat
 			image31.Pixbuf = pb;
 		}
 
-		private Hashtable getCurrentHostInfo ()
+		Dictionary<string,string> getCurrentHostInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("cn", hostNameEntry.Text);
 			retVal.Add ("ipHostNumber", ipEntry.Text);
@@ -111,7 +111,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable chi = getCurrentHostInfo ();
+			Dictionary<string,string> chi = getCurrentHostInfo ();
 
 			string[] missing = null;
 			string[] objClass = {"top", "ipHost", "device"};
@@ -132,7 +132,7 @@ namespace lat
 				}
 			} else {
 
-				ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
+				List<LdapAttribute> attrList = getAttributes (objClass, hostAttrs, chi);
 
 				SelectContainerDialog scd = 
 					new SelectContainerDialog (server, hostDialog);

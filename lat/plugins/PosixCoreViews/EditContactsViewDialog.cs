@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -62,13 +62,13 @@ namespace lat
 
 		[Glade.Widget] Gtk.Image image180;
 
-		private bool _isPosix;
+		bool _isPosix;
 		
-		private LdapEntry _le;
-		private Hashtable _ci;
-		private ArrayList _modList;
+		LdapEntry _le;
+		Dictionary<string,string> _ci;
+		List<LdapModification> _modList;
 
-		private static string[] posixContactAttrs = { "givenName", "sn", "initials", "cn",
+		static string[] posixContactAttrs = { "givenName", "sn", "initials", "cn",
 					       "physicalDeliveryOfficeName", "description",
 					       "mail", "postalAddress", "displayName",
 					       "l", "st", "postalCode", 
@@ -76,7 +76,7 @@ namespace lat
 				               "pager", "mobile", "homePhone", "street",
 						"title", "postOfficeBox" };
 
-		private static string[] adContactAttrs = { "givenName", "sn", "initials", "cn",
+		static string[] adContactAttrs = { "givenName", "sn", "initials", "cn",
 					       "physicalDeliveryOfficeName", "description",
 					       "mail", "postalAddress", "displayName",
 					       "l", "st", "postalCode", "wWWHomePage", "co",
@@ -85,12 +85,12 @@ namespace lat
 						"company", "department", "ipPhone", "info",
 						"title", "postOfficeBox" };
 
-		private static string[] contactAttrs;
+		static string[] contactAttrs;
 
 		public EditContactsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null) 
 		{
 			_le = le;
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 
 			Init ();
 
@@ -163,7 +163,7 @@ namespace lat
 			editContactDialog.Destroy ();
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "dialogs.glade", "editContactDialog", null);
 			ui.Autoconnect (this);
@@ -198,9 +198,9 @@ namespace lat
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
 
-		private Hashtable getCurrentContactInfo ()
+		Dictionary<string,string> getCurrentContactInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("givenName", gnFirstNameEntry.Text);
 			retVal.Add ("initials", gnInitialsEntry.Text);
@@ -237,7 +237,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cci = getCurrentContactInfo ();
+			Dictionary<string,string> cci = getCurrentContactInfo ();
 
 			string[] objClass;
 			string[] missing = null;

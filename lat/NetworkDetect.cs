@@ -27,7 +27,6 @@
  */
  
 using System;
-using System.Collections;
 using Mono.Unix;
 using NetworkManager;
 
@@ -71,7 +70,7 @@ namespace lat
                 ConnectToNetworkManager();
             } catch(Exception e) {
                 nm_manager = null;
-                Logger.Log.Debug ("Cannot connect to NetworkManager; Assuming working connection");
+                Log.Debug ("Cannot connect to NetworkManager; Assuming working connection");
             }
         }
 
@@ -101,12 +100,12 @@ namespace lat
                     Device active_device = nm_manager.ActiveDevice;
                     
                     if(Connected && active_device != null) {
-                    	Logger.Log.Debug ("Network Connection Established", String.Format("{0} ({1})",
+                    	Log.Debug ("Network Connection Established", String.Format("{0} ({1})",
                             active_device.Name, active_device.IP4Address));
                     } else if(Connected) {
-                    	Logger.Log.Debug ("Network Connection Established", "Active Device Unknown");
+                    	Log.Debug ("Network Connection Established", "Active Device Unknown");
                     } else {
-                        Logger.Log.Debug ("Network Connection Unavailable", "Disconnected");
+                        Log.Debug ("Network Connection Unavailable", "Disconnected");
                     }
                 }
             } catch(Exception) {

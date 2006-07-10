@@ -19,7 +19,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Net.Sockets;
 using Novell.Directory.Ldap;
 using Gtk;

@@ -18,9 +18,9 @@
 //
 //
 
-using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using Gtk;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -39,9 +39,9 @@ namespace lat
 			defaultNewContainer = newContainer;
 		}
 
-		public static ArrayList getAttributes (string[] objClass, string[] attrs, Hashtable entryInfo)
+		public static List<LdapAttribute> getAttributes (string[] objClass, string[] attrs, Dictionary<string,string> entryInfo)
 		{
-			ArrayList retVal = new ArrayList ();
+			List<LdapAttribute> retVal = new List<LdapAttribute> ();
 
 			LdapAttribute la;
 
@@ -62,11 +62,11 @@ namespace lat
 			return retVal;
 		}
 
-		public static ArrayList getMods (string[] attrs, Hashtable oldInfo, Hashtable newInfo)
+		public static List<LdapModification> getMods (string[] attrs, Dictionary<string,string> oldInfo, Dictionary<string,string> newInfo)
 		{
-			Logger.Log.Debug ("START ViewDialog.getMods()");
+			Log.Debug ("START ViewDialog.getMods()");
 
-			ArrayList retVal = new ArrayList ();
+			List<LdapModification> retVal = new List<LdapModification> ();
 
 			foreach (string a in attrs) {
 
@@ -75,7 +75,7 @@ namespace lat
 
 				if (!oldValue.Equals (newValue) && newValue != null) {
 
-					Logger.Log.Debug ("Modification: attribute: [{0}] - oldValue: [{1}] - newValue: [{2}]", a, oldValue, newValue);
+					Log.Debug ("Modification: attribute: [{0}] - oldValue: [{1}] - newValue: [{2}]", a, oldValue, newValue);
 
 					LdapAttribute la; 
 					LdapModification lm;
@@ -93,7 +93,7 @@ namespace lat
 				}
 			}
 
-			Logger.Log.Debug ("END ViewDialog.getMods()");
+			Log.Debug ("END ViewDialog.getMods()");
 
 			return retVal;
 		}
@@ -118,7 +118,7 @@ namespace lat
 			dialog.Destroy ();
 		}
 
-		private static bool checkReq (string name, Hashtable entryInfo)
+		private static bool checkReq (string name, Dictionary<string,string> entryInfo)
 		{
 			string attrValue = (string) entryInfo [name];
 
@@ -130,9 +130,9 @@ namespace lat
 			return true;
 		}
 
-		public bool checkReqAttrs (string[] objectClass, Hashtable entryInfo, out string[] missing)
+		public bool checkReqAttrs (string[] objectClass, Dictionary<string,string> entryInfo, out string[] missing)
 		{
-			ArrayList outMiss = new ArrayList ();
+			List<string> outMiss = new List<string> ();
 
 			foreach (string obj in objectClass) {
 
@@ -157,7 +157,7 @@ namespace lat
 			}
 
 			if (outMiss.Count > 0) {
-				missing = (string[]) outMiss.ToArray (typeof (string));
+				missing = outMiss.ToArray ();
 				return false;
 			}
 

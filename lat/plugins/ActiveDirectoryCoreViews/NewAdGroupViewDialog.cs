@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -33,7 +33,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry groupNameEntry;
 		[Glade.Widget] Gtk.Entry descriptionEntry;
 
-		private static string[] groupAttrs = { 
+		static string[] groupAttrs = { 
 			"cn", 
 			"sAMAccountName", 
 			"description",
@@ -60,7 +60,7 @@ namespace lat
 			newAdGroupDialog.Destroy ();
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "dialogs.glade", "newAdGroupDialog", null);
 			ui.Autoconnect (this);
@@ -68,9 +68,9 @@ namespace lat
 			viewDialog = newAdGroupDialog;
 		}
 
-		private Hashtable getCurrentGroupInfo ()
+		Dictionary<string,string> getCurrentGroupInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("cn", groupNameEntry.Text);
 			retVal.Add ("description", descriptionEntry.Text);
@@ -81,7 +81,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cgi = getCurrentGroupInfo ();
+			Dictionary<string,string> cgi = getCurrentGroupInfo ();
 
 			string[] objClass = { "group" };
 
@@ -105,7 +105,7 @@ namespace lat
 				return;
 			}
 
-			ArrayList attrList = getAttributes (objClass, groupAttrs, cgi);
+			List<LdapAttribute> attrList = getAttributes (objClass, groupAttrs, cgi);
 
 			string userDN = null;
 			if (this.defaultNewContainer == null) {

@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace lat 
 {
@@ -55,24 +55,24 @@ namespace lat
 		[Glade.Widget] Button cancelButton;
 		[Glade.Widget] Gtk.Image image117;
 
-		private Glade.XML ui;
-		private ComboBox opComboBox;
-		private ComboBox firstCritCombo;
+		Glade.XML ui;
+		ComboBox opComboBox;
+		ComboBox firstCritCombo;
 		
-		private ArrayList _allCombos;
+		List<ComboBox> _allCombos;
 
-		private int _numCriteria = 0;
-		private Hashtable _critTable;
+		int _numCriteria = 0;
+		Dictionary<string,SearchCriteria> _critTable;
 
-		private LdapSearch _ls;
+		LdapSearch _ls;
 
-		private static string[] ops = { "begins with", "ends with", "equals", "contains", "is present" };
-		private static string[] boolOps = { "", "AND", "OR" };
+		static string[] ops = { "begins with", "ends with", "equals", "contains", "is present" };
+		static string[] boolOps = { "", "AND", "OR" };
 
 		public SearchBuilderDialog ()
 		{
-			_allCombos = new ArrayList ();
-			_critTable = new Hashtable ();
+			_allCombos = new List<ComboBox> ();
+			_critTable = new Dictionary<string,SearchCriteria> ();
 			_ls = new LdapSearch ();
 
 			ui = new Glade.XML (null, "lat.glade", "searchBuilderDialog", null);
@@ -95,7 +95,7 @@ namespace lat
 			searchBuilderDialog.Destroy ();
 		}
 
-		private static void comboSetActive (ComboBox cb, string[] list, string name)
+		static void comboSetActive (ComboBox cb, string[] list, string name)
 		{		
 			int count = 0;
 
@@ -108,7 +108,7 @@ namespace lat
 			}
 		}
 
-		private static ComboBox createCombo (string[] list)
+		static ComboBox createCombo (string[] list)
 		{		
 			ComboBox retVal = ComboBox.NewText ();
 
@@ -121,7 +121,7 @@ namespace lat
 			return retVal;
 		}
 
-		private void toggleBoolCombo (int row)
+		void toggleBoolCombo (int row)
 		{
 			string prevKey = "row" + 
 				(row - 1).ToString();
@@ -132,7 +132,7 @@ namespace lat
 			prevSC.boolCombo.Sensitive = !prevSC.boolCombo.Sensitive;
 		}
 		
-		private void createCritRow (string attr, string op, string val)
+		void createCritRow (string attr, string op, string val)
 		{
 			_numCriteria++;
 
@@ -185,7 +185,7 @@ namespace lat
 			critVbox.ShowAll ();
 		}
 
-		private void OnBoolChanged (object o, EventArgs args)
+		void OnBoolChanged (object o, EventArgs args)
 		{
 			foreach (ComboBox c in _allCombos) {
 
@@ -206,7 +206,7 @@ namespace lat
 			}
 		}
 
-		private void OnAddClicked (object o, EventArgs args)
+		void OnAddClicked (object o, EventArgs args)
 		{
 			TreeIter iter;
 						
@@ -223,7 +223,7 @@ namespace lat
 			valueEntry.Text = "";
 		}
 
-		private void OnRemoveClicked (object o, EventArgs args)
+		void OnRemoveClicked (object o, EventArgs args)
 		{
 			string key = "row" + _numCriteria.ToString ();
 
@@ -242,12 +242,12 @@ namespace lat
 			_numCriteria--;
 		}
 
-		private void buildFilter ()
+		void buildFilter ()
 		{
 			string boolOp = "";
 
 			foreach (string key in _critTable.Keys) 
-{
+			{
 				SearchCriteria sc = (SearchCriteria) _critTable [key];
 
 				TreeIter iter;
@@ -275,7 +275,7 @@ namespace lat
 			_ls.endBool ();
 		}
 		
-		private void OnOkClicked (object o, EventArgs args)
+		void OnOkClicked (object o, EventArgs args)
 		{
 			if (!attributeEntry.Text.Equals ("")) {
 
@@ -300,7 +300,7 @@ namespace lat
 			searchBuilderDialog.HideAll ();
 		}
 	
-		private void OnCancelClicked (object o, EventArgs args)
+		void OnCancelClicked (object o, EventArgs args)
 		{
 			searchBuilderDialog.HideAll ();
 		}

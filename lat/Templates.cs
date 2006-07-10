@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
@@ -31,18 +31,18 @@ namespace lat
 	[Serializable]
 	public class Template
 	{
-		private string _name;
-		private ArrayList _objClasses;
-		private Hashtable _attributes;
+		string _name;
+		List<string> _objClasses;
+		Dictionary<string,string> _attributes;
 
 		public Template (string name)
 		{
 			_name = name;
-			_objClasses = new ArrayList ();
-			_attributes = new Hashtable ();
+			_objClasses = new List<string> ();
+			_attributes = new Dictionary<string,string> ();
 		}
 
-		public void AddClass (ArrayList classes)
+		public void AddClass (List<string> classes)
 		{
 			_objClasses.Clear ();
 			_objClasses = classes;
@@ -76,18 +76,18 @@ namespace lat
 
 		public string[] Classes
 		{
-			get { return (string[]) _objClasses.ToArray (typeof (string)); }
+			get { return _objClasses.ToArray (); }
 		}
 	}
 
 	public class TemplateManager
 	{
-		private string _configFile;
-		private ArrayList _templates;
+		string _configFile;
+		List<Template> _templates;
 
 		public TemplateManager ()
 		{
-			_templates = new ArrayList ();
+			_templates = new List<Template> ();
 		
 			string dir = Environment.GetEnvironmentVariable("HOME");
 			string tmp = Path.Combine (dir, ".lat");
@@ -101,12 +101,12 @@ namespace lat
 
 		public string[] GetTemplateNames ()
 		{
-			ArrayList tmp = new ArrayList ();
+			List<string> tmp = new List<string> ();
 
 			foreach (Template t in _templates)
 				tmp.Add (t.Name);
 
-			return (string[]) tmp.ToArray (typeof (string));
+			return tmp.ToArray ();
 		}
 
 		public void Add (Template t)
@@ -128,7 +128,7 @@ namespace lat
 
 		public void Delete (string name)
 		{
-			ArrayList tmp = new ArrayList ();
+			List<Template> tmp = new List<Template> ();
 
 			foreach (Template t in _templates) {
 				if (!t.Name.Equals (name))
@@ -160,14 +160,14 @@ namespace lat
 				Stream stream = File.OpenRead (_configFile);
 
 				IFormatter formatter = new BinaryFormatter();
-				_templates = (ArrayList) formatter.Deserialize (stream);
+				_templates = (List<Template>) formatter.Deserialize (stream);
 				stream.Close ();
 
-				Logger.Log.Debug ("Load templates count: " + _templates.Count);
+				Log.Debug ("Load templates count: " + _templates.Count);
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("TemplateManager.Load: {0}", e.Message);
+				Log.Debug ("TemplateManager.Load: {0}", e.Message);
 			}
 		}
 		
@@ -175,7 +175,7 @@ namespace lat
 		{	
 			try {
 
-				Logger.Log.Debug ("Save templates count: " + _templates.Count);
+				Log.Debug ("Save templates count: " + _templates.Count);
 
 				Stream stream = File.OpenWrite (_configFile);
 			
@@ -185,7 +185,7 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("TemplateManager.Save: {0}", e.Message);
+				Log.Debug ("TemplateManager.Save: {0}", e.Message);
 			}
 		}
 	}

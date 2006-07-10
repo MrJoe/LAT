@@ -26,7 +26,6 @@ using lat;
 public class Global
 {
 	public static Gdk.Pixbuf latIcon;
-	public static bool Debug = false;
 	public static bool VerboseMessages;
 	
 	public static ConnectionManager Connections;
@@ -69,6 +68,7 @@ public class LdapAdministrationTool
 	{
 		// Parse command-line arguments 			
 		int i = 0;
+		LogLevel logLevel = LogLevel.Info;
 
 		while (i < args.Length) {
 
@@ -79,7 +79,7 @@ public class LdapAdministrationTool
 
 			case "-d":
 			case "--debug":
-				Global.Debug = true;
+				logLevel = LogLevel.Debug;
 				break;
 
 			case "-h":
@@ -100,7 +100,8 @@ public class LdapAdministrationTool
 			}
 		}
 
-		Logger.Log.Debug ("Starting {0} (version {1})", Defines.PACKAGE, Defines.VERSION);
+		Log.Initialize (logLevel);		
+		Log.Info ("Starting {0} (version {1})", Defines.PACKAGE, Defines.VERSION);
 
 		try {
 			Util.SetProcessName (Defines.PACKAGE);
@@ -110,8 +111,7 @@ public class LdapAdministrationTool
 		Global.Templates.Load ();
 		Global.Plugins = new PluginManager ();
 		
-		Mono.Unix.Catalog.Init (Defines.PACKAGE, Defines.LOCALE_DIR);
-		
+		Mono.Unix.Catalog.Init (Defines.PACKAGE, Defines.LOCALE_DIR);		
 		Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
 					
 		new MainWindow (program);
@@ -122,6 +122,6 @@ public class LdapAdministrationTool
 		Global.Profiles.SaveProfiles ();
 		Global.Plugins.SavePluginsState ();
 
-		Logger.Log.Debug ("Exiting {0}", Defines.PACKAGE);
+		Log.Info ("Exiting {0}", Defines.PACKAGE);
 	}
 }

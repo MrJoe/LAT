@@ -22,7 +22,7 @@ using Gtk;
 using Gdk;
 using GLib;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Novell.Directory.Ldap;
 
@@ -220,7 +220,7 @@ namespace lat
 //		{
 //			LdapEntry[] data = server.Search (searchBase, vd.Filter);
 //
-//			Logger.Log.Debug (
+//			Log.Debug (
 //			  "InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
 //			   searchBase, vd.Filter, data.Length);
 //

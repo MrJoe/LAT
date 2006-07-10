@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -96,9 +96,9 @@ namespace lat
 			dialog.Destroy ();
 		}
 
-		public static ArrayList CreateSambaMods (int uid, string sid, string lm, string nt)
+		public static List<LdapModification> CreateSambaMods (int uid, string sid, string lm, string nt)
 		{
-			ArrayList mods = new ArrayList ();
+			List<LdapModification> mods = new List<LdapModification> ();
 
 			mods.Add (createMod ("objectclass", "sambaSAMAccount"));
 			mods.Add (createMod ("sambaLMPassword", lm));
@@ -188,7 +188,7 @@ namespace lat
 		}
 
 		public static bool AddEntry (LdapServer server, Gtk.Window parent, 
-					     string dn, ArrayList attrs, bool msgBox)
+					     string dn, List<LdapAttribute> attrs, bool msgBox)
 		{
 			try {
 
@@ -236,20 +236,16 @@ namespace lat
 		}
 
 		public static bool ModifyEntry (LdapServer server, Gtk.Window parent, 
-						string dn, ArrayList modList, bool msgBox)
+						string dn, List<LdapModification> modList, bool msgBox)
 		{
 			if (modList.Count == 0) {
-				Logger.Log.Debug ("ModifyEntry: modList.Count == 0");
+				Log.Debug ("ModifyEntry: modList.Count == 0");
 				return false;
 			}
 
-			LdapModification[] mods;
-			mods = new LdapModification [modList.Count];
-			mods = (LdapModification[]) modList.ToArray(typeof(LdapModification));
-
 			try {
 
-				server.Modify (dn, mods);
+				server.Modify (dn, modList.ToArray());
 
 				string resMsg = String.Format (
 					Mono.Unix.Catalog.GetString ("Entry {0} has been modified."), dn);
@@ -319,7 +315,7 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug ("deleteEntry error: {0}", e.Message);
+				Log.Debug ("deleteEntry error: {0}", e.Message);
 				return false;
 			}
 		}

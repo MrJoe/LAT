@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -35,7 +35,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry dnsNameEntry;
 		[Glade.Widget] Gtk.Image image182;
 
-		private static string[] hostAttrs = { "cn", "dNSHostName" };
+		static string[] hostAttrs = { "cn", "dNSHostName" };
 
 		public NewAdComputerViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -58,7 +58,7 @@ namespace lat
 			newAdComputerDialog.Destroy ();
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "dialogs.glade", "newAdComputerDialog", null);
 			ui.Autoconnect (this);
@@ -69,9 +69,9 @@ namespace lat
 			image182.Pixbuf = pb;
 		}
 
-		private Hashtable getCurrentHostInfo ()
+		Dictionary<string,string> getCurrentHostInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("cn", computerNameEntry.Text);
 			retVal.Add ("dNSHostName", dnsNameEntry.Text);
@@ -83,7 +83,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable chi = getCurrentHostInfo ();
+			Dictionary<string,string> chi = getCurrentHostInfo ();
 
 			string[] missing = null;
 			string[] objClass = {"top", "computer", "organizationalPerson", "person", 
@@ -94,7 +94,7 @@ namespace lat
 				return;
 			}
 
-			ArrayList attrList = getAttributes (objClass, hostAttrs, chi);
+			List<LdapAttribute> attrList = getAttributes (objClass, hostAttrs, chi);
 
 			string userDN = null;
 			if (this.defaultNewContainer == null) {
@@ -109,11 +109,11 @@ namespace lat
 				if (scd.DN == "")
 					return;
 
-				userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
+				userDN = String.Format ("cn={0},{1}", chi["cn"], scd.DN);
 				
 			} else {
 			
-				userDN = String.Format ("cn={0},{1}", (string)chi["cn"], this.defaultNewContainer);
+				userDN = String.Format ("cn={0},{1}", chi["cn"], this.defaultNewContainer);
 			}
 
 			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {

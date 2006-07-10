@@ -22,11 +22,11 @@ using Gtk;
 using Gdk;
 using GLib;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
-namespace lat {
-
+namespace lat 
+{
 	public class ViewDataTreeView : Gtk.TreeView
 	{
 		LdapServer	server;
@@ -59,12 +59,12 @@ namespace lat {
 				viewPlugin.SearchBase = server.DirectoryRoot;
 				
 			LdapEntry[] data = server.Search (server.DirectoryRoot, viewPlugin.Filter);
-			Logger.Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
+			Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
 					server.DirectoryRoot, viewPlugin.Filter, data.Length);
 
 //			FIXME: handle state per profile			
 //			LdapEntry[] data = server.Search (viewPlugin.SearchBase, viewPlugin.Filter);
-//			Logger.Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
+//			Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
 //					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
 
 			DoInsert (data, viewPlugin.ColumnAttributes);
@@ -205,16 +205,14 @@ namespace lat {
 					return;
 				}
 
-				ArrayList dnList = new ArrayList ();
+				List<string> dnList = new List<string> ();
 
 				foreach (TreePath tp in path) {
 					LdapEntry le = server.GetEntry (GetDN(tp));
 					dnList.Add (le.DN);
 				}
 
-				string[] dns = (string[]) dnList.ToArray (typeof(string));
-
-				Util.DeleteEntry (server, parentWindow, dns);
+				Util.DeleteEntry (server, parentWindow, dnList.ToArray ());
 
 			} catch {}
 		}

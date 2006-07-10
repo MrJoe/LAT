@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -33,14 +33,14 @@ namespace lat
 		[Glade.Widget] Gtk.Dialog addObjectClassDialog;
 		[Glade.Widget] Gtk.TreeView objClassTreeView;
 
-		private LdapServer server;
-		private ArrayList objectClasses;
-		private ListStore store;
+		LdapServer server;
+		List<string> objectClasses;
+		ListStore store;
 
 		public AddObjectClassDialog (LdapServer ldapServer)
 		{
 			server = ldapServer;
-			objectClasses = new ArrayList ();
+			objectClasses = new List<string> ();
 
 			ui = new Glade.XML (null, "lat.glade", "addObjectClassDialog", null);
 			ui.Autoconnect (this);
@@ -102,7 +102,7 @@ namespace lat
 
 		public string[] ObjectClasses
 		{
-			get { return (string[]) objectClasses.ToArray (typeof(string)); }
+			get { return objectClasses.ToArray (); }
 		}
 	}
 }

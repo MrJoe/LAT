@@ -2,7 +2,7 @@ Source: lat
 Section: net
 Priority: optional
 Maintainer: Loren Bandiera <lorenb@mmgsecurity.com>
-Build-Depends: cdbs, debhelper (>= 4.1), mono-mcs (>= 1.1.12.1), libmono-dev, gtk-sharp2 (>= 2.4), libgnome-keyring-dev, scrollkeeper, libxml-parser-perl, pkg-config, libdbus-1-cil, libavahi-cil
+Build-Depends: cdbs, debhelper (>= 4.1), mono-gmcs, libmono-dev, gtk-sharp2 (>= 2.4), libgnome-keyring-dev, scrollkeeper, libxml-parser-perl, pkg-config, libdbus-1-cil, libavahi-cil
 Standards-Version: 3.6.2.1
 
 Package: lat

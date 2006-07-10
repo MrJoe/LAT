@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -37,21 +37,21 @@ namespace lat
 		[Glade.Widget] Gtk.TreeView currentMembersTreeview;
 		[Glade.Widget] Gtk.CheckButton enableSambaButton;
 
-		private ListStore allUserStore;
-		private ListStore currentMemberStore;
+		ListStore allUserStore;
+		ListStore currentMemberStore;
 
-		private Hashtable _gi;
-		private Hashtable _currentMembers = new Hashtable ();
+		Dictionary<string,string> _gi;
+		Dictionary<string,string> _currentMembers = new Dictionary<string,string> ();
 
-		private bool _isEdit;
+		bool _isEdit;
 		
-		private LdapEntry _le;
-		private ArrayList _modList;
+		LdapEntry _le;
+		List<LdapModification> _modList;
 
-		private static string[] groupAttrs = { "cn", "gidNumber", "description" };
+		static string[] groupAttrs = { "cn", "gidNumber", "description" };
 
-		private bool _isSamba = false;
-		private string _smbSID = "";
+		bool _isSamba = false;
+		string _smbSID = "";
 
 		public GroupsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -80,11 +80,11 @@ namespace lat
 		public GroupsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 
 			_isSamba = checkSamba (le);
 
-			Logger.Log.Debug ("GroupsViewDialog: _modList == {0}", _modList.Count);
+			Log.Debug ("GroupsViewDialog: _modList == {0}", _modList.Count);
 
 			_isEdit = true;
 
@@ -211,7 +211,7 @@ namespace lat
 
 				allUserStore.Remove (ref iter);
 
-				Logger.Log.Debug ("Adding {0} to group", user);
+				Log.Debug ("Adding {0} to group", user);
 
 				if (_isEdit) {
 
@@ -219,7 +219,7 @@ namespace lat
 					LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 					_modList.Add (lm);
 
-					Logger.Log.Debug ("OnAddClicked: _modList == {0}", _modList.Count);
+					Log.Debug ("OnAddClicked: _modList == {0}", _modList.Count);
 				}
 
 			}
@@ -243,7 +243,7 @@ namespace lat
 				if (_currentMembers.ContainsKey (user))
 					_currentMembers.Remove (user);
 
-				Logger.Log.Debug ("Removing user {0} from group", user);
+				Log.Debug ("Removing user {0} from group", user);
 
 				allUserStore.AppendValues (user);
 
@@ -272,9 +272,9 @@ namespace lat
 			return retVal;
 		}
 
-		private Hashtable getCurrentGroupInfo ()
+		Dictionary<string,string> getCurrentGroupInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("cn", groupNameEntry.Text);
 			retVal.Add ("description", descriptionEntry.Text);
@@ -285,7 +285,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cgi = getCurrentGroupInfo ();
+			Dictionary<string,string> cgi = getCurrentGroupInfo ();
 
 			string[] objClass = { "top", "posixGroup" };
 			string[] missing = null;
@@ -306,7 +306,7 @@ namespace lat
 
 				} else {
 
-					ArrayList tmp = getMods (groupAttrs, _gi, cgi);
+					List<LdapModification> tmp = getMods (groupAttrs, _gi, cgi);
 					foreach (LdapModification lm in tmp)
 						_modList.Add (lm);
 				}
@@ -336,7 +336,7 @@ namespace lat
 
 			} else {
 
-				ArrayList attrList = getAttributes (objClass, groupAttrs, cgi);
+				List<LdapAttribute> attrList = getAttributes (objClass, groupAttrs, cgi);
 
 				if (enableSambaButton.Active) {
 

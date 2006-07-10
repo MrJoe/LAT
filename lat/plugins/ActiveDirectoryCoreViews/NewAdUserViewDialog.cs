@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Mono.Security.Protocol.Ntlm;
@@ -50,15 +50,15 @@ namespace lat
 		[Glade.Widget] Gtk.CheckButton pwdNeverExpiresCheckButton;
 		[Glade.Widget] Gtk.CheckButton accountDisabledCheckButton;
 
-		private static string[] userAttrs = { "givenName", "sn", "sAMAccountName",
+		static string[] userAttrs = { "givenName", "sn", "sAMAccountName",
 			"userAccountControl", "initials", "loginShell", "cn", "geos",
 			"displayName", "userPrincipalName" };
 
 		// ACCOUNT_DISABLE|NORMAL_ACCOUNT|DONT_EXPIRE_PASSWORD
 		private int userAC = 66050;
 
-		private string[] groupList;
-		private ComboBox primaryGroupComboBox;
+		string[] groupList;
+		ComboBox primaryGroupComboBox;
 
 		public NewAdUserViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -106,7 +106,7 @@ namespace lat
 		private string[] GetGroups ()
 		{
 			LdapEntry[] grps = server.SearchByClass ("group");
-			ArrayList glist = new ArrayList ();
+			List<string> glist = new List<string> ();
 	
 			foreach (LdapEntry e in grps) {
 
@@ -116,7 +116,7 @@ namespace lat
 				glist.Add (nameAttr.StringValue);
 			}
 
-			return (string[]) glist.ToArray (typeof (string));
+			return glist.ToArray ();
 		}
 
 		private void createCombo ()
@@ -192,9 +192,9 @@ namespace lat
 			}
 		}
 			
-		private Hashtable getUpdatedUserInfo ()
+		Dictionary<string,string> getUpdatedUserInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 //			TreeIter iter;
 //			string pg = "";
 				
@@ -216,7 +216,7 @@ namespace lat
 	
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cui = getUpdatedUserInfo ();
+			Dictionary<string,string> cui = getUpdatedUserInfo ();
 
 			string[] objClass = { "top", "person", 
 				"organizationalPerson","user" };
@@ -231,13 +231,13 @@ namespace lat
 				return;
 			}
 
-			string fullName = (string)cui["displayName"];
+			string fullName = cui["displayName"];
 
 			cui["cn"] = fullName;
 			cui["gecos"] = fullName;
 			cui.Remove ("displayName");
 
-			ArrayList attrList = getAttributes (objClass, userAttrs, cui);
+			List<LdapAttribute> attrList = getAttributes (objClass, userAttrs, cui);
 
 			string userDN = null;			
 			if (this.defaultNewContainer == null) {

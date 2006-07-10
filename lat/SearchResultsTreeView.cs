@@ -19,7 +19,6 @@
 //
 
 using System;
-using System.Collections;
 using GLib;
 using Gtk;
 using Gdk;

@@ -20,7 +20,6 @@
 
 using Gtk;
 using System;
-using System.Collections;
 using Novell.Directory.Ldap;
 
 namespace lat 

@@ -19,8 +19,6 @@
 //
 
 using System;
-using System.Collections;
-
 using Gtk;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;

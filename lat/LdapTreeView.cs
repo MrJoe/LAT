@@ -19,10 +19,6 @@
 //
 
 using System;
-using System.Collections;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 using Gtk;
@@ -275,7 +271,7 @@ namespace lat
 			} 		
 		}
 
-		private void ldapRowCollapsed (object o, RowCollapsedArgs args)
+		void ldapRowCollapsed (object o, RowCollapsedArgs args)
 		{
 			string name = (string) browserStore.GetValue (args.Iter, (int)TreeCols.DN);
 			string serverName = FindServerName (args.Iter, browserStore);
@@ -283,7 +279,7 @@ namespace lat
 			if (name == serverName) 
 				return;
 
-			Logger.Log.Debug ("collapsed row: {0}", name);
+			Log.Debug ("collapsed row: {0}", name);
 
 			TreeIter child;
 			browserStore.IterChildren (out child, args.Iter);
@@ -338,7 +334,7 @@ namespace lat
 					
 			browserStore.Remove (ref child);
 					
-			Logger.Log.Debug ("Row expanded {0}", name);
+			Log.Debug ("Row expanded {0}", name);
 
 			string serverName = FindServerName (args.Iter, browserStore);
 			ConnectionProfile cp = Global.Profiles [serverName];			
@@ -369,7 +365,7 @@ namespace lat
 
 				foreach (LdapEntry le in ldapEntries) {
 
-					Logger.Log.Debug ("\tchild: {0}", le.DN);
+					Log.Debug ("\tchild: {0}", le.DN);
 					DN dn = new DN (le.DN);
 					RDN rdn = (RDN) dn.RDNs[0];
 
@@ -559,7 +555,7 @@ namespace lat
 
 		public void OnDragDataGet (object o, DragDataGetArgs args)
 		{
-//			Logger.Log.Debug ("BEGIN OnDragDataGet");
+//			Log.Debug ("BEGIN OnDragDataGet");
 //
 //			Gtk.TreeModel model;
 //			Gtk.TreeIter iter;
@@ -570,7 +566,7 @@ namespace lat
 //			string dn = (string) model.GetValue (iter, (int)TreeCols.DN);
 //			string data = null;
 //
-//			Logger.Log.Debug ("Exporting entry: {0}", dn);
+//			Log.Debug ("Exporting entry: {0}", dn);
 //
 //			Util.ExportData (server, dn, out data);
 //
@@ -579,12 +575,12 @@ namespace lat
 //			args.SelectionData.Set (targets[0], 8,
 //				System.Text.Encoding.UTF8.GetBytes (data));
 //
-//			Logger.Log.Debug ("END OnDragDataGet");
+//			Log.Debug ("END OnDragDataGet");
 		}
 
 		public void OnDragDataReceived (object o, DragDataReceivedArgs args)
 		{
-//			Logger.Log.Debug ("BEGIN OnDragDataReceived");
+//			Log.Debug ("BEGIN OnDragDataReceived");
 //
 //			bool success = false;
 //
@@ -610,11 +606,11 @@ namespace lat
 //
 //			}
 //
-//			Logger.Log.Debug ("import success: {0}", success.ToString());
+//			Log.Debug ("import success: {0}", success.ToString());
 //
 //			Gtk.Drag.Finish (args.Context, success, false, args.Time);
 //
-//			Logger.Log.Debug ("END OnDragDataReceived");
+//			Log.Debug ("END OnDragDataReceived");
 		}
 		
 		public int BrowserSelectionMethod

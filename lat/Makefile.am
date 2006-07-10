@@ -28,7 +28,7 @@ CSFILES = \
 	LdapSearch.cs \
 	LdapServer.cs \
 	LdapTreeView.cs \
-	Logger.cs \
+	Log.cs \
 	LoginDialog.cs \
 	Main.cs \
 	MassEditDialog.cs \

@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 using Gtk;
 
@@ -36,8 +36,8 @@ namespace lat
 
 		private LdapServer server;
 		private ListStore attrListStore;
-		private ArrayList _objectClass;
-		private ArrayList _attributes;
+		private List<string> _objectClass;
+		private List<LdapAttribute> _attributes;
 		private LdapAttribute objAttr = null;
 		private Template t;
 		private bool isTemplate = false;
@@ -94,8 +94,8 @@ namespace lat
 			ui = new Glade.XML (null, "lat.glade", "createEntryDialog", null);
 			ui.Autoconnect (this);
 
-			_objectClass = new ArrayList ();
-			_attributes = new ArrayList ();
+			_objectClass = new List<string> ();
+			_attributes = new List<LdapAttribute> ();
 			
 			setupTreeViews ();
 

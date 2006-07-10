@@ -21,7 +21,6 @@
 using Gtk;
 using Gnome;
 using System;
-using System.Collections;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -286,7 +285,7 @@ namespace lat
 				return;
 			}
 			
-			Logger.Log.Debug ("Setting {0} to {1}", key, val);
+			Log.Debug ("Setting {0} to {1}", key, val);
 
 			switch (key) {
 			case Preferences.MAIN_WINDOW_MAXIMIZED:
@@ -770,7 +769,7 @@ namespace lat
 //			_cutDN = ldapTreeView.getSelectedDN ();
 //			_cutIter = ldapTreeView.getSelectedIter ();
 //
-//			Logger.Log.Debug ("cut - dn: {0}", _cutDN);
+//			Log.Debug ("cut - dn: {0}", _cutDN);
 		}
 
 		public void OnCopyActivate (object o, EventArgs args)
@@ -782,7 +781,7 @@ namespace lat
 //
 //			_isCopy = true;
 //
-//			Logger.Log.Debug ("copy - dn: {0}", _cutDN);
+//			Log.Debug ("copy - dn: {0}", _cutDN);
 		}
 
 		public void OnPasteActivate (object o, EventArgs args)
@@ -1286,7 +1285,7 @@ namespace lat
 					serverInfoView.Destroy ();
 					serverInfoView = null;
 				}
-	
+
 				cp = Global.Profiles [args.Name];
 				server = Global.Connections [cp];
 				
@@ -1305,7 +1304,7 @@ namespace lat
 					serverInfoView = null;
 				}
 				
-				cp = Global.Profiles [args.ConnectionName];			
+				cp = Global.Profiles [args.ConnectionName];		
 				server = Global.Connections [cp];
 	
 				viewDataTreeView = new ViewDataTreeView (server, mainWindow);

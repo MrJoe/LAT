@@ -71,7 +71,7 @@ namespace lat
 				throw new ArgumentOutOfRangeException (this.ServerType);
 			}
 			
-			Logger.Log.Debug ("Active server views: {0}", ActiveServerViews.Count);
+			Log.Debug ("Active server views: {0}", ActiveServerViews.Count);
 		}
 
 		public void SetDefaultAttributeViewers ()
@@ -191,7 +191,7 @@ namespace lat
 			NetworkPasswordData[] list;
 
 			gkr = GnomeKeyring.Global.FindNetworkPassword (cp.User, out list);
-			Logger.Log.Debug ("gnome-keyring-result: {0}", gkr);
+			Log.Debug ("gnome-keyring-result: {0}", gkr);
 						
 			foreach (NetworkPasswordData i in list)
 				cp.Pass = i.Password;
@@ -225,7 +225,7 @@ namespace lat
 		
 		static void KeyringCallback (Result result, uint val) 
 		{
-			Logger.Log.Debug ("gnome-keyring-callback: result: {0} - ID: {1}", result, val);
+			Log.Debug ("gnome-keyring-callback: result: {0} - ID: {1}", result, val);
 		}
 
 		public void SaveProfiles ()	

@@ -20,8 +20,6 @@
 
 using Gtk;
 using System;
-using System.Collections;
-using System.IO;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -256,7 +254,7 @@ namespace lat
 					
 			schemaStore.Remove (ref child);
 					
-			Logger.Log.Debug ("Row expanded {0}", name);
+			Log.Debug ("Row expanded {0}", name);
 
 			string serverName = FindServerName (args.Iter, schemaStore);
 			ConnectionProfile cp = Global.Profiles [serverName];			
@@ -276,7 +274,7 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Logger.Log.Debug (e.ToString());
+				Log.Debug (e.ToString());
 
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read schema information from server");

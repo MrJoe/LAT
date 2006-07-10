@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap;
 
 namespace lat
@@ -69,8 +69,8 @@ namespace lat
 		private bool _isEdit;
 		
 		private LdapEntry _le;
-		private Hashtable _ci;
-		private ArrayList _modList;
+		private Dictionary<string,string> _ci;
+		private List<LdapModification> _modList;
 
 		// FIXME: "sAMAccountName"
 
@@ -108,7 +108,7 @@ namespace lat
 		public adUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 
 			_isEdit = true;
 
@@ -116,44 +116,44 @@ namespace lat
 
 			server.GetAttributeValuesFromEntry (le, contactAttrs, out _ci);
 
-			string displayName = (string)_ci["displayName"];
+			string displayName = _ci["displayName"];
 
 			gnNameLabel.Text = displayName;
-			gnFirstNameEntry.Text = (string)_ci["givenName"];
-			gnInitialsEntry.Text = (string)_ci["initials"];
-			gnLastNameEntry.Text = (string)_ci["sn"];
+			gnFirstNameEntry.Text = _ci["givenName"];
+			gnInitialsEntry.Text = _ci["initials"];
+			gnLastNameEntry.Text = _ci["sn"];
 			gnDisplayName.Text = displayName;
-			gnDescriptionEntry.Text = (string)_ci["description"];
-			gnOfficeEntry.Text = (string)_ci["physicalDeliveryOfficeName"];
-			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
-			gnEmailEntry.Text = (string)_ci["mail"];
-			gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
+			gnDescriptionEntry.Text = _ci["description"];
+			gnOfficeEntry.Text = _ci["physicalDeliveryOfficeName"];
+			gnTelephoneNumberEntry.Text = _ci["telephoneNumber"];
+			gnEmailEntry.Text = _ci["mail"];
+			gnWebPageEntry.Text = _ci["wWWHomePage"];
 
-			adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
-			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
-			adCityEntry.Text = (string)_ci["l"];
-			adStateEntry.Text = (string)_ci["st"];
-			adZipEntry.Text = (string)_ci["postalCode"];
-			adCountryEntry.Text = (string)_ci["co"];
+			adStreetTextView.Buffer.Text = _ci["streetAddress"];
+			adPOBoxEntry.Text = _ci["postOfficeBox"];
+			adCityEntry.Text = _ci["l"];
+			adStateEntry.Text = _ci["st"];
+			adZipEntry.Text = _ci["postalCode"];
+			adCountryEntry.Text = _ci["co"];
 
-			tnHomeEntry.Text = (string)_ci["homePhone"];
-			tnPagerEntry.Text = (string)_ci["pager"];
-			tnMobileEntry.Text = (string)_ci["mobile"];
-			tnFaxEntry.Text = (string)_ci["facsimileTelephoneNumber"];
-			tnIPPhoneEntry.Text = (string)_ci["ipPhone"];
-			tnNotesTextView.Buffer.Text = (string)_ci["info"];
+			tnHomeEntry.Text = _ci["homePhone"];
+			tnPagerEntry.Text = _ci["pager"];
+			tnMobileEntry.Text = _ci["mobile"];
+			tnFaxEntry.Text = _ci["facsimileTelephoneNumber"];
+			tnIPPhoneEntry.Text = _ci["ipPhone"];
+			tnNotesTextView.Buffer.Text = _ci["info"];
 
-			ozTitleEntry.Text = (string)_ci["title"];
-			ozDeptEntry.Text = (string)_ci["department"];
-			ozCompanyEntry.Text = (string)_ci["company"];
+			ozTitleEntry.Text = _ci["title"];
+			ozDeptEntry.Text = _ci["department"];
+			ozCompanyEntry.Text = _ci["company"];
 
-			accLoginNameEntry.Text = (string)_ci["userPrincipalName"];
+			accLoginNameEntry.Text = _ci["userPrincipalName"];
 
-			proPathEntry.Text = (string)_ci["profilePath"];
-			proLogonScriptEntry.Text = (string)_ci["scriptPath"];
-			proLocalPathEntry.Text = (string)_ci["homeDirectory"];
+			proPathEntry.Text = _ci["profilePath"];
+			proLogonScriptEntry.Text = _ci["scriptPath"];
+			proLocalPathEntry.Text = _ci["homeDirectory"];
 
-			adUserDialog.Title = (string)_ci["cn"] + " Properties";
+			adUserDialog.Title = _ci["cn"] + " Properties";
 
 			adUserDialog.Run ();
 
@@ -184,9 +184,9 @@ namespace lat
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
 
-		private Hashtable getCurrentContactInfo ()
+		Dictionary<string,string> getCurrentContactInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			retVal.Add ("givenName", gnFirstNameEntry.Text);
 			retVal.Add ("initials", gnInitialsEntry.Text);
@@ -223,7 +223,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cci = getCurrentContactInfo ();
+			Dictionary<string,string> cci = getCurrentContactInfo ();
 
 			string[] objClass = {"top", "person", "organizationalPerson", "user" };
 			string[] missing = null;
@@ -243,7 +243,7 @@ namespace lat
 
 			} else {
 
-				ArrayList attrList = getAttributes (objClass, contactAttrs, cci);
+				List<LdapAttribute> attrList = getAttributes (objClass, contactAttrs, cci);
 
 				string fullName = String.Format ("{0} {1}", 
 					(string)cci["givenName"], (string)cci["sn"] );

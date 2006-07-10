@@ -174,7 +174,7 @@ namespace lat {
 				rawBytes = ReadFile (fs);				
 				
 			} catch (Exception e) {
-				Logger.Log.Debug (e.ToString());
+				Log.Debug (e.ToString());
 			}
 		}
 		

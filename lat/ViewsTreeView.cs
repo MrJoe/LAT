@@ -20,11 +20,7 @@
 
 using Gtk;
 using Gdk;
-using GLib;
 using System;
-using System.Collections;
-using System.IO;
-using System.Xml;
 
 namespace lat
 {
@@ -104,7 +100,7 @@ namespace lat
 			
 			foreach (string n in Global.Profiles.GetProfileNames()) {
 				TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, n);
-				viewsStore.AppendValues (iter, null, "");				
+				viewsStore.AppendValues (iter, null, "");
 			}			
 
 			this.ExpandRow (path, false);		
@@ -125,7 +121,7 @@ namespace lat
 
 			viewsStore.Remove (ref child);
 					
-			Logger.Log.Debug ("view expanded {0}", name);
+			Log.Debug ("view expanded {0}", name);
 			
 			AddViews (name, args.Iter);
 			

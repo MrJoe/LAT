@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Novell.Directory.Ldap;
 
@@ -66,19 +66,17 @@ namespace lat
 			return retVal;
 		}
 
-		public void createEntry (Hashtable ldap_info)
+		public void createEntry (Dictionary<string,LdapAttribute> ldap_info)
 		{
-			LdapAttribute dnAttr = (LdapAttribute) ldap_info["dn"];
+			LdapAttribute dnAttr = ldap_info["dn"];
 
 			string dn = dnAttr.StringValue.Trim();
 
-			ArrayList attrList = new ArrayList ();
+			List<LdapAttribute> attrList = new List<LdapAttribute> ();
 
-			foreach (string key in ldap_info.Keys) {
-				LdapAttribute attr = (LdapAttribute) ldap_info[key];
-
-				if (!attr.Name.Equals ("dn"))
-					attrList.Add (attr);
+			foreach (KeyValuePair<string, LdapAttribute> kvp in ldap_info) {
+				if (!kvp.Value.Name.Equals ("dn"))
+					attrList.Add (kvp.Value);
 			}
 
 			try {
@@ -89,37 +87,34 @@ namespace lat
 			} catch {}
 		}
 
-		private void ldifParse (Hashtable ldap_info, string buf)
+		void ldifParse (Dictionary<string,LdapAttribute> ldap_info, string buf)
 		{
 			char[] delim = {':'};
-
 			string[] pairs = buf.Split (delim, 2);
 
 			if (!ldap_info.ContainsKey (pairs[0])) {
 				LdapAttribute attr = new LdapAttribute (pairs[0], pairs[1].Trim());
 				ldap_info.Add (pairs[0], attr);
 			} else {
-				LdapAttribute attr = (LdapAttribute) ldap_info[pairs[0]];
-				ArrayList newValues = new ArrayList ();
+				LdapAttribute attr = ldap_info[pairs[0]];
+				List<string> newValues = new List<string> ();
 
 				newValues.Add (pairs[1].Trim());
 
 				foreach (string v in attr.StringValueArray)
 					newValues.Add (v);
 
-				string[] attrStrings = (string[]) newValues.ToArray (typeof(string));
-
-				LdapAttribute newAttr = new LdapAttribute (pairs[0], attrStrings);
+				LdapAttribute newAttr = new LdapAttribute (pairs[0], newValues.ToArray ());
 
 				ldap_info.Remove (pairs[0]);
 				ldap_info.Add (pairs[0], newAttr);
 			}
 		}
 
-		private void readEntry (string dn, TextReader tr)
+		void readEntry (string dn, TextReader tr)
 		{
 			string line = null;
-			Hashtable ldapInfo = new Hashtable ();
+			Dictionary<string,LdapAttribute> ldapInfo = new Dictionary<string,LdapAttribute> ();
 
 			ldifParse (ldapInfo, dn);
 

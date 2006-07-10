@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Novell.Directory.Ldap;
@@ -87,41 +87,41 @@ namespace lat
 		[Glade.Widget] Gtk.Entry ozDeptEntry;
 		[Glade.Widget] Gtk.Entry ozCompanyEntry;
 
-		private static string[] userAttrs = { "givenName", "sn", "initials", "cn",
+		static string[] userAttrs = { "givenName", "sn", "initials", "cn",
 			"uid", "uidNumber", "gidNumber", "userPassword", "mail", "loginShell", 
 			"homeDirectory", "description", "physicalDeliveryOfficeName",
 			"telephoneNumber", "postalAddress", "l", "st", "postalCode",
 			"facsimileTelephoneNumber", "pager", "mobile", "homePhone", 
 			"street", "title", "postOfficeBox" };
 
-		private static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath",
+		static string[] sambaAttrs = { "sambaProfilePath", "sambaHomePath",
 			"sambaHomeDrive", "sambaLogonScript", "sambaKickoffTime", 
 			"sambaPwdCanChange", "sambaPwdMustChange" };
 
-		private bool _isSamba = false;
-		private bool firstTimeSamba = false;
-		private string _pass = "";
-		private string _smbLM = "";
-		private string _smbNT = "";
-		private string _smbSID = "";
-		private bool _passChanged = false;
+		bool _isSamba = false;
+		bool firstTimeSamba = false;
+		string _pass = "";
+		string _smbLM = "";
+		string _smbNT = "";
+		string _smbSID = "";
+		bool _passChanged = false;
 		
-		private LdapEntry _le;
-		private Hashtable _ui;
+		LdapEntry _le;
+		Dictionary<string,string> _ui;
 
-		private ArrayList _modList;
+		List<LdapModification> _modList;
 
-		private Hashtable _allGroups;
-		private Hashtable _allGroupGids;
-		private Hashtable _modsGroup;
-		private Hashtable _memberOfGroups;
+		Dictionary<string,LdapEntry> _allGroups;
+		Dictionary<string,string> _allGroupGids;
+		Dictionary<string,LdapModification> _modsGroup;
+		Dictionary<string,string> _memberOfGroups;
 
-		private ListStore _memberOfStore;
+		ListStore _memberOfStore;
 
 		public EditUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
 			_le = le;
-			_modList = new ArrayList ();
+			_modList = new List<LdapModification> ();
 
 			Init ();
 
@@ -213,7 +213,7 @@ namespace lat
 			editUserDialog.Destroy ();
 		}
 	
-		private void OnSambaChanged (object o, EventArgs args)
+		void OnSambaChanged (object o, EventArgs args)
 		{
 			if (smbEnableSambaButton.Active) {
 
@@ -232,9 +232,9 @@ namespace lat
 			}
 		}
 
-		private Hashtable getUserInfo (LdapEntry le)
+	    Dictionary<string,string> getUserInfo (LdapEntry le)
 		{
-			Hashtable ui = new Hashtable ();
+			Dictionary<string,string> ui = new Dictionary<string,string> ();
 
 			foreach (string a in userAttrs) {
 				LdapAttribute attr;
@@ -263,7 +263,7 @@ namespace lat
 			return ui;
 		}
 
-		private bool checkMemberOf (string user, string[] members)
+		bool checkMemberOf (string user, string[] members)
 		{
 			foreach (string s in members)
 				if (s.Equals (user))
@@ -272,7 +272,7 @@ namespace lat
 			return false;			
 		}
 
-		private void getGroups (LdapEntry le)
+		void getGroups (LdapEntry le)
 		{
 			LdapEntry[] grps = server.SearchByClass ("posixGroup");
 
@@ -307,12 +307,12 @@ namespace lat
 				
 		}
 
-		private void Init ()
+		void Init ()
 		{
-			_memberOfGroups = new Hashtable ();
-			_allGroups = new Hashtable ();
-			_allGroupGids = new Hashtable ();
-			_modsGroup = new Hashtable ();
+			_memberOfGroups = new Dictionary<string,string> ();
+			_allGroups = new Dictionary<string,LdapEntry> ();
+			_allGroupGids = new Dictionary<string,string> ();
+			_modsGroup = new Dictionary<string,LdapModification> ();
 
 			ui = new Glade.XML (null, "dialogs.glade", "editUserDialog", null);
 			ui.Autoconnect (this);
@@ -331,7 +331,7 @@ namespace lat
 			_memberOfStore.SetSortColumnId (0, SortType.Ascending);
 		}
 
-		private void toggleSambaWidgets (bool state)
+		void toggleSambaWidgets (bool state)
 		{
 			if (state && firstTimeSamba) {
 				string msg = Mono.Unix.Catalog.GetString (
@@ -363,19 +363,16 @@ namespace lat
 
 		public void OnAddGroupClicked (object o, EventArgs args)
 		{
-			ArrayList tmp = new ArrayList ();
+			List<string> tmp = new List<string> ();
 	
-			foreach (string k in _allGroups.Keys) {
-				if (k.Equals (primaryGroupLabel.Text) ||
-				    _memberOfGroups.ContainsKey (k))
+			foreach (KeyValuePair<string, LdapEntry> kvp in _allGroups) {
+				if (kvp.Key == primaryGroupLabel.Text || _memberOfGroups.ContainsKey (kvp.Key))
 					continue;
 
-				tmp.Add (k);
+				tmp.Add (kvp.Key);
 			}
 
-			string[] allgroups = (string[]) tmp.ToArray (typeof(string));
-
-			SelectGroupsDialog sgd = new SelectGroupsDialog (allgroups);
+			SelectGroupsDialog sgd = new SelectGroupsDialog (tmp.ToArray ());
 
 			foreach (string name in sgd.SelectedGroupNames) {
 
@@ -448,19 +445,17 @@ namespace lat
 
 		public void OnSetPrimaryGroupClicked (object o, EventArgs args)
 		{
-			ArrayList tmp = new ArrayList ();
+			List<string> tmp = new List<string> ();
 	
-			foreach (string k in _allGroups.Keys) {
+			foreach (KeyValuePair<string, LdapEntry> kvp in _allGroups) {
 
-				if (k.Equals (primaryGroupLabel.Text))
+				if (kvp.Key == primaryGroupLabel.Text)
 					continue;
 
-				tmp.Add (k);
+				tmp.Add (kvp.Key);
 			}
 
-			string[] allgroups = (string[]) tmp.ToArray (typeof(string));
-
-			SelectGroupsDialog sgd = new SelectGroupsDialog (allgroups);
+			SelectGroupsDialog sgd = new SelectGroupsDialog (tmp.ToArray());
 
 			if (sgd.SelectedGroupNames.Length > 0)
 				primaryGroupLabel.Text = sgd.SelectedGroupNames[0];
@@ -487,7 +482,7 @@ namespace lat
 			smbMustChangePwdEntry.Text = td.UnixTime.ToString ();
 		}
 
-		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
+		void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
 		{
 			if (groupEntry == null)
 				return;
@@ -516,9 +511,9 @@ namespace lat
 			}
 		}
 
-		private void updateGroupMembership ()
+		void updateGroupMembership ()
 		{
-			Logger.Log.Debug ("START updateGroupMembership ()");
+			Log.Debug ("START updateGroupMembership ()");
 
 			LdapEntry groupEntry = null;
 			LdapModification[] mods = new LdapModification [_modsGroup.Count];
@@ -527,7 +522,7 @@ namespace lat
 
 			foreach (string key in _modsGroup.Keys) {
 
-				Logger.Log.Debug ("group: {0}", key);
+				Log.Debug ("group: {0}", key);
 
 				LdapModification lm = (LdapModification) _modsGroup[key];
 				groupEntry = (LdapEntry) _allGroups [key];
@@ -539,10 +534,10 @@ namespace lat
 
 			modifyGroup (groupEntry, mods);
 
-			Logger.Log.Debug ("END updateGroupMembership ()");
+			Log.Debug ("END updateGroupMembership ()");
 		}
 
-		private string getGidNumber (string name)
+		string getGidNumber (string name)
 		{
 			if (name == null)
 				return null;
@@ -556,9 +551,9 @@ namespace lat
 			return null;
 		}
 
-		private Hashtable getUpdatedUserInfo ()
+		Dictionary<string,string> getUpdatedUserInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			// General 
 			retVal.Add ("givenName", firstNameEntry.Text);
@@ -622,7 +617,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cui = getUpdatedUserInfo ();
+			Dictionary<string,string> cui = getUpdatedUserInfo ();
 
 			string[] objClass = {"posixaccount","inetorgperson", "person" };
 			string[] missing = null;
@@ -640,7 +635,7 @@ namespace lat
 
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
 
-				ArrayList smbMods = Util.CreateSambaMods (
+				List<LdapModification> smbMods = Util.CreateSambaMods (
 							user_rid, 
 							_smbSID,
 							_smbLM,
@@ -651,7 +646,7 @@ namespace lat
 			
 			} else if (_isSamba) {
 
-				ArrayList smbMods = getMods (sambaAttrs, _ui, cui);
+				List<LdapModification> smbMods = getMods (sambaAttrs, _ui, cui);
 
 				if (_passChanged) {
 

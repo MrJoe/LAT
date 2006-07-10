@@ -1,3 +1,5 @@
+	* Use generics in classes/objects
+
 1.1.4
 
 	* Added support for mulitple servers in the same window

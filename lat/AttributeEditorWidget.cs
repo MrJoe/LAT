@@ -19,7 +19,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Gtk;
 using GLib;
@@ -39,7 +39,7 @@ namespace lat
 		string currentDN;
 		bool displayAll;
 		
-		ArrayList allAttrs;
+		List<string> allAttrs;
 		NameValueCollection currentAttributes;
 
 		public AttributeEditorWidget() : base ()
@@ -89,7 +89,7 @@ namespace lat
 
 		void OnApplyClicked (object o, EventArgs args)
 		{
-			ArrayList modList = new ArrayList ();
+			List<LdapModification> modList = new List<LdapModification> ();
 			NameValueCollection newAttributes = new NameValueCollection ();
 			
 			foreach (object[] row in this.store) {
@@ -175,7 +175,7 @@ namespace lat
 			
 //			store.Clear ();
 		
-			allAttrs = new ArrayList ();
+			allAttrs = new List<string> ();
 			LdapAttribute a = entry.getAttribute ("objectClass");
 
 			for (int i = 0; i < a.StringValueArray.Length; i++) {
@@ -210,7 +210,7 @@ namespace lat
 				} catch (ArgumentOutOfRangeException e) {					
 					// FIXME: this only happens with gmcs
 					store.AppendValues (attr.Name, "");
-					Logger.Log.Debug ("Show attribute arugment out of range: {0}", attr.Name);
+					Log.Debug ("Show attribute arugment out of range: {0}", attr.Name);
 				}
 			}
 
@@ -335,8 +335,8 @@ namespace lat
 			else
 				lm = new LdapModification (LdapModification.ADD, newla);
 
-			ArrayList modList = new ArrayList ();
-			modList.Add (lm);
+			List<LdapModification> modList = new List<LdapModification> ();
+			modList.Add (lm);			
 			Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
 
 			this.Show (currentServer, currentServer.GetEntry (currentDN), displayAll);

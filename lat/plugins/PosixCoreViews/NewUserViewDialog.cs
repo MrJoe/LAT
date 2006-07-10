@@ -20,7 +20,7 @@
 
 using Gtk;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using Mono.Security.Protocol.Ntlm;
@@ -50,19 +50,19 @@ namespace lat
 		[Glade.Widget] Gtk.HBox comboHbox;
 		[Glade.Widget] Gtk.CheckButton enableSambaButton;
 
-		private static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
+		static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
 					      "userPassword", "initials", "loginShell", "cn",
 					      "homeDirectory", "displayName" };
 
-		private Hashtable _allGroups;
-		private Hashtable _allGroupGids;
-		private Hashtable _memberOfGroups;
+		Dictionary<string,LdapEntry> _allGroups;
+		Dictionary<string,string> _allGroupGids;
+		Dictionary<string,string> _memberOfGroups;
 
-		private string _smbSID = "";
-		private string _smbLM = "";
-		private string _smbNT = "";
+		string _smbSID = "";
+		string _smbLM = "";
+		string _smbNT = "";
 
-		private ComboBox primaryGroupComboBox;
+		ComboBox primaryGroupComboBox;
 
 		public NewUserViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -119,7 +119,7 @@ namespace lat
 				
 		}
 
-		private void createCombo ()
+		void createCombo ()
 		{
 			primaryGroupComboBox = ComboBox.NewText ();
 
@@ -132,11 +132,11 @@ namespace lat
 			comboHbox.Add (primaryGroupComboBox);
 		}
 
-		private void Init ()
+		void Init ()
 		{
-			_memberOfGroups = new Hashtable ();
-			_allGroups = new Hashtable ();
-			_allGroupGids = new Hashtable ();
+			_memberOfGroups = new Dictionary<string,string> ();
+			_allGroups = new Dictionary<string,LdapEntry> ();
+			_allGroupGids = new Dictionary<string,string> ();
 
 			ui = new Glade.XML (null, "dialogs.glade", "newUserDialog", null);
 			ui.Autoconnect (this);
@@ -229,7 +229,7 @@ namespace lat
 			}
 		}
 
-		private void updateGroupMembership ()
+		void updateGroupMembership ()
 		{
 			LdapEntry groupEntry = null;
 			LdapModification[] mods = new LdapModification [1];
@@ -261,9 +261,9 @@ namespace lat
 			return null;
 		}
 
-		private Hashtable getUpdatedUserInfo ()
+		Dictionary<string,string> getUpdatedUserInfo ()
 		{
-			Hashtable retVal = new Hashtable ();
+			Dictionary<string,string> retVal = new Dictionary<string,string> ();
 
 			TreeIter iter;
 				
@@ -287,7 +287,7 @@ namespace lat
 	
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Hashtable cui = getUpdatedUserInfo ();
+			Dictionary<string,string> cui = getUpdatedUserInfo ();
 
 			string[] objClass = { "top", "posixaccount", "shadowaccount","inetorgperson", "person" };
 			string[] missing = null;
@@ -366,7 +366,7 @@ namespace lat
 			cui["cn"] = fullName;
 			cui["gecos"] = fullName;
 
-			ArrayList attrList = getAttributes (objClass, userAttrs, cui);
+			List<LdapAttribute> attrList = getAttributes (objClass, userAttrs, cui);
 			attrList.Add (new LdapAttribute ("cn", fullName));
 			attrList.Add (new LdapAttribute ("gecos", fullName));
 
@@ -374,7 +374,7 @@ namespace lat
 
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
 
-				ArrayList smbMods = Util.CreateSambaMods (
+				List<LdapModification> smbMods = Util.CreateSambaMods (
 							user_rid, 
 							_smbSID,
 							_smbLM,
