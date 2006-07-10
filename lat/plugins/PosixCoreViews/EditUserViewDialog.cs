@@ -131,7 +131,7 @@ namespace lat
 
 			getGroups (le);
 
-			string userName = (string) _ui["cn"];
+			string userName = _ui["cn"];
 
 			editUserDialog.Title = userName + " Properties";
 
@@ -142,31 +142,64 @@ namespace lat
 
 			fullnameLabel.Text = String.Format ("{0} {1}", _ui["givenName"], _ui["sn"]);
 
-			firstNameEntry.Text = (string)_ui["givenName"];
-			initialsEntry.Text = (string)_ui["initials"];
-			lastNameEntry.Text = (string)_ui["sn"];
-			descriptionEntry.Text = (string)_ui["description"];
-			officeEntry.Text = (string)_ui["physicalDeliveryOfficeName"];
-			mailEntry.Text = (string)_ui["mail"];
-			phoneEntry.Text = (string)_ui["telephoneNumber"];
+			if (_ui.ContainsKey ("givenName"))
+				firstNameEntry.Text = _ui["givenName"];
+			
+			if (_ui.ContainsKey ("initials"))
+				initialsEntry.Text = _ui["initials"];
+				
+			if (_ui.ContainsKey ("sn"))
+				lastNameEntry.Text = _ui["sn"];
+
+			if (_ui.ContainsKey ("description"))				
+				descriptionEntry.Text = _ui["description"];
+			
+			if (_ui.ContainsKey ("physicalDeliveryOfficeName"))
+				officeEntry.Text = _ui["physicalDeliveryOfficeName"];
+			
+			if (_ui.ContainsKey ("mail"))
+				mailEntry.Text = _ui["mail"];
+				
+			if (_ui.ContainsKey ("telephoneNumber"))				
+				phoneEntry.Text = _ui["telephoneNumber"];
 
 			// Account
-			usernameEntry.Text = (string)_ui["uid"];
-			uidSpinButton.Value = int.Parse ((string)_ui["uidNumber"]);
-			shellEntry.Text = (string)_ui["loginShell"];
-			homeDirEntry.Text = (string)_ui["homeDirectory"];
+			if (_ui.ContainsKey ("uid"))
+				usernameEntry.Text = _ui["uid"];
+
+			if (_ui.ContainsKey ("uidNumber"))				
+				uidSpinButton.Value = int.Parse (_ui["uidNumber"]);
+			
+			if (_ui.ContainsKey ("loginShell"))
+				shellEntry.Text = _ui["loginShell"];
+				
+			if (_ui.ContainsKey ("homeDirectory"))				
+				homeDirEntry.Text = _ui["homeDirectory"];
 
 			if (_isSamba) {
 				toggleSambaWidgets (true);
 				smbEnableSambaButton.Hide ();
 
-				smbLoginScriptEntry.Text = (string)_ui["sambaLogonScript"];
-				smbProfilePathEntry.Text = (string)_ui["sambaProfilePath"];
-				smbHomePathEntry.Text = (string)_ui["sambaHomePath"];
-				smbHomeDriveEntry.Text = (string)_ui["sambaHomeDrive"];
-				smbExpireEntry.Text = (string)_ui["sambaKickoffTime"];
-				smbCanChangePwdEntry.Text = (string)_ui["sambaPwdCanChange"];
-				smbMustChangePwdEntry.Text = (string)_ui["sambaPwdMustChange"];
+				if (_ui.ContainsKey ("sambaLogonScript"))
+					smbLoginScriptEntry.Text = _ui["sambaLogonScript"];
+				
+				if (_ui.ContainsKey ("sambaProfilePath"))
+					smbProfilePathEntry.Text = _ui["sambaProfilePath"];
+					
+				if (_ui.ContainsKey ("sambaHomePath"))
+					smbHomePathEntry.Text = _ui["sambaHomePath"];
+				
+				if (_ui.ContainsKey ("sambaHomeDrive"))
+					smbHomeDriveEntry.Text = _ui["sambaHomeDrive"];
+				
+				if (_ui.ContainsKey ("sambaKickoffTime"))
+					smbExpireEntry.Text = _ui["sambaKickoffTime"];
+				
+				if (_ui.ContainsKey ("sambaPwdCanChange"))
+					smbCanChangePwdEntry.Text = _ui["sambaPwdCanChange"];
+					
+				if (_ui.ContainsKey ("sambaPwdMustChange"))
+					smbMustChangePwdEntry.Text = _ui["sambaPwdMustChange"];
 
 			} else {
 
@@ -175,27 +208,48 @@ namespace lat
 			}
 
 			// Groups
-			string pgid = (string) _ui["gidNumber"];
-			string pname = (string) _allGroupGids [pgid];		
+			string pgid = _ui["gidNumber"];
+			string pname = _allGroupGids [pgid];		
 			primaryGroupLabel.Text = pname;			
 
 			// Address
-			adStreetTextView.Buffer.Text = (string)_ui["street"];
-			adPOBoxEntry.Text = (string)_ui["postOfficeBox"];
-			adCityEntry.Text = (string)_ui["l"];
-			adStateEntry.Text = (string)_ui["st"];
-			adZipEntry.Text = (string)_ui["postalCode"];
+			if (_ui.ContainsKey ("street"))
+				adStreetTextView.Buffer.Text = _ui["street"];
+			
+			if (_ui.ContainsKey ("postOfficeBox"))
+				adPOBoxEntry.Text = _ui["postOfficeBox"];
+			
+			if (_ui.ContainsKey ("l"))
+				adCityEntry.Text = _ui["l"];
+				
+			if (_ui.ContainsKey ("st"))
+				adStateEntry.Text = _ui["st"];
+				
+			if (_ui.ContainsKey ("postalCode"))
+				adZipEntry.Text = _ui["postalCode"];
 
 			// Telephones
-			tnHomeEntry.Text = (string)_ui["homePhone"];
-			tnPagerEntry.Text = (string)_ui["pager"];
-			tnMobileEntry.Text = (string)_ui["mobile"];
-			tnFaxEntry.Text = (string)_ui["facsimileTelephoneNumber"];
+			if (_ui.ContainsKey ("homePhone"))
+				tnHomeEntry.Text = _ui["homePhone"];
+			
+			if (_ui.ContainsKey ("pager"))
+				tnPagerEntry.Text = _ui["pager"];
+				
+			if (_ui.ContainsKey ("mobile"))
+				tnMobileEntry.Text = _ui["mobile"];
+				
+			if (_ui.ContainsKey ("facsimileTelephoneNumber"))				
+				tnFaxEntry.Text = _ui["facsimileTelephoneNumber"];
 
 			// Organization
-			ozTitleEntry.Text = (string)_ui["title"];
-			ozDeptEntry.Text = (string)_ui["departmentNumber"];
-			ozCompanyEntry.Text = (string)_ui["o"];
+			if (_ui.ContainsKey ("title"))
+				ozTitleEntry.Text = _ui["title"];
+
+			if (_ui.ContainsKey ("departmentNumber"))				
+				ozDeptEntry.Text = _ui["departmentNumber"];
+			
+			if (_ui.ContainsKey ("o"))
+				ozCompanyEntry.Text = _ui["o"];
 
 			editUserDialog.Icon = Global.latIcon;
 			editUserDialog.Run ();
@@ -289,7 +343,7 @@ namespace lat
 					
 					if (a != null) {
 
-						if (checkMemberOf ((string)_ui["uid"], a.StringValueArray)
+						if (checkMemberOf (_ui["uid"], a.StringValueArray)
 						   && !_memberOfGroups.ContainsKey (nameAttr.StringValue)) {
 
 							_memberOfGroups.Add (nameAttr.StringValue,"memeberUid");
@@ -381,7 +435,7 @@ namespace lat
 				if (!_memberOfGroups.ContainsKey (name))
 					_memberOfGroups.Add (name, "memberUid");
 
-				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
+				LdapAttribute attr = new LdapAttribute ("memberUid", _ui["uid"]);
 				LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 
 				_modsGroup.Add (name, lm);
@@ -410,7 +464,7 @@ namespace lat
 				if (_memberOfGroups.ContainsKey (name))
 					_memberOfGroups.Remove (name);
 
-				LdapAttribute attr = new LdapAttribute ("memberUid", (string)_ui["uid"]);
+				LdapAttribute attr = new LdapAttribute ("memberUid", _ui["uid"]);
 				LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
 
 				_modsGroup.Add (name, lm);
