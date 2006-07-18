@@ -71,6 +71,7 @@ namespace lat
             } catch(Exception e) {
                 nm_manager = null;
                 Log.Debug ("Cannot connect to NetworkManager; Assuming working connection");
+                Log.Debug (e.Message);
             }
         }
 

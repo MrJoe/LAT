@@ -78,6 +78,7 @@ namespace lat
 				break;
 
 			case LdapServerType.OpenLDAP:
+			case LdapServerType.FedoraDirectory:
 			case LdapServerType.Generic:
 			default:
 				_isPosix = true;

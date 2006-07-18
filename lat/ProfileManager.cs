@@ -53,6 +53,7 @@ namespace lat
 			switch (this.ServerType.ToLower ()) {
 			
 			case "openldap":
+			case "fedora directory server":
 			case "generic ldap server":			
 				ActiveServerViews.Add ("lat.PosixComputerViewPlugin");
 				ActiveServerViews.Add ("lat.PosixContactsViewPlugin");

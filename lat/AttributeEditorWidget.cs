@@ -177,21 +177,43 @@ namespace lat
 		
 			allAttrs = new List<string> ();
 			LdapAttribute a = entry.getAttribute ("objectClass");
-
+			
 			for (int i = 0; i < a.StringValueArray.Length; i++) {
 			
 				string o = (string) a.StringValueArray[i];	
 				store.AppendValues ("objectClass", o);
 				currentAttributes.Add ("objectClass", o);
 				
-				string[] attrs = server.GetAllAttributes (o);				
-				foreach (string at in attrs)
-					if (!allAttrs.Contains (at))
-						allAttrs.Add (at);
+				string[] attrs = server.GetAllAttributes (o);
+				if (attrs != null) {
+					foreach (string at in attrs)
+						if (!allAttrs.Contains (at))
+							allAttrs.Add (at);
+				} else {
+					Log.Debug("Could not retrieve any attribute for objectClass " + o);
+				}
 			}
 			
 			LdapAttributeSet attributeSet = entry.getAttributeSet ();
-
+			
+			// Fedora Directory Server supports an Access Control Item (ACI)
+			// but it is not listed as "allowed attribute" for any objectClass 
+			// found in Fedora's LDAP schema.
+			if (showAll && server.ServerType == LdapServerType.FedoraDirectory) {
+				LdapEntry[] acientries = server.Search(	currentDN, 
+														LdapConnection.SCOPE_BASE,
+						    							"objectclass=*", 
+						    							new string[] {"aci"} );
+						    							
+				if (acientries.Length > 0) {
+					LdapEntry acientry = acientries[0];
+					LdapAttribute aciattr = acientry.getAttribute("aci");
+					if (aciattr != null) 
+						if (attributeSet.Add(aciattr) == false)
+							Log.Debug ("Could not add ACI attribute.");
+				}
+			}
+			
 			foreach (LdapAttribute attr in attributeSet) {
 
 				if (allAttrs.Contains (attr.Name))
@@ -211,6 +233,7 @@ namespace lat
 					// FIXME: this only happens with gmcs
 					store.AppendValues (attr.Name, "");
 					Log.Debug ("Show attribute arugment out of range: {0}", attr.Name);
+					Log.Debug (e.Message);
 				}
 			}
 

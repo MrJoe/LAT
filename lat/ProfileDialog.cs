@@ -128,6 +128,7 @@ namespace lat
 			serverTypeComboBox = ComboBox.NewText ();
 			serverTypeComboBox.AppendText ("OpenLDAP");
 			serverTypeComboBox.AppendText ("Microsoft Active Directory");
+			serverTypeComboBox.AppendText ("Fedora Directory Server");
 			serverTypeComboBox.AppendText ("Generic LDAP server");
 
 			serverTypeComboBox.Active = 0;

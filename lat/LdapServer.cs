@@ -28,7 +28,7 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace lat {
 
-	public enum LdapServerType { ActiveDirectory, OpenLDAP, Generic, Unknown };
+	public enum LdapServerType { ActiveDirectory, OpenLDAP, FedoraDirectory, Generic, Unknown };
 
 	public enum EncryptionType : byte { None, SSL, TLS };
 
@@ -204,7 +204,7 @@ namespace lat {
 				List<string> o_attrs = new List<string> ();
 
 				schema = conn.FetchSchema ( conn.GetSchemaDN() );
-		
+						
 				foreach (string c in objClass) {
 
 					ocs = schema.getObjectClassSchema ( c );
@@ -246,8 +246,9 @@ namespace lat {
 				LdapObjectClassSchema ocs;
 				
 				List<string> attrs = new List<string> ();
-
+				
 				schema = conn.FetchSchema ( conn.GetSchemaDN() );	
+				
 				ocs = schema.getObjectClassSchema ( objClass );
 
 				if (ocs.RequiredAttributes != null) {
@@ -266,7 +267,8 @@ namespace lat {
 
 				return attrs.ToArray ();
 
-			} catch	{
+			} catch (Exception e) {
+				Log.Debug("LdapServer.GetAllAttributes (" + objClass + "): \n" + e.Message);
 				return null;
 			}
 		}
@@ -911,6 +913,11 @@ namespace lat {
 				ldapServerType = LdapServerType.OpenLDAP;
 				defaultSearchFilter = "(objectClass=*)";
 				break;
+			
+			case "fedora directory server":
+				ldapServerType = LdapServerType.FedoraDirectory;
+				defaultSearchFilter = "(objectClass=*)";
+				break;
 
 			case "generic":
 				ldapServerType = LdapServerType.Generic;
@@ -1011,6 +1018,9 @@ namespace lat {
 					
 				case LdapServerType.OpenLDAP:
 					return "OpenLDAP";
+					
+				case LdapServerType.FedoraDirectory:
+					return "Fedora Directory Server";
 					
 				case LdapServerType.Generic:
 					return "Generic LDAP server";
