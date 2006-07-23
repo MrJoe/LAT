@@ -36,16 +36,16 @@ namespace lat
 		}
 
 		// Taken from Banshee; written by Aaron Bockover (aaron@aaronbock.net)
-	        [DllImport("libc")]
-	        static extern int prctl(int option, byte [] arg2, ulong arg3 , ulong arg4, ulong arg5);
+        [DllImport("libc")]
+        static extern int prctl(int option, byte [] arg2, ulong arg3 , ulong arg4, ulong arg5);
         
-        	public static void SetProcessName(string name)
-	        {
-	            if(prctl(15 /* PR_SET_NAME */, Encoding.ASCII.GetBytes(name), 0, 0, 0) != 0) {
-        	        throw new ApplicationException("Error setting process name: " + 
-                	    Mono.Unix.Native.Stdlib.GetLastError());
-	            }
-        	}
+       	public static void SetProcessName(string name)
+        {
+            if(prctl(15 /* PR_SET_NAME */, Encoding.ASCII.GetBytes(name), 0, 0, 0) != 0) {
+       	        throw new ApplicationException("Error setting process name: " + 
+               	    Mono.Unix.Native.Stdlib.GetLastError());
+            }
+       	}
 
 		private static LdapModification createMod (string name, string val)
 		{
@@ -187,6 +187,36 @@ namespace lat
 			return retVal;
 		}
 
+		public static bool AddEntry (LdapServer server, LdapEntry entry)
+		{
+			try {
+
+				server.Add (entry);
+				return true;
+
+			} catch (Exception e) {
+
+				string errorMsg = Mono.Unix.Catalog.GetString ("Unable to add entry ") + entry.DN;
+				errorMsg += "\nError: " + e.Message;
+
+				Log.Debug (e);
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+						null,
+						0,
+						Gtk.MessageType.Error,
+						Gtk.ButtonsType.Ok,
+						"Add error",
+						errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+
+				return false;
+			}		
+		}
+
+		[Obsolete("Use AddEntry (LdapServer server, LdapEntry entry)", false)]
 		public static bool AddEntry (LdapServer server, Gtk.Window parent, 
 					     string dn, List<LdapAttribute> attrs, bool msgBox)
 		{
@@ -235,6 +265,41 @@ namespace lat
 			}
 		}
 
+		public static bool ModifyEntry (LdapServer server, string dn, LdapModification[] modList)
+		{
+			if (modList.Length == 0) {
+				Log.Debug ("No modifications to make to entry {0}", dn);
+				return false;
+			}
+
+			try {
+
+				server.Modify (dn, modList);
+				return true;
+
+			} catch (Exception e) {
+
+				string errorMsg = 
+					Mono.Unix.Catalog.GetString ("Unable to modify entry ") + dn;
+
+				errorMsg += "\nError: " + e.Message;
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					null,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Modify entry",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+
+				return false;
+			}		
+		}
+		
+		[Obsolete("Use ModifyEntry (LdapServer, string, LdapModification[])", false)]
 		public static bool ModifyEntry (LdapServer server, Gtk.Window parent, 
 						string dn, List<LdapModification> modList, bool msgBox)
 		{

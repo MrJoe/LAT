@@ -18,18 +18,18 @@
 //
 //
 
-using Gtk;
 using System;
+using Gtk;
 
 namespace lat 
 {
 	public class AboutDialog
 	{
-		private static string[] _author = { "Loren Bandiera" };
-		private static string[] _docs = { "Loren Bandiera" };
-		private static string _translators = "Pablo Borges (pt_BR)\nThomas Constans (fr_FR)";
-		private static string _desc = "LDAP Administration Tool";
-		private static string _copy = "Copyright 2005-2006 MMG Security Inc.";
+		static string[] _author = { "Loren Bandiera" };
+		static string[] _docs = { "Loren Bandiera" };
+		static string _translators = "Pablo Borges (pt_BR)\nThomas Constans (fr_FR)";
+		static string _desc = "LDAP Administration Tool";
+		static string _copy = "Copyright \xa9 2005-2006 MMG Security Inc.";
 
 		public AboutDialog ()
 		{

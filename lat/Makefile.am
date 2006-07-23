@@ -25,6 +25,7 @@ CSFILES = \
 	CreateEntryDialog.cs \
 	Defines.cs \
 	LDIF.cs \
+	LdapEntryAnalyzer.cs \
 	LdapSearch.cs \
 	LdapServer.cs \
 	LdapTreeView.cs \

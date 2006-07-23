@@ -62,9 +62,10 @@ namespace lat
 				foreach (string n in ocs)
 					store.AppendValues (false, n);
 
-			} catch {
+			} catch (Exception e) {
 
 				store.AppendValues (false, "Error getting object classes");
+				Log.Debug (e);
 			}
 			
 			addObjectClassDialog.Icon = Global.latIcon;

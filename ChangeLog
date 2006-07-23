@@ -1,5 +1,6 @@
 	* Added support for Fedora Directory Server (Daniel Mueller)
 	* Use generic collections in classes/objects
+	* Code refactoring/cleanup
 
 1.1.4
 

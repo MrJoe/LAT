@@ -35,13 +35,8 @@ namespace lat
 		[Glade.Widget] Gtk.Entry descriptionEntry;
 		[Glade.Widget] Gtk.Image image31;
 
-		bool _isEdit;
-		
-		LdapEntry _le;
-		List<LdapModification> _modList;
-		Dictionary<string,string> _hi;
-
-		static string[] hostAttrs = { "cn", "ipHostNumber", "description" };
+		LdapEntry currentEntry;
+		bool isEdit;
 
 		public HostsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -66,22 +61,17 @@ namespace lat
 
 		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
-			_le = le;
-			_modList = new List<LdapModification> ();
-
-			_isEdit = true;
-
+			isEdit = true;
+			currentEntry = le;
+			
 			Init ();
 
-			server.GetAttributeValuesFromEntry (le, hostAttrs, out _hi);
-
-			string hostName = (string) _hi["cn"];
-
+			string hostName = server.GetAttributeValueFromEntry (currentEntry, "cn"); 
 			hostDialog.Title = hostName + " Properties";
-
 			hostNameEntry.Text = hostName;
-			ipEntry.Text = (string) _hi["ipHostNumber"];
-			descriptionEntry.Text = (string) _hi["description"];
+			
+			ipEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "ipHostNumber");
+			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
 
 			hostDialog.Run ();
 			hostDialog.Destroy ();
@@ -98,62 +88,50 @@ namespace lat
 			image31.Pixbuf = pb;
 		}
 
-		Dictionary<string,string> getCurrentHostInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-
-			retVal.Add ("cn", hostNameEntry.Text);
-			retVal.Add ("ipHostNumber", ipEntry.Text);
-			retVal.Add ("description", descriptionEntry.Text);
-
-			return retVal;
+			LdapAttributeSet aset = new LdapAttributeSet();
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "ipHost", "device"}));
+			aset.Add (new LdapAttribute ("cn", hostNameEntry.Text));
+			aset.Add (new LdapAttribute ("ipHostNumber", ipEntry.Text));
+			aset.Add (new LdapAttribute ("description", descriptionEntry.Text));
+			
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> chi = getCurrentHostInfo ();
-
-			string[] missing = null;
-			string[] objClass = {"top", "ipHost", "device"};
-
-			if (!checkReqAttrs (objClass, chi, out missing)) {
-				missingAlert (missing);
-				missingValues = true;
-
-				return;
-			}
-
-			if (_isEdit) {
-				_modList = getMods (hostAttrs, _hi, chi);
-
-				if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
-					errorOccured = true;
-					return;
-				}
+			LdapEntry entry = null;
+			
+			if (isEdit) {
+				 entry = CreateEntry (currentEntry.DN);
+				 
+				 LdapEntryAnalyzer lea = new LdapEntryAnalyzer ();
+				 lea.Run (currentEntry, entry);
+				 
+				 if (lea.Differences.Length == 0)
+				 	return;
+				 	
+				 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+				 	errorOccured = true;
+				 	
 			} else {
-
-				List<LdapAttribute> attrList = getAttributes (objClass, hostAttrs, chi);
-
-				SelectContainerDialog scd = 
-					new SelectContainerDialog (server, hostDialog);
-
+			
+				SelectContainerDialog scd = new SelectContainerDialog (server, hostDialog);
 				scd.Title = "Save Host";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the host\n{0}?", (string)chi["cn"]);
-
+				scd.Message = String.Format ("Where in the directory would\nyou like save the host\n{0}?", hostNameEntry.Text);
 				scd.Run ();
 
 				if (scd.DN == "")
 					return;
 
-				string userDN = String.Format ("cn={0},{1}", (string)chi["cn"], scd.DN);
+				string userDN = String.Format ("cn={0},{1}", hostNameEntry.Text, scd.DN);
+				entry = CreateEntry (userDN);
 
-				if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
+				if (!Util.AddEntry (server, entry))
 					errorOccured = true;
-					return;
-				}
 			}
-
-			hostDialog.HideAll ();
 		}
 	}
 }

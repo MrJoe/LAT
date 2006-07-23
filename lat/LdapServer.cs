@@ -114,6 +114,12 @@ namespace lat {
 			Log.Debug ("END Connection.Add ()");
 		}
 
+		public void Add (LdapEntry entry)
+		{
+			Log.Debug ("Adding entry {0}", entry.DN);
+			conn.Add (entry);
+		}
+
 		/// <summary>Binds to the directory server with the given user
 		/// name and password.
 		/// </summary>
