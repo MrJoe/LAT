@@ -127,8 +127,8 @@ namespace lat
 			LdapAttributeSet rlas = rhs.getAttributeSet ();
 			foreach (LdapAttribute la in rlas) {
 				LdapAttribute lla = lhs.getAttribute (la.Name);
-				if (lla == null) {
-					Log.Debug ("Add attribute {0} value {1} to {2}", la.Name, la.StringValue, lhs.DN);
+				if (lla == null && la.StringValue != string.Empty) {
+					Log.Debug ("Add attribute {0} value [{1}] to {2}", la.Name, la.StringValue, lhs.DN);
 					LdapAttribute a = new LdapAttribute (la.Name, la.StringValue);
 					LdapModification m = new LdapModification (LdapModification.ADD, a);
 					mods.Add (m);				

@@ -297,7 +297,7 @@ namespace lat
 				entry = CreateEntry (userDN);
 
 				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
-				if (missing != null) {
+				if (missing.Length != 0) {
 					missingAlert (missing);
 					missingValues = true;
 					return;

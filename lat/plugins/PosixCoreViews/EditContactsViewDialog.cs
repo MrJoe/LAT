@@ -62,89 +62,59 @@ namespace lat
 
 		[Glade.Widget] Gtk.Image image180;
 
-		bool _isPosix;
-		
-		LdapEntry _le;
-		Dictionary<string,string> _ci;
-		List<LdapModification> _modList;
-
-		static string[] posixContactAttrs = { "givenName", "sn", "initials", "cn",
-					       "physicalDeliveryOfficeName", "description",
-					       "mail", "postalAddress", "displayName",
-					       "l", "st", "postalCode", 
-					       "telephoneNumber", "facsimileTelephoneNumber",
-				               "pager", "mobile", "homePhone", "street",
-						"title", "postOfficeBox" };
-
-		static string[] adContactAttrs = { "givenName", "sn", "initials", "cn",
-					       "physicalDeliveryOfficeName", "description",
-					       "mail", "postalAddress", "displayName",
-					       "l", "st", "postalCode", "wWWHomePage", "co",
-					       "telephoneNumber", "facsimileTelephoneNumber",
-				               "pager", "mobile", "homePhone", "streetAddress",
-						"company", "department", "ipPhone", "info",
-						"title", "postOfficeBox" };
-
-		static string[] contactAttrs;
+		bool isPosix;		
+		LdapEntry currentEntry;
 
 		public EditContactsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null) 
 		{
-			_le = le;
-			_modList = new List<LdapModification> ();
+			currentEntry = le;
 
 			Init ();
 
-			if (!_isPosix)			
-				contactAttrs = adContactAttrs;
-			else
-				contactAttrs = posixContactAttrs;
-
-			server.GetAttributeValuesFromEntry (le, contactAttrs, out _ci);
-
-			string displayName = (string)_ci["displayName"];
+			string displayName = server.GetAttributeValueFromEntry (currentEntry, "displayName");
 
 			gnNameLabel.Text = displayName;
-			gnFirstNameEntry.Text = (string)_ci["givenName"];
-			gnInitialsEntry.Text = (string)_ci["initials"];
-			gnLastNameEntry.Text = (string)_ci["sn"];
+			gnFirstNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "givenName");
+			gnInitialsEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "initials");
+			gnLastNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sn");
 			gnDisplayName.Text = displayName;
-			gnDescriptionEntry.Text = (string)_ci["description"];
-			gnOfficeEntry.Text = (string)_ci["physicalDeliveryOfficeName"];
-			gnTelephoneNumberEntry.Text = (string)_ci["telephoneNumber"];
-			gnEmailEntry.Text = (string)_ci["mail"];
+			gnDescriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
+			gnOfficeEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "physicalDeliveryOfficeName");
+			gnTelephoneNumberEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "telephoneNumber");
+			gnEmailEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "mail");
 			
-			adPOBoxEntry.Text = (string)_ci["postOfficeBox"];
-			adCityEntry.Text = (string)_ci["l"];
-			adStateEntry.Text = (string)_ci["st"];
-			adZipEntry.Text = (string)_ci["postalCode"];
+			adPOBoxEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "postOfficeBox");
+			adCityEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "l");
+			adStateEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "st");
+			adZipEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "postalCode");
 			
 
-			tnHomeEntry.Text = (string)_ci["homePhone"];
-			tnPagerEntry.Text = (string)_ci["pager"];
-			tnMobileEntry.Text = (string)_ci["mobile"];
-			tnFaxEntry.Text = (string)_ci["facsimileTelephoneNumber"];
+			tnHomeEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "homePhone");
+			tnPagerEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "pager");
+			tnMobileEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "mobile");
+			tnFaxEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "facsimileTelephoneNumber");
 			
-			ozTitleEntry.Text = (string)_ci["title"];
+			ozTitleEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "title");
 
-			string contactName = (string) _ci["cn"];
+			string contactName = server.GetAttributeValueFromEntry (currentEntry, "cn");
 			editContactDialog.Title = contactName + " Properties";
 
-			if (!_isPosix) {
+			if (!isPosix) {
 
-				gnWebPageEntry.Text = (string)_ci["wWWHomePage"];
+				gnWebPageEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "wWWHomePage");
 
-				adStreetTextView.Buffer.Text = (string)_ci["streetAddress"];
-				adCountryEntry.Text = (string)_ci["co"];
+				adStreetTextView.Buffer.Text = server.GetAttributeValueFromEntry (currentEntry, "streetAddress");
+				adCountryEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "co");
 
-				tnIPPhoneEntry.Text = (string)_ci["ipPhone"];
-				tnNotesTextView.Buffer.Text = (string)_ci["info"];
+				tnIPPhoneEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "ipPhone");
+				tnNotesTextView.Buffer.Text = server.GetAttributeValueFromEntry (currentEntry, "info");
 
-				ozDeptEntry.Text = (string)_ci["department"];
-				ozCompanyEntry.Text = (string)_ci["company"];
+				ozDeptEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "department");
+				ozCompanyEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "company");
 
 			} else {
 
-				adStreetTextView.Buffer.Text = (string)_ci["street"];
+				server.GetAttributeValueFromEntry (currentEntry, "street");
 			}
 
 			editContactDialog.Icon = Global.latIcon;
@@ -173,14 +143,14 @@ namespace lat
 			switch (server.ServerType) {
 
 			case LdapServerType.ActiveDirectory:
-				_isPosix = false;
+				isPosix = false;
 				break;
 
 			case LdapServerType.OpenLDAP:
 			case LdapServerType.FedoraDirectory:
 			case LdapServerType.Generic:
 			default:
-				_isPosix = true;
+				isPosix = true;
 				tnNotesTextView.Sensitive = false;
 				ozDeptEntry.Sensitive = false;
 				ozCompanyEntry.Sensitive = false;
@@ -199,73 +169,60 @@ namespace lat
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
 
-		Dictionary<string,string> getCurrentContactInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-
-			retVal.Add ("givenName", gnFirstNameEntry.Text);
-			retVal.Add ("initials", gnInitialsEntry.Text);
-			retVal.Add ("sn", gnLastNameEntry.Text);
-			retVal.Add ("displayName", gnDisplayName.Text);
-			retVal.Add ("wWWHomePage", gnWebPageEntry.Text);
-			retVal.Add ("physicalDeliveryOfficeName", gnOfficeEntry.Text);
-			retVal.Add ("mail", gnEmailEntry.Text);
-			retVal.Add ("description", gnDescriptionEntry.Text);
-			retVal.Add ("street", adStreetTextView.Buffer.Text);			
-			retVal.Add ("l", adCityEntry.Text);
-			retVal.Add ("st", adStateEntry.Text);
-			retVal.Add ("postalCode", adZipEntry.Text);
-			retVal.Add ("postOfficeBox", adPOBoxEntry.Text);
-			retVal.Add ("co", adCountryEntry.Text);
-			retVal.Add ("telephoneNumber", gnTelephoneNumberEntry.Text);
-			retVal.Add ("facsimileTelephoneNumber", tnFaxEntry.Text);
-			retVal.Add ("pager", tnPagerEntry.Text);
-			retVal.Add ("mobile", tnMobileEntry.Text);
-			retVal.Add ("homePhone", tnHomeEntry.Text);
-			retVal.Add ("ipPhone", tnIPPhoneEntry.Text);
-			
-			retVal.Add ("title", ozTitleEntry.Text);
-			retVal.Add ("department", ozDeptEntry.Text);
-			retVal.Add ("company", ozCompanyEntry.Text);
-
-			if (!_isPosix) {
-				retVal.Add ("streetAddress", adStreetTextView.Buffer.Text);
-				retVal.Add ("info", tnNotesTextView.Buffer.Text);
+			LdapAttributeSet aset = new LdapAttributeSet();
+			aset.Add (new LdapAttribute ("givenName", gnFirstNameEntry.Text));
+			aset.Add (new LdapAttribute ("initials", gnInitialsEntry.Text));
+			aset.Add (new LdapAttribute ("sn", gnLastNameEntry.Text));
+			aset.Add (new LdapAttribute ("displayName", gnDisplayName.Text));
+			aset.Add (new LdapAttribute ("cn", gnDisplayName.Text));
+			aset.Add (new LdapAttribute ("wWWHomePage", gnWebPageEntry.Text));
+			aset.Add (new LdapAttribute ("physicalDeliveryOfficeName", gnOfficeEntry.Text));
+			aset.Add (new LdapAttribute ("mail", gnEmailEntry.Text));
+			aset.Add (new LdapAttribute ("description", gnDescriptionEntry.Text));
+			aset.Add (new LdapAttribute ("street", adStreetTextView.Buffer.Text));
+			aset.Add (new LdapAttribute ("l", adCityEntry.Text));
+			aset.Add (new LdapAttribute ("st", adStateEntry.Text));
+			aset.Add (new LdapAttribute ("postalCode", adZipEntry.Text));
+			aset.Add (new LdapAttribute ("postOfficeBox", adPOBoxEntry.Text));
+			aset.Add (new LdapAttribute ("co", adCountryEntry.Text));
+			aset.Add (new LdapAttribute ("telephoneNumber", gnTelephoneNumberEntry.Text));
+			aset.Add (new LdapAttribute ("facsimileTelephoneNumber", tnFaxEntry.Text));
+			aset.Add (new LdapAttribute ("pager", tnPagerEntry.Text));
+			aset.Add (new LdapAttribute ("mobile", tnMobileEntry.Text));
+			aset.Add (new LdapAttribute ("homePhone", tnHomeEntry.Text));
+			aset.Add (new LdapAttribute ("ipPhone", tnIPPhoneEntry.Text));
+			aset.Add (new LdapAttribute ("title", ozTitleEntry.Text));
+			aset.Add (new LdapAttribute ("department", ozDeptEntry.Text));
+			aset.Add (new LdapAttribute ("company", ozCompanyEntry.Text));
+						
+			if (!isPosix) {
+				aset.Add (new LdapAttribute ("streetAddress", adStreetTextView.Buffer.Text));
+				aset.Add (new LdapAttribute ("info", tnNotesTextView.Buffer.Text));
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "organizationalPerson", "contact" }));
+			} else {
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "inetOrgPerson" }));
 			}
-
-			return retVal;
+					
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> cci = getCurrentContactInfo ();
-
-			string[] objClass;
-			string[] missing = null;
-
-			if (!_isPosix) {
-				objClass = new string[] {"top", "person", "organizationalPerson", "contact" };
-				contactAttrs = adContactAttrs;		
-			} else {
-
-				contactAttrs = posixContactAttrs;
-				objClass = new string[] {"top", "person", "inetOrgPerson" };
-			}
-
-			if (!checkReqAttrs (objClass, cci, out missing)) {
-				missingAlert (missing);
-				missingValues = true;
-
-				return;
-			}
-
-			_modList = getMods (contactAttrs, _ci, cci);
-			if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
-				errorOccured = true;
-				return;
-			}
-
-			editContactDialog.HideAll ();
+			LdapEntry entry = null;
+			
+			 entry = CreateEntry (currentEntry.DN);				 
+				 
+			 LdapEntryAnalyzer lea = new LdapEntryAnalyzer ();
+			 lea.Run (currentEntry, entry);
+				 
+			 if (lea.Differences.Length == 0)
+			 	return;
+				 	
+			 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+			 	errorOccured = true;
 		}
 	}
 }

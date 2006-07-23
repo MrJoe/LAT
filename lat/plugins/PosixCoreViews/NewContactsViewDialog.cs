@@ -38,9 +38,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry gnDisplayName;
 		[Glade.Widget] Gtk.Image image181;
 
-		private bool _isPosix;
-
-		private static string[] contactAttrs = { "givenName", "sn", "initials", "cn", "displayName" };
+		bool isPosix;
 
 		public NewContactsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -74,14 +72,14 @@ namespace lat
 			switch (server.ServerType) {
 
 			case LdapServerType.ActiveDirectory:
-				_isPosix = false;
+				isPosix = false;
 				break;
 
 			case LdapServerType.OpenLDAP:
 			case LdapServerType.FedoraDirectory:
 			case LdapServerType.Generic:
 			default:
-				_isPosix = true;
+				isPosix = true;
 				break;
 			}
 
@@ -94,73 +92,59 @@ namespace lat
 			gnNameLabel.Text = gnDisplayName.Text;
 		}
 
-		Dictionary<string,string> getCurrentContactInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-
-			retVal.Add ("givenName", gnFirstNameEntry.Text);
-			retVal.Add ("initials", gnInitialsEntry.Text);
-			retVal.Add ("sn", gnLastNameEntry.Text);
-			retVal.Add ("displayName", gnDisplayName.Text);
-
-			return retVal;
+			LdapAttributeSet aset = new LdapAttributeSet();						
+			aset.Add (new LdapAttribute ("givenName", gnFirstNameEntry.Text));
+			aset.Add (new LdapAttribute ("initials", gnInitialsEntry.Text));
+			aset.Add (new LdapAttribute ("sn", gnLastNameEntry.Text));
+			aset.Add (new LdapAttribute ("displayName", gnDisplayName.Text));
+			aset.Add (new LdapAttribute ("cn", gnDisplayName.Text));
+						
+			if (!isPosix) {
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "organizationalPerson", "contact" }));
+			} else {
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "inetOrgPerson" }));
+			}
+					
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> cci = getCurrentContactInfo ();
-
-			string[] objClass;
-			string[] missing = null;
-
-			if (!_isPosix)
-				objClass = new string[] {"top", "person", "organizationalPerson", "contact" };
-			else
-				objClass = new string[] {"top", "person", "inetOrgPerson" };
-
-			if (!checkReqAttrs (objClass, cci, out missing)) {
-				missingAlert (missing);
-				missingValues = true;
-
-				return;
-			}
-
-			List<LdapAttribute> attrList = getAttributes (objClass, contactAttrs, cci);
-
-			string fullName = (string)cci["displayName"];
-			cci["cn"] = fullName;
-
-			LdapAttribute attr;
-
-			attr = new LdapAttribute ("cn", fullName);
-			attrList.Add (attr);
-
-			string userDN = null;			
+			LdapEntry entry = null;
+			
+			string userDN = null;
+			
 			if (this.defaultNewContainer == null) {
 			
 				SelectContainerDialog scd =	new SelectContainerDialog (server, newContactDialog);
-				scd.Title = "Save Contact";
-				scd.Message = String.Format (
-					"Where in the directory would\nyou like save the contact\n{0}?",
-					fullName);
-
+				scd.Title = "Save Group";
+				scd.Message = String.Format ("Where in the directory would\nyou like save the contact\n{0}?", gnDisplayName.Text);
 				scd.Run ();
 
 				if (scd.DN == "")
 					return;
 
-				userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
+				userDN = String.Format ("cn={0},{1}", gnDisplayName.Text, scd.DN);
+			
 			} else {
 			
-				userDN = String.Format ("cn={0},{1}", fullName, this.defaultNewContainer);
+				userDN = String.Format ("cn={0},{1}", gnDisplayName.Text, this.defaultNewContainer);
 			}
 			
-			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
-				errorOccured = true;
+			entry = CreateEntry (userDN);
+
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			if (missing.Length != 0) {
+				missingAlert (missing);
+				missingValues = true;
 				return;
 			}
 
-			newContactDialog.HideAll ();
+			if (!Util.AddEntry (server, entry))
+				errorOccured = true;
 		}
 	}
 }
