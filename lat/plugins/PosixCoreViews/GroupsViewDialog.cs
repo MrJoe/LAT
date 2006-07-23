@@ -40,18 +40,13 @@ namespace lat
 		ListStore allUserStore;
 		ListStore currentMemberStore;
 
-		Dictionary<string,string> _gi;
-		Dictionary<string,string> _currentMembers = new Dictionary<string,string> ();
-
-		bool _isEdit;
+		LdapEntry currentEntry;
+		List<string> currentMembers = new List<string> ();
 		
-		LdapEntry _le;
-		List<LdapModification> _modList;
-
-		static string[] groupAttrs = { "cn", "gidNumber", "description" };
-
-		bool _isSamba = false;
-		string _smbSID = "";
+		bool isEdit;
+		bool isSamba = false;
+		
+		string smbSID = "";
 
 		public GroupsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
@@ -79,38 +74,29 @@ namespace lat
 
 		public GroupsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
-			_le = le;
-			_modList = new List<LdapModification> ();
-
-			_isSamba = checkSamba (le);
-
-			Log.Debug ("GroupsViewDialog: _modList == {0}", _modList.Count);
-
-			_isEdit = true;
+			currentEntry = le;
+		
+			isEdit = true;
+			isSamba = checkSamba (currentEntry);
 
 			Init ();
 
-			server.GetAttributeValuesFromEntry (le, groupAttrs, out _gi);
-
-			string groupName = (string) _gi ["cn"];
+			string groupName = server.GetAttributeValueFromEntry (currentEntry, "cn");
 
 			groupDialog.Title = groupName + " Properties";
 			groupNameEntry.Text = groupName;
-			descriptionEntry.Text = (string) _gi ["description"];
-			groupIDSpinButton.Value = int.Parse ((string) _gi ["gidNumber"]);
+			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
+			
+			try {
+				groupIDSpinButton.Value = int.Parse (server.GetAttributeValueFromEntry (currentEntry, "gidNumber"));
+			} catch {}
 
-			LdapAttribute attr;
-			attr = le.getAttribute ("memberuid");
-
+			LdapAttribute attr = currentEntry.getAttribute ("memberuid");
 			if (attr != null) {
-
-				string[] svalues = attr.StringValueArray;
-
-				foreach (string s in svalues) {
+				foreach (string s in attr.StringValueArray) {
 					currentMemberStore.AppendValues (s);
-					_currentMembers.Add (s, "memberuid");
+					currentMembers.Add (s);
 				}
-
 			}
 
 			populateUsers ();
@@ -129,12 +115,12 @@ namespace lat
 			groupDialog.Destroy ();
 		}
 
-		private void OnSambaChanged (object o, EventArgs args)
+		void OnSambaChanged (object o, EventArgs args)
 		{
 			if (enableSambaButton.Active) {
-				_smbSID = server.GetLocalSID ();
+				smbSID = server.GetLocalSID ();
 
-				if (_smbSID == null) {
+				if (smbSID == null) {
 					Util.DisplaySambaSIDWarning (groupDialog);
 					enableSambaButton.Active = false;
 					return;
@@ -142,21 +128,18 @@ namespace lat
 			}
 		}
 
-		private void populateUsers ()
+		void populateUsers ()
 		{
 			LdapEntry[] _users = server.SearchByClass ("posixAccount");
 
 			foreach (LdapEntry le in _users) {
-				LdapAttribute nameAttr;
-
-				nameAttr = le.getAttribute ("uid");
-
-				if (nameAttr != null && !_currentMembers.ContainsKey (nameAttr.StringValue) )
+				LdapAttribute nameAttr = le.getAttribute ("uid");
+				if (nameAttr != null && !currentMembers.Contains (nameAttr.StringValue) )
 					allUserStore.AppendValues (nameAttr.StringValue);
 			}					
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "dialogs.glade", "groupDialog", null);
 			ui.Autoconnect (this);
@@ -183,7 +166,7 @@ namespace lat
 	
 			currentMemberStore.SetSortColumnId (0, SortType.Ascending);
 
-			if (_isSamba)
+			if (isSamba)
 				enableSambaButton.Hide ();
 			else
 				enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
@@ -204,24 +187,10 @@ namespace lat
 
 				string user = (string) allUserStore.GetValue (iter, 0);
 				
+				currentMembers.Add (user);				
 				currentMemberStore.AppendValues (user);
-		
-				if (!_currentMembers.ContainsKey (user))
-					_currentMembers.Add (user, "memberuid");
-
+				
 				allUserStore.Remove (ref iter);
-
-				Log.Debug ("Adding {0} to group", user);
-
-				if (_isEdit) {
-
-					LdapAttribute attr = new LdapAttribute ("memberuid", user);
-					LdapModification lm = new LdapModification (LdapModification.ADD, attr);
-					_modList.Add (lm);
-
-					Log.Debug ("OnAddClicked: _modList == {0}", _modList.Count);
-				}
-
 			}
 		}
 
@@ -240,23 +209,14 @@ namespace lat
 
 				currentMemberStore.Remove (ref iter);
 		
-				if (_currentMembers.ContainsKey (user))
-					_currentMembers.Remove (user);
-
-				Log.Debug ("Removing user {0} from group", user);
+				if (currentMembers.Contains (user))
+					currentMembers.Remove (user);
 
 				allUserStore.AppendValues (user);
-
-				if (_isEdit) {
-
-					LdapAttribute attr = new LdapAttribute ("memberuid", user);
-					LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
-					_modList.Add (lm);
-				}
 			}
 		}
 
-		private bool checkSamba (LdapEntry le)
+		bool checkSamba (LdapEntry le)
 		{
 			bool retVal = false;
 			
@@ -272,118 +232,80 @@ namespace lat
 			return retVal;
 		}
 
-		Dictionary<string,string> getCurrentGroupInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
+			LdapAttributeSet aset = new LdapAttributeSet();			
+			aset.Add (new LdapAttribute ("cn", groupNameEntry.Text));
+			aset.Add (new LdapAttribute ("description", descriptionEntry.Text));
+			aset.Add (new LdapAttribute ("gidNumber", groupIDSpinButton.Value.ToString()));
+			aset.Add (new LdapAttribute ("memberuid", currentMembers.ToArray()));
+						
+			if (enableSambaButton.Active || isSamba) {
+			
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixGroup", "sambaGroupMapping"}));
+				aset.Add (new LdapAttribute ("sambaGroupType", "2"));
 
-			retVal.Add ("cn", groupNameEntry.Text);
-			retVal.Add ("description", descriptionEntry.Text);
-			retVal.Add ("gidNumber", groupIDSpinButton.Value.ToString());
+				int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
+				smbSID = server.GetLocalSID ();				
+				aset.Add (new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", smbSID, grid)));
 
-			return retVal;
+			} else {
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixGroup"}));
+			}
+					
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> cgi = getCurrentGroupInfo ();
-
-			string[] objClass = { "top", "posixGroup" };
-			string[] missing = null;
-
-			if (!checkReqAttrs (objClass, cgi, out missing)) {
-				missingAlert (missing);
-				missingValues = true;
-
-				return;
-			}
-
-
-			if (_isEdit) {
-
-				if (_modList.Count == 0)
-				{
-					_modList = getMods (groupAttrs, _gi, cgi);
-
-				} else {
-
-					List<LdapModification> tmp = getMods (groupAttrs, _gi, cgi);
-					foreach (LdapModification lm in tmp)
-						_modList.Add (lm);
-				}
-
-				if (enableSambaButton.Active) {
-
-					LdapAttribute a = new LdapAttribute ("objectclass", "sambaGroupMapping");
-					LdapModification lm = new LdapModification (LdapModification.ADD, a);
-
-					_modList.Add (lm);
-
-					a = new LdapAttribute ("sambaGroupType", "2");
-					lm = new LdapModification (LdapModification.ADD, a);
-					_modList.Add (lm);
-
-					int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
-
-					a = new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", _smbSID, grid));
-					lm = new LdapModification (LdapModification.ADD, a);
-					_modList.Add (lm);
-				}
-	
-				if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
-					errorOccured = true;	
-					return;
-				}
-
+			LdapEntry entry = null;
+			
+			if (isEdit) {
+				 entry = CreateEntry (currentEntry.DN);				 
+				 
+				 LdapEntryAnalyzer lea = new LdapEntryAnalyzer ();
+				 lea.Run (currentEntry, entry);
+				 
+				 if (lea.Differences.Length == 0)
+				 	return;
+				 	
+				 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+				 	errorOccured = true;
+				 	
 			} else {
-
-				List<LdapAttribute> attrList = getAttributes (objClass, groupAttrs, cgi);
-
-				if (enableSambaButton.Active) {
-
-					LdapAttribute a = (LdapAttribute) attrList[0];
-					a.addValue ("sambaGroupMapping");
-
-					a = new LdapAttribute ("sambaGroupType", "2");
-					attrList.Add (a);
-
-					int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
-
-					a = new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", _smbSID, grid));
-					attrList.Add (a);
-				}
-
-				foreach (string key in _currentMembers.Keys) {
-					LdapAttribute attr = new LdapAttribute ("memberuid", key);
-					attrList.Add (attr);
-				}
-
-				string userDN = null;				
+			
+				string userDN = null;
+				
 				if (this.defaultNewContainer == null) {
+				
 					SelectContainerDialog scd =	new SelectContainerDialog (server, groupDialog);
-
 					scd.Title = "Save Group";
-					scd.Message = String.Format (
-						"Where in the directory would\nyou like save the group\n{0}?", (string)cgi["cn"]);
-
+					scd.Message = String.Format ("Where in the directory would\nyou like save the group\n{0}?", groupNameEntry.Text);
 					scd.Run ();
 
 					if (scd.DN == "")
 						return;
 
-					userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
+					userDN = String.Format ("cn={0},{1}", groupNameEntry.Text, scd.DN);
 				
 				} else {
 				
-					userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], this.defaultNewContainer);
+					userDN = String.Format ("cn={0},{1}", groupNameEntry.Text, this.defaultNewContainer);
 				}
+				
+				entry = CreateEntry (userDN);
 
-				if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
-					errorOccured = true;
+				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+				if (missing != null) {
+					missingAlert (missing);
+					missingValues = true;
 					return;
 				}
-			}
 
-			groupDialog.HideAll ();
+				if (!Util.AddEntry (server, entry))
+					errorOccured = true;
+			}
 		}
 	}
 }

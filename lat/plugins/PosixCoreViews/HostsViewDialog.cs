@@ -129,6 +129,13 @@ namespace lat
 				string userDN = String.Format ("cn={0},{1}", hostNameEntry.Text, scd.DN);
 				entry = CreateEntry (userDN);
 
+				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+				if (missing != null) {
+					missingAlert (missing);
+					missingValues = true;
+					return;
+				}
+
 				if (!Util.AddEntry (server, entry))
 					errorOccured = true;
 			}

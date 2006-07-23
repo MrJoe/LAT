@@ -90,29 +90,37 @@ namespace lat
 			foreach (LdapAttribute la in las) {			
 				LdapAttribute rla = rhs.getAttribute (la.Name);
 				if (rla == null){
+				
 					Log.Debug ("Delete attribute {0} from {1}", la.Name, lhs.DN);					
 					LdapAttribute a = new LdapAttribute (la.Name);
 					LdapModification m = new LdapModification (LdapModification.DELETE, a);
 					mods.Add (m);
-				}
-				
-				// FIXME: doesn't handle multiple or byte values
-				if (la.StringValue != rla.StringValue) {
-				
-					LdapAttribute newattr;
-					LdapModification lm;
-
-					if (rla.StringValue == "") {
-						Log.Debug ("Delete attribute {0} from {1}", la.Name, lhs.DN);					
-						newattr = new LdapAttribute (la.Name);
-						lm = new LdapModification (LdapModification.DELETE, newattr);
-					} else {
-						Log.Debug ("Replace attribute {0} value from {1} to {2} ", la.Name, la.StringValue, rla.StringValue);
-						newattr = new LdapAttribute (la.Name, rla.StringValue);
-						lm = new LdapModification (LdapModification.REPLACE, newattr);
-					}
 					
-					mods.Add (lm);
+				} else {
+				
+					if (rla.StringValueArray.Length > 1) {
+					
+						LdapAttribute a = new LdapAttribute (la.Name, rla.StringValueArray);
+						LdapModification m = new LdapModification (LdapModification.REPLACE, a);
+						mods.Add (m);					
+					
+					} else if (la.StringValue != rla.StringValue) {
+					
+						LdapAttribute newattr;
+						LdapModification lm;
+
+						if (rla.StringValue == "" || rla.StringValue == null) {
+							Log.Debug ("Delete attribute {0} from {1}", la.Name, lhs.DN);					
+							newattr = new LdapAttribute (la.Name);
+							lm = new LdapModification (LdapModification.DELETE, newattr);
+						} else {
+							Log.Debug ("Replace attribute {0} value from {1} to {2} ", la.Name, la.StringValue, rla.StringValue);
+							newattr = new LdapAttribute (la.Name, rla.StringValue);
+							lm = new LdapModification (LdapModification.REPLACE, newattr);
+						}
+						
+						mods.Add (lm);
+					}
 				}
 			}
 			
