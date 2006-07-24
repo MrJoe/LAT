@@ -35,8 +35,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry dnsNameEntry;
 		[Glade.Widget] Gtk.Image image182;
 
-		static string[] hostAttrs = { "cn", "dNSHostName" };
-
 		public NewAdComputerViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();

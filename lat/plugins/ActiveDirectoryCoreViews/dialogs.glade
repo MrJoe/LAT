@@ -20,7 +20,6 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
-  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox24">
@@ -43,7 +42,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -1388,7 +1386,6 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
-  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox25">
@@ -1411,7 +1408,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -3674,7 +3670,6 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
-  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox27">
@@ -3697,7 +3692,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -3949,7 +3943,6 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
-  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox8">
@@ -3972,7 +3965,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 
@@ -4220,7 +4212,6 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
-  <signal name="delete_event" handler="OnDlgDelete" last_modification_time="Fri, 23 Sep 2005 03:10:13 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox26">
@@ -4243,7 +4234,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="OnCancelClicked" last_modification_time="Fri, 23 Sep 2005 03:09:14 GMT"/>
 	    </widget>
 	  </child>
 

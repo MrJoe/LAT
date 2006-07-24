@@ -50,12 +50,8 @@ namespace lat
 		[Glade.Widget] Gtk.CheckButton pwdNeverExpiresCheckButton;
 		[Glade.Widget] Gtk.CheckButton accountDisabledCheckButton;
 
-		static string[] userAttrs = { "givenName", "sn", "sAMAccountName",
-			"userAccountControl", "initials", "loginShell", "cn", "geos",
-			"displayName", "userPrincipalName" };
-
 		// ACCOUNT_DISABLE|NORMAL_ACCOUNT|DONT_EXPIRE_PASSWORD
-		private int userAC = 66050;
+		int userAC = 66050;
 
 		string[] groupList;
 		ComboBox primaryGroupComboBox;
@@ -191,81 +187,59 @@ namespace lat
 					lastNameEntry.Text);
 			}
 		}
-			
-		Dictionary<string,string> getUpdatedUserInfo ()
+
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-//			TreeIter iter;
-//			string pg = "";
-				
-//			if (primaryGroupComboBox.GetActiveIter (out iter))
-//			{
-//				pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
-//			}
-
-			retVal.Add ("givenName", firstNameEntry.Text);
-			retVal.Add ("sn", lastNameEntry.Text);
-			retVal.Add ("userPrincipalName", upnEntry.Text);
-			retVal.Add ("sAMAccountName", usernameEntry.Text);
-			retVal.Add ("userAccountControl", userAC.ToString());
-			retVal.Add ("displayName", displayNameEntry.Text);
-			retVal.Add ("initials", initialsEntry.Text);
-
-			return retVal;
+			LdapAttributeSet aset = new LdapAttributeSet();
+			string fullName = String.Format ("{0} {1}", firstNameEntry.Text, lastNameEntry.Text);
+			aset.Add (new LdapAttribute ("cn", fullName));
+			aset.Add (new LdapAttribute ("gecos", fullName));
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "organizationalPerson","user"}));
+			aset.Add (new LdapAttribute ("givenName", firstNameEntry.Text));
+			aset.Add (new LdapAttribute ("sn", lastNameEntry.Text));
+			aset.Add (new LdapAttribute ("userPrincipalName", upnEntry.Text));
+			aset.Add (new LdapAttribute ("sAMAccountName", usernameEntry.Text));
+			aset.Add (new LdapAttribute ("userAccountControl", userAC.ToString()));
+			aset.Add (new LdapAttribute ("displayName", displayNameEntry.Text));
+			aset.Add (new LdapAttribute ("initials", initialsEntry.Text));
+			
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 	
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> cui = getUpdatedUserInfo ();
-
-			string[] objClass = { "top", "person", 
-				"organizationalPerson","user" };
-
-			string[] missing = null;
-
-			if (!checkReqAttrs (objClass, cui, out missing)) {
-
-				missingAlert (missing);
-				missingValues = true;
-
-				return;
-			}
-
-			string fullName = cui["displayName"];
-
-			cui["cn"] = fullName;
-			cui["gecos"] = fullName;
-			cui.Remove ("displayName");
-
-			List<LdapAttribute> attrList = getAttributes (objClass, userAttrs, cui);
-
-			string userDN = null;			
-			if (this.defaultNewContainer == null) {
+			LdapEntry entry = null;
+			string userDN = null;
 			
-				SelectContainerDialog scd = new SelectContainerDialog (server, newAdUserDialog);
-				scd.Title = "Save User";
-				scd.Message = String.Format (
-					"Where in the directory would\nyou like save the user\n{0}?",
-					fullName);
-
+			if (this.defaultNewContainer == string.Empty) {
+			
+				SelectContainerDialog scd =	new SelectContainerDialog (server, newAdUserDialog);
+				scd.Title = "Save Group";
+				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", displayNameEntry.Text);
 				scd.Run ();
 
 				if (scd.DN == "")
 					return;
 
-				userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
-				
+				userDN = String.Format ("cn={0},{1}", displayNameEntry.Text, scd.DN);
+			
 			} else {
 			
-				userDN = String.Format ("cn={0},{1}", fullName, this.defaultNewContainer);
+				userDN = String.Format ("cn={0},{1}", displayNameEntry.Text, this.defaultNewContainer);
 			}
+			
+			entry = CreateEntry (userDN);
 
-			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
-				errorOccured = true;
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			if (missing.Length != 0) {
+				missingAlert (missing);
+				missingValues = true;
 				return;
 			}
 
-			newAdUserDialog.HideAll ();
+			if (!Util.AddEntry (server, entry))
+				errorOccured = true;
 		}
 	}
 }

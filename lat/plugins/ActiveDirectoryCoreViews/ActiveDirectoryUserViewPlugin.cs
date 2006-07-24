@@ -45,7 +45,7 @@ namespace lat {
 
 		public override void OnEditEntry (LdapServer server, LdapEntry le)
 		{
-			new adUserViewDialog (server, le);
+			new EditAdUserViewDialog (server, le);
 		}
 					
 		public override void OnPopupShow (Menu popup)

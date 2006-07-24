@@ -39,65 +39,6 @@ namespace lat
 			defaultNewContainer = newContainer;
 		}
 
-		public static List<LdapAttribute> getAttributes (string[] objClass, string[] attrs, Dictionary<string,string> entryInfo)
-		{
-			List<LdapAttribute> retVal = new List<LdapAttribute> ();
-
-			LdapAttribute la;
-
-			la = new LdapAttribute ("objectclass", objClass);
-			retVal.Add (la);
-
-			foreach (string a in attrs) {
-
-				string entryValue = (string) entryInfo[a];
-
-				if (entryValue == null || entryValue.Equals (""))
-					continue;
-
-				la = new LdapAttribute (a, entryValue);
-				retVal.Add (la);
-			}
-
-			return retVal;
-		}
-
-		public static List<LdapModification> getMods (string[] attrs, Dictionary<string,string> oldInfo, Dictionary<string,string> newInfo)
-		{
-			Log.Debug ("START ViewDialog.getMods()");
-
-			List<LdapModification> retVal = new List<LdapModification> ();
-
-			foreach (string a in attrs) {
-
-				string oldValue = (string) oldInfo[a];
-				string newValue = (string) newInfo[a];
-
-				if (!oldValue.Equals (newValue) && newValue != null) {
-
-					Log.Debug ("Modification: attribute: [{0}] - oldValue: [{1}] - newValue: [{2}]", a, oldValue, newValue);
-
-					LdapAttribute la; 
-					LdapModification lm;
-
-					if (newValue == "") {
-						la = new LdapAttribute (a);
-						lm = new LdapModification (LdapModification.DELETE, la);
-					} else {
-
-						la = new LdapAttribute (a, newValue);
-						lm = new LdapModification (LdapModification.REPLACE, la);
-					}
-
-					retVal.Add (lm);
-				}
-			}
-
-			Log.Debug ("END ViewDialog.getMods()");
-
-			return retVal;
-		}
-
 		public void missingAlert (string[] missing)
 		{
 			string msg = String.Format (
@@ -163,16 +104,6 @@ namespace lat
 
 			missing = null;
 			return true;
-		}
-
-		public virtual void OnCancelClicked (object o, EventArgs args)
-		{
-			viewDialog.HideAll ();
-		}
-
-		public virtual void OnDlgDelete (object o, DeleteEventArgs args)
-		{
-			viewDialog.HideAll ();
 		}
 	}
 }
