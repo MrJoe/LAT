@@ -69,59 +69,52 @@ namespace lat
 			image182.Pixbuf = pb;
 		}
 
-		Dictionary<string,string> getCurrentHostInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-
-			retVal.Add ("cn", computerNameEntry.Text);
-			retVal.Add ("dNSHostName", dnsNameEntry.Text);
-			retVal.Add ("sAMAccountName", computerNameEntry.Text);
-			retVal.Add ("userAccountControl", "4128");
-
-			return retVal;
+			LdapAttributeSet aset = new LdapAttributeSet();
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "computer", "organizationalPerson", "person", "user"}));
+			aset.Add (new LdapAttribute ("cn", computerNameEntry.Text));
+			aset.Add (new LdapAttribute ("dNSHostName", dnsNameEntry.Text));
+			aset.Add (new LdapAttribute ("sAMAccountName", computerNameEntry.Text));
+			aset.Add (new LdapAttribute ("userAccountControl", "4128"));
+								
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> chi = getCurrentHostInfo ();
-
-			string[] missing = null;
-			string[] objClass = {"top", "computer", "organizationalPerson", "person", 
-					     "user"};
-
-			if (!checkReqAttrs (objClass, chi, out missing)) {
-				missingAlert (missing);
-				return;
-			}
-
-			List<LdapAttribute> attrList = getAttributes (objClass, hostAttrs, chi);
-
+			LdapEntry entry = null;
 			string userDN = null;
-			if (this.defaultNewContainer == null) {
+			
+			if (this.defaultNewContainer == string.Empty) {
 			
 				SelectContainerDialog scd =	new SelectContainerDialog (server, newAdComputerDialog);
-
-				scd.Title = "Save Computer";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the computer\n{0}?", (string)chi["cn"]);
-
+				scd.Title = "Save Group";
+				scd.Message = String.Format ("Where in the directory would\nyou like save the computer\n{0}?", computerNameEntry.Text);
 				scd.Run ();
 
 				if (scd.DN == "")
 					return;
 
-				userDN = String.Format ("cn={0},{1}", chi["cn"], scd.DN);
-				
+				userDN = String.Format ("cn={0},{1}", computerNameEntry.Text, scd.DN);
+			
 			} else {
 			
-				userDN = String.Format ("cn={0},{1}", chi["cn"], this.defaultNewContainer);
+				userDN = String.Format ("cn={0},{1}", computerNameEntry.Text, this.defaultNewContainer);
 			}
+			
+			entry = CreateEntry (userDN);
 
-			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
-				errorOccured = true;
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			if (missing.Length != 0) {
+				missingAlert (missing);
+				missingValues = true;
 				return;
 			}
 
-			newAdComputerDialog.HideAll ();
+			if (!Util.AddEntry (server, entry))
+				errorOccured = true;
 		}
 	}
 }

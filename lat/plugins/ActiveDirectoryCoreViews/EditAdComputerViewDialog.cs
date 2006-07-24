@@ -51,41 +51,31 @@ namespace lat
 		[Glade.Widget] Gtk.Label manFaxNumberLabel;
 		[Glade.Widget] Gtk.Image image178;
 
-		LdapEntry _le;
-		List<LdapModification> _modList;
-		Dictionary<string,string> _hi;
-
-		private static string[] hostAttrs = { "cn", "description", "dNSHostName", 
-						"operatingSystem", "operatingSystemVersion",
-						"operatingSystemServicePack", "location", 
-						"managedBy"};
+		LdapEntry currentEntry;
 
 		public EditAdComputerViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
 		{
-			_le = le;
-			_modList = new List<LdapModification> ();
+			currentEntry = le;
 
 			Init ();
 
-			server.GetAttributeValuesFromEntry (le, hostAttrs, out _hi);
-
-			computerNameLabel.Text = (string) _hi["cn"];
+			computerNameLabel.Text = server.GetAttributeValueFromEntry (currentEntry, "cn");
 		
-			string cpName = (string) _hi["cn"];
+			string cpName = (string) server.GetAttributeValueFromEntry (currentEntry, "cn");
 			computerNameEntry.Text = cpName.ToUpper();
 
 			editAdComputerDialog.Title = cpName + " Properties";
 
-			dnsNameEntry.Text = (string) _hi["dNSHostName"];
-			descriptionEntry.Text = (string) _hi["description"];
+			dnsNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "dNSHostName");
+			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
 			
-			osNameEntry.Text = (string) _hi["operatingSystem"];
-			osVersionEntry.Text = (string) _hi["operatingSystemVersion"];
-			osServicePackEntry.Text = (string) _hi["operatingSystemServicePack"];
+			osNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "operatingSystem");
+			osVersionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "operatingSystemVersion");
+			osServicePackEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "operatingSystemServicePack");
 
-			locationEntry.Text = (string) _hi["location"];
+			locationEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "location");
 
-			string manName = (string) _hi["managedBy"];
+			string manName = server.GetAttributeValueFromEntry (currentEntry, "managedBy");
 			manNameEntry.Text = manName;
 
 			if (manName != "" || manName != null)
@@ -169,14 +159,21 @@ namespace lat
 			image178.Pixbuf = pb;
 		}
 
-		Dictionary<string,string> getCurrentHostInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-
-			retVal.Add ("description", descriptionEntry.Text);
-			retVal.Add ("managedBy", manNameEntry.Text);
-
-			return retVal;
+			LdapAttributeSet aset = new LdapAttributeSet();
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"computer"}));
+			aset.Add (new LdapAttribute ("cn", computerNameLabel.Text));
+			aset.Add (new LdapAttribute ("description", descriptionEntry.Text));
+			aset.Add (new LdapAttribute ("dNSHostName", dnsNameEntry.Text));
+			aset.Add (new LdapAttribute ("operatingSystem", osNameEntry.Text));
+			aset.Add (new LdapAttribute ("operatingSystemVersion", osVersionEntry.Text));
+			aset.Add (new LdapAttribute ("operatingSystemServicePack", osServicePackEntry.Text));
+			aset.Add (new LdapAttribute ("location", locationEntry.Text));
+			aset.Add (new LdapAttribute ("managedBy", manNameEntry.Text));
+								
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
 		public void OnManClearClicked (object o, EventArgs args)
@@ -193,7 +190,7 @@ namespace lat
 			scd.Title = "Save Computer";
 			scd.Message = Mono.Unix.Catalog.GetString (
 					"Select a user who will manage ") + 
-				(string) _hi["cn"];
+					computerNameLabel.Text;
 
 			scd.Run ();
 
@@ -207,26 +204,17 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			Dictionary<string,string> chi = getCurrentHostInfo ();
-
-			string[] missing = null;
-			string[] objClass = {"top", "computer"};
-
-			if (!checkReqAttrs (objClass, chi, out missing)) {
-				missingAlert (missing);
-				missingValues = true;
-
+			LdapEntry entry = null;			
+			entry = CreateEntry (currentEntry.DN);				 
+				 
+			LdapEntryAnalyzer lea = new LdapEntryAnalyzer ();
+			lea.Run (currentEntry, entry);
+				 
+			if (lea.Differences.Length == 0)
 				return;
-			}
-
-			_modList = getMods (hostAttrs, _hi, chi);
-
-			if (!Util.ModifyEntry (server, viewDialog, _le.DN, _modList, true)) {
+				 	
+			if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
 				errorOccured = true;
-				return;
-			}
-
-			editAdComputerDialog.HideAll ();
 		}
 	}
 }

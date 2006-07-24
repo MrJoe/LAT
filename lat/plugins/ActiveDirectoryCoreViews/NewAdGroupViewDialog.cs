@@ -33,12 +33,6 @@ namespace lat
 		[Glade.Widget] Gtk.Entry groupNameEntry;
 		[Glade.Widget] Gtk.Entry descriptionEntry;
 
-		static string[] groupAttrs = { 
-			"cn", 
-			"sAMAccountName", 
-			"description",
-		};
-
 		public NewAdGroupViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
 		{
 			Init ();
@@ -68,23 +62,21 @@ namespace lat
 			viewDialog = newAdGroupDialog;
 		}
 
-		Dictionary<string,string> getCurrentGroupInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
-
-			retVal.Add ("cn", groupNameEntry.Text);
-			retVal.Add ("description", descriptionEntry.Text);
-			retVal.Add ("sAMAccountName", groupNameEntry.Text);
-
-			return retVal;
+			LdapAttributeSet aset = new LdapAttributeSet();
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"group"}));
+			aset.Add (new LdapAttribute ("cn", groupNameEntry.Text));
+			aset.Add (new LdapAttribute ("description", descriptionEntry.Text));
+			aset.Add (new LdapAttribute ("sAMAccountName", groupNameEntry.Text));
+			aset.Add (new LdapAttribute ("groupType", "2"));
+								
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
 
-		public void OnOkClicked (object o, EventArgs args)
+		bool IsGroupGood ()
 		{
-			Dictionary<string,string> cgi = getCurrentGroupInfo ();
-
-			string[] objClass = { "group" };
-
 			if (groupNameEntry.Text == "" || descriptionEntry.Text == "") {
 
 				string msg = Mono.Unix.Catalog.GetString (
@@ -101,40 +93,50 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
+				return false;
+			}
+			
+			return true;
+		}
+
+		public void OnOkClicked (object o, EventArgs args)
+		{
+			if (!IsGroupGood()) {
 				missingValues = true;
 				return;
 			}
-
-			List<LdapAttribute> attrList = getAttributes (objClass, groupAttrs, cgi);
-
+		
+			LdapEntry entry = null;
 			string userDN = null;
-			if (this.defaultNewContainer == null) {
+			
+			if (this.defaultNewContainer == string.Empty || this.defaultNewContainer == null) {
 			
 				SelectContainerDialog scd =	new SelectContainerDialog (server, newAdGroupDialog);
-
 				scd.Title = "Save Group";
-				scd.Message = String.Format (
-					"Where in the directory would\nyou like save the group\n{0}?",
-					(string)cgi["cn"]);
-
+				scd.Message = String.Format ("Where in the directory would\nyou like save the group\n{0}?", groupNameEntry.Text);
 				scd.Run ();
 
 				if (scd.DN == "")
 					return;
 
-				userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], scd.DN);
-				
+				userDN = String.Format ("cn={0},{1}", groupNameEntry.Text, scd.DN);
+			
 			} else {
 			
-				userDN = String.Format ("cn={0},{1}", (string)cgi["cn"], this.defaultNewContainer);
+				userDN = String.Format ("cn={0},{1}", groupNameEntry.Text, this.defaultNewContainer);
 			}
+			
+			entry = CreateEntry (userDN);
 
-			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
-				errorOccured = true;
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			if (missing.Length != 0) {
+				missingAlert (missing);
+				missingValues = true;
 				return;
 			}
 
-			newAdGroupDialog.HideAll ();
+			if (!Util.AddEntry (server, entry))
+				errorOccured = true;
 		}
 	}
 }
