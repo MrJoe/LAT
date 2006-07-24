@@ -201,7 +201,7 @@ namespace lat
 				if (!(path.Length > 1)) {
 
 					LdapEntry le = server.GetEntry (GetDN(path[0]));
-					Util.DeleteEntry (server, parentWindow, le.DN);
+					Util.DeleteEntry (server, le.DN);
 					return;
 				}
 
@@ -212,7 +212,7 @@ namespace lat
 					dnList.Add (le.DN);
 				}
 
-				Util.DeleteEntry (server, parentWindow, dnList.ToArray ());
+				Util.DeleteEntry (server, dnList.ToArray ());
 
 			} catch {}
 		}

@@ -503,7 +503,7 @@ namespace lat
 				return;
 
 			try {
-				if (Util.DeleteEntry (server, parent, dn))
+				if (Util.DeleteEntry (server, dn))
 					browserStore.Remove (ref iter);
 			}
 			catch {}

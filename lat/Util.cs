@@ -250,7 +250,7 @@ namespace lat
 			}
 		}
 
-		public static bool DeleteEntry (LdapServer server, Gtk.Window parent, string[] dn)
+		public static bool DeleteEntry (LdapServer server, string[] dn)
 		{
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString (
@@ -263,7 +263,7 @@ namespace lat
 			foreach (string n in dn)
 				msg += String.Format ("{0}\n", n);
 
-			if (!Util.AskYesNo (parent, msg))
+			if (!Util.AskYesNo (null, msg))
 				return false;
 
 			bool allGood = true;
@@ -276,24 +276,10 @@ namespace lat
 					errorMsg += d;
 			}
 
-			if (allGood) {
+			if (!allGood) {
 
 				HIGMessageDialog dialog = new HIGMessageDialog (
-					parent,
-					0,
-					Gtk.MessageType.Info,
-					Gtk.ButtonsType.Ok,
-					"Delete entries",
-					Mono.Unix.Catalog.GetString (
-					"Entries successfully deleted."));
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-			} else {
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					parent,
+					null,
 					0,
 					Gtk.MessageType.Error,
 					Gtk.ButtonsType.Ok,
@@ -307,7 +293,7 @@ namespace lat
 			return allGood;
 		}
 
-		public static bool DeleteEntry (LdapServer server, Gtk.Window parent, string dn)
+		public static bool DeleteEntry (LdapServer server, string dn)
 		{
 			string msg = String.Format ("{0}\n{1}",
 				Mono.Unix.Catalog.GetString (
@@ -316,27 +302,11 @@ namespace lat
 
 			bool retVal = false;
 				
-			if (Util.AskYesNo (parent, msg)) {
+			if (Util.AskYesNo (null, msg)) {
 
 				try {
 
 					server.Delete (dn);
-
-					string resMsg = String.Format (
-						Mono.Unix.Catalog.GetString (
-						"Entry {0} has been deleted."), dn);
-
-					HIGMessageDialog dialog = new HIGMessageDialog (
-						parent,
-						0,
-						Gtk.MessageType.Info,
-						Gtk.ButtonsType.Ok,
-						"Delete entries",
-						resMsg);
-
-					dialog.Run ();
-					dialog.Destroy ();
-
 					retVal = true;
 
 				} catch (Exception e) {
@@ -348,7 +318,7 @@ namespace lat
 					errorMsg += "\nError: " + e.Message;
 
 					HIGMessageDialog dialog = new HIGMessageDialog (
-						parent,
+						null,
 						0,
 						Gtk.MessageType.Error,
 						Gtk.ButtonsType.Ok,
