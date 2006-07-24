@@ -58,52 +58,5 @@ namespace lat
 			dialog.Run ();
 			dialog.Destroy ();
 		}
-
-		private static bool checkReq (string name, Dictionary<string,string> entryInfo)
-		{
-			string attrValue = (string) entryInfo [name];
-
-			if (attrValue == null)
-				return false;
-			else if (attrValue.Equals (""))
-				return false;
-
-			return true;
-		}
-
-		public bool checkReqAttrs (string[] objectClass, Dictionary<string,string> entryInfo, out string[] missing)
-		{
-			List<string> outMiss = new List<string> ();
-
-			foreach (string obj in objectClass) {
-
-				if (obj.Equals ("top"))
-					continue;
-
-				string[] reqs = server.GetRequiredAttrs (obj);
-	
-				if (reqs == null)
-					continue;
-
-				foreach (string r in reqs) {
-
-					if (r.Equals ("cn"))
-						continue;
-
-					if (!checkReq (r, entryInfo)) {
-						outMiss.Add (r);
-						continue;
-					}
-				}
-			}
-
-			if (outMiss.Count > 0) {
-				missing = outMiss.ToArray ();
-				return false;
-			}
-
-			missing = null;
-			return true;
-		}
 	}
 }
