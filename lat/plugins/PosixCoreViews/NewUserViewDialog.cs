@@ -50,17 +50,13 @@ namespace lat
 		[Glade.Widget] Gtk.HBox comboHbox;
 		[Glade.Widget] Gtk.CheckButton enableSambaButton;
 
-		static string[] userAttrs = { "givenName", "sn", "uid", "uidNumber", "gidNumber",
-					      "userPassword", "initials", "loginShell", "cn",
-					      "homeDirectory", "displayName" };
-
 		Dictionary<string,LdapEntry> _allGroups;
 		Dictionary<string,string> _allGroupGids;
 		Dictionary<string,string> _memberOfGroups;
 
-		string _smbSID = "";
-		string _smbLM = "";
-		string _smbNT = "";
+		string smbSID = "";
+		string smbLM = "";
+		string smbNT = "";
 
 		ComboBox primaryGroupComboBox;
 
@@ -90,12 +86,12 @@ namespace lat
 			newUserDialog.Destroy ();
 		}
 
-		private void OnSambaChanged (object o, EventArgs args)
+		void OnSambaChanged (object o, EventArgs args)
 		{
 			if (enableSambaButton.Active) {
-				_smbSID = server.GetLocalSID ();
+				smbSID = server.GetLocalSID ();
 
-				if (_smbSID == null) {
+				if (smbSID == null) {
 					Util.DisplaySambaSIDWarning (newUserDialog);
 					enableSambaButton.Active = false;
 					return;
@@ -103,7 +99,7 @@ namespace lat
 			}
 		}
 		
-		private void getGroups ()
+		void getGroups ()
 		{
 			LdapEntry[] grps = server.SearchByClass ("posixGroup");
 
@@ -164,11 +160,11 @@ namespace lat
 				return;
 
 			passwordEntry.Text = pd.UnixPassword;
-			_smbLM = pd.LMPassword;
-			_smbNT = pd.NTPassword;
+			smbLM = pd.LMPassword;
+			smbNT = pd.NTPassword;
 		}
 		
-		private void OnDisplayNameFocusIn (object o, EventArgs args)
+		void OnDisplayNameFocusIn (object o, EventArgs args)
 		{
 			string suid = Util.SuggestUserName (
 					firstNameEntry.Text, 
@@ -201,7 +197,7 @@ namespace lat
 				homeDirEntry.Text = String.Format("/home/{0}", usernameEntry.Text);
 		}
 			
-		private void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
+		void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
 		{
 			if (groupEntry == null)
 				return;
@@ -247,7 +243,7 @@ namespace lat
 			modifyGroup (groupEntry, mods);
 		}
 
-		private string getGidNumber (string name)
+		string getGidNumber (string name)
 		{
 			if (name == null)
 				return null;
@@ -261,44 +257,51 @@ namespace lat
 			return null;
 		}
 
-		Dictionary<string,string> getUpdatedUserInfo ()
+		LdapEntry CreateEntry (string dn)
 		{
-			Dictionary<string,string> retVal = new Dictionary<string,string> ();
+			LdapAttributeSet aset = new LdapAttributeSet();	
 
 			TreeIter iter;
 				
 			if (primaryGroupComboBox.GetActiveIter (out iter)) {
 				string pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
-				retVal.Add ("gidNumber", getGidNumber(pg));
+				aset.Add (new LdapAttribute ("gidNumber", getGidNumber(pg)));
 			}
+						
+			aset.Add (new LdapAttribute ("givenName", firstNameEntry.Text));
+			aset.Add (new LdapAttribute ("sn", lastNameEntry.Text));
+			aset.Add (new LdapAttribute ("uid", usernameEntry.Text));
+			aset.Add (new LdapAttribute ("uidNumber", uidSpinButton.Value.ToString()));
+			aset.Add (new LdapAttribute ("userPassword", passwordEntry.Text));
+			aset.Add (new LdapAttribute ("loginShell", shellEntry.Text));
+			aset.Add (new LdapAttribute ("homeDirectory", homeDirEntry.Text));
+			aset.Add (new LdapAttribute ("displayName", displayNameEntry.Text));
+			aset.Add (new LdapAttribute ("cn", displayNameEntry.Text));
+			aset.Add (new LdapAttribute ("gecos", displayNameEntry.Text));
+			
+			if (initialsEntry.Text != "")
+				aset.Add (new LdapAttribute ("initials", initialsEntry.Text));
 
-			retVal.Add ("givenName", firstNameEntry.Text);
-			retVal.Add ("sn", lastNameEntry.Text);
-			retVal.Add ("uid", usernameEntry.Text);
-			retVal.Add ("uidNumber", uidSpinButton.Value.ToString());
-			retVal.Add ("userPassword", passwordEntry.Text);
-			retVal.Add ("loginShell", shellEntry.Text);
-			retVal.Add ("homeDirectory", homeDirEntry.Text);
-			retVal.Add ("displayName", displayNameEntry.Text);
-			retVal.Add ("initials", initialsEntry.Text);
+			if (enableSambaButton.Active) {
 
-			return retVal;
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"posixaccount","inetorgperson", "person", "sambaSAMAccount"}));
+				
+				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
+				LdapAttribute[] tmp = Util.CreateSambaAttributes (user_rid, smbSID, smbLM, smbNT);
+				foreach (LdapAttribute a in tmp)
+					aset.Add (a);					
+
+			} else {
+			
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person"}));
+			}
+					
+			LdapEntry newEntry = new LdapEntry (dn, aset);
+			return newEntry;
 		}
-	
-		public void OnOkClicked (object o, EventArgs args)
+
+		bool IsUserNameAvailable ()
 		{
-			Dictionary<string,string> cui = getUpdatedUserInfo ();
-
-			string[] objClass = { "top", "posixaccount", "shadowaccount","inetorgperson", "person" };
-			string[] missing = null;
-
-			if (!checkReqAttrs (objClass, cui, out missing)) {
-				missingAlert (missing);
-				missingValues = true;
-
-				return;
-			}
-
 			if (!Util.CheckUserName (server, usernameEntry.Text)) {
 				string format = Mono.Unix.Catalog.GetString (
 					"A user with the username '{0}' already exists!");
@@ -316,11 +319,14 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
-				errorOccured = true;
-
-				return;
+				return false;
 			}
+			
+			return true;
+		}
 
+		bool IsUIDAvailable ()
+		{
 			if (!Util.CheckUID (server, Convert.ToInt32 (uidSpinButton.Value))) {
 				string msg = Mono.Unix.Catalog.GetString (
 					"The UID you have selected is already in use!");
@@ -336,11 +342,14 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
-				errorOccured = true;
-
-				return;
+				return false;
 			}
+			
+			return true;
+		}
 
+		bool IsPasswordEmpty ()
+		{
 			if (passwordEntry.Text == "" || passwordEntry.Text == null) {
 				string msg = Mono.Unix.Catalog.GetString (
 					"You must set a password for the new user");
@@ -356,72 +365,52 @@ namespace lat
 				dialog.Run ();
 				dialog.Destroy ();
 
-				errorOccured = true;
-
-				return;
+				return true;
 			}
+			
+			return false;
+		}
 
-			string fullName = (string)cui["displayName"];
-
-			cui["cn"] = fullName;
-			cui["gecos"] = fullName;
-
-			List<LdapAttribute> attrList = getAttributes (objClass, userAttrs, cui);
-			attrList.Add (new LdapAttribute ("cn", fullName));
-			attrList.Add (new LdapAttribute ("gecos", fullName));
-
-			if (enableSambaButton.Active) {
-
-				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
-
-				List<LdapModification> smbMods = Util.CreateSambaMods (
-							user_rid, 
-							_smbSID,
-							_smbLM,
-							_smbNT);
-
-				foreach (LdapModification l in smbMods) {
-					if (l.Attribute.Name.Equals ("objectclass")) {
- 	
-						LdapAttribute a = (LdapAttribute) attrList[0];
-						a.addValue ("sambaSAMAccount");
-
-						attrList[0] = a;
-					}
-					else
-						attrList.Add (l.Attribute);
-				}
-			}
-
+		public void OnOkClicked (object o, EventArgs args)
+		{
+			LdapEntry entry = null;
 			string userDN = null;
 
+			if (!IsUserNameAvailable() || !IsUIDAvailable() || IsPasswordEmpty()) {
+				errorOccured = true;
+				return;
+			}
+			
 			if (this.defaultNewContainer == null) {
-				SelectContainerDialog scd = 
-					new SelectContainerDialog (server, newUserDialog);
-
-				scd.Title = "Save User";
-				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", fullName);
-
+			
+				SelectContainerDialog scd =	new SelectContainerDialog (server, newUserDialog);
+				scd.Title = "Save Group";
+				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}", displayNameEntry.Text);
 				scd.Run ();
 
 				if (scd.DN == "")
 					return;
-					
-				userDN = String.Format ("cn={0},{1}", fullName, scd.DN);
-				
+
+				userDN = String.Format ("cn={0},{1}", displayNameEntry.Text, scd.DN);
+			
 			} else {
 			
-				userDN = String.Format ("cn={0},{1}", fullName, this.defaultNewContainer);
+				userDN = String.Format ("cn={0},{1}", displayNameEntry.Text, this.defaultNewContainer);
 			}
 			
-			updateGroupMembership ();
+			entry = CreateEntry (userDN);
 
-			if (!Util.AddEntry (server, viewDialog, userDN, attrList, true)) {
-				errorOccured = true;
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			if (missing.Length != 0) {
+				missingAlert (missing);
+				missingValues = true;
 				return;
 			}
 
-			newUserDialog.HideAll ();
+			updateGroupMembership ();
+
+			if (!Util.AddEntry (server, entry))
+				errorOccured = true;			
 		}
 	}
 }

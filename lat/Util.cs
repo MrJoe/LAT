@@ -96,6 +96,23 @@ namespace lat
 			dialog.Destroy ();
 		}
 
+		public static LdapAttribute[] CreateSambaAttributes (int uid, string sid, string lm, string nt)
+		{
+			List<LdapAttribute> mods = new List<LdapAttribute> ();
+
+			mods.Add (new LdapAttribute ("sambaLMPassword", lm));
+			mods.Add (new LdapAttribute ("sambaNTPassword", nt));
+			mods.Add (new LdapAttribute ("sambaAcctFlags", "[U          ]"));
+
+			int user_rid = Convert.ToInt32 (uid) * 2 + 1000;
+
+			mods.Add (new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", sid, user_rid)));
+			mods.Add (new LdapAttribute ("sambaPrimaryGroupSID", String.Format ("{0}-513", sid)));
+			
+			return mods.ToArray();
+		}
+		
+		[Obsolete("Use CreateSambaAttributes", false)]
 		public static List<LdapModification> CreateSambaMods (int uid, string sid, string lm, string nt)
 		{
 			List<LdapModification> mods = new List<LdapModification> ();
