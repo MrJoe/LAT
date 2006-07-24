@@ -536,7 +536,7 @@ namespace lat
 
 			if (smbEnableSambaButton.Active || isSamba) {
 
-				aset.Add (new LdapAttribute ("objectClass", new string[] {"posixaccount","inetorgperson", "person", "sambaSAMAccount"}));
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person", "sambaSAMAccount"}));
 				
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
 				LdapAttribute[] tmp = Util.CreateSambaAttributes (user_rid, smbSID, smbLM, smbNT);
@@ -559,7 +559,7 @@ namespace lat
 					
 			} else {
 			
-				aset.Add (new LdapAttribute ("objectClass", new string[] {"posixaccount","inetorgperson", "person"}));
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person"}));
 			}
 								
 			// Groups

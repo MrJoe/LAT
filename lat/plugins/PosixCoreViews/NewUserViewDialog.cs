@@ -117,15 +117,45 @@ namespace lat
 
 		void createCombo ()
 		{
+			if (primaryGroupComboBox != null) {
+				primaryGroupComboBox.Changed -= OnPrimaryGroupChanged;
+				primaryGroupComboBox.Destroy ();
+				primaryGroupComboBox = null;
+			}
+			
 			primaryGroupComboBox = ComboBox.NewText ();
 
 			foreach (string key in _allGroups.Keys)
 				primaryGroupComboBox.AppendText (key);
 
+			primaryGroupComboBox.AppendText ("Create new group...");
+
 			primaryGroupComboBox.Active = 0;
+			primaryGroupComboBox.Changed += OnPrimaryGroupChanged;
 			primaryGroupComboBox.Show ();
 
 			comboHbox.Add (primaryGroupComboBox);
+		}
+
+		void OnPrimaryGroupChanged (object o, EventArgs args)
+		{
+			ComboBox combo = o as ComboBox;
+			if (o == null)
+				return;
+				
+			TreeIter iter;
+			if (combo.GetActiveIter (out iter)) {
+				string selection = (string) combo.Model.GetValue (iter, 0);				
+				if (selection == "Create new group...") {
+					new GroupsViewDialog (server, "");
+					
+					_allGroups.Clear();
+					_allGroupGids.Clear();
+					getGroups ();
+					
+					createCombo ();
+				}
+			}
 		}
 
 		void Init ()
@@ -284,7 +314,7 @@ namespace lat
 
 			if (enableSambaButton.Active) {
 
-				aset.Add (new LdapAttribute ("objectClass", new string[] {"posixaccount","inetorgperson", "person", "sambaSAMAccount"}));
+				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person", "sambaSAMAccount"}));
 				
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
 				LdapAttribute[] tmp = Util.CreateSambaAttributes (user_rid, smbSID, smbLM, smbNT);

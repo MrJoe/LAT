@@ -238,7 +238,9 @@ namespace lat
 			aset.Add (new LdapAttribute ("cn", groupNameEntry.Text));
 			aset.Add (new LdapAttribute ("description", descriptionEntry.Text));
 			aset.Add (new LdapAttribute ("gidNumber", groupIDSpinButton.Value.ToString()));
-			aset.Add (new LdapAttribute ("memberuid", currentMembers.ToArray()));
+			
+			if (currentMembers.Count > 1)
+				aset.Add (new LdapAttribute ("memberuid", currentMembers.ToArray()));
 						
 			if (enableSambaButton.Active || isSamba) {
 			
@@ -277,7 +279,7 @@ namespace lat
 			
 				string userDN = null;
 				
-				if (this.defaultNewContainer == null) {
+				if (this.defaultNewContainer == string.Empty) {
 				
 					SelectContainerDialog scd =	new SelectContainerDialog (server, groupDialog);
 					scd.Title = "Save Group";
