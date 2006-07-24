@@ -47,25 +47,6 @@ namespace lat
             }
        	}
 
-		public static string GetServerPrefix (LdapServer server)
-		{
-			string prefix = null;
-	
-			switch (server.ServerType) {
-
-			case LdapServerType.ActiveDirectory:
-				prefix = "ad";
-				break;
-
-			case LdapServerType.Generic:
-			case LdapServerType.OpenLDAP:
-				prefix = "openldap";
-				break;
-			}
-
-			return prefix;
-		}
-
 		public static void DisplaySambaSIDWarning (Gtk.Window parent)
 		{
 			string msg = Mono.Unix.Catalog.GetString (
