@@ -34,14 +34,13 @@ namespace lat
 		[Glade.Widget] Gtk.Button browseButton;
 		[Glade.Widget] Gtk.TreeView attrTreeView;
 
-		private LdapServer server;
-		private ListStore attrListStore;
-		private List<string> _objectClass;
-		private List<LdapAttribute> _attributes;
-		private LdapAttribute objAttr = null;
-		private Template t;
-		private bool isTemplate = false;
-		private bool errorOccured = false;
+		LdapServer server;
+		ListStore attrListStore;
+		List<string> _objectClass;
+		LdapAttribute objAttr = null;
+		Template t;
+		bool isTemplate = false;
+		bool errorOccured = false;
 
 		public CreateEntryDialog (LdapServer ldapServer, Template theTemplate)
 		{
@@ -89,13 +88,12 @@ namespace lat
 			createEntryDialog.Destroy ();
 		}
 
-		private void Init ()
+		void Init ()
 		{
 			ui = new Glade.XML (null, "lat.glade", "createEntryDialog", null);
 			ui.Autoconnect (this);
 
 			_objectClass = new List<string> ();
-			_attributes = new List<LdapAttribute> ();
 			
 			setupTreeViews ();
 
@@ -104,7 +102,7 @@ namespace lat
 			createEntryDialog.Resize (320, 200);
 		}
 
-		private void insertValues (string[] values, string valueType)
+		void insertValues (string[] values, string valueType)
 		{
 			foreach (string s in values) {
 				if (s == "objectClass")
@@ -125,7 +123,7 @@ namespace lat
 			}
 		}
 
-		private void showAttributes ()
+		void showAttributes ()
 		{
 			string[] required, optional;			
 			server.GetAllAttributes (_objectClass, out required, out optional);
@@ -134,7 +132,7 @@ namespace lat
 			insertValues (optional, "Optional");
 		}
 
-		private void setupTreeViews ()
+		void setupTreeViews ()
 		{
 			// Attributes
 			attrListStore = new ListStore (typeof (string), typeof (string), typeof (string));
@@ -157,7 +155,7 @@ namespace lat
 			attrListStore.SetSortColumnId (0, SortType.Ascending);
 		}
 
-		private void OnAttributeEdit (object o, EditedArgs args)
+		void OnAttributeEdit (object o, EditedArgs args)
 		{
 			TreeIter iter;
 
@@ -183,52 +181,39 @@ namespace lat
 				browseButton.Label = scd.DN;
 		}
 
-		private bool attrForeachFunc (TreeModel model, TreePath path, TreeIter iter)
-		{
-			if (!attrListStore.IterIsValid (iter))
-				return true;
-
-			string _name = null;
-			string _value = null;
-
-			_name = (string) attrListStore.GetValue (iter, 0);
-			_value = (string) attrListStore.GetValue (iter, 1);
-
-			if (_name == null || _value == null || _value == "")
-				return false;
-
-			if (_name.ToLower() == "objectclass") {
-				if (objAttr == null)
-					objAttr = new LdapAttribute (_name, _value);
-				else
-					objAttr.addValue (_value);
-
-			} else {
-
-				LdapAttribute attr = new LdapAttribute (_name, _value);
-				_attributes.Add (attr);
-			}
-
-			return false;
-		}
-
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			string dn = String.Format ("{0},{1}", 
-				rdnEntry.Text, browseButton.Label);
+			string dn = String.Format ("{0},{1}", rdnEntry.Text, browseButton.Label);
+			LdapAttributeSet lset = new LdapAttributeSet ();
+			
+			foreach (object[] row in attrListStore) {
+			
+				string n = (string) row[0];
+				string v = (string) row[1];
 
-			attrListStore.Foreach (new TreeModelForeachFunc (attrForeachFunc));
+				if (n == null || v == null || v == "")
+					continue;
 
-			_attributes.Add (objAttr);
+				if (n.ToLower() == "objectclass") {
+					if (objAttr == null)
+						objAttr = new LdapAttribute (n, v);
+					else
+						objAttr.addValue (v);
 
-			if (!Util.AddEntry (server, createEntryDialog, dn, _attributes, true)) {
-				errorOccured = true;
-				return;
-			} else {
-				errorOccured = false;
+				} else {
+
+					LdapAttribute attr = new LdapAttribute (n, v);
+					lset.Add (attr);
+				}				
 			}
-
-			createEntryDialog.HideAll ();
+			
+			lset.Add (objAttr);
+			
+			LdapEntry entry = new LdapEntry (dn, lset);
+			if (!Util.AddEntry (server, entry))
+				errorOccured = true;
+			else
+				errorOccured = false;
 		}
 
 		public void OnCancelClicked (object o, EventArgs args)

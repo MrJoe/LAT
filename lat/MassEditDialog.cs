@@ -156,7 +156,7 @@ namespace lat
 			}
 			
 			foreach (LdapEntry e in sr) {
-				Util.ModifyEntry (server, massEditDialog, e.DN, _modList, false);
+				Util.ModifyEntry (server, e.DN, _modList.ToArray());
 			}
 
 			massEditDialog.HideAll ();

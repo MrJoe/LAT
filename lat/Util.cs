@@ -47,17 +47,6 @@ namespace lat
             }
        	}
 
-		private static LdapModification createMod (string name, string val)
-		{
-			LdapAttribute la; 
-			LdapModification lm;
-
-			la = new LdapAttribute (name, val);
-			lm = new LdapModification (LdapModification.ADD, la);
-
-			return lm;
-		}
-
 		public static string GetServerPrefix (LdapServer server)
 		{
 			string prefix = null;
@@ -112,24 +101,6 @@ namespace lat
 			return mods.ToArray();
 		}
 		
-		[Obsolete("Use CreateSambaAttributes", false)]
-		public static List<LdapModification> CreateSambaMods (int uid, string sid, string lm, string nt)
-		{
-			List<LdapModification> mods = new List<LdapModification> ();
-
-			mods.Add (createMod ("objectclass", "sambaSAMAccount"));
-			mods.Add (createMod ("sambaLMPassword", lm));
-			mods.Add (createMod ("sambaNTPassword", nt));
-			mods.Add (createMod ("sambaAcctFlags", "[U          ]"));
-
-			int user_rid = Convert.ToInt32 (uid) * 2 + 1000;
-
-			mods.Add (createMod ("sambaSID", String.Format ("{0}-{1}", sid, user_rid)));
-			mods.Add (createMod ("sambaPrimaryGroupSID", String.Format ("{0}-513", sid)));
-			
-			return mods;
-		}
-
 		public static bool CheckSamba (LdapEntry le)
 		{
 			bool retVal = false;
@@ -233,55 +204,6 @@ namespace lat
 			}		
 		}
 
-		[Obsolete("Use AddEntry (LdapServer server, LdapEntry entry)", false)]
-		public static bool AddEntry (LdapServer server, Gtk.Window parent, 
-					     string dn, List<LdapAttribute> attrs, bool msgBox)
-		{
-			try {
-
-				server.Add (dn, attrs);
-
-				string resMsg = String.Format (
-					Mono.Unix.Catalog.GetString ("Entry {0} has been added."), dn);
-	
-				if (msgBox) {
-
-					HIGMessageDialog dialog = new HIGMessageDialog (
-						parent,
-						0,
-						Gtk.MessageType.Info,
-						Gtk.ButtonsType.Ok,
-						"Add entry",
-						resMsg);
-
-					dialog.Run ();
-					dialog.Destroy ();
-				}
-
-				return true;
-
-			} catch (Exception e) {
-
-				string errorMsg = 
-					Mono.Unix.Catalog.GetString ("Unable to add entry ") + dn;
-
-				errorMsg += "\nError: " + e.Message;
-
-					HIGMessageDialog dialog = new HIGMessageDialog (
-						parent,
-						0,
-						Gtk.MessageType.Error,
-						Gtk.ButtonsType.Ok,
-						"Add error",
-						errorMsg);
-
-					dialog.Run ();
-					dialog.Destroy ();
-
-				return false;
-			}
-		}
-
 		public static bool ModifyEntry (LdapServer server, string dn, LdapModification[] modList)
 		{
 			if (modList.Length == 0) {
@@ -316,61 +238,6 @@ namespace lat
 			}		
 		}
 		
-		[Obsolete("Use ModifyEntry (LdapServer, string, LdapModification[])", false)]
-		public static bool ModifyEntry (LdapServer server, Gtk.Window parent, 
-						string dn, List<LdapModification> modList, bool msgBox)
-		{
-			if (modList.Count == 0) {
-				Log.Debug ("ModifyEntry: modList.Count == 0");
-				return false;
-			}
-
-			try {
-
-				server.Modify (dn, modList.ToArray());
-
-				string resMsg = String.Format (
-					Mono.Unix.Catalog.GetString ("Entry {0} has been modified."), dn);
-
-				if (msgBox) {
-					HIGMessageDialog dialog = new HIGMessageDialog (
-						parent,
-						0,
-						Gtk.MessageType.Info,
-						Gtk.ButtonsType.Ok,
-						"Modify entry",
-						resMsg);
-
-					dialog.Run ();
-					dialog.Destroy ();
-				}
-
-				modList.Clear ();
-
-				return true;
-
-			} catch (Exception e) {
-
-				string errorMsg = 
-					Mono.Unix.Catalog.GetString ("Unable to modify entry ") + dn;
-
-				errorMsg += "\nError: " + e.Message;
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					parent,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Modify entry",
-					errorMsg);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				return false;
-			}
-		}
-
 		public static bool AskYesNo (Gtk.Window parent, string msg)
 		{
 			MessageDialog md = new MessageDialog (parent, 

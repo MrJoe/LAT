@@ -143,7 +143,7 @@ namespace lat
 				}
 			}
 
-			Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
+			Util.ModifyEntry (currentServer, currentDN, modList.ToArray());
 		}
 	
 		void OnAttributeEdit (object o, EditedArgs args)
@@ -360,7 +360,7 @@ namespace lat
 
 			List<LdapModification> modList = new List<LdapModification> ();
 			modList.Add (lm);			
-			Util.ModifyEntry (currentServer, null, currentDN, modList, Global.VerboseMessages);
+			Util.ModifyEntry (currentServer, currentDN, modList.ToArray());
 
 			this.Show (currentServer, currentServer.GetEntry (currentDN), displayAll);
 		}
