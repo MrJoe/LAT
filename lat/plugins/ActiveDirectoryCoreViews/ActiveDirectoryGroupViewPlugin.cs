@@ -40,12 +40,13 @@ namespace lat {
 
 		public override void OnAddEntry (LdapServer server)
 		{
-			new NewAdGroupViewDialog (server, this.DefaultNewContainer);
+			new GroupsViewDialog (server, this.DefaultNewContainer);
 		}		
 
 		public override void OnEditEntry (LdapServer server, LdapEntry le)
 		{
-			// FIXME: Can't get current memebers, might require SSL
+			// FIXME: Can't get current memebers of built-in groups, might require SSL
+			new GroupsViewDialog (server, le);
 		}
 					
 		public override void OnPopupShow (Menu popup)
