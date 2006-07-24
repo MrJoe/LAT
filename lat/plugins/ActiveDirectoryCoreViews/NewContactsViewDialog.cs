@@ -79,13 +79,13 @@ namespace lat
 		LdapEntry CreateEntry (string dn)
 		{
 			LdapAttributeSet aset = new LdapAttributeSet();
-			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "inetOrgPerson" }));
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "organizationalPerson", "contact" }));
 			aset.Add (new LdapAttribute ("givenName", gnFirstNameEntry.Text));
 			aset.Add (new LdapAttribute ("initials", gnInitialsEntry.Text));
 			aset.Add (new LdapAttribute ("sn", gnLastNameEntry.Text));
 			aset.Add (new LdapAttribute ("displayName", gnDisplayName.Text));
 			aset.Add (new LdapAttribute ("cn", gnDisplayName.Text));
-					
+
 			LdapEntry newEntry = new LdapEntry (dn, aset);
 			return newEntry;
 		}

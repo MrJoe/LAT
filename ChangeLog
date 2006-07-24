@@ -1,6 +1,7 @@
 	* Added support for Fedora Directory Server (Daniel Mueller)
 	* Added option to create group when creating new user
-	* Active Directory Group plugin can view/edit entries
+	* Re-enabled ActiveDirectory Contacts view
+	* ActiveDirectory Group plugin can view/edit entries
 	* Use generic collections in classes/objects
 	* Code refactoring/cleanup
 

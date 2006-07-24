@@ -9,9 +9,11 @@ CSFILES = \
 	ActiveDirectoryUserViewPlugin.cs \
 	EditAdComputerViewDialog.cs \
 	EditAdUserViewDialog.cs \
+	EditContactsViewDialog.cs \
 	GroupsViewDialog.cs \
 	NewAdComputerViewDialog.cs \
-	NewAdUserViewDialog.cs
+	NewAdUserViewDialog.cs \
+	NewContactsViewDialog.cs
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
@@ -27,6 +29,7 @@ RESOURCES = \
 	dialogs.glade \
 	$(top_builddir)/resources/users.png \
 	$(top_builddir)/resources/contact-new.png \
+	$(top_builddir)/resources/contact-new-48x48.png \
 	$(top_builddir)/resources/stock_person.png \
 	$(top_builddir)/resources/x-directory-remote-server-48x48.png
 

@@ -381,31 +381,6 @@ namespace lat {
 			return retVal.ToArray ();
 		}
 
-		/// <summary>Gets the value of the given attribute for the given
-		/// entry.
-		/// </summary>
-		/// <param name="le">LdapEntry</param>
-		/// <param name="attrs">List of attributes to lookup</param>
-		/// <param name="entryInfo">Dictionary<string,string> to populate values with</returns>
-		public void GetAttributeValuesFromEntry (LdapEntry le, string[] attrs, 
-							 out Dictionary<string,string> entryInfo)
-		{
-			if (le == null || attrs == null)
-				throw new ArgumentNullException ();
-
-			entryInfo = new Dictionary<string,string> ();
-
-			foreach (string n in attrs) {
-
-				LdapAttribute la = le.getAttribute (n);
-
-				if (la != null)
-					entryInfo.Add (n, la.StringValue);
-				else
-					entryInfo.Add (n, "");
-			}
-		}
-
 		/// <summary>Gets an entry in the directory.
 		/// </summary>
 		/// <param name="dn">The distinguished name of the entry</param>

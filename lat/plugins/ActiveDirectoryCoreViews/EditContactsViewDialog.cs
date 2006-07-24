@@ -98,7 +98,16 @@ namespace lat
 			string contactName = server.GetAttributeValueFromEntry (currentEntry, "cn");
 			editContactDialog.Title = contactName + " Properties";
 
-			server.GetAttributeValueFromEntry (currentEntry, "street");
+			gnWebPageEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "wWWHomePage");
+
+			adStreetTextView.Buffer.Text = server.GetAttributeValueFromEntry (currentEntry, "streetAddress");
+			adCountryEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "co");
+
+			tnIPPhoneEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "ipPhone");
+			tnNotesTextView.Buffer.Text = server.GetAttributeValueFromEntry (currentEntry, "info");
+
+			ozDeptEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "department");
+			ozCompanyEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "company");
 
 			editContactDialog.Icon = Global.latIcon;
 			editContactDialog.Run ();
@@ -123,13 +132,6 @@ namespace lat
 
 			viewDialog = editContactDialog;
 
-			tnNotesTextView.Sensitive = false;
-			ozDeptEntry.Sensitive = false;
-			ozCompanyEntry.Sensitive = false;
-			gnWebPageEntry.Sensitive = false;
-			tnIPPhoneEntry.Sensitive = false;
-			adCountryEntry.Sensitive = false;
-
 			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("contact-new-48x48.png");
 			image180.Pixbuf = pb;
 		}
@@ -142,7 +144,7 @@ namespace lat
 		LdapEntry CreateEntry (string dn)
 		{
 			LdapAttributeSet aset = new LdapAttributeSet();
-			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "inetOrgPerson" }));
+			aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "person", "organizationalPerson", "contact" }));
 			aset.Add (new LdapAttribute ("givenName", gnFirstNameEntry.Text));
 			aset.Add (new LdapAttribute ("initials", gnInitialsEntry.Text));
 			aset.Add (new LdapAttribute ("sn", gnLastNameEntry.Text));
@@ -167,7 +169,9 @@ namespace lat
 			aset.Add (new LdapAttribute ("title", ozTitleEntry.Text));
 			aset.Add (new LdapAttribute ("department", ozDeptEntry.Text));
 			aset.Add (new LdapAttribute ("company", ozCompanyEntry.Text));
-										
+			aset.Add (new LdapAttribute ("streetAddress", adStreetTextView.Buffer.Text));
+			aset.Add (new LdapAttribute ("info", tnNotesTextView.Buffer.Text));
+			
 			LdapEntry newEntry = new LdapEntry (dn, aset);
 			return newEntry;
 		}

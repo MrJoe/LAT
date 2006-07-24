@@ -22,6 +22,7 @@ using System;
 
 public class LdapSearch
 {
+	// FIXME: look into using RfcFilter() class for this
 	private string _filter = "";
 
 	public LdapSearch ()
