@@ -142,84 +142,75 @@ namespace lat
 			return true;
 		}
 
-		private void createOU (string dn)
+		void createOU (string dn)
 		{
-			List<LdapAttribute> attrList = new List<LdapAttribute> ();
-
-			attrList.Add (new LdapAttribute ("objectclass", "organizationalUnit"));
-			attrList.Add (new LdapAttribute ("ou", getCN (dn)));
+			LdapAttributeSet lset = new LdapAttributeSet ();
+			lset.Add (new LdapAttribute ("objectclass", new string[] {"organizationalUnit"}));
+			lset.Add (new LdapAttribute ("ou", getCN(dn)));
 			
-			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
+			LdapEntry entry = new LdapEntry (dn, lset);
+			Util.AddEntry (server, entry);
 		}
 
-		private void createUser (string dn, string name, string pass, string sid, 
+		void createUser (string dn, string name, string pass, string sid, 
 					 string flags, string uid, string gid, 
 					 string urid, string grid, string gecos)
 		{
-			List<LdapAttribute> attrList = new List<LdapAttribute> ();
-			LdapAttribute a = new LdapAttribute ("objectclass", "inetOrgPerson");
-			a.addValue ("sambaSAMAccount");
-			a.addValue ("posixAccount");
-			a.addValue ("shadowAccount");
-			attrList.Add (a);
-
-			attrList.Add (new LdapAttribute ("cn", name));
-			attrList.Add (new LdapAttribute ("sn", name));
-			attrList.Add (new LdapAttribute ("gidNumber", gid));
-			attrList.Add (new LdapAttribute ("uid", name));
-			attrList.Add (new LdapAttribute ("uidNumber", uid));
-			attrList.Add (new LdapAttribute ("homeDirectory", "/dev/null"));
-			attrList.Add (new LdapAttribute ("sambaPwdLastSet", "0"));
-			attrList.Add (new LdapAttribute ("sambaLogonTime", "0"));
-			attrList.Add (new LdapAttribute ("sambaLogoffTime", "2147483647"));
-			attrList.Add (new LdapAttribute ("sambaKickoffTime", "2147483647"));
-			attrList.Add (new LdapAttribute ("sambaPwdCanChange", "0"));
-			attrList.Add (new LdapAttribute ("sambaPwdMustChange", "2147483647"));
-			attrList.Add (new LdapAttribute ("sambaPrimaryGroupSID", 
-				      sid + "-" + grid));
-			attrList.Add (new LdapAttribute ("sambaLMPassword", pass));
-			attrList.Add (new LdapAttribute ("sambaNTPassword", pass));
-			attrList.Add (new LdapAttribute ("sambaAcctFlags", flags));
-			attrList.Add (new LdapAttribute ("sambaSID", sid + "-" + urid));
-			attrList.Add (new LdapAttribute ("loginShell", "/bin/false"));
-			attrList.Add (new LdapAttribute ("gecos", gecos));
-
-			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
+			LdapAttributeSet lset = new LdapAttributeSet ();
+			lset.Add (new LdapAttribute ("objectclass", new string[] {"inetOrgPerson", "sambaSAMAccount", "posixAccount", "shadowAccount"}));
+			lset.Add (new LdapAttribute ("cn", name));
+			lset.Add (new LdapAttribute ("sn", name));
+			lset.Add (new LdapAttribute ("gidNumber", gid));
+			lset.Add (new LdapAttribute ("uid", name));
+			lset.Add (new LdapAttribute ("uidNumber", uid));
+			lset.Add (new LdapAttribute ("homeDirectory", "/dev/null"));
+			lset.Add (new LdapAttribute ("sambaPwdLastSet", "0"));
+			lset.Add (new LdapAttribute ("sambaLogonTime", "0"));
+			lset.Add (new LdapAttribute ("sambaLogoffTime", "2147483647"));
+			lset.Add (new LdapAttribute ("sambaKickoffTime", "2147483647"));
+			lset.Add (new LdapAttribute ("sambaPwdCanChange", "0"));
+			lset.Add (new LdapAttribute ("sambaPwdMustChange", "2147483647"));
+			lset.Add (new LdapAttribute ("sambaPrimaryGroupSID", sid + "-" + grid));
+			lset.Add (new LdapAttribute ("sambaLMPassword", pass));
+			lset.Add (new LdapAttribute ("sambaNTPassword", pass));
+			lset.Add (new LdapAttribute ("sambaAcctFlags", flags));
+			lset.Add (new LdapAttribute ("sambaSID", sid + "-" + urid));
+			lset.Add (new LdapAttribute ("loginShell", "/bin/false"));
+			lset.Add (new LdapAttribute ("gecos", gecos));
+		
+			LdapEntry entry = new LdapEntry (dn, lset);
+			Util.AddEntry (server, entry);
 		}
 
-		private void createGroup (string dn, string gid, string desc, 
+		void createGroup (string dn, string gid, string desc, 
 					  string sid, string grid, string gtype, 
 					  string memberuid)
 		{
-			List<LdapAttribute> attrList = new List<LdapAttribute> ();
-			LdapAttribute a = new LdapAttribute ("objectclass", "posixGroup");
-			a.addValue ("sambaGroupMapping");
-			attrList.Add (a);
-
-			attrList.Add (new LdapAttribute ("gidNumber", gid));
-			attrList.Add (new LdapAttribute ("cn", getCN (dn)));
-			attrList.Add (new LdapAttribute ("description", desc));
-			attrList.Add (new LdapAttribute ("sambaSID", sid + "-" + grid));
-			attrList.Add (new LdapAttribute ("sambaGroupType", gtype));
-			attrList.Add (new LdapAttribute ("displayName", getCN (dn)));
-		
+			LdapAttributeSet lset = new LdapAttributeSet ();
+			lset.Add (new LdapAttribute ("objectclass", new string[] {"posixGroup", "sambaGroupMapping"}));
+			lset.Add (new LdapAttribute ("gidNumber", gid));
+			lset.Add (new LdapAttribute ("cn", getCN(dn)));
+			lset.Add (new LdapAttribute ("description", desc));
+			lset.Add (new LdapAttribute ("sambaSID", sid + "-" + grid));
+			lset.Add (new LdapAttribute ("sambaGroupType", gtype));
+			lset.Add (new LdapAttribute ("displayName", getCN(dn)));
+			
 			if (memberuid != "")
-				attrList.Add (new LdapAttribute ("memberUid", memberuid));
+				lset.Add (new LdapAttribute ("memberUid", memberuid));
 	
-			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
+			LdapEntry entry = new LdapEntry (dn, lset);
+			Util.AddEntry (server, entry);
 		}
 
 		void createDomain (string dn, string domain, string sid)
 		{
-			List<LdapAttribute> attrList = new List<LdapAttribute> ();
-			LdapAttribute a = new LdapAttribute ("objectclass", "sambaDomain");
-//			a.addValue ("sambaUnixIdPool");
-			attrList.Add (a);
-
-			attrList.Add (new LdapAttribute ("sambaDomainName", domain));
-			attrList.Add (new LdapAttribute ("sambaSID", sid));
-
-			Util.AddEntry (server, sambaPopulateDialog, dn, attrList, false);
+			LdapAttributeSet lset = new LdapAttributeSet ();
+			lset.Add (new LdapAttribute ("objectclass", new string[] {"sambaDomain"}));
+			lset.Add (new LdapAttribute ("sambaDomainName", domain));
+			lset.Add (new LdapAttribute ("sambaSID", sid));
+			
+			LdapEntry entry = new LdapEntry (dn, lset);
+			Util.AddEntry (server, entry);
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
