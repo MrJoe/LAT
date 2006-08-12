@@ -1,3 +1,5 @@
+	* Fixed fields in schema browser that were not updating properly
+
 1.1.5
 
 	* Added support for Fedora Directory Server (Daniel Mueller)

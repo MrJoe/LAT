@@ -457,6 +457,33 @@ namespace lat
 			synOIDEntry.Text = sp.ID;
 		}
 
+		void ClearSchemaValues ()
+		{
+			objNameTextview.Buffer.Text = "";
+			objDescriptionEntry.Text = "";
+			objIDEntry.Text = "";
+			objObsoleteCheckbutton.Active = false;
+			attrNameTextview.Buffer.Text = "";
+			attrDescriptionEntry.Text = "";
+			attrIDEntry.Text = "";
+			attrSuperiorTextview.Buffer.Text = "";
+			attrObsoleteCheckbutton.Active = false;
+			attrSingleCheckbutton.Active = false;
+			attrCollectiveCheckbutton.Active = false;
+			attrUserModCheckbutton.Active = false;
+			attrEqualityEntry.Text = "";
+			attrOrderingEntry.Text = "";
+			attrSubstringEntry.Text = "";
+			attrSyntaxEntry.Text = "";
+			
+			matNameEntry.Text = "";
+			matOIDEntry.Text = "";
+			matSyntaxEntry.Text = "";
+			
+			synDescriptionEntry.Text = "";
+			synOIDEntry.Text = "";
+		}
+
 		void ShowAttrTypeSchema (SchemaParser sp)
 		{
 			try {
@@ -1232,6 +1259,8 @@ namespace lat
 
 			ConnectionProfile cp = Global.Profiles [args.Server];
 			LdapServer server = Global.Connections [cp];
+
+			ClearSchemaValues ();
 
 			if (args.Parent == "Object Classes") {
 				
