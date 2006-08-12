@@ -33,17 +33,19 @@ namespace lat
 		public string Host;
 		public int Port;
 		public string LdapRoot;
-		public string User;
-		public string Pass;
+		public string User;		
 		public bool DontSavePassword;
 		public EncryptionType Encryption;
 		public string ServerType;
 		public bool Dynamic;
 		public ArrayList ActiveAttributeViewers;		
 		public ArrayList ActiveServerViews;
+
+		string password;
 		
 		public ConnectionProfile ()
 		{
+			password = null;
 		}
 		
 		public void SetDefaultServerViews ()
@@ -82,6 +84,30 @@ namespace lat
 			ActiveAttributeViewers.Add ("lat.JpegAttributeViewPlugin");
 			ActiveAttributeViewers.Add ("lat.PassswordAttributeViewPlugin");
 		}	
+		
+		public string Pass 
+		{
+			get {		
+				if (password == null) {
+					GnomeKeyring.Result gkr;
+					NetworkPasswordData[] list;
+
+					gkr = GnomeKeyring.Global.FindNetworkPassword (this.User, out list);
+					Log.Debug ("gnome-keyring-result: {0}", gkr);
+
+					if (list.Length > 0) {
+						NetworkPasswordData npd = list[0];
+						password = npd.Password;
+					} else {
+						return null;
+					}
+				} 
+				
+				return password;
+			}
+			
+			set { password = value; }
+		}
 	}
 
 	public class ProfileManager : IEnumerable
@@ -168,7 +194,6 @@ namespace lat
 			cp.Port = int.Parse (profileElement.GetAttribute ("port"));
 			cp.LdapRoot = profileElement.GetAttribute ("base");
 			cp.User = profileElement.GetAttribute ("user");
-			cp.Pass = "";
 			cp.DontSavePassword = savePassword;
 			cp.Encryption = e;
 			cp.ServerType = profileElement.GetAttribute ("server_type");
@@ -187,15 +212,6 @@ namespace lat
 				foreach (XmlElement av in nl)
 					cp.ActiveAttributeViewers.Add (av.InnerText);
 			}
-
-			GnomeKeyring.Result gkr;
-			NetworkPasswordData[] list;
-
-			gkr = GnomeKeyring.Global.FindNetworkPassword (cp.User, out list);
-			Log.Debug ("gnome-keyring-result: {0}", gkr);
-						
-			foreach (NetworkPasswordData i in list)
-				cp.Pass = i.Password;
 
 			profileDictionary.Add (cp.Name, cp);
 		}
