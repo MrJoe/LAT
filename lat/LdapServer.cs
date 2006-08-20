@@ -59,6 +59,23 @@ namespace lat {
 		LdapServerType ldapServerType;
 		LdapConnection conn;
 
+		public LdapServer (ConnectionData connectionData)
+		{
+			host = connectionData.Host;
+			port = connectionData.Port;
+			sType = LdapServer.GetServerType (connectionData.ServerType);
+			encryption = connectionData.Encryption;
+			
+			if (connectionData.DirectoryRoot != "")
+				rootDN = connectionData.DirectoryRoot;
+				
+			profileName = connectionData.Name;
+				
+			// FIXME: clean up this code
+			adInfo = new ActiveDirectoryInfo ();
+			SetServerType ();		
+		}
+
 		public LdapServer (string hostName, int hostPort, string serverType)
 		{
 			host = hostName;
@@ -683,6 +700,48 @@ namespace lat {
 				retVal.Add (kvp.Key);
 
 			return retVal.ToArray ();
+		}
+
+		public static LdapServerType GetServerType (string serverType)
+		{
+			switch (serverType) {
+			
+			case "microsoft active directory":
+				return LdapServerType.ActiveDirectory;
+			
+			case "fedora directory server":
+				return LdapServerType.FedoraDirectory;
+			
+			case "generic ldap server":
+				return LdapServerType.Generic;
+			
+			case "openldap":
+				return LdapServerType.OpenLDAP;
+			
+			default:
+				return LdapServerType.Unknown;
+			}
+		}
+
+		public static string GetServerType (LdapServerType serverType)
+		{
+			switch (serverType) {
+			
+			case LdapServerType.ActiveDirectory:
+				return "microsoft active directory";
+				
+			case LdapServerType.FedoraDirectory:
+				return "fedora directory server";
+				
+			case LdapServerType.Generic:
+				return "generic ldap server";
+				
+			case LdapServerType.OpenLDAP:
+				return "openldap";
+				
+			default:
+				return "unknown";								
+			}
 		}
 
 		/// <summary>Modifies the specified entry

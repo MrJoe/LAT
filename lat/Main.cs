@@ -42,7 +42,7 @@ public class LdapAdministrationTool
 	{
 		string usage = Defines.PACKAGE + " " + Defines.VERSION + "\n" +
 			"Web page: http://dev.mmgsecurity.com/projects/lat/\n" +
-			"Copyright 2005 MMG Security, Inc.\n\n";
+			"Copyright 2005-2006 MMG Security, Inc.\n\n";
 
 		usage += 
 			"Usage: " + Defines.PACKAGE + " [OPTIONS]\n\n" +
@@ -57,7 +57,7 @@ public class LdapAdministrationTool
 	public static void printVersion ()
 	{
 		string version = Defines.PACKAGE + " " + Defines.VERSION + "\n\n" +
-			"Copyright 2005 MMG Security, Inc.\n" +
+			"Copyright 2005-2006 MMG Security, Inc.\n" +
 			"This is free software; see the source for copying conditions. There is NO\n" +
 			"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
 
@@ -106,6 +106,8 @@ public class LdapAdministrationTool
 		try {
 			Util.SetProcessName (Defines.PACKAGE);
 		} catch {}
+
+		Application.Init ();
 
 		Global.Templates = new TemplateManager ();
 		Global.Templates.Load ();

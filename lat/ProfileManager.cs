@@ -98,8 +98,6 @@ namespace lat
 					if (list.Length > 0) {
 						NetworkPasswordData npd = list[0];
 						password = npd.Password;
-					} else {
-						return null;
 					}
 				} 
 				

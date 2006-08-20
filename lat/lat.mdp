@@ -13,9 +13,7 @@
       <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
-  <DeploymentInformation strategy="File">
-    <excludeFiles />
-  </DeploymentInformation>
+  <DeployTargets />
   <Contents>
     <File name="./AboutDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
@@ -82,6 +80,7 @@
     <File name="./NetworkDetect.cs" subtype="Code" buildaction="Compile" />
     <File name="./Log.cs" subtype="Code" buildaction="Compile" />
     <File name="./LdapEntryAnalyzer.cs" subtype="Code" buildaction="Compile" />
+    <File name="./ServerData.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -99,4 +98,7 @@
     <ProjectReference type="Gac" localcopy="True" refto="avahi-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4d116c78973743f5" />
     <ProjectReference type="Gac" localcopy="True" refto="dbus-sharp, Version=0.62.0.0, Culture=neutral, PublicKeyToken=9eef2692033670f5" />
   </References>
+  <DeploymentInformation strategy="File">
+    <excludeFiles />
+  </DeploymentInformation>
 </Project>

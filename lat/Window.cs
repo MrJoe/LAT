@@ -178,9 +178,9 @@ namespace lat
 
 #if ENABLE_AVAHI
 			// Watch for any services available
-			ServiceFinder finder = new ServiceFinder ();
-			finder.Found += new ServiceEventHandler (OnServerFound);
-			finder.Run ();
+//			ServiceFinder finder = new ServiceFinder ();
+//			finder.Found += new ServiceEventHandler (OnServerFound);
+//			finder.Run ();
 #endif
 
 			ToggleButtons (false);
