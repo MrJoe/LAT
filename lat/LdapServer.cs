@@ -61,6 +61,8 @@ namespace lat {
 
 		public LdapServer (ConnectionData connectionData)
 		{
+			conn = new LdapConnection ();
+			
 			host = connectionData.Host;
 			port = connectionData.Port;
 			sType = Util.GetServerType (connectionData.ServerType);
@@ -78,6 +80,8 @@ namespace lat {
 
 		public LdapServer (string hostName, int hostPort, string serverType)
 		{
+			conn = new LdapConnection ();
+			
 			host = hostName;
 			port = hostPort;
 			sType = serverType;
@@ -89,9 +93,10 @@ namespace lat {
 			SetServerType ();
 		}
 
-		public LdapServer (string hostName, int hostPort, string dirRoot, 
-				   string serverType)
+		public LdapServer (string hostName, int hostPort, string dirRoot, string serverType)
 		{
+			conn = new LdapConnection ();
+			
 			host = hostName;
 			port = hostPort;
 			rootDN = dirRoot;
@@ -126,9 +131,7 @@ namespace lat {
 		/// <param name="encryptionType">Type of encryption to use for session</param>
 		public void Connect (EncryptionType encryptionType)
 		{
-			encryption = encryptionType;
-
-			conn = new LdapConnection ();
+			encryption = encryptionType;			
 	
 			if (encryption == EncryptionType.SSL)
 				conn.SecureSocketLayer = true;

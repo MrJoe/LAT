@@ -132,13 +132,18 @@ namespace lat
 		void AddViews (string profileName, TreeIter profileIter)
 		{
 			Connection conn = Global.Connections [profileName];
+			if (conn == null) {
+				Log.Warn ("Unable to find connection {0}", profileName);
+				return;
+			}
+			
 			if (conn.ServerViews.Count == 0)
 				conn.SetDefaultServerViews ();
 			
 			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins) {
 				if (conn.ServerViews.Contains (vp.GetType().ToString()))
 					viewsStore.AppendValues (profileIter, vp.Icon, vp.Name);
-			}
+			}			
 		}
 
 		public string GetSelectedViewName ()
