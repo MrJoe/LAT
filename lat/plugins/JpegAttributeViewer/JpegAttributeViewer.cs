@@ -90,7 +90,7 @@ namespace lat {
 		
 		public override string Version 
 		{ 
-			get { return "0.1"; } 
+			get { return Defines.VERSION; } 
 		}
 	}
 	

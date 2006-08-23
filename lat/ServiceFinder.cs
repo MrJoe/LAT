@@ -1,7 +1,7 @@
 // 
-// lat - ViewsTreeView.cs
+// lat - ServiceFinder.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -49,22 +49,29 @@ namespace lat
 
 		public ServiceFinder ()
 		{
+			client = new Client();			
 		}
 
-		public void Run ()
+		public void Start ()
 		{
-			try {
-				client = new Client();
+			try {				
 				sb = new ServiceBrowser (client, "_ldap._tcp");
 				sb.ServiceAdded += OnServiceAdded;
 				sb.ServiceRemoved += OnServiceRemoved;
 			} catch (ClientException ce) {
-				Log.Debug (ce.ToString());
+				Log.Debug (ce);
 			}
+		}
+		
+		public void Stop ()
+		{
+			sb.Dispose ();
 		}
 
 	    void OnServiceResolved (object o, ServiceInfoArgs args) 
 		{
+			(o as ServiceResolver).Dispose ();
+		
 			ConnectionData cd = new ConnectionData ();
 			cd.Name = String.Format ("{0} ({1})", args.Service.Name, args.Service.Address);
 			cd.Host = args.Service.Address.ToString ();

@@ -83,11 +83,11 @@ namespace lat
 			this.ShowAll ();		
 		}
 
-		public void AddConnection (string connectionName)
+		public void AddConnection (Connection conn)
 		{
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
-			TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, connectionName);
-			AddViews (connectionName, iter);
+			TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, conn.Settings.Name);
+			AddViews (conn, iter);
 		}
 
 		public void Refresh ()
@@ -123,19 +123,17 @@ namespace lat
 					
 			Log.Debug ("view expanded {0}", name);
 			
-			AddViews (name, args.Iter);
+			Connection conn = Global.Connections [name];
+			AddViews (conn, args.Iter);
 			
 			TreePath path = viewsStore.GetPath (args.Iter);
 			this.ExpandRow (path, false);
 		}
 	
-		void AddViews (string profileName, TreeIter profileIter)
+		void AddViews (Connection conn, TreeIter profileIter)
 		{
-			Connection conn = Global.Connections [profileName];
-			if (conn == null) {
-				Log.Warn ("Unable to find connection {0}", profileName);
+			if (conn == null)
 				return;
-			}
 			
 			if (conn.ServerViews.Count == 0)
 				conn.SetDefaultServerViews ();

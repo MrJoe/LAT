@@ -365,7 +365,7 @@ namespace lat {
 			}
 		}
 
-		private void SetServerType ()
+		void SetServerType ()
 		{
 			switch (sType.ToLower()) {
 

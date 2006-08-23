@@ -101,7 +101,7 @@ public class LdapAdministrationTool
 		}
 
 		Application.Init ();
-
+		
 		Log.Initialize (logLevel);		
 		Log.Info ("Starting {0} (version {1})", Defines.PACKAGE, Defines.VERSION);
 

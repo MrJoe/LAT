@@ -42,9 +42,9 @@ PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
 PKG_CHECK_MODULES(DBUS, dbus-sharp)
 AC_SUBST(DBUS_LIBS)
 
-PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="yes", ENABLE_AVAHI="no")
+PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="no", ENABLE_AVAHI="yes")
 AC_ARG_ENABLE(avahi, 
-	      [  --enable-avahi[[=no/yes]]    compile with avahi support [[default: yes]]],
+	      [  --enable-avahi[[=no/yes]]    compile with avahi support [[default: no]]],
 	      ENABLE_AVAHI="$enableval")
 AM_CONDITIONAL(ENABLE_AVAHI, test "$ENABLE_AVAHI" = "yes")
 AC_SUBST(AVAHI_LIBS)
@@ -94,5 +94,5 @@ $PACKAGE-$VERSION
     Mono Runtime:      ${MONO}
 
     Features:
-      mDNS/ZeroConf (avahi):           ${ENABLE_AVAHI}
+      AVAHI support:           ${ENABLE_AVAHI}
 "

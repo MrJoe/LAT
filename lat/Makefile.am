@@ -38,7 +38,6 @@ CSFILES = \
 	PasswordDialog.cs \
 	Preferences.cs \
 	ProfileDialog.cs \
-	ProfileManager.cs \
 	RenameEntryDialog.cs \
 	SMBPassword.cs \
 	SambaPopulateDialog.cs \

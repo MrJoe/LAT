@@ -108,7 +108,11 @@ namespace lat
 		ListStore objRequiredStore;
 		ListStore objOptionalStore;
 		
-		ComboBox serverComboBox;
+		ComboBox serverComboBox;		
+		
+#if ENABLE_AVAHI
+		ServiceFinder finder;
+#endif
 		
 		public MainWindow (Gnome.Program mainProgram)
 		{
@@ -172,13 +176,6 @@ namespace lat
 
 			infoVpaned1.Position = 150;
 
-#if ENABLE_AVAHI
-			// Watch for any services available
-//			ServiceFinder finder = new ServiceFinder ();
-//			finder.Found += new ServiceEventHandler (OnServerFound);
-//			finder.Run ();
-#endif
-
 			ToggleButtons (false);
 			ToggleInfoNotebook (false);
 			
@@ -193,6 +190,13 @@ namespace lat
 
 			Global.Network = NetworkDetect.Instance;
 			Global.Network.StateChanged += OnNetworkStateChanged;
+
+#if ENABLE_AVAHI	
+			// Watch for any services available
+			finder = new ServiceFinder ();
+			finder.Found += new ServiceEventHandler (OnServerFound);
+			finder.Start ();
+#endif
 			
 			viewNotebook.SwitchPage += new SwitchPageHandler (OnNotebookViewChanged);
 		}
@@ -329,74 +333,55 @@ namespace lat
 			templateToolButton.SetTooltip (t,  tipMsg, tipMsg);			
 		}
 
-		void SetInfoNotePage (int page)
+		void TogglePages (bool pageOneState, bool pageTwoState, bool pageThreeState, bool pageFourState)
 		{
-			Gtk.Widget w = null;
-		
+			Gtk.Widget w;
+			
+			w = infoNotebook.GetNthPage (3);
+			if (pageFourState)
+				w.ShowAll ();
+			else
+				w.HideAll ();
+			
+			w = infoNotebook.GetNthPage (2);
+			if (pageThreeState)
+				w.ShowAll ();
+			else
+				w.HideAll ();
+			
+			w = infoNotebook.GetNthPage (1);
+			if (pageTwoState)
+				w.ShowAll ();
+			else
+				w.HideAll ();
+
+			w = infoNotebook.GetNthPage (0);
+			if (pageOneState)
+				w.ShowAll ();
+			else
+				w.HideAll ();
+
+			infoNotebook.Show ();			
+		}
+
+		void SetInfoNotePage (int page)
+		{	
 			switch (page) {
 			
 			case 0:
-				w = infoNotebook.GetNthPage (3);
-				w.HideAll ();
-				
-				w = infoNotebook.GetNthPage (2);
-				w.HideAll ();
-				
-				w = infoNotebook.GetNthPage (1);
-				w.HideAll ();
-
-				w = infoNotebook.GetNthPage (0);
-				w.ShowAll ();
-
-				infoNotebook.Show ();
+				TogglePages (false, false, false, true);
 				break;
 					
 			case 1:
-				w = infoNotebook.GetNthPage (3);
-				w.HideAll ();
-				
-				w = infoNotebook.GetNthPage (2);
-				w.HideAll ();
-				
-				w = infoNotebook.GetNthPage (1);
-				w.ShowAll ();
-
-				w = infoNotebook.GetNthPage (0);
-				w.HideAll ();
-
-				infoNotebook.Show ();
+				TogglePages (false, false, true, false);
 				break;
 
 			case 2:
-				w = infoNotebook.GetNthPage (3);
-				w.HideAll ();
-				
-				w = infoNotebook.GetNthPage (2);
-				w.ShowAll ();
-				
-				w = infoNotebook.GetNthPage (1);
-				w.HideAll ();
-
-				w = infoNotebook.GetNthPage (0);
-				w.HideAll ();
-
-				infoNotebook.Show ();			
+				TogglePages (false, true, false, false);
 				break;
 				
 			case 3:
-				w = infoNotebook.GetNthPage (3);
-				w.ShowAll ();
-				
-				w = infoNotebook.GetNthPage (2);
-				w.HideAll ();
-				
-				w = infoNotebook.GetNthPage (1);
-				w.HideAll ();
-
-				w = infoNotebook.GetNthPage (0);
-				w.HideAll ();
-
-				infoNotebook.Show ();			
+				TogglePages (true, false, false, false);
 				break;
 				
 			default:
@@ -1110,7 +1095,7 @@ namespace lat
 		}
 
 		void OnNotebookViewChanged (object o, SwitchPageArgs args)
-		{
+		{	
 			if (args.PageNum == 0) {
 
 				ldapTreeView.removeToolbarHandlers ();
@@ -1266,9 +1251,9 @@ namespace lat
 
 #if ENABLE_AVAHI
 		void OnServerFound (object o, ServiceEventArgs args)
-		{
+		{	
 			Global.Connections [args.FoundConnection.Settings.Name] = args.FoundConnection;
-			viewsTreeView.AddConnection (args.FoundConnection.Settings.Name);
+			viewsTreeView.AddConnection (args.FoundConnection);
 			ldapTreeView.AddConnection (args.FoundConnection.Settings.Name);
 			schemaTreeview.AddConnection (args.FoundConnection.Settings.Name);
 		}
