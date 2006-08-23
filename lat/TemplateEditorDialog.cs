@@ -1,7 +1,7 @@
 // 
 // lat - TemplateEditorDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,18 +35,18 @@ namespace lat
 		[Glade.Widget] TreeView objTreeView; 
 		[Glade.Widget] TreeView attrTreeView; 
 
-		private ListStore objListStore;
-		private ListStore attrListStore;
+		ListStore objListStore;
+		ListStore attrListStore;
 
-		private List<string> _objectClass;
-		private Template t = null;
+		List<string> _objectClass;
+		Template t = null;
 
-		private LdapServer server;
-		private bool _isEdit = false;
+		Connection conn;
+		bool _isEdit = false;
 
-		public TemplateEditorDialog (LdapServer ldapServer)
+		public TemplateEditorDialog (Connection connection)
 		{
-			server = ldapServer;
+			conn = connection;
 		
 			Init ();
 
@@ -54,9 +54,9 @@ namespace lat
 			templateEditorDialog.Destroy ();
 		}
 
-		public TemplateEditorDialog (LdapServer ldapServer, Template theTemplate)
+		public TemplateEditorDialog (Connection connection, Template theTemplate)
 		{
-			server = ldapServer;
+			conn = connection;
 			_isEdit = true;
 
 			t = theTemplate;
@@ -142,7 +142,7 @@ namespace lat
 			attrListStore.Clear ();
 
 			string[] required, optional;			
-			server.GetAllAttributes (_objectClass, out required, out optional);
+			conn.Data.GetAllAttributes (_objectClass, out required, out optional);
 
 			foreach (string s in required) {
 
@@ -172,7 +172,7 @@ namespace lat
 
 		public void OnObjAddClicked (object o, EventArgs args)
 		{
-			AddObjectClassDialog dlg = new AddObjectClassDialog (server);				
+			AddObjectClassDialog dlg = new AddObjectClassDialog (conn);				
 			foreach (string s in dlg.ObjectClasses) {
 				if (_objectClass.Contains (s))
 					continue;

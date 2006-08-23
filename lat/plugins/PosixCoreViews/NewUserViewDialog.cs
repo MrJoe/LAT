@@ -60,7 +60,7 @@ namespace lat
 
 		ComboBox primaryGroupComboBox;
 
-		public NewUserViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
+		public NewUserViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
 		{
 			Init ();		
 
@@ -68,7 +68,7 @@ namespace lat
 
 			createCombo ();
 
-			uidSpinButton.Value = server.GetNextUID ();
+			uidSpinButton.Value = conn.Data.GetNextUID ();
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
 
 			newUserDialog.Icon = Global.latIcon;
@@ -89,7 +89,7 @@ namespace lat
 		void OnSambaChanged (object o, EventArgs args)
 		{
 			if (enableSambaButton.Active) {
-				smbSID = server.GetLocalSID ();
+				smbSID = conn.Data.GetLocalSID ();
 
 				if (smbSID == null) {
 					Util.DisplaySambaSIDWarning (newUserDialog);
@@ -101,7 +101,7 @@ namespace lat
 		
 		void getGroups ()
 		{
-			LdapEntry[] grps = server.SearchByClass ("posixGroup");
+			LdapEntry[] grps = conn.Data.SearchByClass ("posixGroup");
 
 			foreach (LdapEntry e in grps) {
 
@@ -147,7 +147,7 @@ namespace lat
 			if (combo.GetActiveIter (out iter)) {
 				string selection = (string) combo.Model.GetValue (iter, 0);				
 				if (selection == "Create new group...") {
-					new GroupsViewDialog (server, "");
+					new GroupsViewDialog (conn, "");
 					
 					_allGroups.Clear();
 					_allGroupGids.Clear();
@@ -233,7 +233,7 @@ namespace lat
 				return;
 
 			try {
-				server.Modify (groupEntry.DN, mods);
+				conn.Data.Modify (groupEntry.DN, mods);
 
 			} catch (Exception e) {
 
@@ -332,7 +332,7 @@ namespace lat
 
 		bool IsUserNameAvailable ()
 		{
-			if (!Util.CheckUserName (server, usernameEntry.Text)) {
+			if (!Util.CheckUserName (conn, usernameEntry.Text)) {
 				string format = Mono.Unix.Catalog.GetString (
 					"A user with the username '{0}' already exists!");
 
@@ -357,7 +357,7 @@ namespace lat
 
 		bool IsUIDAvailable ()
 		{
-			if (!Util.CheckUID (server, Convert.ToInt32 (uidSpinButton.Value))) {
+			if (!Util.CheckUID (conn, Convert.ToInt32 (uidSpinButton.Value))) {
 				string msg = Mono.Unix.Catalog.GetString (
 					"The UID you have selected is already in use!");
 
@@ -413,7 +413,7 @@ namespace lat
 			
 			if (this.defaultNewContainer == null) {
 			
-				SelectContainerDialog scd =	new SelectContainerDialog (server, newUserDialog);
+				SelectContainerDialog scd =	new SelectContainerDialog (conn, newUserDialog);
 				scd.Title = "Save Group";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}", displayNameEntry.Text);
 				scd.Run ();
@@ -430,7 +430,7 @@ namespace lat
 			
 			entry = CreateEntry (userDN);
 
-			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (conn, entry);
 			if (missing.Length != 0) {
 				missingAlert (missing);
 				missingValues = true;
@@ -439,7 +439,7 @@ namespace lat
 
 			updateGroupMembership ();
 
-			if (!Util.AddEntry (server, entry))
+			if (!Util.AddEntry (conn, entry))
 				errorOccured = true;			
 		}
 	}

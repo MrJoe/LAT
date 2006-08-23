@@ -122,15 +122,11 @@ namespace lat
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			mainWindow.Icon = dirIcon;
 			
-			Global.Profiles = new ProfileManager ();			
-			Global.Connections = new ConnectionManager (mainWindow);
-
 			// Restore window positions
 			LoadPreference (Preferences.MAIN_WINDOW_WIDTH);
 			LoadPreference (Preferences.MAIN_WINDOW_X);
 			LoadPreference (Preferences.MAIN_WINDOW_MAXIMIZED);
 			LoadPreference (Preferences.MAIN_WINDOW_HPANED);
-
 			LoadPreference (Preferences.DISPLAY_VERBOSE_MESSAGES);
 
 			// Watch for any changes
@@ -216,10 +212,8 @@ namespace lat
 
 		void CreateServerCombo ()
 		{
-			serverComboBox = ComboBox.NewText ();
-			string[] names = Global.Profiles.GetProfileNames ();
-			
-			foreach (string s in names)
+			serverComboBox = ComboBox.NewText ();			
+			foreach (string s in Global.Connections.ConnectionNames)
 				serverComboBox.AppendText (s);
 
 			serverComboBox.Active = 0;
@@ -228,12 +222,12 @@ namespace lat
 			hbox448.PackEnd (serverComboBox, true, true, 5);
 		}
 
-		void GenerateNewMenu (ConnectionProfile cp)
+		void GenerateNewMenu (Connection conn)
 		{		
 			Gtk.Menu newMenu = new Gtk.Menu ();	
  				 	
 			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins)		
-					if (cp.ActiveServerViews.Contains (vp.GetType().ToString())) {
+					if (conn.ServerViews.Contains (vp.GetType().ToString())) {
 						ImageMenuItem menuitem = new ImageMenuItem (vp.MenuLabel, newAccelGroup);
 						menuitem.AddAccelerator ("activate", newAccelGroup, vp.MenuKey);
 						
@@ -250,11 +244,10 @@ namespace lat
 			newMenuToolButton.Menu = newMenu;
 		}
 
-		LdapServer GetActiveServer ()
+		Connection GetActiveConnection ()
 		{
 			string serverName = null;
-			ConnectionProfile cp = null;
-			LdapServer server = null;
+			Connection conn = null;
 			
 			if (viewsView.Active) {
 				serverName = viewsTreeView.GetActiveServerName ();
@@ -265,12 +258,10 @@ namespace lat
 			} 
 		
 			if (serverName == null)
-				return server;
+				return conn;
 
-			cp = Global.Profiles [serverName];			
-			server = Global.Connections [cp];	
-			
-			return server;
+			conn = Global.Connections [serverName];			
+			return conn;
 		}
 
 		void LoadPreference (String key)
@@ -586,19 +577,19 @@ namespace lat
 		{
 			string msg = null;
 
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 
-			if (server.AuthDN == null)
+			if (conn.AuthDN == null)
 				msg = String.Format("Bind DN: anonymous");
 			else
-				msg = String.Format("Bind DN: {0}", server.AuthDN);
+				msg = String.Format("Bind DN: {0}", conn.AuthDN);
 
 			appBar.Pop ();
 			appBar.Push (msg);
 
-			sslImage.Pixbuf = Util.GetSSLIcon (server.UseSSL);
+			sslImage.Pixbuf = Util.GetSSLIcon (conn.UseSSL);
 		}
 		
 		// Handlers
@@ -648,14 +639,14 @@ namespace lat
 
 		public void OnReloginActivate (object o, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;		
 		
 			string msg = Mono.Unix.Catalog.GetString (
 				"Enter the new username and password\nyou wish to re-login with");
 
-			LoginDialog ld = new LoginDialog (server, msg);
+			LoginDialog ld = new LoginDialog (conn, msg);
 			ld.Run ();
 
 			UpdateStatusBar ();
@@ -669,28 +660,27 @@ namespace lat
 
 			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);		
 		
-			ConnectionProfile cp = Global.Profiles [profileName];
-			LdapServer server = Global.Connections [cp];
-			if (server == null)
+			Connection conn = Global.Connections [profileName];
+			if (conn == null)
 				return;
 		
 			if (args.IsDND) {
 				string data = null;
-				Util.ExportData (server, args.DN, out data);
+				Util.ExportData (conn, args.DN, out data);
 				args.Data = data;
 			} else { 
-				Util.ExportData (server, mainWindow, args.DN);
+				Util.ExportData (conn, mainWindow, args.DN);
 			}			
 		}
 
 
 		public void OnTemplatesClicked (object o, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 		
-			new TemplatesDialog (server);
+			new TemplatesDialog (conn);
 		}
 
 		public void OnConnectActivate (object o, EventArgs args)
@@ -711,18 +701,18 @@ namespace lat
 
 		public void OnDisconnectActivate (object o, EventArgs args) 
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 				
-			server.Disconnect ();
+			conn.Disconnect ();
 		}
 
 		public void OnImportActivate (object o, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
-				return;		
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
+				return;
 		
 			FileChooserDialog fcd = new FileChooserDialog (
 				Mono.Unix.Catalog.GetString ("Choose an LDIF file to import"),
@@ -742,7 +732,7 @@ namespace lat
 				ub.Scheme = "file";
 				ub.Path = fcd.Filename;
 
-				Util.ImportData (server, mainWindow, ub.Uri);
+				Util.ImportData (conn, mainWindow, ub.Uri);
 			} 
 		
 			fcd.Destroy();
@@ -750,42 +740,39 @@ namespace lat
 
 		public void OnExportActivate (object o, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 		
-			SelectContainerDialog scd = new SelectContainerDialog (server, mainWindow);
-
+			SelectContainerDialog scd = new SelectContainerDialog (conn, mainWindow);
 			scd.Title = Mono.Unix.Catalog.GetString ("Export entry");
-
-			scd.Message = 
-				Mono.Unix.Catalog.GetString ("Select the container you wish to export.");
+			scd.Message = Mono.Unix.Catalog.GetString ("Select the container you wish to export.");
 			scd.Run ();
 
 			if (scd.DN.Equals (""))
 				return;
 
-			Util.ExportData (server, mainWindow, scd.DN);
+			Util.ExportData (conn, mainWindow, scd.DN);
 		}
 
 		public void OnPopulateActivate (object o, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 				
-			new SambaPopulateDialog (server);
+			new SambaPopulateDialog (conn);
 		}
 
 		public void OnPreferencesActivate (object sender, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 				
-			new PreferencesDialog (server);
+			new PreferencesDialog (conn);
 			
-			Global.Profiles.SaveProfiles ();
+			Global.Connections.Save ();
 		}
 
 		public void OnCutActivate (object o, EventArgs args)
@@ -893,11 +880,11 @@ namespace lat
 
 		public void OnMassEditActivate (object o, EventArgs args)
 		{
-			LdapServer server = GetActiveServer ();
-			if (server == null)
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
 				return;
 				
-			new MassEditDialog (server);
+			new MassEditDialog (conn);
 		}
 
 		void Close ()
@@ -930,15 +917,12 @@ namespace lat
 			if (!serverComboBox.GetActiveIter (out iter))
 				return;
 
-			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);
-			
-			ConnectionProfile cp = Global.Profiles [profileName];			
-			LdapServer server = Global.Connections [cp];
-				
-			LdapEntry entry = server.GetEntry (args.DN);
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);			
+			Connection conn = Global.Connections [profileName];			
+			LdapEntry entry = conn.Data.GetEntry (args.DN);
 
 			if (entry != null) 
-				attributeEditor.Show (server, entry, showAllAttributes.Active);
+				attributeEditor.Show (conn, entry, showAllAttributes.Active);
 		}
 		
 		public void OnSearchBuilderClicked (object o, EventArgs args)
@@ -954,13 +938,10 @@ namespace lat
 			if (!serverComboBox.GetActiveIter (out iter))
 				return;
 
-			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);			
+			Connection conn = Global.Connections [profileName];
 			
-			ConnectionProfile cp = Global.Profiles [profileName];			
-			LdapServer server = Global.Connections [cp];
-			
-			LdapEntry[] searchResults = server.Search (
-				searchBaseButton.Label, filterEntry.Text);
+			LdapEntry[] searchResults = conn.Data.Search (searchBaseButton.Label, filterEntry.Text);
 
 			if (searchResults == null) {
 				HIGMessageDialog dialog = new HIGMessageDialog (
@@ -990,37 +971,34 @@ namespace lat
 			if (!serverComboBox.GetActiveIter (out iter))
 				return;
 
-			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);
-			
-			ConnectionProfile cp = Global.Profiles [profileName];			
-			LdapServer server = Global.Connections [cp];
+			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);			
+			Connection conn = Global.Connections [profileName];
 		
-			SelectContainerDialog scd = new SelectContainerDialog (server, mainWindow);
-
-			scd.Message = String.Format (
-				Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
-
+			SelectContainerDialog scd = new SelectContainerDialog (conn, mainWindow);
+			scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
 			scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
 				searchBaseButton.Label = scd.DN;
 		}
 
 		public void OnShowAllAttributes (object o, EventArgs args)
 		{
 			string dn = null;
-			LdapServer server = null;
+			string name = null;
+			Connection conn = null;
 
 			if (viewNotebook.CurrentPage == 1) {
 
-				ldapTreeView.GetSelectedDN (out dn, out server);
+				ldapTreeView.GetSelectedDN (out dn, out name);
 
-				if (dn == null || server == null)
+				if (dn == null || name == null)
 					return;
 
-				LdapEntry entry = server.GetEntry (dn);
-				attributeEditor.Show (server, entry, showAllAttributes.Active);
+				conn = Global.Connections [name];
+				LdapEntry entry = conn.Data.GetEntry (dn);
+				attributeEditor.Show (conn, entry, showAllAttributes.Active);
 			}
 		}
 
@@ -1081,14 +1059,13 @@ namespace lat
 
 		void OnLdapDNSelected (object o, dnSelectedEventArgs args)
 		{
-			ConnectionProfile cp = Global.Profiles [args.Server];
-			LdapServer server = Global.Connections [cp];
+			Connection conn = Global.Connections [args.Server];
 			
 			if (args.IsHost) {
 				if (attributeEditor != null)
 					attributeEditor.Destroy ();
 			
-				serverInfoView = new ServerInfoView (server);
+				serverInfoView = new ServerInfoView (conn);
 				valuesScrolledWindow.AddWithViewport (serverInfoView);
 				valuesScrolledWindow.ShowAll ();
 				
@@ -1104,9 +1081,9 @@ namespace lat
 				valuesScrolledWindow.ShowAll ();				
 			}
 			
-			LdapEntry entry = server.GetEntry (args.DN);			
+			LdapEntry entry = conn.Data.GetEntry (args.DN);			
 			if (entry != null)
-				attributeEditor.Show (server, entry, showAllAttributes.Active);
+				attributeEditor.Show (conn, entry, showAllAttributes.Active);
 		}
 
 		void OnNetworkStateChanged (object o, NetworkStateChangedArgs args)
@@ -1257,33 +1234,32 @@ namespace lat
 			if (args.Name == "Object Classes" || args.Name == "Attribute Types" || args.Name == "Matching Rules" || args.Name == "LDAP Syntaxes")
 				return;
 
-			ConnectionProfile cp = Global.Profiles [args.Server];
-			LdapServer server = Global.Connections [cp];
+			Connection conn = Global.Connections [args.Server];
 
 			ClearSchemaValues ();
 
 			if (args.Parent == "Object Classes") {
 				
 				SetInfoNotePage (0);
-				SchemaParser sp = server.GetObjectClassSchema (args.Name);
+				SchemaParser sp = conn.Data.GetObjectClassSchema (args.Name);
 				ShowEntrySchema (sp);
 
 			} else if (args.Parent == "Attribute Types") {
 
 				SetInfoNotePage (1);
-				SchemaParser sp = server.GetAttributeTypeSchema (args.Name);
+				SchemaParser sp = conn.Data.GetAttributeTypeSchema (args.Name);
 				ShowAttrTypeSchema (sp);
 				
 			} else if (args.Parent == "Matching Rules") {
 
 				SetInfoNotePage (2);
-				SchemaParser sp = server.GetMatchingRule (args.Name);
+				SchemaParser sp = conn.Data.GetMatchingRule (args.Name);
 				ShowMatchingRule (sp);				
 			
 			} else if (args.Parent == "LDAP Syntaxes") {
 			
 				SetInfoNotePage (3);
-				SchemaParser sp = server.GetLdapSyntax (args.Name);
+				SchemaParser sp = conn.Data.GetLdapSyntax (args.Name);
 				ShowLdapSyntax (sp);
 			}
 		}
@@ -1291,18 +1267,17 @@ namespace lat
 #if ENABLE_AVAHI
 		void OnServerFound (object o, ServiceEventArgs args)
 		{
-			Global.Profiles [args.Profile.Name] = args.Profile;
-			viewsTreeView.AddServer (args.Profile);
-			ldapTreeView.AddServer (args.Profile);
-			schemaTreeview.AddServer (args.Profile);
+			Global.Connections [args.FoundConnection.Settings.Name] = args.FoundConnection;
+			viewsTreeView.AddConnection (args.FoundConnection.Settings.Name);
+			ldapTreeView.AddConnection (args.FoundConnection.Settings.Name);
+			schemaTreeview.AddConnection (args.FoundConnection.Settings.Name);
 		}
 #endif
 		
 		void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
 			ViewPlugin vp = Global.Plugins.FindServerView (args.Name);
-			LdapServer server = null;
-			ConnectionProfile cp = null;
+			Connection conn = null;
 			
 			if (vp == null) {
 				if (viewDataTreeView != null) {					
@@ -1315,10 +1290,9 @@ namespace lat
 					serverInfoView = null;
 				}
 
-				cp = Global.Profiles [args.Name];
-				server = Global.Connections [cp];
+				conn = Global.Connections [args.Name];
 				
-				serverInfoView = new ServerInfoView (server);
+				serverInfoView = new ServerInfoView (conn);
 				valuesScrolledWindow.AddWithViewport (serverInfoView);
 				valuesScrolledWindow.ShowAll ();
 				
@@ -1333,10 +1307,9 @@ namespace lat
 					serverInfoView = null;
 				}
 				
-				cp = Global.Profiles [args.ConnectionName];		
-				server = Global.Connections [cp];
+				conn = Global.Connections [args.ConnectionName];
 	
-				viewDataTreeView = new ViewDataTreeView (server, mainWindow);
+				viewDataTreeView = new ViewDataTreeView (conn, mainWindow);
 				valuesScrolledWindow.AddWithViewport (viewDataTreeView);
 				valuesScrolledWindow.ShowAll ();			
 			}
@@ -1345,13 +1318,13 @@ namespace lat
 			viewDataTreeView.Populate ();
 			SetupToolbar (vp);
 			
-			GenerateNewMenu (cp);
+			GenerateNewMenu (conn);
 		}
 	}
 
 	public class ServerInfoView : Gtk.TreeView
 	{
-		public ServerInfoView (LdapServer server) : base ()
+		public ServerInfoView (Connection conn) : base ()
 		{	
 			ListStore store = new ListStore (typeof (string), typeof (string));
 			this.Model = store;
@@ -1359,23 +1332,24 @@ namespace lat
 			this.AppendColumn ("Name", new CellRendererText (), "text", 0); 
 			this.AppendColumn ("Value", new CellRendererText (), "text", 1); 
 
-			store.AppendValues (Mono.Unix.Catalog.GetString ("Host"), server.Host);
-			store.AppendValues (Mono.Unix.Catalog.GetString ("Port"), server.Port.ToString());
-			store.AppendValues (Mono.Unix.Catalog.GetString ("User"), server.AuthDN);
-			store.AppendValues (Mono.Unix.Catalog.GetString ("Base DN"), server.DirectoryRoot);
-			store.AppendValues (Mono.Unix.Catalog.GetString ("Connected"), server.Connected.ToString());
-			store.AppendValues (Mono.Unix.Catalog.GetString ("Bound"), server.Bound.ToString());
-			store.AppendValues (Mono.Unix.Catalog.GetString ("TLS/SSL"), server.UseSSL.ToString());
-			store.AppendValues (Mono.Unix.Catalog.GetString ("Protocol Version"), server.Protocol.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Host"), conn.Settings.Host);
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Port"), conn.Settings.Port.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("User"), conn.AuthDN);
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Base DN"), conn.DirectoryRoot);
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Connected"), conn.IsConnected.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Bound"), conn.IsBound.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("TLS/SSL"), conn.UseSSL.ToString());
+			store.AppendValues (Mono.Unix.Catalog.GetString ("Protocol Version"), conn.Protocol.ToString());
 
-			if (server.ServerType == LdapServerType.ActiveDirectory) {
-				store.AppendValues (Mono.Unix.Catalog.GetString ("DNS Host Name"), server.ADInfo.DnsHostName);
-				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Controller Functionality"), server.ADInfo.DomainControllerFunctionality);
-				store.AppendValues (Mono.Unix.Catalog.GetString ("Forest Functionality"),	server.ADInfo.ForestFunctionality);
-				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Functionality"),	server.ADInfo.DomainFunctionality);
-				store.AppendValues (Mono.Unix.Catalog.GetString ("Global Catalog Ready"),	server.ADInfo.IsGlobalCatalogReady.ToString());
-				store.AppendValues (Mono.Unix.Catalog.GetString ("Synchronized"),	server.ADInfo.IsSynchronized.ToString());
-			}
+// FIXME: re-enable
+//			if (server.ServerType == LdapServerType.ActiveDirectory) {
+//				store.AppendValues (Mono.Unix.Catalog.GetString ("DNS Host Name"), server.ADInfo.DnsHostName);
+//				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Controller Functionality"), server.ADInfo.DomainControllerFunctionality);
+//				store.AppendValues (Mono.Unix.Catalog.GetString ("Forest Functionality"),	server.ADInfo.ForestFunctionality);
+//				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Functionality"),	server.ADInfo.DomainFunctionality);
+//				store.AppendValues (Mono.Unix.Catalog.GetString ("Global Catalog Ready"),	server.ADInfo.IsGlobalCatalogReady.ToString());
+//				store.AppendValues (Mono.Unix.Catalog.GetString ("Synchronized"),	server.ADInfo.IsSynchronized.ToString());
+//			}
 
 			this.ShowAll ();
 		}

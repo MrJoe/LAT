@@ -38,14 +38,14 @@ namespace lat {
 		{
 		}
 
-		public override void OnAddEntry (LdapServer server)
+		public override void OnAddEntry (Connection connection)
 		{
-			new NewAdComputerViewDialog (server, this.DefaultNewContainer);
+			new NewAdComputerViewDialog (connection, this.DefaultNewContainer);
 		}		
 
-		public override void OnEditEntry (LdapServer server, LdapEntry le)
+		public override void OnEditEntry (Connection connection, LdapEntry le)
 		{
-			new EditAdComputerViewDialog (server, le);
+			new EditAdComputerViewDialog (connection, le);
 		}
 					
 		public override void OnPopupShow (Menu popup)
@@ -77,7 +77,7 @@ namespace lat {
 		
 		public override string Version 
 		{ 
-			get { return "0.1"; } 
+			get { return Defines.VERSION; } 
 		}
 
 		public override string MenuLabel 

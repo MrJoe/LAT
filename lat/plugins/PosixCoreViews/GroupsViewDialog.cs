@@ -48,14 +48,14 @@ namespace lat
 		
 		string smbSID = "";
 
-		public GroupsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
+		public GroupsViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
 		{
 			Init ();
 
 			populateUsers ();
 
 			groupDialog.Title = "Add Group";
-			groupIDSpinButton.Value = server.GetNextGID ();
+			groupIDSpinButton.Value = conn.Data.GetNextGID ();
 
 			groupDialog.Icon = Global.latIcon;
 			groupDialog.Run ();
@@ -72,7 +72,7 @@ namespace lat
 			groupDialog.Destroy ();
 		}
 
-		public GroupsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
+		public GroupsViewDialog (Connection connection, LdapEntry le) : base (connection, null)
 		{
 			currentEntry = le;
 		
@@ -81,14 +81,14 @@ namespace lat
 
 			Init ();
 
-			string groupName = server.GetAttributeValueFromEntry (currentEntry, "cn");
+			string groupName = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 
 			groupDialog.Title = groupName + " Properties";
 			groupNameEntry.Text = groupName;
-			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
+			descriptionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "description");
 			
 			try {
-				groupIDSpinButton.Value = int.Parse (server.GetAttributeValueFromEntry (currentEntry, "gidNumber"));
+				groupIDSpinButton.Value = int.Parse (conn.Data.GetAttributeValueFromEntry (currentEntry, "gidNumber"));
 			} catch {}
 
 			LdapAttribute attr = currentEntry.getAttribute ("memberuid");
@@ -118,7 +118,7 @@ namespace lat
 		void OnSambaChanged (object o, EventArgs args)
 		{
 			if (enableSambaButton.Active) {
-				smbSID = server.GetLocalSID ();
+				smbSID = conn.Data.GetLocalSID ();
 
 				if (smbSID == null) {
 					Util.DisplaySambaSIDWarning (groupDialog);
@@ -130,7 +130,7 @@ namespace lat
 
 		void populateUsers ()
 		{
-			LdapEntry[] _users = server.SearchByClass ("posixAccount");
+			LdapEntry[] _users = conn.Data.SearchByClass ("posixAccount");
 
 			foreach (LdapEntry le in _users) {
 				LdapAttribute nameAttr = le.getAttribute ("uid");
@@ -248,7 +248,7 @@ namespace lat
 				aset.Add (new LdapAttribute ("sambaGroupType", "2"));
 
 				int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
-				smbSID = server.GetLocalSID ();				
+				smbSID = conn.Data.GetLocalSID ();				
 				aset.Add (new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", smbSID, grid)));
 
 			} else {
@@ -272,7 +272,7 @@ namespace lat
 				 if (lea.Differences.Length == 0)
 				 	return;
 				 	
-				 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+				 if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 				 	errorOccured = true;
 				 	
 			} else {
@@ -281,7 +281,7 @@ namespace lat
 				
 				if (this.defaultNewContainer == string.Empty) {
 				
-					SelectContainerDialog scd =	new SelectContainerDialog (server, groupDialog);
+					SelectContainerDialog scd =	new SelectContainerDialog (conn, groupDialog);
 					scd.Title = "Save Group";
 					scd.Message = String.Format ("Where in the directory would\nyou like save the group\n{0}?", groupNameEntry.Text);
 					scd.Run ();
@@ -298,14 +298,14 @@ namespace lat
 				
 				entry = CreateEntry (userDN);
 
-				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (conn, entry);
 				if (missing.Length != 0) {
 					missingAlert (missing);
 					missingValues = true;
 					return;
 				}
 
-				if (!Util.AddEntry (server, entry))
+				if (!Util.AddEntry (conn, entry))
 					errorOccured = true;
 			}
 		}

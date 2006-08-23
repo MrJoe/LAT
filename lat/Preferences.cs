@@ -116,11 +116,11 @@ namespace lat
 
 		ListStore pluginStore;
 		ListStore attrPluginStore;
-		LdapServer server;
+		Connection conn;
 			
-		public PreferencesDialog (LdapServer ldapServer)
+		public PreferencesDialog (Connection connection)
 		{
-			server = ldapServer;
+			conn = connection;
 		
 			ui = new Glade.XML (null, "lat.glade", "preferencesDialog", null);
 			ui.Autoconnect (this);
@@ -136,10 +136,9 @@ namespace lat
 			
 			pluginTreeView.Model = pluginStore;
 
-			if (server.ProfileName != null) {
-				ConnectionProfile cp = Global.Profiles [server.ProfileName];			
+			if (conn.Settings.Name != null) {
 				foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins) {
-					if (cp.ActiveServerViews.Contains (vp.GetType().ToString()))
+					if (conn.ServerViews.Contains (vp.GetType().ToString()))
 						pluginStore.AppendValues (true, vp.Name);
 					else
 						pluginStore.AppendValues (false, vp.Name);
@@ -157,14 +156,13 @@ namespace lat
 			
 			attrViewPluginTreeView.Model = attrPluginStore;
 
-			if (server.ProfileName != null) {
-				ConnectionProfile cp = Global.Profiles [server.ProfileName];				
+			if (conn.Settings.Name != null) {	
 			
-				if (cp.ActiveAttributeViewers == null)
-					cp.SetDefaultAttributeViewers ();
+				if (conn.AttributeViewers.Count == 0)
+					conn.SetDefaultAttributeViewers ();
 					
 				foreach (AttributeViewPlugin avp in Global.Plugins.AttributeViewPlugins) {
-					if (cp.ActiveAttributeViewers.Contains (avp.GetType().ToString()))
+					if (conn.AttributeViewers.Contains (avp.GetType().ToString()))
 						attrPluginStore.AppendValues (true, avp.Name);
 					else
 						attrPluginStore.AppendValues (false, avp.Name);
@@ -274,7 +272,7 @@ namespace lat
 		
 			if (pluginTreeView.Selection.GetSelected (out model, out iter)) {	
 				string name = (string) pluginStore.GetValue (iter, 1);		
-				new PluginConfigureDialog (server, name);
+				new PluginConfigureDialog (conn, name);
 			}
 		}
 
@@ -287,15 +285,14 @@ namespace lat
 				bool old = (bool) attrPluginStore.GetValue (iter,0);
 				
 				string name = (string) attrPluginStore.GetValue (iter, 1);				
-				ConnectionProfile cp = Global.Profiles [server.ProfileName];
 				AttributeViewPlugin vp = Global.Plugins.FindAttributeView (name);
 				
-				if (!cp.ActiveAttributeViewers.Contains (vp.GetType().ToString()))
-					cp.ActiveAttributeViewers.Add (vp.GetType().ToString());
+				if (!conn.AttributeViewers.Contains (vp.GetType().ToString()))
+					conn.AttributeViewers.Add (vp.GetType().ToString());
 				else
-					cp.ActiveAttributeViewers.Remove (vp.GetType().ToString());
+					conn.AttributeViewers.Remove (vp.GetType().ToString());
 				
-				Global.Profiles [server.ProfileName] = cp;
+				Global.Connections [conn.Settings.Name] = conn;
 				
 				attrPluginStore.SetValue(iter,0,!old);
 			}
@@ -310,15 +307,14 @@ namespace lat
 				bool old = (bool) pluginStore.GetValue (iter,0);
 				string name = (string) pluginStore.GetValue (iter, 1);
 				
-				ConnectionProfile cp = Global.Profiles [server.ProfileName];
 				ViewPlugin vp = Global.Plugins.FindServerView (name);
 				
-				if (!cp.ActiveServerViews.Contains (vp.GetType().ToString()))
-					cp.ActiveServerViews.Add (vp.GetType().ToString());
+				if (!conn.ServerViews.Contains (vp.GetType().ToString()))
+					conn.ServerViews.Add (vp.GetType().ToString());
 				else
-					cp.ActiveServerViews.Remove (vp.GetType().ToString());
+					conn.ServerViews.Remove (vp.GetType().ToString());
 				
-				Global.Profiles [server.ProfileName] = cp;				
+				Global.Connections [conn.Settings.Name] = conn;				
 				pluginStore.SetValue(iter,0,!old);
 			}
 		}
@@ -335,14 +331,14 @@ namespace lat
 		[Glade.Widget] TreeView columnsTreeView; 
 
 		ListStore columnStore;
-		LdapServer server;
+		Connection conn;
 		ViewPlugin vp;
 		List<string> colNames;
 		List<string> colAttrs;
 			
-		public PluginConfigureDialog (LdapServer ldapServer, string pluginName)
+		public PluginConfigureDialog (Connection connection, string pluginName)
 		{
-			server = ldapServer;
+			conn = connection;
 			colNames = new List<string> ();
 			colAttrs = new List<string> ();
 		
@@ -455,23 +451,23 @@ namespace lat
 
 		public void OnNewContainerClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = new SelectContainerDialog (server, null);
+			SelectContainerDialog scd = new SelectContainerDialog (conn, null);
 			scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Select a container for new objects"));
 			scd.Title = Mono.Unix.Catalog.GetString ("Select container");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
 				newContainerButton.Label = scd.DN;
 		}
 		
 		public void OnSearchBaseClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = new SelectContainerDialog (server, null);
+			SelectContainerDialog scd = new SelectContainerDialog (conn, null);
 			scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Select a search base"));
 			scd.Title = Mono.Unix.Catalog.GetString ("Select container");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
 				searchBaseButton.Label = scd.DN;
 		}
 	}

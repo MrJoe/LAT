@@ -25,17 +25,17 @@ namespace lat
 {
 	public class ServiceEventArgs : EventArgs
 	{
-		ConnectionProfile cp;
+		Connection conn;
 
-		public ServiceEventArgs (ConnectionProfile connectionProfile)
+		public ServiceEventArgs (Connection conn)
 		{
-			cp = connectionProfile;
+			this.conn = conn;
 		}
 
-		public ConnectionProfile Profile
+		public Connection FoundConnection
 		{
-			get { return cp; }
-		}
+			get { return conn; }
+		}	
 	}
 
 	public delegate void ServiceEventHandler (object o, ServiceEventArgs args);
@@ -65,24 +65,26 @@ namespace lat
 
 	    void OnServiceResolved (object o, ServiceInfoArgs args) 
 		{
-			ConnectionProfile cp = new ConnectionProfile ();
-			cp.Name = String.Format ("{0} ({1})", args.Service.Name, args.Service.Address);
-			cp.Host = args.Service.Address.ToString ();
-			cp.Port = args.Service.Port;
-			cp.User = "";
-			cp.Pass = "";
-			cp.DontSavePassword = false;
-			cp.ServerType = "Generic LDAP server";
-			cp.Dynamic = true;
+			ConnectionData cd = new ConnectionData ();
+			cd.Name = String.Format ("{0} ({1})", args.Service.Name, args.Service.Address);
+			cd.Host = args.Service.Address.ToString ();
+			cd.Port = args.Service.Port;
+			cd.UserName = "";
+			cd.Pass = "";
+			cd.SavePassword = false;
+			cd.ServerType = Util.GetServerType ("Generic LDAP server");
+			cd.Dynamic = true;
 
 			Log.Debug ("Found LDAP service {0} on {1} port {2}", 
 				args.Service.Name, args.Service.Address, args.Service.Port);
 
 			if (args.Service.Port == 636)
-				cp.Encryption = EncryptionType.SSL;
+				cd.Encryption = EncryptionType.SSL;
+			
+			Connection conn = new Connection (cd);
 			
 			if (Found != null)
-                Found (this, new ServiceEventArgs (cp));
+                Found (this, new ServiceEventArgs (conn));
 		}
 
 		void OnServiceAdded (object o, ServiceInfoArgs args) 

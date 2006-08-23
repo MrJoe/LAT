@@ -53,29 +53,29 @@ namespace lat
 
 		LdapEntry currentEntry;
 
-		public EditAdComputerViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
+		public EditAdComputerViewDialog (Connection connection, LdapEntry le) : base (connection, null)
 		{
 			currentEntry = le;
 
 			Init ();
 
-			computerNameLabel.Text = server.GetAttributeValueFromEntry (currentEntry, "cn");
+			computerNameLabel.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 		
-			string cpName = (string) server.GetAttributeValueFromEntry (currentEntry, "cn");
+			string cpName = (string) conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 			computerNameEntry.Text = cpName.ToUpper();
 
 			editAdComputerDialog.Title = cpName + " Properties";
 
-			dnsNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "dNSHostName");
-			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
+			dnsNameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "dNSHostName");
+			descriptionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "description");
 			
-			osNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "operatingSystem");
-			osVersionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "operatingSystemVersion");
-			osServicePackEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "operatingSystemServicePack");
+			osNameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "operatingSystem");
+			osVersionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "operatingSystemVersion");
+			osServicePackEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "operatingSystemServicePack");
 
-			locationEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "location");
+			locationEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "location");
 
-			string manName = server.GetAttributeValueFromEntry (currentEntry, "managedBy");
+			string manName = conn.Data.GetAttributeValueFromEntry (currentEntry, "managedBy");
 			manNameEntry.Text = manName;
 
 			if (manName != "" || manName != null)
@@ -100,27 +100,27 @@ namespace lat
 		{
 			try {
 
-				LdapEntry leMan = server.GetEntry (dn);
+				LdapEntry leMan = conn.Data.GetEntry (dn);
 
-				manOfficeLabel.Text = server.GetAttributeValueFromEntry (
+				manOfficeLabel.Text = conn.Data.GetAttributeValueFromEntry (
 					leMan, "physicalDeliveryOfficeName");
 
-				manStreetTextView.Buffer.Text = server.GetAttributeValueFromEntry 
+				manStreetTextView.Buffer.Text = conn.Data.GetAttributeValueFromEntry 
 					(leMan, "streetAddress");
 
-				manCityLabel.Text = server.GetAttributeValueFromEntry (
+				manCityLabel.Text = conn.Data.GetAttributeValueFromEntry (
 					leMan, "l");
 
-				manStateLabel.Text = server.GetAttributeValueFromEntry (
+				manStateLabel.Text = conn.Data.GetAttributeValueFromEntry (
 					leMan, "st");
 
-				manCountryLabel.Text = server.GetAttributeValueFromEntry (
+				manCountryLabel.Text = conn.Data.GetAttributeValueFromEntry (
 					leMan, "c");
 
-				manTelephoneNumberLabel.Text = server.GetAttributeValueFromEntry 
+				manTelephoneNumberLabel.Text = conn.Data.GetAttributeValueFromEntry 
 					(leMan, "telephoneNumber");
 
-				manFaxNumberLabel.Text = server.GetAttributeValueFromEntry (
+				manFaxNumberLabel.Text = conn.Data.GetAttributeValueFromEntry (
 					leMan, "facsimileTelephoneNumber");
 
 			} catch {
@@ -155,7 +155,7 @@ namespace lat
 			manNameEntry.Sensitive = false;
 			manStreetTextView.Sensitive = false;
 
-			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-conn.Data-48x48.png");
 			image178.Pixbuf = pb;
 		}
 
@@ -184,9 +184,7 @@ namespace lat
 
 		public void OnManChangeClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, editAdComputerDialog);
-
+			SelectContainerDialog scd = new SelectContainerDialog (conn, editAdComputerDialog);
 			scd.Title = "Save Computer";
 			scd.Message = Mono.Unix.Catalog.GetString (
 					"Select a user who will manage ") + 
@@ -213,7 +211,7 @@ namespace lat
 			if (lea.Differences.Length == 0)
 				return;
 				 	
-			if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+			if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 				errorOccured = true;
 		}
 	}

@@ -1,7 +1,7 @@
 // 
 // lat - MassEditDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,14 +38,14 @@ namespace lat
 
 		ListStore modListStore;
 		List<LdapModification> _modList;
-		LdapServer server;
+		Connection conn;
 
 		ComboBox actionComboBox;
 
-		public MassEditDialog (LdapServer ldapServer)
+		public MassEditDialog (Connection connection)
 		{
 			_modList = new List<LdapModification> ();
-			server = ldapServer;
+			conn = connection;
 
 			ui = new Glade.XML (null, "lat.glade", "massEditDialog", null);
 			ui.Autoconnect (this);
@@ -73,7 +73,7 @@ namespace lat
 			massEditDialog.Destroy ();
 		}
 
-		private void createCombos ()
+		void createCombos ()
 		{
 			// class
 			actionComboBox = ComboBox.NewText ();
@@ -122,7 +122,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			LdapEntry[] sr = server.Search (server.DirectoryRoot, searchEntry.Text);
+			LdapEntry[] sr = conn.Data.Search (conn.DirectoryRoot, searchEntry.Text);
 			
 			foreach (object[] row in modListStore) {
 
@@ -156,7 +156,7 @@ namespace lat
 			}
 			
 			foreach (LdapEntry e in sr) {
-				Util.ModifyEntry (server, e.DN, _modList.ToArray());
+				Util.ModifyEntry (conn, e.DN, _modList.ToArray());
 			}
 
 			massEditDialog.HideAll ();

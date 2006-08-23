@@ -82,8 +82,8 @@ namespace lat {
 		}
 		
 		public abstract void Init ();
-		public abstract void OnAddEntry (LdapServer server);
-		public abstract void OnEditEntry (LdapServer server, LdapEntry le);
+		public abstract void OnAddEntry (Connection conn);
+		public abstract void OnEditEntry (Connection conn, LdapEntry le);
 		public abstract void OnPopupShow (Menu popup);
 			
 		// Properties		

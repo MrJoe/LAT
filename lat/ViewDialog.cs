@@ -27,15 +27,15 @@ namespace lat
 {
 	public class ViewDialog
 	{
-		protected LdapServer server;
+		protected Connection conn;
 		protected Gtk.Dialog viewDialog;
 		protected bool missingValues = false;
 		protected bool errorOccured = false;
 		protected string defaultNewContainer = null;
 		
-		public ViewDialog (LdapServer ldapServer, string newContainer)
+		public ViewDialog (Connection connection, string newContainer)
 		{
-			server = ldapServer;
+			conn = connection;
 			defaultNewContainer = newContainer;
 		}
 

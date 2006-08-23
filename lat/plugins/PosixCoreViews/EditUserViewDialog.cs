@@ -104,7 +104,7 @@ namespace lat
 
 		ListStore _memberOfStore;
 
-		public EditUserViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
+		public EditUserViewDialog (Connection conn, LdapEntry le) : base (conn, null)
 		{
 			currentEntry = le;
 
@@ -116,43 +116,43 @@ namespace lat
 
 			getGroups (currentEntry);
 
-			string userName = server.GetAttributeValueFromEntry (currentEntry, "cn");
+			string userName = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 			editUserDialog.Title = userName + " Properties";
 
 			// General
 			usernameLabel.UseMarkup = true;
 			usernameLabel.Markup = 
-				String.Format ("<span size=\"larger\"><b>{0}</b></span>", server.GetAttributeValueFromEntry (currentEntry, "uid"));
+				String.Format ("<span size=\"larger\"><b>{0}</b></span>", conn.Data.GetAttributeValueFromEntry (currentEntry, "uid"));
 
 			fullnameLabel.Text = String.Format ("{0} {1}", 
-				server.GetAttributeValueFromEntry (currentEntry, "givenName"),
-				server.GetAttributeValueFromEntry (currentEntry, "sn"));
+				conn.Data.GetAttributeValueFromEntry (currentEntry, "givenName"),
+				conn.Data.GetAttributeValueFromEntry (currentEntry, "sn"));
 
-			firstNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "givenName");
-			initialsEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "initials");
-			lastNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sn");
-			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
-			officeEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "physicalDeliveryOfficeName");
-			mailEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "mail");
-			phoneEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "telephoneNumber");
+			firstNameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "givenName");
+			initialsEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "initials");
+			lastNameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sn");
+			descriptionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "description");
+			officeEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "physicalDeliveryOfficeName");
+			mailEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "mail");
+			phoneEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "telephoneNumber");
 
 			// Account
-			usernameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "uid");
-			uidSpinButton.Value = int.Parse (server.GetAttributeValueFromEntry (currentEntry, "uidNumber"));
-			shellEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "loginShell");;
-			homeDirEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "homeDirectory");
+			usernameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "uid");
+			uidSpinButton.Value = int.Parse (conn.Data.GetAttributeValueFromEntry (currentEntry, "uidNumber"));
+			shellEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "loginShell");;
+			homeDirEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "homeDirectory");
 
 			if (isSamba) {
 				toggleSambaWidgets (true);
 				smbEnableSambaButton.Hide ();
 
-				smbLoginScriptEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaLogonScript");
-				smbProfilePathEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaProfilePath");
-				smbHomePathEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaHomePath");
-				smbHomeDriveEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaHomeDrive");
-				smbExpireEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaKickoffTime");
-				smbCanChangePwdEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaPwdCanChange");
-				smbMustChangePwdEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sambaPwdMustChange");
+				smbLoginScriptEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaLogonScript");
+				smbProfilePathEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaProfilePath");
+				smbHomePathEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaHomePath");
+				smbHomeDriveEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaHomeDrive");
+				smbExpireEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaKickoffTime");
+				smbCanChangePwdEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaPwdCanChange");
+				smbMustChangePwdEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaPwdMustChange");
 
 			} else {
 
@@ -161,27 +161,27 @@ namespace lat
 			}
 
 			// Groups
-			string pgid = server.GetAttributeValueFromEntry (currentEntry, "gidNumber");
+			string pgid = conn.Data.GetAttributeValueFromEntry (currentEntry, "gidNumber");
 			string pname = _allGroupGids [pgid];		
 			primaryGroupLabel.Text = pname;			
 
 			// Address
-			adStreetTextView.Buffer.Text = server.GetAttributeValueFromEntry (currentEntry, "street");
-			adPOBoxEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "postOfficeBox");
-			adCityEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "l");
-			adStateEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "st");
-			adZipEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "postalCode");
+			adStreetTextView.Buffer.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "street");
+			adPOBoxEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "postOfficeBox");
+			adCityEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "l");
+			adStateEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "st");
+			adZipEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "postalCode");
 
 			// Telephones
-			tnHomeEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "homePhone");
-			tnPagerEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "pager");
-			tnMobileEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "mobile");
-			tnFaxEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "facsimileTelephoneNumber");
+			tnHomeEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "homePhone");
+			tnPagerEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "pager");
+			tnMobileEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "mobile");
+			tnFaxEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "facsimileTelephoneNumber");
 
 			// Organization
-			ozTitleEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "title");
-			ozDeptEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "departmentNumber");
-			ozCompanyEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "o");
+			ozTitleEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "title");
+			ozDeptEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "departmentNumber");
+			ozCompanyEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "o");
 
 			editUserDialog.Icon = Global.latIcon;
 			editUserDialog.Run ();
@@ -203,7 +203,7 @@ namespace lat
 		{
 			if (smbEnableSambaButton.Active) {
 
-				smbSID = server.GetLocalSID ();
+				smbSID = conn.Data.GetLocalSID ();
 
 				if (smbSID == null) {
 					Util.DisplaySambaSIDWarning (editUserDialog);
@@ -229,7 +229,7 @@ namespace lat
 
 		void getGroups (LdapEntry le)
 		{
-			LdapEntry[] grps = server.SearchByClass ("posixGroup");
+			LdapEntry[] grps = conn.Data.SearchByClass ("posixGroup");
 
 			foreach (LdapEntry e in grps) {
 
@@ -244,7 +244,7 @@ namespace lat
 					
 					if (a != null) {
 
-						if (checkMemberOf (server.GetAttributeValueFromEntry (currentEntry, "uid"), a.StringValueArray)
+						if (checkMemberOf (conn.Data.GetAttributeValueFromEntry (currentEntry, "uid"), a.StringValueArray)
 						   && !_memberOfGroups.ContainsKey (nameAttr.StringValue)) {
 
 							_memberOfGroups.Add (nameAttr.StringValue,"memeberUid");
@@ -336,7 +336,7 @@ namespace lat
 				if (!_memberOfGroups.ContainsKey (name))
 					_memberOfGroups.Add (name, "memberUid");
 
-				LdapAttribute attr = new LdapAttribute ("memberUid", server.GetAttributeValueFromEntry (currentEntry, "uid"));
+				LdapAttribute attr = new LdapAttribute ("memberUid", conn.Data.GetAttributeValueFromEntry (currentEntry, "uid"));
 				LdapModification lm = new LdapModification (LdapModification.ADD, attr);
 
 				_modsGroup.Add (name, lm);
@@ -365,7 +365,7 @@ namespace lat
 				if (_memberOfGroups.ContainsKey (name))
 					_memberOfGroups.Remove (name);
 
-				LdapAttribute attr = new LdapAttribute ("memberUid", server.GetAttributeValueFromEntry (currentEntry, "uid"));
+				LdapAttribute attr = new LdapAttribute ("memberUid", conn.Data.GetAttributeValueFromEntry (currentEntry, "uid"));
 				LdapModification lm = new LdapModification (LdapModification.DELETE, attr);
 
 				_modsGroup.Add (name, lm);
@@ -444,7 +444,7 @@ namespace lat
 
 			try {
 			
-				server.Modify (groupEntry.DN, mods);
+				conn.Data.Modify (groupEntry.DN, mods);
 
 			} catch (Exception e) {
 
@@ -531,7 +531,7 @@ namespace lat
 			if (passChanged)
 				aset.Add (new LdapAttribute ("userPassword", pass));
 			else {
-				aset.Add (new LdapAttribute ("userPassword", server.GetAttributeValueFromEntry (currentEntry, "userPassword")));
+				aset.Add (new LdapAttribute ("userPassword", conn.Data.GetAttributeValueFromEntry (currentEntry, "userPassword")));
 			}
 
 			if (smbEnableSambaButton.Active || isSamba) {
@@ -600,7 +600,7 @@ namespace lat
 			 if (lea.Differences.Length == 0)
 			 	return;
 				 	
-			 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+			 if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 			 	errorOccured = true;
 		}
 	}

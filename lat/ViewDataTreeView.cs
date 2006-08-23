@@ -29,7 +29,7 @@ namespace lat
 {
 	public class ViewDataTreeView : Gtk.TreeView
 	{
-		LdapServer	server;
+		Connection  conn;
 		Gtk.Window	parentWindow;
 		Menu 		popup;
 		ListStore	dataStore;
@@ -37,9 +37,9 @@ namespace lat
 		ViewPlugin viewPlugin;	
 		int dnColumn;
 		
-		public ViewDataTreeView (LdapServer ldapServer, Gtk.Window parent) : base ()
+		public ViewDataTreeView (Connection connection, Gtk.Window parent) : base ()
 		{
-			server = ldapServer;
+			conn = connection;
 			parentWindow = parent;
 			
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
@@ -56,11 +56,11 @@ namespace lat
 		public void Populate ()
 		{
 			if (viewPlugin.SearchBase == null)
-				viewPlugin.SearchBase = server.DirectoryRoot;
+				viewPlugin.SearchBase = conn.DirectoryRoot;
 				
-			LdapEntry[] data = server.Search (server.DirectoryRoot, viewPlugin.Filter);
+			LdapEntry[] data = conn.Data.Search (conn.DirectoryRoot, viewPlugin.Filter);
 			Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
-					server.DirectoryRoot, viewPlugin.Filter, data.Length);
+					conn.DirectoryRoot, viewPlugin.Filter, data.Length);
 
 //			FIXME: handle state per profile			
 //			LdapEntry[] data = server.Search (viewPlugin.SearchBase, viewPlugin.Filter);
@@ -79,7 +79,7 @@ namespace lat
 
 				foreach (LdapEntry le in objs) {
 				
-					string[] values = server.GetAttributeValuesFromEntry (le, attributes);
+					string[] values = conn.Data.GetAttributeValuesFromEntry (le, attributes);
 					string[] newvalues = new string [values.Length + 1];
 													
 					values.CopyTo (newvalues, 0);
@@ -163,7 +163,7 @@ namespace lat
 
 		public void OnNewEntryActivate (object o, EventArgs args) 
 		{
-			viewPlugin.OnAddEntry (server);
+			viewPlugin.OnAddEntry (conn);
 			Populate ();
 		}
 		
@@ -178,7 +178,7 @@ namespace lat
 			
 			ConfigureView (viewPlugin);
 			
-			viewPlugin.OnAddEntry (server);
+			viewPlugin.OnAddEntry (conn);
 			Populate ();
 		}
 
@@ -188,8 +188,8 @@ namespace lat
 			TreePath[] tp = this.Selection.GetSelectedRows (out model);
 
 			foreach (TreePath path in tp) {
-				LdapEntry le = server.GetEntry (GetDN(path));
-				viewPlugin.OnEditEntry (server, le);			
+				LdapEntry le = conn.Data.GetEntry (GetDN(path));
+				viewPlugin.OnEditEntry (conn, le);			
 				Populate ();
 			}
 		}
@@ -200,19 +200,19 @@ namespace lat
 
 				if (!(path.Length > 1)) {
 
-					LdapEntry le = server.GetEntry (GetDN(path[0]));
-					Util.DeleteEntry (server, le.DN);
+					LdapEntry le = conn.Data.GetEntry (GetDN(path[0]));
+					Util.DeleteEntry (conn, le.DN);
 					return;
 				}
 
 				List<string> dnList = new List<string> ();
 
 				foreach (TreePath tp in path) {
-					LdapEntry le = server.GetEntry (GetDN(tp));
+					LdapEntry le = conn.Data.GetEntry (GetDN(tp));
 					dnList.Add (le.DN);
 				}
 
-				Util.DeleteEntry (server, dnList.ToArray ());
+				Util.DeleteEntry (conn, dnList.ToArray ());
 
 			} catch {}
 		}
@@ -233,8 +233,8 @@ namespace lat
 			TreePath[] tp = this.Selection.GetSelectedRows (out model);
 
 			try {
-				LdapEntry le = server.GetEntry (GetDN(tp[0]));
-				Util.ExportData (server, parentWindow, le.DN);
+				LdapEntry le = conn.Data.GetEntry (GetDN(tp[0]));
+				Util.ExportData (conn, parentWindow, le.DN);
 			}
 			catch {}
 		}
@@ -260,7 +260,7 @@ namespace lat
 			if (this.dataStore.GetIter (out iter, path)) {
 				
 				string dn = (string) this.dataStore.GetValue (iter, dnColumn);				
-				viewPlugin.OnEditEntry (server, server.GetEntry (dn));
+				viewPlugin.OnEditEntry (conn, conn.Data.GetEntry (dn));
 			} 		
 		}
 		

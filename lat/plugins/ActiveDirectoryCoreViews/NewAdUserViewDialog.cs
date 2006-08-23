@@ -56,7 +56,7 @@ namespace lat
 		string[] groupList;
 		ComboBox primaryGroupComboBox;
 
-		public NewAdUserViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
+		public NewAdUserViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
 		{
 			Init ();		
 
@@ -101,7 +101,7 @@ namespace lat
 
 		private string[] GetGroups ()
 		{
-			LdapEntry[] grps = server.SearchByClass ("group");
+			LdapEntry[] grps = conn.Data.SearchByClass ("group");
 			List<string> glist = new List<string> ();
 	
 			foreach (LdapEntry e in grps) {
@@ -214,7 +214,7 @@ namespace lat
 			
 			if (this.defaultNewContainer == string.Empty) {
 			
-				SelectContainerDialog scd =	new SelectContainerDialog (server, newAdUserDialog);
+				SelectContainerDialog scd =	new SelectContainerDialog (conn, newAdUserDialog);
 				scd.Title = "Save Group";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the user\n{0}?", displayNameEntry.Text);
 				scd.Run ();
@@ -231,14 +231,14 @@ namespace lat
 			
 			entry = CreateEntry (userDN);
 
-			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (conn, entry);
 			if (missing.Length != 0) {
 				missingAlert (missing);
 				missingValues = true;
 				return;
 			}
 
-			if (!Util.AddEntry (server, entry))
+			if (!Util.AddEntry (conn, entry))
 				errorOccured = true;
 		}
 	}

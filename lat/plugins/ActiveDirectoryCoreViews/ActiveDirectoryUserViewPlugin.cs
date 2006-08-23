@@ -38,14 +38,14 @@ namespace lat {
 		{
 		}
 
-		public override void OnAddEntry (LdapServer server)
+		public override void OnAddEntry (Connection connection)
 		{
-			new NewAdUserViewDialog (server, this.DefaultNewContainer);
+			new NewAdUserViewDialog (connection, this.DefaultNewContainer);
 		}		
 
-		public override void OnEditEntry (LdapServer server, LdapEntry le)
+		public override void OnEditEntry (Connection connection, LdapEntry le)
 		{
-			new EditAdUserViewDialog (server, le);
+			new EditAdUserViewDialog (connection, le);
 		}
 					
 		public override void OnPopupShow (Menu popup)

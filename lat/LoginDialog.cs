@@ -1,7 +1,7 @@
 // 
 // lat - LoginDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@ namespace lat
 
 		Glade.XML ui;
 
-		private LdapServer server;
-		private bool isRelogin = false;
-		private string userName;
-		private string userPass;
+		Connection conn;
+		bool isRelogin = false;
+		string userName;
+		string userPass;
 
 		public LoginDialog (string msg, string user)
 		{
@@ -50,11 +50,11 @@ namespace lat
 			userEntry.Text = user;
 		}
 
-		public LoginDialog (LdapServer ldapServer, string msg)
+		public LoginDialog (Connection connection, string msg)
 		{
 			Init ();
 
-			server = ldapServer;
+			conn = connection;
 			msgLabel.Text = msg;
 			isRelogin = true;
 		}
@@ -80,12 +80,12 @@ namespace lat
 		{
 			try {
 				if (useSSLCheckButton.Active)
-					server.Encryption = EncryptionType.SSL;
+					conn.Settings.Encryption = EncryptionType.SSL;
 
-				if (server.Encryption == EncryptionType.TLS)
-					server.StartTLS ();
+				if (conn.Settings.Encryption == EncryptionType.TLS)
+					conn.StartTLS ();
 
-				server.Bind (userEntry.Text, passEntry.Text);
+				conn.Bind (userEntry.Text, passEntry.Text);
 
 			} catch (Exception e) {
 

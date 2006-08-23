@@ -1,7 +1,7 @@
 // 
 // lat - CreateEntryDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace lat
 		[Glade.Widget] Gtk.Button browseButton;
 		[Glade.Widget] Gtk.TreeView attrTreeView;
 
-		LdapServer server;
+		Connection conn;
 		ListStore attrListStore;
 		List<string> _objectClass;
 		LdapAttribute objAttr = null;
@@ -42,9 +42,9 @@ namespace lat
 		bool isTemplate = false;
 		bool errorOccured = false;
 
-		public CreateEntryDialog (LdapServer ldapServer, Template theTemplate)
+		public CreateEntryDialog (Connection connection, Template theTemplate)
 		{
-			server = ldapServer;
+			conn = connection;
 			t = theTemplate;
 			isTemplate = true;
 
@@ -66,9 +66,9 @@ namespace lat
 			createEntryDialog.Destroy ();
 		}
 
-		public CreateEntryDialog (LdapServer ldapServer, LdapEntry le)
+		public CreateEntryDialog (Connection connection, LdapEntry le)
 		{
-			server = ldapServer;
+			conn = connection;
 
 			Init ();
 
@@ -97,7 +97,7 @@ namespace lat
 			
 			setupTreeViews ();
 
-			browseButton.Label = server.DirectoryRoot;
+			browseButton.Label = conn.DirectoryRoot;
 
 			createEntryDialog.Resize (320, 200);
 		}
@@ -108,25 +108,17 @@ namespace lat
 				if (s == "objectClass")
 					continue;
 
-				if (isTemplate) {
-
-					attrListStore.AppendValues (s, 
-						t.GetAttributeDefaultValue (s),
-						valueType);
-
-				} else {
-
-					attrListStore.AppendValues (s, 
-						"",
-						valueType);
-				}
+				if (isTemplate)
+					attrListStore.AppendValues (s, t.GetAttributeDefaultValue (s), valueType);
+				else
+					attrListStore.AppendValues (s, "", valueType);
 			}
 		}
 
 		void showAttributes ()
 		{
-			string[] required, optional;			
-			server.GetAllAttributes (_objectClass, out required, out optional);
+			string[] required, optional;
+			conn.Data.GetAllAttributes (_objectClass, out required, out optional);
 
 			insertValues (required, "Required");
 			insertValues (optional, "Optional");
@@ -167,8 +159,7 @@ namespace lat
 
 		public void OnBrowseClicked (object o, EventArgs args)
 		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, createEntryDialog);
+			SelectContainerDialog scd = new SelectContainerDialog (conn, createEntryDialog);
 
 			scd.Message = String.Format (
 				Mono.Unix.Catalog.GetString (
@@ -177,7 +168,7 @@ namespace lat
 			scd.Title = Mono.Unix.Catalog.GetString ("Select entry base");
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
 				browseButton.Label = scd.DN;
 		}
 
@@ -210,7 +201,7 @@ namespace lat
 			lset.Add (objAttr);
 			
 			LdapEntry entry = new LdapEntry (dn, lset);
-			if (!Util.AddEntry (server, entry))
+			if (!Util.AddEntry (conn, entry))
 				errorOccured = true;
 			else
 				errorOccured = false;

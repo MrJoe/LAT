@@ -97,6 +97,8 @@ namespace lat
 			DirectoryInfo di = new DirectoryInfo (tmp);
 			if (!di.Exists)
 				di.Create ();
+				
+			Load ();
 		}
 
 		public string[] GetTemplateNames ()

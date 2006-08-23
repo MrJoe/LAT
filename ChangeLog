@@ -1,5 +1,6 @@
 	* Don't block UI with GNOME keyring dialog
 	* Fixed fields in schema browser that were not updating properly
+	* Code refactoring/cleanup
 
 1.1.5
 

@@ -18,9 +18,10 @@
 //
 //
 
+using System;
+using System.Text;
 using Gtk;
 using Gnome;
-using System;
 using lat;
 
 public class Global
@@ -30,7 +31,6 @@ public class Global
 	
 	public static ConnectionManager Connections;
 	public static PluginManager Plugins;
-	public static ProfileManager Profiles;	
 	public static TemplateManager Templates;
 	
 	public static NetworkDetect Network;
@@ -38,30 +38,30 @@ public class Global
 
 public class LdapAdministrationTool
 {
-	public static void printUsage ()
+	static void PrintUsage ()
 	{
-		string usage = Defines.PACKAGE + " " + Defines.VERSION + "\n" +
-			"Web page: http://dev.mmgsecurity.com/projects/lat/\n" +
-			"Copyright 2005-2006 MMG Security, Inc.\n\n";
+		StringBuilder usage = new StringBuilder ();
+		usage.AppendFormat ("{0} {1}\n", Defines.PACKAGE, Defines.VERSION);
+		usage.AppendFormat ("Web page: http://dev.mmgsecurity.com/projects/lat/\n");
+		usage.AppendFormat ("Copyright 2005-2006 MMG Security, Inc.\n\n");
+		usage.AppendFormat ("Usage: {0} [OPTIONS]\n\n", Defines.PACKAGE);
+		usage.AppendFormat ("Options:\n");
+		usage.AppendFormat ("  -d,  --debug\t\t\tTurn on debugging messages.\n");
+		usage.AppendFormat ("  -v,  --version\t\tPrint version and exit.\n");
+		usage.AppendFormat ("  -h,  --help\t\t\tPrint this usage message.\n");
 
-		usage += 
-			"Usage: " + Defines.PACKAGE + " [OPTIONS]\n\n" +
-			"Options:\n" +
-			"  -d,  --debug\t\t\tTurn on debugging messages.\n" +
-			"  -v,  --version\t\tPrint version and exit.\n" +
-			"  -h,  --help\t\t\tPrint this usage message.\n";
-
-		Console.WriteLine (usage);
+		Console.WriteLine (usage.ToString());
 	}
 
-	public static void printVersion ()
+	static void PrintVersion ()
 	{
-		string version = Defines.PACKAGE + " " + Defines.VERSION + "\n\n" +
-			"Copyright 2005-2006 MMG Security, Inc.\n" +
-			"This is free software; see the source for copying conditions. There is NO\n" +
-			"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
-
-		Console.WriteLine (version);
+		StringBuilder version = new StringBuilder ();
+		version.AppendFormat ("{0} {1}\n\n", Defines.PACKAGE, Defines.VERSION);
+		version.AppendFormat ("Copyright 2005-2006 MMG Security, Inc.\n");
+		version.AppendFormat ("This is free software; see the source for copying conditions. There is NO\n");
+		version.AppendFormat ("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
+		
+		Console.WriteLine (version.ToString());
 	}
 
 	public static void Main (string[] args)
@@ -84,13 +84,13 @@ public class LdapAdministrationTool
 
 			case "-h":
 			case "--help":
-				printUsage ();
+				PrintUsage ();
 				Environment.Exit (0);
 				break;
 
 			case "-v":
 			case "--version":
-				printVersion ();
+				PrintVersion ();
 				Environment.Exit (0);
 				break;
 
@@ -100,28 +100,27 @@ public class LdapAdministrationTool
 			}
 		}
 
+		Application.Init ();
+
 		Log.Initialize (logLevel);		
 		Log.Info ("Starting {0} (version {1})", Defines.PACKAGE, Defines.VERSION);
 
-		try {
-			Util.SetProcessName (Defines.PACKAGE);
-		} catch {}
-
-		Application.Init ();
-
+		Util.SetProcessName (Defines.PACKAGE);
+		
 		Global.Templates = new TemplateManager ();
-		Global.Templates.Load ();
-		Global.Plugins = new PluginManager ();
-		
+		Global.Plugins = new PluginManager ();		
+		Global.Connections = new ConnectionManager ();
+			
 		Mono.Unix.Catalog.Init (Defines.PACKAGE, Defines.LOCALE_DIR);		
-		Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);
-					
-		new MainWindow (program);
-		
+
+		Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);					
+		new MainWindow (program);		
 		program.Run ();
 		
 		Global.Templates.Save ();
-		Global.Profiles.SaveProfiles ();
+		Global.Connections.Save ();
+		
+		// FIXME: fix this code
 		Global.Plugins.SavePluginsState ();
 
 		Log.Info ("Exiting {0}", Defines.PACKAGE);

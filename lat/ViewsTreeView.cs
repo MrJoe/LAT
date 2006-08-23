@@ -71,7 +71,7 @@ namespace lat
 			viewRootIter = viewsStore.AppendValues (dirIcon, "Servers");
 			TreePath path = viewsStore.GetPath (viewRootIter);
 			
-			foreach (string n in Global.Profiles.GetProfileNames()) {
+			foreach (string n in Global.Connections.ConnectionNames) {
 				TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, n);
 				viewsStore.AppendValues (iter, null, "");				
 			}			
@@ -83,11 +83,11 @@ namespace lat
 			this.ShowAll ();		
 		}
 
-		public void AddServer (ConnectionProfile cp)
+		public void AddConnection (string connectionName)
 		{
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
-			TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, cp.Name);
-			AddViews (cp.Name, iter);
+			TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, connectionName);
+			AddViews (connectionName, iter);
 		}
 
 		public void Refresh ()
@@ -98,7 +98,7 @@ namespace lat
 			viewRootIter = viewsStore.AppendValues (dirIcon, "Servers");
 			TreePath path = viewsStore.GetPath (viewRootIter);
 			
-			foreach (string n in Global.Profiles.GetProfileNames()) {
+			foreach (string n in Global.Connections.ConnectionNames) {
 				TreeIter iter = viewsStore.AppendValues (viewRootIter, dirIcon, n);
 				viewsStore.AppendValues (iter, null, "");
 			}			
@@ -131,14 +131,14 @@ namespace lat
 	
 		void AddViews (string profileName, TreeIter profileIter)
 		{
-			ConnectionProfile cp = Global.Profiles [profileName];
-
-			if (cp.ActiveServerViews == null) 
-				cp.SetDefaultServerViews ();
-				
-			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins)
-				if (cp.ActiveServerViews.Contains (vp.GetType().ToString()))
+			Connection conn = Global.Connections [profileName];
+			if (conn.ServerViews.Count == 0)
+				conn.SetDefaultServerViews ();
+			
+			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins) {
+				if (conn.ServerViews.Contains (vp.GetType().ToString()))
 					viewsStore.AppendValues (profileIter, vp.Icon, vp.Name);
+			}
 		}
 
 		public string GetSelectedViewName ()

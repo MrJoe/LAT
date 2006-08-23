@@ -19,76 +19,199 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-
-using System.Collections;
-using System.Collections.Specialized;
-using System.Net.Sockets;
-using Novell.Directory.Ldap;
+using GnomeKeyring;
 
 namespace lat
 {
-	public class Connection
+	public class Connection : IEqualityComparer<Connection>
 	{
-		ConnectionData properties;
+		ConnectionData settings;
 		LdapServer server;
 		ServerData data;
 		
 		List<string> serverViews;
 		List<string> attributeViewers;
-	
+
 		public Connection (ConnectionData connectionData)
 		{
 			server = new LdapServer (connectionData);
 			data = new ServerData (server);
-			properties = connectionData;
+			settings = connectionData;
 			
 			serverViews = new List<string> ();
-			attributeViewers = new List<string> ();
+			attributeViewers = new List<string> ();			
 		}
 		
-		public void AddServerView (string viewName)
+		public void Bind (string userName, string userPass)
 		{
-			if (viewName == null)
-				throw new ArgumentNullException ();
+			settings.UserName = userName;
+			settings.Pass = userPass;
+			
+			server.Bind (userName, userPass);
+		}
+		
+		public void Connect ()
+		{
+			try {
+			
+				server.Connect (settings.Encryption);
+				server.Bind (settings.UserName, settings.Pass);
+			
+				if (!server.Connected) {
 				
-			serverViews.Add (viewName);
-		}
-		
-		public void AddAttributeViewer (string viewerName)
-		{
-			if (viewerName == null)
-				throw new ArgumentNullException ();
+					string msg = String.Format (
+						Mono.Unix.Catalog.GetString (
+						"Unable to connect to: ldap://{0}:{1}"),
+						server.Host, server.Port);
 				
-			attributeViewers.Add (viewerName);		
-		}
-		
-		public void RemoveServerView (string viewName)
-		{
-			if (viewName == null)
-				throw new ArgumentNullException ();
+					throw new ApplicationException (msg);
+				}
+					
+				if (!server.Bound && settings.UserName != "") {
 				
-			serverViews.Remove (viewName);
+					string msg = String.Format (
+						Mono.Unix.Catalog.GetString (
+						"Unable to bind to: ldap://{0}:{1}"),
+						server.Host, server.Port);
+						
+					throw new ApplicationException (msg);
+				}
+
+			} catch (Exception e) {
+
+				Log.Debug (e);
+				throw e;
+			}
 		}
 		
-		public void RemoveAttributeViewer (string viewerName)
+		public void Disconnect ()
 		{
-			if (viewerName == null)
-				throw new ArgumentNullException ();
+			server.Disconnect ();
+		}
+		
+		public void StartTLS ()
+		{
+			server.StartTLS ();
+		}
+		
+		public override bool Equals (object obj)
+		{
+			if (obj is Connection)
+				return Equals (this, (Connection)obj);
+
+			return false;
+		}
+
+		public bool Equals (Connection lhs, Connection rhs)
+		{
+			if (lhs.Settings.Name.Equals (rhs.Settings.Name))
+				return true;
+
+			return false;
+		}
+
+		public override int GetHashCode ()
+		{
+			return GetHashCode (this);
+		}
+
+		public int GetHashCode (Connection conn)
+		{
+			return conn.Settings.Name.GetHashCode ();
+		}			
+			
+		public void SetDefaultAttributeViewers ()
+		{			
+			attributeViewers.Add ("lat.JpegAttributeViewPlugin");
+			attributeViewers.Add ("lat.PassswordAttributeViewPlugin");
+		}
+
+		public void SetDefaultServerViews ()
+		{
+			switch (settings.ServerType) {
+			
+			case LdapServerType.OpenLDAP:
+			case LdapServerType.FedoraDirectory:
+			case LdapServerType.Generic:
+				serverViews.Add ("lat.PosixComputerViewPlugin");
+				serverViews.Add ("lat.PosixContactsViewPlugin");
+				serverViews.Add ("lat.PosixGroupViewPlugin");
+				serverViews.Add ("lat.PosixUserViewPlugin");			
+				break;
+			
+			case LdapServerType.ActiveDirectory:
+				serverViews.Add ("lat.ActiveDirectoryComputerViewPlugin");
+				serverViews.Add ("lat.ActiveDirectoryContactsViewPlugin");
+				serverViews.Add ("lat.ActiveDirectoryGroupViewPlugin");
+				serverViews.Add ("lat.ActiveDirectoryUserViewPlugin");			
+				break;
 				
-			attributeViewers.Remove (viewerName);		
+			default:	
+				throw new ArgumentOutOfRangeException ("Invalid server type");
+			}			
+		}
+
+		public override string ToString ()
+		{
+			return settings.Name;
+		}
+
+		public string AuthDN
+		{
+			get { return server.AuthDN; }
+		}
+
+		public string DirectoryRoot
+		{
+			get { return server.DirectoryRoot; }
+		}
+
+		public bool IsBound
+		{
+			get { return server.Bound; }
+		}
+
+		public bool IsConnected
+		{
+			get { return server.Connected; }
 		}
 		
-		public ConnectionData Properties
+		public int Protocol
 		{
-			get { return properties; }
+			get { return server.Protocol; }
+		}
+		
+		public bool UseSSL
+		{
+			get { return server.UseSSL; }
+			set { server.UseSSL = value; }
+		}
+		
+		public ConnectionData Settings
+		{
+			get { return settings; }
+			set { settings = value; }
 		}
 		
 		public ServerData Data
 		{
 			get { return data; }
+		}
+		
+		public List<string> ServerViews
+		{
+			get { return serverViews; }
+			set { serverViews = value; }
+		}
+		
+		public List<string> AttributeViewers
+		{
+			get { return attributeViewers; }
+			set { attributeViewers = value; }
 		}
 	}
 
@@ -99,6 +222,7 @@ namespace lat
 		int port;
 		string directoryRoot;
 		string userName;
+		string password;
 		bool savePassword;
 		EncryptionType encryptionType;
 		LdapServerType serverType;
@@ -151,6 +275,28 @@ namespace lat
 			set { userName = value; }
 		}
 		
+		public string Pass 
+		{
+			get {		
+				if (password == null) {
+					GnomeKeyring.Result gkr;
+					NetworkPasswordData[] list;
+
+					gkr = GnomeKeyring.Global.FindNetworkPassword (userName, out list);					
+					if (list.Length > 0) {
+						NetworkPasswordData npd = list[0];
+						password = npd.Password;
+					} else {
+						Log.Warn ("Unable to get password from GNOME keyring. Got result: {0}", gkr);
+					}
+				} 
+				
+				return password;
+			}
+			
+			set { password = value; }
+		}
+		
 		public bool SavePassword
 		{
 			get { return savePassword; }
@@ -176,12 +322,120 @@ namespace lat
 		}
 	}
 
-	public class ConnectionManagerNG
+	public class ConnectionCollection : ICollection<Connection>
+	{
+		List<Connection> connections;
+
+		public ConnectionCollection ()
+		{
+			connections = new List<Connection> ();
+		}
+
+		public void Add (Connection conn)
+		{
+			if (conn == null)
+				throw new ArgumentNullException ("conn");
+
+			connections.Add (conn);
+		}
+
+		public void Clear ()
+		{
+			connections.Clear ();
+		}
+
+		public bool Contains (Connection conn)
+		{
+			if (connections.Contains (conn))
+				return true;
+
+			return false;
+		}
+
+		public bool Contains (string name)
+		{
+			foreach (Connection c in connections)
+				if (name == c.ToString())
+					return true;
+					
+			return false;
+		}
+
+		public void CopyTo (Connection[] array, int arrayIndex)
+		{
+			int count = 0;
+
+			foreach (Connection c in connections) {
+				array [arrayIndex + count] = c;
+				count++;
+			}
+		}
+
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return connections.GetEnumerator ();
+		}
+
+		public IEnumerator<Connection> GetEnumerator ()
+		{
+			return connections.GetEnumerator ();
+		}
+
+		public void Remove (string name)
+		{
+			Connection conn = null;
+			foreach (Connection c in connections)
+				if (name == c.ToString())
+					conn = c;
+					
+			if (conn != null)
+				connections.Remove (conn);
+		}
+
+		public bool Remove (Connection conn)
+		{
+			return connections.Remove (conn);
+		}
+
+		public int Count
+		{
+			get { return connections.Count; }
+		}
+
+		public bool IsReadOnly
+		{
+			get { return false; }
+		}
+		
+		public Connection this [string name]
+		{
+			get {			
+				Connection conn = null;
+			
+				foreach (Connection c in connections)
+					if (c.Settings.Name == name)
+						conn = c;
+					
+				if (conn != null)
+					if (!conn.IsConnected)
+						conn.Connect ();	
+				
+				return conn;
+			}
+			
+			set { connections.Add (value); }
+		}
+	}
+
+	public class ConnectionManager
 	{
 		string connectionDataFileName;
+		ConnectionCollection connections;
 	
-		public ConnectionManagerNG ()
+		public ConnectionManager ()
 		{
+			connections = new ConnectionCollection ();
+		
 			string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal); 
 			string latDir = Path.Combine (homeDir, ".lat");			
 			connectionDataFileName = Path.Combine (latDir, "profiles.xml");
@@ -193,6 +447,22 @@ namespace lat
 				return;
 				
 			LoadConnectionData ();
+		}
+			
+		public Connection this [string name]
+		{
+			get {
+				if (!connections.Contains (name))
+					return null;
+					
+				Connection conn = connections[name];
+				if (!conn.IsConnected)
+					conn.Connect ();	
+				
+				return conn;
+			}
+			
+			set { connections[name] = value; }
 		}
 		
 		void LoadConnectionData ()
@@ -243,7 +513,7 @@ namespace lat
 					profileElement.GetAttribute ("user"),
 					savePassword,
 					e,
-					LdapServer.GetServerType (profileElement.GetAttribute ("server_type")),
+					Util.GetServerType (profileElement.GetAttribute ("server_type")),
 					false);
 					
 			Connection conn = new Connection (data);					
@@ -251,177 +521,99 @@ namespace lat
 			XmlNodeList nl = profileElement.GetElementsByTagName ("server_view");
 			if ((nl.Count > 0)) {
 				foreach (XmlElement sv in nl)
-					conn.AddServerView (sv.InnerText);
+					conn.ServerViews.Add (sv.InnerText);
 			}
 
 			nl = profileElement.GetElementsByTagName ("attribute_viewer");
 			if ((nl.Count > 0)) {
 				foreach (XmlElement av in nl)
-					conn.AddAttributeViewer (av.InnerText);
+					conn.AttributeViewers.Add (av.InnerText);
 			}
 
-//			connectionData.Add (cd);
-		}
-		
-		void SaveConnectionData ()
-		{
-		}
-	}
-
-// =======================================================================================
-
-
-	public class ConnectionManager : IEnumerable
-	{
-		ListDictionary serverDictionary;
-		Gtk.Window parent;
-		
-		public ConnectionManager (Gtk.Window parentWindow)
-		{
-			serverDictionary = new ListDictionary ();
-			parent = parentWindow;
+			connections.Add (conn);
 		}
 
-		public int Length
+		static void KeyringCallback (Result result, uint val) 
 		{
-			get { return serverDictionary.Count; }
+			if (result != Result.Ok)
+				Log.Info ("Failed to save password in GNOME keyring: result: {0} - ID: {1}", result, val);
 		}
 		
-		public IEnumerator GetEnumerator ()
+		public void Save ()
 		{
-			return serverDictionary.GetEnumerator ();
+			XmlDocument doc = new XmlDocument ();
+			doc.AppendChild (doc.CreateNode (XmlNodeType.XmlDeclaration,"",""));
+			
+			XmlElement profiles = doc.CreateElement ("profiles");
+			doc.AppendChild (profiles);
+
+			foreach (Connection c in connections) {
+				
+				if (c.Settings.Dynamic)
+					continue;
+					
+				XmlElement profile = doc.CreateElement ("profile");
+				profile.SetAttribute ("name", c.Settings.Name);
+				profile.SetAttribute ("host", c.Settings.Host);
+				profile.SetAttribute ("port", c.Settings.Port.ToString());
+				profile.SetAttribute ("base", c.Settings.DirectoryRoot);
+				profile.SetAttribute ("user", c.Settings.UserName);
+				profile.SetAttribute ("save_password", c.Settings.SavePassword.ToString());
+				profile.SetAttribute ("encryption", Util.GetEncryptionType (c.Settings.Encryption));
+				profile.SetAttribute ("server_type", Util.GetServerType (c.Settings.ServerType));
+				
+				if (c.ServerViews.Count == 0)
+					c.SetDefaultServerViews ();
+				
+				XmlElement server_views = doc.CreateElement ("server_views");
+				foreach (string sv in c.ServerViews) {
+					XmlElement server_view = doc.CreateElement ("server_view");
+					server_view.InnerText = sv;
+					server_views.AppendChild (server_view);
+				}				
+				profile.AppendChild (server_views);
+				
+				if (c.ServerViews.Count == 0) 
+					c.SetDefaultAttributeViewers ();
+				
+				XmlElement attribute_viewers = doc.CreateElement ("attribute_viewers");
+				foreach (string a in c.AttributeViewers) {
+					XmlElement av = doc.CreateElement ("attribute_viewer");
+					av.InnerText = a;
+					attribute_viewers.AppendChild (av);
+				}				
+				profile.AppendChild (attribute_viewers);
+				
+				profiles.AppendChild (profile);
+				
+				OperationGetIntCallback theCallback = new OperationGetIntCallback (KeyringCallback);
+				GnomeKeyring.Global.SetNetworkPassword(
+					c.Settings.UserName,		// user
+					c.Settings.Host,			// server 
+					"ldap", 					// protocol
+					(uint)c.Settings.Port, 		// port
+					c.Settings.Pass,	 		// password
+					theCallback 				// callback
+				);				
+			}
+	
+			doc.Save (connectionDataFileName);
+		}
+
+		public void Delete (string name)
+		{
+			connections.Remove (name);
 		}
 		
-		public LdapServer this [ConnectionProfile cp]
+		public string[] ConnectionNames
 		{
 			get { 
-		
-				LdapServer srv = (LdapServer) serverDictionary [cp.Name];
-				if (srv == null) {
-			
-					Log.Debug ("Starting connection to {0}", cp.Host);
+				List<string> names = new List<string> ();
+				foreach (Connection c in connections)
+					names.Add (c.ToString());
 					
-					if (cp.LdapRoot == "")
-						srv = new LdapServer (cp.Host, cp.Port, cp.ServerType);
-					else
-						srv = new LdapServer (cp.Host, cp.Port, cp.LdapRoot, cp.ServerType);
-				
-					srv.ProfileName = cp.Name;				
-
-					if (cp.DontSavePassword) {
-
-						LoginDialog ld = new LoginDialog (
-							Mono.Unix.Catalog.GetString ("Enter your password"), 
-							cp.User);
-
-						ld.Run ();
-
-						DoConnect (srv, cp.Encryption, ld.UserName, ld.UserPass);
-
-					} else {
-
-						DoConnect (srv, cp.Encryption, cp.User, cp.Pass);
-					}
-					
-					if (CheckConnection (srv, cp.User))
-						return srv;
-					else
-						return null;
-						
-				} else {
-					return srv;
-				}
+				return names.ToArray();
 			}
-						
-			set { serverDictionary[cp.Name] = value; }
 		}
-		
-		bool CheckConnection (LdapServer server, string userName)
-		{
-			string msg = null;
-
-			if (server == null)
-				return false;
-
-			if (!server.Connected) {
-
-				msg = String.Format (
-					Mono.Unix.Catalog.GetString (
-					"Unable to connect to: ldap://{0}:{1}"),
-					server.Host, server.Port);
-			}
-
-			if (!server.Bound && msg == null && userName != "") {
-
-				msg = String.Format (
-					Mono.Unix.Catalog.GetString (
-					"Unable to bind to: ldap://{0}:{1}"),
-					server.Host, server.Port);
-			}
-
-			if (msg != null) {
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					parent,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Connection Error",
-					msg);
-
-				dialog.Run ();
-				dialog.Destroy ();
-			
-				return false;
-			}
-		
-			return true;
-		}
-
-		void DoConnect (LdapServer server, EncryptionType encryption, string userName, string userPass)
-		{
-			try {
-				server.Connect (encryption);
-				server.Bind (userName, userPass);
-
-			} catch (SocketException se) {
-
-				Log.Debug ("Socket error: {0}", se.Message);
-
-			} catch (LdapException le) {
-
-				Log.Debug ("Ldap error: {0}", le.Message);
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					parent,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Connection error",
-					le.Message);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				return;
-
-			} catch (Exception e) {
-
-				Log.Debug ("Unknown error: {0}", e.Message);
-
-				HIGMessageDialog dialog = new HIGMessageDialog (
-					parent,
-					0,
-					Gtk.MessageType.Error,
-					Gtk.ButtonsType.Ok,
-					"Unknown connection error",
-					Mono.Unix.Catalog.GetString ("An unknown error occured: ") + e.Message);
-
-				dialog.Run ();
-				dialog.Destroy ();
-
-				return;
-			}
-		}		
 	}
 }

@@ -1,7 +1,7 @@
 // 
 // lat - TemplatesDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@ namespace lat
 		[Glade.Widget] Gtk.Dialog templatesDialog;
 		[Glade.Widget] Gtk.TreeView templateTreeView;
 
-		private ListStore _store;
-		private LdapServer server;
+		ListStore _store;
+		Connection conn;
 
-		public TemplatesDialog (LdapServer ldapServer)
+		public TemplatesDialog (Connection connection)
 		{
-			server = ldapServer;
+			conn = connection;
 
 			ui = new Glade.XML (null, "lat.glade", "templatesDialog", null);
 			ui.Autoconnect (this);
@@ -88,7 +88,7 @@ namespace lat
 
 		public void OnAddClicked (object o, EventArgs args)
 		{
-			TemplateEditorDialog ted = new TemplateEditorDialog (server);
+			TemplateEditorDialog ted = new TemplateEditorDialog (conn);
 
 			if (ted.UserTemplate == null)
 				return;
@@ -101,7 +101,7 @@ namespace lat
 		{
 			Template t = Global.Templates.Lookup (name);
 
-			TemplateEditorDialog ted = new TemplateEditorDialog (server, t);
+			TemplateEditorDialog ted = new TemplateEditorDialog (conn, t);
 
 			if (ted.UserTemplate == null)
 				return;

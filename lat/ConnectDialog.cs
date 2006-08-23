@@ -1,7 +1,7 @@
 // 
 // lat - ConnectDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -53,8 +53,6 @@ namespace lat
 
 		public ConnectDialog ()
 		{
-			Global.Profiles = new ProfileManager ();
-		
 			ui = new Glade.XML (null, "lat.glade", "connectionDialog", null);
 			ui.Autoconnect (this);
 
@@ -89,7 +87,7 @@ namespace lat
 			connectionDialog.Destroy ();
 		}
 
-		private void createCombo ()
+		void createCombo ()
 		{
 			serverTypeComboBox = ComboBox.NewText ();
 			serverTypeComboBox.AppendText ("OpenLDAP");
@@ -273,25 +271,26 @@ namespace lat
 
 			string serverType = (string) serverTypeComboBox.Model.GetValue (iter, 0);
 
-			ConnectionProfile cp = new ConnectionProfile ();
-			cp.Host = hostEntry.Text;
-			cp.Port = int.Parse (portEntry.Text);
-			cp.User = userEntry.Text;
-			cp.Pass = passEntry.Text;
-			cp.LdapRoot = ldapBaseEntry.Text;
-			cp.ServerType = serverType;			
-			cp.DontSavePassword = false;
-			cp.Encryption = encryption;
+			ConnectionData cd = new ConnectionData ();
+			cd.Host = hostEntry.Text;
+			cd.Port = int.Parse (portEntry.Text);
+			cd.UserName = userEntry.Text;
+			cd.Pass = passEntry.Text;
+			cd.DirectoryRoot = ldapBaseEntry.Text;
+			cd.ServerType = Util.GetServerType (serverType);			
+			cd.SavePassword = false;
+			cd.Encryption = encryption;
 
 			if (saveProfileButton.Active) {
-				cp.Name = profileNameEntry.Text;
-				cp.Dynamic = false;
+				cd.Name = profileNameEntry.Text;
+				cd.Dynamic = false;
 			} else {
-				cp.Name = String.Format ("{0}:{1}", cp.Host, cp.Port);
-				cp.Dynamic = true;
+				cd.Name = String.Format ("{0}:{1}", cd.Host, cd.Port);
+				cd.Dynamic = true;
 			}
 			
-			Global.Profiles [cp.Name] = cp;
+			Connection conn = new Connection (cd);
+			Global.Connections [cd.Name] = conn;
 		}
 	}
 }

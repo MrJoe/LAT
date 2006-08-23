@@ -63,7 +63,7 @@ namespace lat {
 		{
 			host = connectionData.Host;
 			port = connectionData.Port;
-			sType = LdapServer.GetServerType (connectionData.ServerType);
+			sType = Util.GetServerType (connectionData.ServerType);
 			encryption = connectionData.Encryption;
 			
 			if (connectionData.DirectoryRoot != "")
@@ -102,34 +102,6 @@ namespace lat {
 		}
 
 		#region methods
-
-		/// <summary>Adds an entry to the directory
-		/// 
-		/// </summary>
-		/// <param name="dn">The distinguished name of the new entry.</param>
-		/// <param name="attributes">An arraylist of string attributes for the 
-		/// new ldap entry.</param>
-		public void Add (string dn, List<LdapAttribute> attributes)
-		{
-			Log.Debug ("START Connection.Add ()");
-			Log.Debug ("dn: {0}", dn);
-
-			LdapAttributeSet attributeSet = new LdapAttributeSet();
-
-			foreach (LdapAttribute attr in attributes) {
-
-				foreach (string v in attr.StringValueArray)
-					Log.Debug ("{0}:{1}", attr.Name, v);
-				
-				attributeSet.Add (attr);
-			}
-
-			LdapEntry newEntry = new LdapEntry( dn, attributeSet );
-
-			conn.Add (newEntry);
-
-			Log.Debug ("END Connection.Add ()");
-		}
 
 		public void Add (LdapEntry entry)
 		{
@@ -209,539 +181,20 @@ namespace lat {
 			Log.Debug ("Disconnected from '{0}'", host);
 		}
 
-		/// <summary>Gets a list of required and optional attributes for
-		/// the given object classes.
-		/// </summary>
-		/// <param name="objClass">List of object classes</param>
-		/// <param name="required">Required attributes</param>
-		/// <param name="optional">Optional attributes</param>
-		public void GetAllAttributes (List<string> objClass, 
-					 out string[] required, out string[] optional)
-		{
-			try {
-
-				LdapSchema schema;
-				LdapObjectClassSchema ocs;
-				
-				List<string> r_attrs = new List<string> ();
-				List<string> o_attrs = new List<string> ();
-
-				schema = conn.FetchSchema ( conn.GetSchemaDN() );
-						
-				foreach (string c in objClass) {
-
-					ocs = schema.getObjectClassSchema ( c );
-
-					if (ocs.RequiredAttributes != null) {
-
-						foreach (string r in ocs.RequiredAttributes)
-							if (!r_attrs.Contains (r))
-								r_attrs.Add (r);
-					}
-
-					if (ocs.OptionalAttributes != null) {
-						foreach (string o in ocs.OptionalAttributes)
-							if (!o_attrs.Contains (o))
-								o_attrs.Add (o);
-					}
-				}
-
-				required = r_attrs.ToArray ();
-				optional = o_attrs.ToArray ();
-
-			} catch (Exception e) {
-
-				required = null;
-				optional = null;
-
-				Log.Debug ("getAllAttrs: {0}", e.Message);
-			}
-		}
-
-		/// <summary>Gets a list of all attributes for the given object class
-		/// </summary>
-		/// <param name="objClass">Name of object class</param>
-		public string[] GetAllAttributes (string objClass)
-		{
-			try {
-
-				LdapSchema schema;
-				LdapObjectClassSchema ocs;
-				
-				List<string> attrs = new List<string> ();
-				
-				schema = conn.FetchSchema ( conn.GetSchemaDN() );	
-				
-				ocs = schema.getObjectClassSchema ( objClass );
-
-				if (ocs.RequiredAttributes != null) {
-					foreach (string r in ocs.RequiredAttributes)
-						if (!attrs.Contains (r))
-							attrs.Add (r);
-				}
-
-				if (ocs.OptionalAttributes != null) {
-					foreach (string o in ocs.OptionalAttributes)
-						if (!attrs.Contains (o))
-							attrs.Add (o);
-				}
-
-				attrs.Sort ();
-
-				return attrs.ToArray ();
-
-			} catch (Exception e) {
-				Log.Debug("LdapServer.GetAllAttributes (" + objClass + "): \n" + e.Message);
-				return null;
-			}
-		}
-
-		/// <summary>Gets a list of attribute types supported on the
-		/// directory.
-		/// </summary>
-		/// <returns>An array of LdapEntry objects</returns>
-		public string[] GetAttributeTypes ()
+		public LdapSchema GetSchema ()
 		{
 			if (!conn.Connected)
 				return null;
-
-			string[] attrs = new string[] { "attributetypes" };
-
-			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, defaultSearchFilter, attrs);
-			if (le == null)
-				return null;
-
-			List<string> tmp = new List<string> ();				
-			LdapAttribute la = le[0].getAttribute ("attributetypes");		
-
-			foreach (string s in la.StringValueArray) {
-				SchemaParser sp = new SchemaParser (s);
-				tmp.Add (sp.Names[0]);
-			}
-
-			tmp.Sort ();				
-			return tmp.ToArray ();
+				
+			return conn.FetchSchema (conn.GetSchemaDN());
 		}
 
-		/// <summary>Gets the schema for a given attribute type
-		/// </summary>
-		/// <param name="attrType">Attribute type</param>
-		/// <returns>A SchemaParser object</returns>
-		public SchemaParser GetAttributeTypeSchema (string attrType)
+		public string GetSchemaDN ()
 		{
 			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "attributetypes" };
-
-			LdapEntry[] entries = Search (schemaDN, 
-				LdapConnection.SCOPE_BASE,
-	 			defaultSearchFilter, attrs);
-
-			foreach (LdapEntry entry in entries) {
-
-				LdapAttribute la = entry.getAttribute ("attributetypes");
-
-				foreach (string s in la.StringValueArray) {
-
-					SchemaParser sp = new SchemaParser (s);
-
-					foreach (string a in sp.Names)
-						if (attrType.Equals (a))
-							return sp;
-				}
-			}
-			
-			return null;
-		}
-
-		/// <summary>Gets the value of an attribute for the given
-		/// entry.
-		/// </summary>
-		/// <param name="le">LdapEntry</param>
-		/// <param name="attr">Attribute to lookup type</param>
-		/// <returns>The value of the attribute (or an empty string if there is
-		/// no value).</returns>
-		public string GetAttributeValueFromEntry (LdapEntry le, string attr)
-		{
-			LdapAttribute la = le.getAttribute (attr);
-
-			if (la != null)
-				return la.StringValue;
-
-			return "";
-		}
-
-		/// <summary>Gets the value of the given attribute for the given
-		/// entry.
-		/// </summary>
-		/// <param name="le">LdapEntry</param>
-		/// <param name="attrs">List of attributes to lookup</param>
-		/// <returns>A list of attribute values</returns>
-		public string[] GetAttributeValuesFromEntry (LdapEntry le, string[] attrs)
-		{
-			if (le == null || attrs == null)
-				throw new ArgumentNullException ();
-
-			List<string> retVal = new List<string> ();
-
-			foreach (string n in attrs) {
-
-				LdapAttribute la = le.getAttribute (n);
-
-				if (la != null)
-					retVal.Add (la.StringValue);
-				else
-					retVal.Add ("");
-			}
-
-			return retVal.ToArray ();
-		}
-
-		/// <summary>Gets an entry in the directory.
-		/// </summary>
-		/// <param name="dn">The distinguished name of the entry</param>
-		public LdapEntry GetEntry (string dn)
-		{
-			if (!conn.Connected)
-				return null;
-
-			LdapEntry[] entry = Search (dn, LdapConnection.SCOPE_BASE,
-						    "objectclass=*", null);
-
-			if (entry.Length > 0)
-				return entry[0];
-		
-			return null;
-		}
-
-		/// <summary>Gets the children of a given entry.
-		/// </summary>
-		/// <param name="entryDN">Distiguished name of entry</param>
-		/// <returns>A list of children (if any)</returns>
-		public LdapEntry[] GetEntryChildren (string entryDN)
-		{
-			if (!conn.Connected)
-				return null;
-
-			return Search (entryDN, LdapConnection.SCOPE_ONE,
-					    "objectclass=*", null);
-		}
-
-		/// <summary>Gets the local Samba SID (if available).
-		/// </summary>
-		/// <returns>sambaSID</returns>
-		public string GetLocalSID ()
-		{
-			LdapEntry[] sid = Search (rootDN, LdapConnection.SCOPE_SUB,
-						    "objectclass=sambaDomain", null);
-
-			if (sid.Length > 0) {
-				LdapAttribute a = sid[0].getAttribute ("sambaSID");
-				return a.StringValue;
-			}
-
-			return null;			
-		}
-
-		/// <summary>Gets the servers LDAP syntaxes (if available).
-		/// </summary>
-		/// <returns>matching rules</returns>
-		public string[] GetLDAPSyntaxes ()
-		{
-			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "ldapSyntaxes" };
-
-			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
-			if (le == null)
 				return null;
 				
-			List<string> tmp = new List<string> ();				
-			LdapAttribute la = le[0].getAttribute ("ldapSyntaxes");		
-
-			foreach (string s in la.StringValueArray) {
-				SchemaParser sp = new SchemaParser (s);
-				tmp.Add (sp.Description);
-			}
-			
-			tmp.Sort ();
-			return tmp.ToArray ();				
-		}
-
-		/// <summary>Gets the schema information for a given ldap syntax
-		/// </summary>
-		/// <param name="attrType">LDAP syntax</param>
-		/// <returns>schema information</returns>
-		public SchemaParser GetLdapSyntax (string synName)
-		{
-			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "ldapSyntaxes" };
-
-			LdapEntry[] entries = Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
-			if (entries == null)
-				return null;
-			
-			LdapAttribute la = entries[0].getAttribute ("ldapSyntaxes");
-			foreach (string s in la.StringValueArray) {
-				SchemaParser sp = new SchemaParser (s);
-				if (synName.Equals (sp.Description))
-						return sp;
-			}
-			
-			return null;
-		}
-
-		/// <summary>Gets the servers matching rules (if available).
-		/// </summary>
-		/// <returns>matching rules</returns>
-		public string[] GetMatchingRules ()
-		{
-			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "matchingRules" };
-
-			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
-			if (le == null)
-				return null;
-				
-			List<string> tmp = new List<string> ();
-			LdapAttribute la = le[0].getAttribute ("matchingRules");			
-
-			foreach (string s in la.StringValueArray) {
-				SchemaParser sp = new SchemaParser (s);
-				tmp.Add (sp.Names[0]);
-			}
-
-			tmp.Sort ();				
-			return tmp.ToArray ();			
-		}
-
-		/// <summary>Gets the schema information for a given matching rule
-		/// </summary>
-		/// <param name="attrType">Matching rule</param>
-		/// <returns>schema information</returns>
-		public SchemaParser GetMatchingRule (string matName)
-		{
-			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "matchingRules" };
-
-			LdapEntry[] entries = Search (schemaDN, LdapConnection.SCOPE_BASE, "", attrs);
-			if (entries == null)
-				return null;
-			
-			LdapAttribute la = entries[0].getAttribute ("matchingRules");
-			foreach (string s in la.StringValueArray) {
-				SchemaParser sp = new SchemaParser (s);
-
-				foreach (string a in sp.Names)
-					if (matName.Equals (a))
-							return sp;
-			}
-			
-			return null;
-		}
-
-		/// <summary>Gets the next available gidNumber
-		/// </summary>
-		/// <returns>The next group number</returns>
-		public int GetNextGID ()
-		{
-			List<int> gids = new List<int> ();
-
-			LdapEntry[] groups = Search (rootDN, LdapConnection.SCOPE_SUB,
-						    "gidNumber=*", null);
-
-			foreach (LdapEntry entry in groups) {
-				LdapAttribute a = entry.getAttribute ("gidNumber");
-				gids.Add (int.Parse(a.StringValue));
-			}
-
-			gids.Sort ();
-			if (gids.Count == 0)
-				return 1000;
-			else
-				return (int) (gids [gids.Count - 1]) + 1;
-		}
-
-		/// <summary>Gets the next available uidNumber
-		/// </summary>
-		/// <returns>The next user number</returns>
-		public int GetNextUID ()
-		{
-			List<int> uids = new List<int> ();
-
-			LdapEntry[] users = Search (rootDN, LdapConnection.SCOPE_SUB,
-						    "uidNumber=*", null);
-
-			foreach (LdapEntry entry in users) {
-				LdapAttribute a = entry.getAttribute ("uidNumber");
-				uids.Add (int.Parse(a.StringValue));
-			}
-
-			uids.Sort ();
-			if (uids.Count == 0)
-				return 1000;
-			else
-				return (int) (uids [uids.Count - 1]) + 1;
-		}
-
-		/// <summary>Gets a list of object classes supported on the directory.
-		/// </summary>
-		/// <returns>A list of object class entries</returns>
-		public string[] GetObjectClasses ()
-		{
-			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "objectclasses" };
-
-			LdapEntry[] le = this.Search (schemaDN, LdapConnection.SCOPE_BASE, defaultSearchFilter, attrs);
-			if (le == null)
-				return null;
-
-			List<string> tmp = new List<string> ();
-			LdapAttribute la = le[0].getAttribute ("objectclasses");			
-
-			foreach (string s in la.StringValueArray) {
-				SchemaParser sp = new SchemaParser (s);
-				tmp.Add (sp.Names[0]);
-			}
-
-			tmp.Sort ();				
-			return tmp.ToArray ();			
-		}
-
-		/// <summary>Gets the schema of a given object class.
-		/// </summary>
-		/// <param name="objClass">Name of object class</param>
-		/// <returns>A SchemaParser object</returns>
-		public SchemaParser GetObjectClassSchema (string objClass)
-		{
-			if (!conn.Connected)
-				return null;
-
-			string[] attrs = new string[] { "objectclasses" };
-
-			LdapEntry[] entries = Search (schemaDN, 
-				LdapConnection.SCOPE_BASE,
-	 			defaultSearchFilter, attrs);
-
-			foreach (LdapEntry entry in entries) {			
-				LdapAttribute la = entry.getAttribute ("objectclasses");
-
-				foreach (string s in la.StringValueArray) {
-					SchemaParser sp = new SchemaParser (s);
-
-					foreach (string a in sp.Names)
-						if (objClass.Equals (a))
-							return sp;
-				}
-			}
-			
-			return null;
-		}
-
-		/// <summary>Gets a list of requried attributes for a given object class.
-		/// </summary>
-		/// <param name="objClass">Name of object class</param>
-		/// <returns>An array of required attribute names</returns>
-		public string[] GetRequiredAttrs (string objClass)
-		{
-			if (!conn.Connected || objClass == null)
-				return null;
-			
-			LdapSchema schema;
-			LdapObjectClassSchema ocs;
-
-			schema = conn.FetchSchema ( conn.GetSchemaDN() );
-			ocs = schema.getObjectClassSchema ( objClass );
-
-			if (ocs != null)
-				return ocs.RequiredAttributes;
-
-			return null;
-		}
-
-		/// <summary>Gets a list of requried attributes for a list of given
-		/// object classes.
-		/// </summary>
-		/// <param name="objClasses">Array of objectclass names</param>
-		/// <returns>An array of required attribute names</returns>
-		public string[] GetRequiredAttrs (string[] objClasses)
-		{
-			if (!conn.Connected || objClasses == null)
-				return null;
-
-			List<string> retVal = new List<string> ();
-			Dictionary<string,string> retHash = new Dictionary<string,string> ();
-
-			LdapSchema schema;
-			schema = conn.FetchSchema ( conn.GetSchemaDN() );
-
-			foreach (string oc in objClasses) {
-
-				LdapObjectClassSchema ocs;
-
-				ocs = schema.getObjectClassSchema ( oc );
-
-				foreach (string c in ocs.RequiredAttributes)
-					if (!retHash.ContainsKey (c))
-						retHash.Add (c, c);
-			}
-
-			foreach (KeyValuePair<string, string> kvp in retHash)
-				retVal.Add (kvp.Key);
-
-			return retVal.ToArray ();
-		}
-
-		public static LdapServerType GetServerType (string serverType)
-		{
-			switch (serverType) {
-			
-			case "microsoft active directory":
-				return LdapServerType.ActiveDirectory;
-			
-			case "fedora directory server":
-				return LdapServerType.FedoraDirectory;
-			
-			case "generic ldap server":
-				return LdapServerType.Generic;
-			
-			case "openldap":
-				return LdapServerType.OpenLDAP;
-			
-			default:
-				return LdapServerType.Unknown;
-			}
-		}
-
-		public static string GetServerType (LdapServerType serverType)
-		{
-			switch (serverType) {
-			
-			case LdapServerType.ActiveDirectory:
-				return "microsoft active directory";
-				
-			case LdapServerType.FedoraDirectory:
-				return "fedora directory server";
-				
-			case LdapServerType.Generic:
-				return "generic ldap server";
-				
-			case LdapServerType.OpenLDAP:
-				return "openldap";
-				
-			default:
-				return "unknown";								
-			}
+			return conn.GetSchemaDN();
 		}
 
 		/// <summary>Modifies the specified entry
@@ -775,33 +228,12 @@ namespace lat {
 
 		/// <summary>Searches the directory
 		/// </summary>
-		/// <param name="searchFilter">filter to search for</param>
-		/// <returns>List of entries matching filter</returns>
-		public LdapEntry[] Search (string searchFilter)
-		{
-			return Search (rootDN, LdapConnection.SCOPE_SUB, searchFilter, null);
-		}
-
-		/// <summary>Searches the directory
-		/// </summary>
-		/// <param name="searchBase">Where to start the search</param>
-		/// <param name="searchFilter">Filter to search for</param>
-		/// <returns>List of entries matching filter</returns>
-		public LdapEntry[] Search (string searchBase, string searchFilter)
-		{
-			return Search (searchBase, LdapConnection.SCOPE_SUB, 
-				       searchFilter, null);	
-		}
-
-		/// <summary>Searches the directory
-		/// </summary>
 		/// <param name="searchBase">Where to start the search</param>
 		/// <param name="searchScope">Scope of search</param>
 		/// <param name="searchFilter">Filter to search for</param>
 		/// <param name="searchAttrs">Attributes to search for</param>
 		/// <returns>List of entries matching filter</returns>
-		public LdapEntry[] Search (string searchBase, int searchScope, 
-					   string searchFilter, string[] searchAttrs)
+		public LdapEntry[] Search (string searchBase, int searchScope, string searchFilter, string[] searchAttrs)
 		{	
 			if (!conn.Connected)
 				return null;
@@ -832,19 +264,9 @@ namespace lat {
 
 			} catch (Exception e) {
 
-				Log.Debug ("LdapServer.Search error: {0}", e.Message);
+				Log.Debug (e);
 				return null;
 			}
-		}
-
-		/// <summary>Searches the directory for all entries of a given object
-		/// class.
-		/// </summary>
-		/// <param name="objectClass">Name of objectclass</param>
-		/// <returns>List of entries matching objectclass</returns>
-		public LdapEntry[] SearchByClass (string objectClass)
-		{
-			return Search (rootDN, String.Format ("objectclass={0}", objectClass));
 		}
 
 		/// <summary>Tries to upgrade to an encrypted connection</summary>
@@ -1021,6 +443,11 @@ namespace lat {
 			get { return rootDN; }
 		}
 
+		public string DefaultSearchFilter
+		{
+			get { return defaultSearchFilter; }
+		}
+
 		public string Host
 		{
 			get { return host; }
@@ -1050,25 +477,7 @@ namespace lat {
 
 		public string ServerTypeString
 		{
-			get {
-				switch (ldapServerType) {
-
-				case LdapServerType.ActiveDirectory:
-					return "Microsoft Active Directory";
-					
-				case LdapServerType.OpenLDAP:
-					return "OpenLDAP";
-					
-				case LdapServerType.FedoraDirectory:
-					return "Fedora Directory Server";
-					
-				case LdapServerType.Generic:
-					return "Generic LDAP server";
-					
-				default:
-					return "Generic LDAP server";
-				}				
-			}
+			get { return Util.GetServerType (ldapServerType); }
 		}
 
 		public bool UseSSL

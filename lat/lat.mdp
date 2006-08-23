@@ -30,7 +30,6 @@
     <File name="./PasswordDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./Preferences.cs" subtype="Code" buildaction="Compile" />
     <File name="./ProfileDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ProfileManager.cs" subtype="Code" buildaction="Compile" />
     <File name="./RenameEntryDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./SMBPassword.cs" subtype="Code" buildaction="Compile" />
     <File name="./SambaPopulateDialog.cs" subtype="Code" buildaction="Compile" />

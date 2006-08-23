@@ -38,15 +38,15 @@ namespace lat {
 		{
 		}
 
-		public override void OnAddEntry (LdapServer server)
+		public override void OnAddEntry (Connection connection)
 		{
-			new GroupsViewDialog (server, this.DefaultNewContainer);
+			new GroupsViewDialog (connection, this.DefaultNewContainer);
 		}		
 
-		public override void OnEditEntry (LdapServer server, LdapEntry le)
+		public override void OnEditEntry (Connection connection, LdapEntry le)
 		{
 			// FIXME: Can't get current memebers of built-in groups, might require SSL
-			new GroupsViewDialog (server, le);
+			new GroupsViewDialog (connection, le);
 		}
 					
 		public override void OnPopupShow (Menu popup)

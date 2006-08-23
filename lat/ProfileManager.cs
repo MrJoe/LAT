@@ -92,9 +92,7 @@ namespace lat
 					GnomeKeyring.Result gkr;
 					NetworkPasswordData[] list;
 
-					gkr = GnomeKeyring.Global.FindNetworkPassword (this.User, out list);
-					Log.Debug ("gnome-keyring-result: {0}", gkr);
-
+					gkr = GnomeKeyring.Global.FindNetworkPassword (this.User, out list);					
 					if (list.Length > 0) {
 						NetworkPasswordData npd = list[0];
 						password = npd.Password;

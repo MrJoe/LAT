@@ -1,7 +1,7 @@
 // 
 // lat - NewEntryDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@ namespace lat
 		[Glade.Widget] Gtk.RadioButton templateRadioButton;
 		[Glade.Widget] Gtk.RadioButton entryRadioButton;
 
-		private LdapServer server;
-		private ComboBox templateComboBox;
-		private string _dn;
+		Connection conn;
+		ComboBox templateComboBox;
+		string _dn;
 
-		public NewEntryDialog (LdapServer ldapServer, string dn)
+		public NewEntryDialog (Connection connection, string dn)
 		{
-			server = ldapServer;
+			conn = connection;
 			_dn = dn;
 
 			ui = new Glade.XML (null, "lat.glade", "newEntryDialog", null);
@@ -83,14 +83,14 @@ namespace lat
 
 				Template t = Global.Templates.Lookup (name);
 
-				new CreateEntryDialog (server, t);
+				new CreateEntryDialog (conn, t);
 
 			} else {
 
-				if (_dn == server.Host)
+				if (_dn == conn.Settings.Host)
 					return;
 
-				new CreateEntryDialog (server, server.GetEntry (_dn));
+				new CreateEntryDialog (conn, conn.Data.GetEntry (_dn));
 			}
 
 			newEntryDialog.HideAll ();

@@ -87,7 +87,7 @@ namespace lat
 
 			 rootIter = schemaStore.AppendValues (dirIcon, "Servers");
 
-			foreach (string n in Global.Profiles.GetProfileNames()) {
+			foreach (string n in Global.Connections.ConnectionNames) {
 				TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, n);
 
 				TreeIter objIter;
@@ -121,7 +121,7 @@ namespace lat
 			rootIter = schemaStore.AppendValues (dirIcon, "Servers");
 			TreePath path = schemaStore.GetPath (rootIter);
 			
-			foreach (string n in Global.Profiles.GetProfileNames()) {
+			foreach (string n in Global.Connections.ConnectionNames) {
 				TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, n);
 
 				TreeIter objIter;
@@ -145,10 +145,10 @@ namespace lat
 			this.ExpandRow (path, false);		
 		}
 
-		public void AddServer (ConnectionProfile cp)
+		public void AddConnection (string name)
 		{
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
-			TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, cp.Name);
+			TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, name);
 			schemaStore.AppendValues (iter, null, "");
 		}
 
@@ -183,26 +183,26 @@ namespace lat
 			} 		
 		}
 		
-		string[] GetChildren (string parentName, LdapServer server)
+		string[] GetChildren (string parentName, Connection conn)
 		{
 			string[] childValues = null;
 		
 			switch (parentName) {
 			
 			case "Object Classes":
-				childValues = server.GetObjectClasses ();
+				childValues = conn.Data.ObjectClasses;
 				break;
 				
 			case "Attribute Types":
-				childValues = server.GetAttributeTypes ();
+				childValues = conn.Data.GetAttributeTypes ();
 				break;
 				
 			case "Matching Rules":
-				childValues = server.GetMatchingRules ();			
+				childValues = conn.Data.GetMatchingRules ();			
 				break;
 			
 			case "LDAP Syntaxes":
-				childValues = server.GetLDAPSyntaxes ();
+				childValues = conn.Data.GetLdapSyntaxes ();
 				break;
 				
 			default:
@@ -255,16 +255,15 @@ namespace lat
 			schemaStore.Remove (ref child);
 					
 			Log.Debug ("Row expanded {0}", name);
-
+			
 			string serverName = FindServerName (args.Iter, schemaStore);
-			ConnectionProfile cp = Global.Profiles [serverName];			
-			LdapServer server = Global.Connections [cp];		
+			Connection conn = Global.Connections [serverName];
 
 			try {
 
 				Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("text-x-generic.png");
 		 				 		
-		 		string[] kids = GetChildren (name, server);
+		 		string[] kids = GetChildren (name, conn);
 				foreach (string s in kids) { 
 					schemaStore.AppendValues (args.Iter, pb, s);
 				}

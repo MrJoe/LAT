@@ -1,7 +1,7 @@
 // 
 // lat - SelectContainerDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,17 +29,17 @@ namespace lat
 		[Glade.Widget] ScrolledWindow browserScrolledWindow;
 		[Glade.Widget] Gtk.Label msgLabel;
 
-		private Glade.XML ui;
-		private LdapTreeView _ldapTreeview;
+		Glade.XML ui;
+		LdapTreeView _ldapTreeview;
 
-		private string _dn = "";
+		string _dn = "";
 
-		public SelectContainerDialog (LdapServer ldapServer, Gtk.Window parent)
+		public SelectContainerDialog (Connection connection, Gtk.Window parent)
 		{
 			ui = new Glade.XML (null, "lat.glade", "selectContainerDialog", null);
 			ui.Autoconnect (this);
 
-			_ldapTreeview = new LdapTreeView (parent);
+			_ldapTreeview = new LdapTreeView (parent, connection);
 			_ldapTreeview.dnSelected += new dnSelectedHandler (ldapDNSelected);
 			_ldapTreeview.BrowserSelectionMethod = (int)Preferences.Get (Preferences.BROWSER_SELECTION);
 

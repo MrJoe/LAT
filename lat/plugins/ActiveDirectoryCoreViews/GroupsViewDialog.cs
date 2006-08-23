@@ -43,7 +43,7 @@ namespace lat
 		
 		bool isEdit;
 
-		public GroupsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
+		public GroupsViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
 		{
 			Init ();
 
@@ -67,7 +67,7 @@ namespace lat
 			groupDialog.Destroy ();
 		}
 
-		public GroupsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
+		public GroupsViewDialog (Connection connection, LdapEntry le) : base (connection, null)
 		{
 			currentEntry = le;
 		
@@ -75,16 +75,16 @@ namespace lat
 
 			Init ();
 
-			string groupName = server.GetAttributeValueFromEntry (currentEntry, "cn");
+			string groupName = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 
 			groupDialog.Title = groupName + " Properties";
 			groupNameEntry.Text = groupName;
-			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
+			descriptionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "description");
 			
 			LdapAttribute attr = currentEntry.getAttribute ("member");
 			if (attr != null) {
 				foreach (string s in attr.StringValueArray) {
-					LdapEntry userEntry = server.GetEntry (s);
+					LdapEntry userEntry = conn.Data.GetEntry (s);
 					LdapAttribute userNameAttribute = userEntry.getAttribute ("name");
 					
 					currentMemberStore.AppendValues (userNameAttribute.StringValue);
@@ -110,7 +110,7 @@ namespace lat
 
 		void populateUsers ()
 		{
-			LdapEntry[] _users = server.Search ("(&(objectclass=user)(objectcategory=Person))");
+			LdapEntry[] _users = conn.Data.Search ("(&(objectclass=user)(objectcategory=Person))");
 
 			foreach (LdapEntry le in _users) {
 				LdapAttribute nameAttr = le.getAttribute ("name");
@@ -220,7 +220,7 @@ namespace lat
 				 if (lea.Differences.Length == 0)
 				 	return;
 				 	
-				 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+				 if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 				 	errorOccured = true;
 				 	
 			} else {
@@ -229,7 +229,7 @@ namespace lat
 				
 				if (this.defaultNewContainer == string.Empty || this.defaultNewContainer == null) {
 				
-					SelectContainerDialog scd =	new SelectContainerDialog (server, groupDialog);
+					SelectContainerDialog scd =	new SelectContainerDialog (conn, groupDialog);
 					scd.Title = "Save Group";
 					scd.Message = String.Format ("Where in the directory would\nyou like save the group\n{0}?", groupNameEntry.Text);
 					scd.Run ();
@@ -246,14 +246,14 @@ namespace lat
 				
 				entry = CreateEntry (userDN);
 
-				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (conn, entry);
 				if (missing.Length != 0) {
 					missingAlert (missing);
 					missingValues = true;
 					return;
 				}
 
-				if (!Util.AddEntry (server, entry))
+				if (!Util.AddEntry (conn, entry))
 					errorOccured = true;
 			}
 		}

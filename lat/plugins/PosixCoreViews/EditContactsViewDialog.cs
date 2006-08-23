@@ -64,41 +64,41 @@ namespace lat
 
 		LdapEntry currentEntry;
 
-		public EditContactsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null) 
+		public EditContactsViewDialog (Connection connection, LdapEntry le) : base (connection, null) 
 		{
 			currentEntry = le;
 
 			Init ();
 
-			string displayName = server.GetAttributeValueFromEntry (currentEntry, "displayName");
+			string displayName = conn.Data.GetAttributeValueFromEntry (currentEntry, "displayName");
 
 			gnNameLabel.Text = displayName;
-			gnFirstNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "givenName");
-			gnInitialsEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "initials");
-			gnLastNameEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "sn");
+			gnFirstNameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "givenName");
+			gnInitialsEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "initials");
+			gnLastNameEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sn");
 			gnDisplayName.Text = displayName;
-			gnDescriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
-			gnOfficeEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "physicalDeliveryOfficeName");
-			gnTelephoneNumberEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "telephoneNumber");
-			gnEmailEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "mail");
+			gnDescriptionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "description");
+			gnOfficeEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "physicalDeliveryOfficeName");
+			gnTelephoneNumberEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "telephoneNumber");
+			gnEmailEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "mail");
 			
-			adPOBoxEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "postOfficeBox");
-			adCityEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "l");
-			adStateEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "st");
-			adZipEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "postalCode");
+			adPOBoxEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "postOfficeBox");
+			adCityEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "l");
+			adStateEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "st");
+			adZipEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "postalCode");
 			
 
-			tnHomeEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "homePhone");
-			tnPagerEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "pager");
-			tnMobileEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "mobile");
-			tnFaxEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "facsimileTelephoneNumber");
+			tnHomeEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "homePhone");
+			tnPagerEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "pager");
+			tnMobileEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "mobile");
+			tnFaxEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "facsimileTelephoneNumber");
 			
-			ozTitleEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "title");
+			ozTitleEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "title");
 
-			string contactName = server.GetAttributeValueFromEntry (currentEntry, "cn");
+			string contactName = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 			editContactDialog.Title = contactName + " Properties";
 
-			server.GetAttributeValueFromEntry (currentEntry, "street");
+			conn.Data.GetAttributeValueFromEntry (currentEntry, "street");
 
 			editContactDialog.Icon = Global.latIcon;
 			editContactDialog.Run ();
@@ -184,7 +184,7 @@ namespace lat
 			 if (lea.Differences.Length == 0)
 			 	return;
 				 	
-			 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+			 if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 			 	errorOccured = true;
 		}
 	}

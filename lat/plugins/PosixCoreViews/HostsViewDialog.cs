@@ -38,7 +38,7 @@ namespace lat
 		LdapEntry currentEntry;
 		bool isEdit;
 
-		public HostsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
+		public HostsViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
 		{
 			Init ();
 
@@ -59,19 +59,19 @@ namespace lat
 			hostDialog.Destroy ();
 		}
 
-		public HostsViewDialog (LdapServer ldapServer, LdapEntry le) : base (ldapServer, null)
+		public HostsViewDialog (Connection connection, LdapEntry le) : base (connection, null)
 		{
 			isEdit = true;
 			currentEntry = le;
 			
 			Init ();
 
-			string hostName = server.GetAttributeValueFromEntry (currentEntry, "cn"); 
+			string hostName = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn"); 
 			hostDialog.Title = hostName + " Properties";
 			hostNameEntry.Text = hostName;
 			
-			ipEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "ipHostNumber");
-			descriptionEntry.Text = server.GetAttributeValueFromEntry (currentEntry, "description");
+			ipEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "ipHostNumber");
+			descriptionEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "description");
 
 			hostDialog.Run ();
 			hostDialog.Destroy ();
@@ -113,12 +113,12 @@ namespace lat
 				 if (lea.Differences.Length == 0)
 				 	return;
 				 	
-				 if (!Util.ModifyEntry (server, entry.DN, lea.Differences))
+				 if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 				 	errorOccured = true;
 				 	
 			} else {
 			
-				SelectContainerDialog scd = new SelectContainerDialog (server, hostDialog);
+				SelectContainerDialog scd = new SelectContainerDialog (conn, hostDialog);
 				scd.Title = "Save Host";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the host\n{0}?", hostNameEntry.Text);
 				scd.Run ();
@@ -129,14 +129,14 @@ namespace lat
 				string userDN = String.Format ("cn={0},{1}", hostNameEntry.Text, scd.DN);
 				entry = CreateEntry (userDN);
 
-				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+				string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (conn, entry);
 				if (missing.Length != 0) {
 					missingAlert (missing);
 					missingValues = true;
 					return;
 				}
 
-				if (!Util.AddEntry (server, entry))
+				if (!Util.AddEntry (conn, entry))
 					errorOccured = true;
 			}
 		}

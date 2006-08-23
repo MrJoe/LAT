@@ -35,7 +35,7 @@ namespace lat
 		TreeView tv;
 		ListStore store;
 
-		LdapServer currentServer;
+		Connection conn;
 		string currentDN;
 		bool displayAll;
 		
@@ -143,7 +143,7 @@ namespace lat
 				}
 			}
 
-			Util.ModifyEntry (currentServer, currentDN, modList.ToArray());
+			Util.ModifyEntry (conn, currentDN, modList.ToArray());
 		}
 	
 		void OnAttributeEdit (object o, EditedArgs args)
@@ -161,10 +161,10 @@ namespace lat
 			applyButton.Sensitive = true;
 		}
 	
-		public void Show (LdapServer server, LdapEntry entry, bool showAll)
+		public void Show (Connection connection, LdapEntry entry, bool showAll)
 		{
 			displayAll = showAll;
-			currentServer = server;
+			conn = connection;
 			currentDN = entry.DN;			
 			currentAttributes = new NameValueCollection ();
 
@@ -184,7 +184,7 @@ namespace lat
 				store.AppendValues ("objectClass", o);
 				currentAttributes.Add ("objectClass", o);
 				
-				string[] attrs = server.GetAllAttributes (o);
+				string[] attrs = conn.Data.GetAllAttributes (o);
 				if (attrs != null) {
 					foreach (string at in attrs)
 						if (!allAttrs.Contains (at))
@@ -199,8 +199,8 @@ namespace lat
 			// Fedora Directory Server supports an Access Control Item (ACI)
 			// but it is not listed as "allowed attribute" for any objectClass 
 			// found in Fedora's LDAP schema.
-			if (showAll && server.ServerType == LdapServerType.FedoraDirectory) {
-				LdapEntry[] acientries = server.Search(	currentDN, 
+			if (showAll && conn.Settings.ServerType == LdapServerType.FedoraDirectory) {
+				LdapEntry[] acientries = conn.Data.Search(	currentDN, 
 														LdapConnection.SCOPE_BASE,
 						    							"objectclass=*", 
 						    							new string[] {"aci"} );
@@ -258,7 +258,7 @@ namespace lat
 			if (attrName == null)
 				return;
 								
-			SchemaParser sp = currentServer.GetAttributeTypeSchema (attrName);
+			SchemaParser sp = conn.Data.GetAttributeTypeSchema (attrName);
 			
 			if (!sp.Single) {
 				TreeIter newRow = store.InsertAfter (iter);
@@ -319,7 +319,7 @@ namespace lat
 
 		void RunViewerPlugin (AttributeViewPlugin avp, string attributeName)
 		{
-			LdapEntry le = currentServer.GetEntry (currentDN);
+			LdapEntry le = conn.Data.GetEntry (currentDN);
 			LdapAttribute la = le.getAttribute (attributeName);
 			
 			bool existing = false;
@@ -360,9 +360,9 @@ namespace lat
 
 			List<LdapModification> modList = new List<LdapModification> ();
 			modList.Add (lm);			
-			Util.ModifyEntry (currentServer, currentDN, modList.ToArray());
+			Util.ModifyEntry (conn, currentDN, modList.ToArray());
 
-			this.Show (currentServer, currentServer.GetEntry (currentDN), displayAll);
+			this.Show (conn, conn.Data.GetEntry (currentDN), displayAll);
 		}
 
 		void OnRowActivated (object o, RowActivatedArgs args)
@@ -374,12 +374,10 @@ namespace lat
 			
 				string name = null;
 				name = (string) store.GetValue (iter, 0);
-
-				ConnectionProfile cp = Global.Profiles [currentServer.ProfileName];							
 					
 				foreach (AttributeViewPlugin avp in Global.Plugins.AttributeViewPlugins)
 					if (avp.AttributeName == name)
-						if (cp.ActiveAttributeViewers.Contains (avp.GetType().ToString()))
+						if (conn.AttributeViewers.Contains (avp.GetType().ToString()))
 							RunViewerPlugin (avp, name);
 			} 		
 		}
@@ -396,10 +394,10 @@ namespace lat
 
 		void OnAddObjectClassActivate (object o, EventArgs args)
 		{
-			AddObjectClassDialog dlg = new AddObjectClassDialog (currentServer);
+			AddObjectClassDialog dlg = new AddObjectClassDialog (conn);
 				
 			foreach (string s in dlg.ObjectClasses) {
-				string[] req = currentServer.GetRequiredAttrs (s);
+				string[] req = conn.Data.GetRequiredAttrs (s);
 				store.AppendValues ("objectClass", s);
 				
 				foreach (string r in req) {

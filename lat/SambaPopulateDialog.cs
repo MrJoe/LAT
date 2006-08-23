@@ -1,7 +1,7 @@
 // 
 // lat - SambaPopulateDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,12 +37,12 @@ namespace lat
 		[Glade.Widget] Gtk.Entry computerOUEntry;
 		[Glade.Widget] Gtk.Entry idmapOUEntry;
 
-		private LdapServer server;
-		private Glade.XML ui;
+		Connection conn;
+		Glade.XML ui;
 
-		public SambaPopulateDialog (LdapServer ldapServer)
+		public SambaPopulateDialog (Connection connection)
 		{
-			server = ldapServer;
+			conn = connection;
 
 			ui = new Glade.XML (null, "lat.glade", "sambaPopulateDialog", null);
 			ui.Autoconnect (this);
@@ -50,26 +50,25 @@ namespace lat
 			adminEntry.Text = "root";
 			guestEntry.Text = "nobody";
 
-			userOUEntry.Text = "ou=Users," + server.DirectoryRoot;
-			groupOUEntry.Text = "ou=Groups," + server.DirectoryRoot;
-			computerOUEntry.Text = "ou=Computers," + server.DirectoryRoot;
-			idmapOUEntry.Text = "ou=Idmap," + server.DirectoryRoot;
+			userOUEntry.Text = "ou=Users," + conn.DirectoryRoot;
+			groupOUEntry.Text = "ou=Groups," + conn.DirectoryRoot;
+			computerOUEntry.Text = "ou=Computers," + conn.DirectoryRoot;
+			idmapOUEntry.Text = "ou=Idmap," + conn.DirectoryRoot;
 
 			sambaPopulateDialog.Icon = Global.latIcon;
 			sambaPopulateDialog.Run ();
 			sambaPopulateDialog.Destroy ();
 		}
 
-		private void SelectContainer (string msg, string title, Gtk.Entry entry)
+		void SelectContainer (string msg, string title, Gtk.Entry entry)
 		{
-			SelectContainerDialog scd = 
-				new SelectContainerDialog (server, sambaPopulateDialog);
+			SelectContainerDialog scd = new SelectContainerDialog (conn, sambaPopulateDialog);
 
 			scd.Message = msg;
 			scd.Title = title;
 			scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (server.Host))
+			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
 				entry.Text = scd.DN;
 		}
 
@@ -134,7 +133,7 @@ namespace lat
 
 		private bool checkDN (string dn)
 		{
-			LdapEntry le = server.GetEntry (dn);
+			LdapEntry le = conn.Data.GetEntry (dn);
 
 			if (le == null)
 				return false;
@@ -149,7 +148,7 @@ namespace lat
 			lset.Add (new LdapAttribute ("ou", getCN(dn)));
 			
 			LdapEntry entry = new LdapEntry (dn, lset);
-			Util.AddEntry (server, entry);
+			Util.AddEntry (conn, entry);
 		}
 
 		void createUser (string dn, string name, string pass, string sid, 
@@ -179,7 +178,7 @@ namespace lat
 			lset.Add (new LdapAttribute ("gecos", gecos));
 		
 			LdapEntry entry = new LdapEntry (dn, lset);
-			Util.AddEntry (server, entry);
+			Util.AddEntry (conn, entry);
 		}
 
 		void createGroup (string dn, string gid, string desc, 
@@ -199,7 +198,7 @@ namespace lat
 				lset.Add (new LdapAttribute ("memberUid", memberuid));
 	
 			LdapEntry entry = new LdapEntry (dn, lset);
-			Util.AddEntry (server, entry);
+			Util.AddEntry (conn, entry);
 		}
 
 		void createDomain (string dn, string domain, string sid)
@@ -210,7 +209,7 @@ namespace lat
 			lset.Add (new LdapAttribute ("sambaSID", sid));
 			
 			LdapEntry entry = new LdapEntry (dn, lset);
-			Util.AddEntry (server, entry);
+			Util.AddEntry (conn, entry);
 		}
 
 		public void OnOkClicked (object o, EventArgs args)
@@ -291,7 +290,7 @@ namespace lat
 			createGroup (dn, "552", "Netbios Domain Supports file replication in a sambaDomainName", "S-1-5-32",
 				     "552", "5", "");
 
-			dn = String.Format ("sambaDomainName={0},{1}", domainEntry.Text, server.DirectoryRoot);
+			dn = String.Format ("sambaDomainName={0},{1}", domainEntry.Text, conn.DirectoryRoot);
 
 			createDomain (dn, domainEntry.Text, sidEntry.Text);
 

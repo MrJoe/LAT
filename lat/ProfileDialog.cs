@@ -1,7 +1,7 @@
 // 
 // lat - ProfileDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -57,25 +57,25 @@ namespace lat
 			profileDialog.Destroy ();
 		}
 		
-		public ProfileDialog (ConnectionProfile cp)
+		public ProfileDialog (Connection conn)
 		{
 			Init ();
 			
-			oldName = cp.Name;
+			oldName = conn.Settings.Name;
 
-			profileNameEntry.Text = cp.Name;
-			hostEntry.Text = cp.Host;
-			portEntry.Text = cp.Port.ToString();
-			ldapBaseEntry.Text = cp.LdapRoot;
+			profileNameEntry.Text = conn.Settings.Name;
+			hostEntry.Text = conn.Settings.Host;
+			portEntry.Text = conn.Settings.Port.ToString();
+			ldapBaseEntry.Text = conn.Settings.DirectoryRoot;
 			
-			userEntry.Text = cp.User;
+			userEntry.Text = conn.Settings.UserName;
 
-			if (cp.DontSavePassword)
+			if (conn.Settings.SavePassword)
 				savePasswordButton.Active =  true;
 			else
-				passEntry.Text = cp.Pass;
+				passEntry.Text = conn.Settings.Pass;
 
-			switch (cp.Encryption) {
+			switch (conn.Settings.Encryption) {
 	
 			case EncryptionType.TLS:
 				tlsRadioButton.Active = true;
@@ -90,7 +90,7 @@ namespace lat
 				break;
 			}
 				
-			comboSetActive (serverTypeComboBox, cp.ServerType.ToLower());
+			comboSetActive (serverTypeComboBox, Util.GetServerType (conn.Settings.ServerType));
 
 			isEdit = true;
 
@@ -168,39 +168,43 @@ namespace lat
 
 			string st = (string) serverTypeComboBox.Model.GetValue (iter, 0);
 
-			ConnectionProfile profile = new ConnectionProfile ();
-			profile.Name = profileNameEntry.Text;
-			profile.Host = hostEntry.Text;
-			profile.Port = int.Parse (portEntry.Text);
-			profile.LdapRoot = ldapBaseEntry.Text;
-			profile.User = userEntry.Text;
-			profile.Encryption = encryption;
-			profile.DontSavePassword = savePasswordButton.Active;
-			profile.ServerType = st;
+			ConnectionData data = new ConnectionData ();
+			data.Name = profileNameEntry.Text;
+			data.Host = hostEntry.Text;
+			data.Port = int.Parse (portEntry.Text);
+			data.DirectoryRoot = ldapBaseEntry.Text;
+			data.UserName = userEntry.Text;
+			data.Encryption = encryption;
+			data.SavePassword = savePasswordButton.Active;
+			data.ServerType = Util.GetServerType (st);
 
-			if (profile.DontSavePassword)
-				profile.Pass = "";
+			if (data.SavePassword)
+				data.Pass = "";
 			else
-				profile.Pass = passEntry.Text;
+				data.Pass = passEntry.Text;
 
 			if (isEdit) {
 
-				if (!oldName.Equals (profile.Name)) {
+				Connection c = Global.Connections [data.Name];
+				c.Settings = data;
+				
+				if (!oldName.Equals (data.Name)) {
 
-					Global.Profiles.Remove (oldName);
-					Global.Profiles[profile.Name] = profile;
+					Global.Connections.Delete (oldName);
+					Global.Connections[data.Name] = c;
 
 				} else {
 
-					Global.Profiles[profile.Name] = profile;
+					Global.Connections[data.Name] = c;
 				}
 
 			} else {
 
-				Global.Profiles[profile.Name] = profile;
+				Connection c = new Connection (data);				
+				Global.Connections[data.Name] = c;
 			}
 			
-			Global.Profiles.SaveProfiles ();
+			Global.Connections.Save ();
 		}
 	}
 }

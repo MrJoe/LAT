@@ -1,7 +1,7 @@
 // 
 // lat - AddObjectClassDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 using Gtk;
 using System;
 using System.Collections.Generic;
-using Novell.Directory.Ldap;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace lat
 {
@@ -33,13 +31,11 @@ namespace lat
 		[Glade.Widget] Gtk.Dialog addObjectClassDialog;
 		[Glade.Widget] Gtk.TreeView objClassTreeView;
 
-		LdapServer server;
 		List<string> objectClasses;
 		ListStore store;
 
-		public AddObjectClassDialog (LdapServer ldapServer)
+		public AddObjectClassDialog (Connection conn)
 		{
-			server = ldapServer;
 			objectClasses = new List<string> ();
 
 			ui = new Glade.XML (null, "lat.glade", "addObjectClassDialog", null);
@@ -57,9 +53,8 @@ namespace lat
 			objClassTreeView.Model = store;
 
 			try {
-				// class
-				string[] ocs = server.GetObjectClasses ();
-				foreach (string n in ocs)
+
+				foreach (string n in conn.Data.ObjectClasses)
 					store.AppendValues (false, n);
 
 			} catch (Exception e) {

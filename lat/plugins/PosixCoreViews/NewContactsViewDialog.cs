@@ -38,7 +38,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry gnDisplayName;
 		[Glade.Widget] Gtk.Image image181;
 
-		public NewContactsViewDialog (LdapServer ldapServer, string newContainer) : base (ldapServer, newContainer)
+		public NewContactsViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
 		{
 			Init ();
 
@@ -98,7 +98,7 @@ namespace lat
 			
 			if (this.defaultNewContainer == null) {
 			
-				SelectContainerDialog scd =	new SelectContainerDialog (server, newContactDialog);
+				SelectContainerDialog scd =	new SelectContainerDialog (conn, newContactDialog);
 				scd.Title = "Save Group";
 				scd.Message = String.Format ("Where in the directory would\nyou like save the contact\n{0}?", gnDisplayName.Text);
 				scd.Run ();
@@ -115,14 +115,14 @@ namespace lat
 			
 			entry = CreateEntry (userDN);
 
-			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (server, entry);
+			string[] missing = LdapEntryAnalyzer.CheckRequiredAttributes (conn, entry);
 			if (missing.Length != 0) {
 				missingAlert (missing);
 				missingValues = true;
 				return;
 			}
 
-			if (!Util.AddEntry (server, entry))
+			if (!Util.AddEntry (conn, entry))
 				errorOccured = true;
 		}
 	}

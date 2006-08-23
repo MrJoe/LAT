@@ -1,7 +1,7 @@
 // 
 // lat - RenameEntryDialog.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@ namespace lat
 		[Glade.Widget] Gtk.Entry newNameEntry;
 		[Glade.Widget] Gtk.CheckButton saveOldNameCheckButton;
 
-		private LdapServer server;
-		private string _selectedDN;
+		Connection conn;
+		string _selectedDN;
 		bool renameHappened;
 
-		public RenameEntryDialog (LdapServer ldapServer, string selectedDN)
+		public RenameEntryDialog (Connection connection, string selectedDN)
 		{
-			server = ldapServer;
+			conn = connection;
 			_selectedDN = selectedDN;
 			renameHappened = false;
 
@@ -60,7 +60,7 @@ namespace lat
 			
 			try {
 
-				server.Rename (oldDN, newDN, saveOld);
+				conn.Data.Rename (oldDN, newDN, saveOld);
 
 				string msg = String.Format (
 					Mono.Unix.Catalog.GetString (

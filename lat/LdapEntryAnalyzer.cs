@@ -47,7 +47,7 @@ namespace lat
 			return false;
 		}
 
-		public static string[] CheckRequiredAttributes (LdapServer server, LdapEntry entry)
+		public static string[] CheckRequiredAttributes (Connection conn, LdapEntry entry)
 		{
 			List<string> missingAttributes = new List<string> ();
 		
@@ -59,7 +59,7 @@ namespace lat
 				if (o.Equals ("top"))
 					continue;
 
-				string[] reqs = server.GetRequiredAttrs (o);
+				string[] reqs = conn.Data.GetRequiredAttrs (o);
 				if (reqs == null)
 					continue;
 
