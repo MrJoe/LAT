@@ -1,3 +1,5 @@
+	* Plugin settings are now configurable per server
+	* Redesigned preferences dialog
 	* Don't block UI with GNOME keyring dialog
 	* Fixed fields in schema browser that were not updating properly
 	* Code refactoring/cleanup

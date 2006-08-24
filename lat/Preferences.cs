@@ -112,18 +112,11 @@ namespace lat
 		[Glade.Widget] RadioButton browserDoubleClickButton;
 		[Glade.Widget] CheckButton verboseMessagesButton;
 		[Glade.Widget] TreeView profilesTreeView;
-//		[Glade.Widget] TreeView pluginTreeView;
-//		[Glade.Widget] TreeView attrViewPluginTreeView;
 
 		ListStore profileStore;
-//		ListStore pluginStore;
-//		ListStore attrPluginStore;
-//		Connection conn;
 			
 		public PreferencesDialog ()
 		{
-//			conn = connection;
-		
 			ui = new Glade.XML (null, "lat.glade", "preferencesDialog", null);
 			ui.Autoconnect (this);
 			
@@ -136,51 +129,7 @@ namespace lat
 			col.SortColumnId = 0;
 
 			UpdateProfileList ();
-/*
-			pluginStore = new ListStore (typeof (bool), typeof (string));
-
-			CellRendererToggle crt = new CellRendererToggle();
-			crt.Activatable = true;
-			crt.Toggled += OnClassToggled;
-
-			pluginTreeView.AppendColumn ("Enabled", crt, "active", 0);
-			pluginTreeView.AppendColumn ("Name", new CellRendererText (), "text", 1);
-			
-			pluginTreeView.Model = pluginStore;
-
-			if (conn.Settings.Name != null) {
-				foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins) {
-					if (conn.ServerViews.Contains (vp.GetType().ToString()))
-						pluginStore.AppendValues (true, vp.Name);
-					else
-						pluginStore.AppendValues (false, vp.Name);
-				}
-			}
-
-			attrPluginStore = new ListStore (typeof (bool), typeof (string));
-
-			crt = new CellRendererToggle();
-			crt.Activatable = true;
-			crt.Toggled += OnAttributeViewerToggled;
-			
-			attrViewPluginTreeView.AppendColumn ("Enabled", crt, "active", 0);
-			attrViewPluginTreeView.AppendColumn ("Name", new CellRendererText (), "text", 1);
-			
-			attrViewPluginTreeView.Model = attrPluginStore;
-
-			if (conn.Settings.Name != null) {	
-			
-				if (conn.AttributeViewers.Count == 0)
-					conn.SetDefaultAttributeViewers ();
 					
-				foreach (AttributeViewPlugin avp in Global.Plugins.AttributeViewPlugins) {
-					if (conn.AttributeViewers.Contains (avp.GetType().ToString()))
-						attrPluginStore.AppendValues (true, avp.Name);
-					else
-						attrPluginStore.AppendValues (false, avp.Name);
-				}
-			}
-*/					
 			LoadPreference (Preferences.BROWSER_SELECTION);
 			LoadPreference (Preferences.DISPLAY_VERBOSE_MESSAGES);
 					
@@ -288,119 +237,6 @@ namespace lat
 		public void OnVerboseToggled (object o, EventArgs args)
 		{
 			Preferences.Set (Preferences.DISPLAY_VERBOSE_MESSAGES, verboseMessagesButton.Active);
-		}
-		
-		public void OnAttrAboutClicked (object o, EventArgs args)
-		{
-/*		
-			TreeModel model;
-			TreeIter iter;
-
-			if (attrViewPluginTreeView.Selection.GetSelected (out model, out iter)) {
-							
-				string name = (string) attrPluginStore.GetValue (iter, 1);
-				AttributeViewPlugin vp = Global.Plugins.FindAttributeView (name);
-				
-				if (vp != null) {
-					Gtk.AboutDialog ab = new Gtk.AboutDialog ();
-					ab.Authors = vp.Authors;
-					ab.Comments = vp.Description;
-					ab.Copyright = vp.Copyright;
-					ab.Name = vp.Name;
-					ab.Version = vp.Version;
-
-					ab.Run ();
-					ab.Destroy ();
-				}
-			}
-*/			
-		}		
-		
-		public void OnAboutClicked (object o, EventArgs args)
-		{
-/*		
-			TreeModel model;
-			TreeIter iter;
-
-			if (pluginTreeView.Selection.GetSelected (out model, out iter)) {
-							
-				string name = (string) pluginStore.GetValue (iter, 1);
-				ViewPlugin vp = Global.Plugins.FindServerView (name);
-				
-				if (vp != null) {
-					Gtk.AboutDialog ab = new Gtk.AboutDialog ();
-					ab.Authors = vp.Authors;
-					ab.Comments = vp.Description;
-					ab.Copyright = vp.Copyright;
-					ab.Name = vp.Name;
-					ab.Version = vp.Version;
-					ab.Icon = vp.Icon;
-
-					ab.Run ();
-					ab.Destroy ();
-				}
-			}
-*/
-		}
-		
-		public void OnConfigureClicked (object o, EventArgs args)
-		{
-/*		
-			TreeModel model;
-			TreeIter iter;
-		
-			if (pluginTreeView.Selection.GetSelected (out model, out iter)) {	
-				string name = (string) pluginStore.GetValue (iter, 1);		
-				new PluginConfigureDialog (conn, name);
-			}
-*/			
-		}
-
-		void OnAttributeViewerToggled (object o, ToggledArgs args)
-		{
-/*		
-			TreeIter iter;
-
-			if (attrPluginStore.GetIter (out iter, new TreePath(args.Path))) {
-			
-				bool old = (bool) attrPluginStore.GetValue (iter,0);
-				
-				string name = (string) attrPluginStore.GetValue (iter, 1);				
-				AttributeViewPlugin vp = Global.Plugins.FindAttributeView (name);
-				
-				if (!conn.AttributeViewers.Contains (vp.GetType().ToString()))
-					conn.AttributeViewers.Add (vp.GetType().ToString());
-				else
-					conn.AttributeViewers.Remove (vp.GetType().ToString());
-				
-				Global.Connections [conn.Settings.Name] = conn;
-				
-				attrPluginStore.SetValue(iter,0,!old);
-			}
-*/			
-		}
-		
-		void OnClassToggled (object o, ToggledArgs args)
-		{
-/*		
-			TreeIter iter;
-
-			if (pluginStore.GetIter (out iter, new TreePath(args.Path))) {
-			
-				bool old = (bool) pluginStore.GetValue (iter,0);
-				string name = (string) pluginStore.GetValue (iter, 1);
-				
-				ViewPlugin vp = Global.Plugins.FindServerView (name);
-				
-				if (!conn.ServerViews.Contains (vp.GetType().ToString()))
-					conn.ServerViews.Add (vp.GetType().ToString());
-				else
-					conn.ServerViews.Remove (vp.GetType().ToString());
-				
-				Global.Connections [conn.Settings.Name] = conn;				
-				pluginStore.SetValue(iter,0,!old);
-			}
-*/			
 		}
 	}
 	
