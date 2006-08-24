@@ -1285,6 +1285,8 @@ namespace lat
 				serverInfoView = new ServerInfoView (conn);
 				valuesScrolledWindow.AddWithViewport (serverInfoView);
 				valuesScrolledWindow.ShowAll ();
+
+				UpdateStatusBar ();
 				
 				return;
 			}
@@ -1301,7 +1303,7 @@ namespace lat
 	
 				viewDataTreeView = new ViewDataTreeView (conn, mainWindow);
 				valuesScrolledWindow.AddWithViewport (viewDataTreeView);
-				valuesScrolledWindow.ShowAll ();			
+				valuesScrolledWindow.ShowAll ();
 			}
 
 			viewDataTreeView.ConfigureView (vp);
@@ -1309,6 +1311,8 @@ namespace lat
 			SetupToolbar (vp);
 			
 			GenerateNewMenu (conn);
+			
+			UpdateStatusBar ();
 		}
 	}
 

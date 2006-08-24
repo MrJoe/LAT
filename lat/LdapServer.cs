@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using Syscert = System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Mono.Security.X509;
 using Mono.Security.Cryptography;
 using Novell.Directory.Ldap;
@@ -405,18 +406,16 @@ namespace lat {
 			if (data != null)			
 				x509 = new X509Certificate (data);
 
-			string msg = String.Format (" {0}X.509 v{1} Certificate", 
-				(x509.IsSelfSigned ? "Self-signed " : String.Empty), 
-				x509.Version);
+			StringBuilder msg = new StringBuilder ();
+			msg.AppendFormat (" {0}X.509 v{1} Certificate", (x509.IsSelfSigned ? "Self-signed " : String.Empty), x509.Version);
+			msg.AppendFormat ("\nSerial Number:   {0}", CryptoConvert.ToHex (x509.SerialNumber));
+			msg.AppendFormat ("\nIssuer Name:     {0}", x509.IssuerName);
+			msg.AppendFormat ("\nSubject Name:    {0}", x509.SubjectName);
+			msg.AppendFormat ("\nValid From:      {0}", x509.ValidFrom);
+			msg.AppendFormat ("\nValid Until:     {0}", x509.ValidUntil);
+            msg.AppendFormat ("\nUnique Hash:     {0}", CryptoConvert.ToHex (x509.Hash));
 
-			msg += "\nSerial Number: " + CryptoConvert.ToHex (x509.SerialNumber);
-			msg += "\nIssuer Name:   " + x509.IssuerName;
-			msg += "\nSubject Name:  " + x509.SubjectName;
-			msg += "\nValid From:    " + x509.ValidFrom;
-			msg += "\nValid Until:   " + x509.ValidUntil;
-			msg += "\nUnique Hash:   " + CryptoConvert.ToHex (x509.Hash);
-
-			Log.Debug ("Certificate info:\n{0}", msg);
+			Log.Debug ("Certificate info:\n{0}", msg.ToString());
 			Log.Debug ("Certificate errors:\n{0}", certificateErrors.Length);
 
 			return retVal;

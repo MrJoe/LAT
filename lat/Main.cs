@@ -1,7 +1,7 @@
 // 
 // lat - Main.cs
 // Author: Loren Bandiera
-// Copyright 2005 MMG Security, Inc.
+// Copyright 2005-2006 MMG Security, Inc.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@ public class LdapAdministrationTool
 
 	public static void Main (string[] args)
 	{
-		// Parse command-line arguments 			
 		int i = 0;
 		LogLevel logLevel = LogLevel.Info;
 
