@@ -19,6 +19,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -28,16 +29,101 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Gtk;
 using Novell.Directory.Ldap;
 
-namespace lat {
-
+namespace lat 
+{
 	[Serializable]
 	public struct ViewPluginConfig
 	{
+		public string ConfigName;
 		public string[] ColumnNames;
 		public string[] ColumnAttributes;
 		public string DefaultNewContainer;
 		public string Filter;
 		public string SearchBase;
+	}
+
+	[Serializable]
+	public class PluginConfigCollection : ICollection<ViewPluginConfig>
+	{
+		Dictionary<string,ViewPluginConfig> pluginConfigs;
+
+		public PluginConfigCollection ()
+		{
+			pluginConfigs = new Dictionary<string,ViewPluginConfig> ();
+		}
+
+		public void Add (ViewPluginConfig vpc)
+		{
+			pluginConfigs.Add (vpc.ConfigName, vpc);
+		}
+
+		public void Clear ()
+		{
+			pluginConfigs.Clear ();
+		}
+
+		public bool Contains (ViewPluginConfig vpc)
+		{
+			if (pluginConfigs.ContainsValue (vpc))
+				return true;
+
+			return false;
+		}
+
+		public bool Contains (string name)
+		{
+			if (pluginConfigs.ContainsKey (name))
+				return true;
+				
+			return false;
+		}
+
+		public void CopyTo (ViewPluginConfig[] array, int arrayIndex)
+		{
+			int count = 0;
+
+			foreach (KeyValuePair<string,ViewPluginConfig> kvp in pluginConfigs) {
+				array [arrayIndex + count] = kvp.Value;
+				count++;
+			}
+		}
+
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return pluginConfigs.GetEnumerator ();
+		}
+
+		public IEnumerator<ViewPluginConfig> GetEnumerator ()
+		{
+			return pluginConfigs.Values.GetEnumerator ();
+		}
+
+		public void Remove (string name)
+		{
+			if (pluginConfigs.ContainsKey (name))
+				pluginConfigs.Remove (name);
+		}
+
+		public bool Remove (ViewPluginConfig vpc)
+		{
+			return pluginConfigs.Remove (vpc.ConfigName);
+		}
+
+		public int Count
+		{
+			get { return pluginConfigs.Count; }
+		}
+
+		public bool IsReadOnly
+		{
+			get { return false; }
+		}
+		
+		public ViewPluginConfig this [string name]
+		{
+			get { return pluginConfigs [name]; }			
+			set { pluginConfigs[name] = value; }
+		}
 	}
 
 	public abstract class ViewPlugin
@@ -48,45 +134,18 @@ namespace lat {
 		{
 		}
 	
-		// Methods
-		public void Deserialize (string stateFileName)
-		{
-			try {
-
-				Stream stream = File.OpenRead (stateFileName);
-
-				IFormatter formatter = new BinaryFormatter();
-				this.config = (ViewPluginConfig) formatter.Deserialize (stream);
-				stream.Close ();
-
-			} catch (Exception e) {
-
-				Log.Debug (e.ToString());
-			}
-		}
-		
-		public void Serialize (string stateFileName)
-		{
-			try {
-
-				Stream stream = File.OpenWrite (stateFileName);
-			
-				IFormatter formatter = new BinaryFormatter ();
-				formatter.Serialize (stream, this.config); 
-				stream.Close ();
-
-			} catch (Exception e) {
-
-				Log.Debug (e.ToString());
-			}
-		}
-		
+		// Methods		
 		public abstract void Init ();
 		public abstract void OnAddEntry (Connection conn);
 		public abstract void OnEditEntry (Connection conn, LdapEntry le);
 		public abstract void OnPopupShow (Menu popup);
 			
-		// Properties		
+		// Properties
+		public ViewPluginConfig PluginConfiguration
+		{
+			set { config = value; }
+		}
+		
 		public string[] ColumnAttributes 
 		{ 
 			get { return config.ColumnAttributes; }
@@ -155,11 +214,14 @@ namespace lat {
 	public class PluginManager
 	{
 		string pluginDirectory;
-		string pluginStateDirectory;		
+		string pluginStateDirectory;
+		string pluginStateFile;
 		
 		List<ViewPlugin> viewPluginList;
 		List<AttributeViewPlugin> attrPluginList;
 		Dictionary<string,string> viewPluginHash;
+
+		PluginConfigCollection pluginConfigs;
 
 		FileSystemWatcher sysPluginWatch;
 		FileSystemWatcher usrPluginWatch;
@@ -169,6 +231,8 @@ namespace lat {
 			viewPluginList = new List<ViewPlugin> ();
 			attrPluginList = new List<AttributeViewPlugin> ();
 			viewPluginHash = new Dictionary<string,string> ();
+			
+			pluginConfigs = new PluginConfigCollection ();
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
 			DirectoryInfo di = new DirectoryInfo (homeDir);
@@ -183,6 +247,7 @@ namespace lat {
 			
 			// Load any plugins in home dir
 			pluginStateDirectory = homeDir;
+			pluginStateFile = Path.Combine (pluginStateDirectory, "plugins.state");
 			pluginDirectory = Path.Combine (homeDir, "plugins");
 
 			dir = new System.IO.DirectoryInfo (pluginDirectory);
@@ -190,10 +255,8 @@ namespace lat {
 				foreach (FileInfo f in dir.GetFiles("*.dll"))
 					LoadPluginsFromFile (f.FullName);
 
-			foreach (ViewPlugin vp in viewPluginList) {
-				string fileName = vp.GetType() + ".state";
-				vp.Deserialize (Path.Combine (pluginStateDirectory, fileName));
-			}
+			// Login plugin states (if any)
+			Load ();
 
 			// Watch for any plugins to be added/removed
 			try {
@@ -227,8 +290,8 @@ namespace lat {
 		
 		void OnPluginDeleted (object sender, FileSystemEventArgs args)
 		{
-			// FIXME: remmove plugin
-//			Log.Debug ("Plugin deleted: {0}", Path.GetFileName (args.FullPath));			
+			// FIXME: remove plugin
+			Log.Debug ("Plugin deleted: {0}", Path.GetFileName (args.FullPath));			
 		}
 
 		void LoadPluginsFromFile (string fileName)
@@ -257,18 +320,24 @@ namespace lat {
 			}		
 		}
 
-		public ViewPlugin FindServerView (string name)
+		public ViewPlugin GetViewPlugin (string pluginName, string configName)
 		{
-			string labelKey = null;
-			try { 
-				labelKey = viewPluginHash [name]; 
-			} catch {} 
-			
-			foreach (ViewPlugin vp in viewPluginList)
-				if (vp.Name == name || vp.Name == labelKey)
-					return vp;
+			ViewPlugin retVal = null;
 
-			return null;
+			string labelKey = null;
+			if (viewPluginHash.ContainsKey (pluginName))
+				labelKey = viewPluginHash [pluginName];
+
+			foreach (ViewPlugin vp in viewPluginList)
+				if (vp.Name == pluginName || vp.Name == labelKey)
+					retVal = vp;
+
+			if (retVal != null && pluginConfigs.Contains (configName))  {
+				ViewPluginConfig vpc = pluginConfigs [configName];			
+				retVal.PluginConfiguration = vpc;
+			}
+
+			return retVal;
 		}
 
 		public AttributeViewPlugin FindAttributeView (string name)
@@ -280,12 +349,36 @@ namespace lat {
 			return null;
 		}
 
-		public void SavePluginsState ()
+		public void Load ()
 		{
-			foreach (ViewPlugin vp in viewPluginList) {
-				string fileName = vp.GetType() + ".state";
-				vp.Serialize (Path.Combine (pluginStateDirectory, fileName));
-			}
+			try {
+
+				Stream stream = File.OpenRead (pluginStateFile);
+
+				IFormatter formatter = new BinaryFormatter();
+				this.pluginConfigs = (PluginConfigCollection) formatter.Deserialize (stream);
+				stream.Close ();
+
+			} catch (Exception e) {
+				Log.Error ("Error loading plugin state: {0}", e.Message);
+				Log.Debug (e);
+			}		
+		}
+
+		public void Save ()
+		{
+			try {
+
+				Stream stream = File.OpenWrite (pluginStateFile);
+			
+				IFormatter formatter = new BinaryFormatter ();
+				formatter.Serialize (stream, this.pluginConfigs); 
+				stream.Close ();
+
+			} catch (Exception e) {
+				Log.Error ("Error saving plugin state: {0}", e.Message);
+				Log.Debug (e);
+			}			
 		}
 
 		public ViewPlugin[] ServerViewPlugins

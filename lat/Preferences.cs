@@ -111,20 +111,32 @@ namespace lat
 		[Glade.Widget] RadioButton browserSingleClickButton;
 		[Glade.Widget] RadioButton browserDoubleClickButton;
 		[Glade.Widget] CheckButton verboseMessagesButton;
-		[Glade.Widget] TreeView pluginTreeView;
-		[Glade.Widget] TreeView attrViewPluginTreeView;
+		[Glade.Widget] TreeView profilesTreeView;
+//		[Glade.Widget] TreeView pluginTreeView;
+//		[Glade.Widget] TreeView attrViewPluginTreeView;
 
-		ListStore pluginStore;
-		ListStore attrPluginStore;
-		Connection conn;
+		ListStore profileStore;
+//		ListStore pluginStore;
+//		ListStore attrPluginStore;
+//		Connection conn;
 			
-		public PreferencesDialog (Connection connection)
+		public PreferencesDialog ()
 		{
-			conn = connection;
+//			conn = connection;
 		
 			ui = new Glade.XML (null, "lat.glade", "preferencesDialog", null);
 			ui.Autoconnect (this);
+			
+			profileStore = new ListStore (typeof (string));
+			profilesTreeView.Model = profileStore;
+			profileStore.SetSortColumnId (0, SortType.Ascending);
+			
+			TreeViewColumn col;
+			col = profilesTreeView.AppendColumn ("Name", new CellRendererText (), "text", 0);
+			col.SortColumnId = 0;
 
+			UpdateProfileList ();
+/*
 			pluginStore = new ListStore (typeof (bool), typeof (string));
 
 			CellRendererToggle crt = new CellRendererToggle();
@@ -168,7 +180,7 @@ namespace lat
 						attrPluginStore.AppendValues (false, avp.Name);
 				}
 			}
-					
+*/					
 			LoadPreference (Preferences.BROWSER_SELECTION);
 			LoadPreference (Preferences.DISPLAY_VERBOSE_MESSAGES);
 					
@@ -176,6 +188,14 @@ namespace lat
 			preferencesDialog.Resize (300, 400);
 			preferencesDialog.Run ();
 			preferencesDialog.Destroy ();
+		}
+
+		void UpdateProfileList ()
+		{
+			profileStore.Clear ();
+			
+			foreach (string s in Global.Connections.ConnectionNames)
+				profileStore.AppendValues (s);
 		}
 
 		void LoadPreference (String key)
@@ -201,6 +221,60 @@ namespace lat
 				break;
 			}
 		}
+
+		string GetSelectedProfileName ()
+		{
+			TreeIter iter;
+			TreeModel model;
+
+			if (profilesTreeView.Selection.GetSelected (out model, out iter))  {
+				string name = (string) model.GetValue (iter, 0);
+				return name;
+			}
+
+			return null;
+		}
+
+		public void OnAddProfileClicked (object o, EventArgs args)
+		{
+			new ProfileDialog ();
+			UpdateProfileList ();		
+		}
+		
+		public void OnEditProfileClicked (object o, EventArgs args)
+		{
+			string profileName = GetSelectedProfileName ();
+			if (profileName == null)
+				return;
+			
+			Connection conn = Global.Connections [profileName];
+			
+			new ProfileDialog (conn);
+
+			UpdateProfileList ();
+		}
+		
+		public void OnDeleteProfileClicked (object o, EventArgs args)
+		{
+			string profileName = GetSelectedProfileName ();
+			string msg = null;
+			
+			if (profileName == null) {
+				// show dialog; must select entry to edit
+				return;
+			}
+
+			msg = String.Format ("{0} {1}",
+				Mono.Unix.Catalog.GetString (
+				"Are you sure you want to delete the profile:"),
+				profileName);
+				
+			if (Util.AskYesNo (preferencesDialog, msg)) {
+				Global.Connections.Delete (profileName);
+				Global.Connections.Save ();
+				UpdateProfileList ();				
+			}
+		}
 				
 		public void OnDoubleClickToggled (object o, EventArgs args)
 		{
@@ -218,6 +292,7 @@ namespace lat
 		
 		public void OnAttrAboutClicked (object o, EventArgs args)
 		{
+/*		
 			TreeModel model;
 			TreeIter iter;
 
@@ -237,11 +312,13 @@ namespace lat
 					ab.Run ();
 					ab.Destroy ();
 				}
-			}		
+			}
+*/			
 		}		
 		
 		public void OnAboutClicked (object o, EventArgs args)
 		{
+/*		
 			TreeModel model;
 			TreeIter iter;
 
@@ -263,10 +340,12 @@ namespace lat
 					ab.Destroy ();
 				}
 			}
+*/
 		}
 		
 		public void OnConfigureClicked (object o, EventArgs args)
 		{
+/*		
 			TreeModel model;
 			TreeIter iter;
 		
@@ -274,10 +353,12 @@ namespace lat
 				string name = (string) pluginStore.GetValue (iter, 1);		
 				new PluginConfigureDialog (conn, name);
 			}
+*/			
 		}
 
 		void OnAttributeViewerToggled (object o, ToggledArgs args)
-		{			
+		{
+/*		
 			TreeIter iter;
 
 			if (attrPluginStore.GetIter (out iter, new TreePath(args.Path))) {
@@ -296,10 +377,12 @@ namespace lat
 				
 				attrPluginStore.SetValue(iter,0,!old);
 			}
+*/			
 		}
 		
 		void OnClassToggled (object o, ToggledArgs args)
-		{			
+		{
+/*		
 			TreeIter iter;
 
 			if (pluginStore.GetIter (out iter, new TreePath(args.Path))) {
@@ -317,6 +400,7 @@ namespace lat
 				Global.Connections [conn.Settings.Name] = conn;				
 				pluginStore.SetValue(iter,0,!old);
 			}
+*/			
 		}
 	}
 	
@@ -359,7 +443,7 @@ namespace lat
 			
 			columnsTreeView.Model = columnStore;
 			
-			vp = Global.Plugins.FindServerView (pluginName);
+			vp = Global.Plugins.GetViewPlugin (pluginName, connection.Settings.Name); 
 			if (vp != null) {			
 				for (int i = 0; i < vp.ColumnNames.Length; i++) {  
 					columnStore.AppendValues (vp.ColumnNames[i], vp.ColumnAttributes[i]);

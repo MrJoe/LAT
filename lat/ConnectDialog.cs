@@ -155,7 +155,7 @@ namespace lat
 		public void OnProfileAdd (object o, EventArgs args)
 		{
 //			new ProfileDialog ();
-//			UpdateProfileList ();		
+//			UpdateProfileList ();
 		}
 
 		public void OnProfileEdit (object o, EventArgs args)

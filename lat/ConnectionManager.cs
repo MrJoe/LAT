@@ -199,7 +199,12 @@ namespace lat
 		
 		public ServerData Data
 		{
-			get { return data; }
+			get {
+				if (!this.IsConnected)
+					this.Connect ();
+						
+				return data;
+			}
 		}
 		
 		public List<string> ServerViews
@@ -409,16 +414,12 @@ namespace lat
 		
 		public Connection this [string name]
 		{
-			get {			
+			get {
 				Connection conn = null;
 			
 				foreach (Connection c in connections)
 					if (c.Settings.Name == name)
-						conn = c;
-					
-				if (conn != null)
-					if (!conn.IsConnected)
-						conn.Connect ();	
+						conn = c;				
 				
 				return conn;
 			}
@@ -456,8 +457,6 @@ namespace lat
 					return null;
 					
 				Connection conn = connections[name];
-				if (!conn.IsConnected)
-					conn.Connect ();	
 				
 				return conn;
 			}

@@ -169,9 +169,9 @@ namespace lat
 		
 		public void ShowNewItemDialog (string viewName)
 		{
-			viewPlugin = null;
+			viewPlugin = null;			
 			
-			viewPlugin = Global.Plugins.FindServerView (viewName);
+			viewPlugin = Global.Plugins.GetViewPlugin (viewName, conn.Settings.Name);  
 			if (viewPlugin == null) {
 				return;
 			}

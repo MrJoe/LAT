@@ -191,7 +191,8 @@ namespace lat
 			Global.Network = NetworkDetect.Instance;
 			Global.Network.StateChanged += OnNetworkStateChanged;
 
-#if ENABLE_AVAHI	
+#if ENABLE_AVAHI
+			// FIXME: casuses crashes. Not sure why.	
 			// Watch for any services available
 			finder = new ServiceFinder ();
 			finder.Found += new ServiceEventHandler (OnServerFound);
@@ -751,11 +752,7 @@ namespace lat
 
 		public void OnPreferencesActivate (object sender, EventArgs args)
 		{
-			Connection conn = GetActiveConnection ();
-			if (conn == null)
-				return;
-				
-			new PreferencesDialog (conn);
+			new PreferencesDialog ();
 			
 			Global.Connections.Save ();
 		}
@@ -1261,7 +1258,7 @@ namespace lat
 		
 		void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
-			ViewPlugin vp = Global.Plugins.FindServerView (args.Name);
+			ViewPlugin vp = Global.Plugins.GetViewPlugin (args.Name, args.ConnectionName);  
 			Connection conn = null;
 			
 			if (vp == null) {
@@ -1275,7 +1272,7 @@ namespace lat
 					serverInfoView = null;
 				}
 
-				conn = Global.Connections [args.Name];
+				conn = Global.Connections [args.ConnectionName];
 				
 				serverInfoView = new ServerInfoView (conn);
 				valuesScrolledWindow.AddWithViewport (serverInfoView);

@@ -119,9 +119,7 @@ public class LdapAdministrationTool
 		
 		Global.Templates.Save ();
 		Global.Connections.Save ();
-		
-		// FIXME: fix this code
-		Global.Plugins.SavePluginsState ();
+		Global.Plugins.Save ();
 
 		Log.Info ("Exiting {0}", Defines.PACKAGE);
 	}
