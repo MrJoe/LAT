@@ -289,8 +289,9 @@ namespace lat
 			
 			if (browserStore.GetIter (out iter, path)) {
 
-				string name = null;
-				name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
+				string name = (string) browserStore.GetValue (iter, (int)TreeCols.DN);
+				if (name == "Servers")
+					return;
 
 				string serverName = FindServerName (iter, browserStore);
 				

@@ -199,14 +199,17 @@ namespace lat
 			
 			if (viewsStore.GetIter (out iter, path)) {
 
-				string name = null;
-				name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
+				string name = (string) viewsStore.GetValue (iter, (int)TreeCols.Name);
+				if (name == "Servers")
+					return;
 
 				TreeIter parent;
 				viewsStore.IterParent (out parent, iter);
 				
 				string connection = (string) viewsStore.GetValue (parent, (int)TreeCols.Name);
-
+				if (connection == "Servers")
+					connection = name;
+				
 				DispatchViewSelectedEvent (name, connection);
 			} 		
 		}

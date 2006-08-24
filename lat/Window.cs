@@ -1331,15 +1331,14 @@ namespace lat
 			store.AppendValues (Mono.Unix.Catalog.GetString ("TLS/SSL"), conn.UseSSL.ToString());
 			store.AppendValues (Mono.Unix.Catalog.GetString ("Protocol Version"), conn.Protocol.ToString());
 
-// FIXME: re-enable
-//			if (server.ServerType == LdapServerType.ActiveDirectory) {
-//				store.AppendValues (Mono.Unix.Catalog.GetString ("DNS Host Name"), server.ADInfo.DnsHostName);
-//				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Controller Functionality"), server.ADInfo.DomainControllerFunctionality);
-//				store.AppendValues (Mono.Unix.Catalog.GetString ("Forest Functionality"),	server.ADInfo.ForestFunctionality);
-//				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Functionality"),	server.ADInfo.DomainFunctionality);
-//				store.AppendValues (Mono.Unix.Catalog.GetString ("Global Catalog Ready"),	server.ADInfo.IsGlobalCatalogReady.ToString());
-//				store.AppendValues (Mono.Unix.Catalog.GetString ("Synchronized"),	server.ADInfo.IsSynchronized.ToString());
-//			}
+			if (conn.Settings.ServerType == LdapServerType.ActiveDirectory) {
+				store.AppendValues (Mono.Unix.Catalog.GetString ("DNS Host Name"), conn.ActiveDirectory.DnsHostName);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Controller Functionality"), conn.ActiveDirectory.DomainControllerFunctionality);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Forest Functionality"),	conn.ActiveDirectory.ForestFunctionality);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Domain Functionality"),	conn.ActiveDirectory.DomainFunctionality);
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Global Catalog Ready"),	conn.ActiveDirectory.IsGlobalCatalogReady.ToString());
+				store.AppendValues (Mono.Unix.Catalog.GetString ("Synchronized"),	conn.ActiveDirectory.IsSynchronized.ToString());
+			}
 
 			this.ShowAll ();
 		}

@@ -160,6 +160,11 @@ namespace lat
 			return settings.Name;
 		}
 
+		public ActiveDirectoryInfo ActiveDirectory
+		{
+			get { return server.ADInfo; }
+		}
+
 		public string AuthDN
 		{
 			get { return server.AuthDN; }
