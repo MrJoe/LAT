@@ -254,6 +254,8 @@ namespace lat
 			try {
 
 				conn.Data.Modify (dn, modList);
+				Log.Debug ("Successfully modified entry {0}", dn);
+				
 				return true;
 
 			} catch (Exception e) {

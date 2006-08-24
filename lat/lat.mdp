@@ -38,7 +38,6 @@
     <File name="./SearchResultsTreeView.cs" subtype="Code" buildaction="Compile" />
     <File name="./SelectContainerDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./SelectGroupsDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ServerView.cs" subtype="Code" buildaction="Compile" />
     <File name="./TemplateEditorDialog.cs" subtype="Code" buildaction="Compile" />
     <File name="./Templates.cs" subtype="Code" buildaction="Compile" />
     <File name="./TemplatesDialog.cs" subtype="Code" buildaction="Compile" />

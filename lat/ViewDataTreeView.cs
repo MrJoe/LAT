@@ -60,12 +60,7 @@ namespace lat
 				
 			LdapEntry[] data = conn.Data.Search (conn.DirectoryRoot, viewPlugin.Filter);
 			Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
-					conn.DirectoryRoot, viewPlugin.Filter, data.Length);
-
-//			FIXME: handle state per profile			
-//			LdapEntry[] data = server.Search (viewPlugin.SearchBase, viewPlugin.Filter);
-//			Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
-//					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
+					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
 
 			DoInsert (data, viewPlugin.ColumnAttributes);
 		}
@@ -139,14 +134,52 @@ namespace lat
 			propItem.Image = propImage;
 			propItem.Activated += new EventHandler (OnEditActivate);
 			propItem.Show ();
-
+			
 			popup.Append (propItem);
+			
+			bool users = false;
+			if (viewPlugin.Name.ToLower() == "users") {
+			
+				SeparatorMenuItem sm = new SeparatorMenuItem ();
+				sm.Show ();
+				popup.Append (sm);
 
-// 			FIXME: make work for the plugins
-//			viewPlugin.OnPopupShow (popup);
+				Gdk.Pixbuf pwdImage = Gdk.Pixbuf.LoadFromResource ("locked16x16.png");
+				ImageMenuItem pwdItem = new ImageMenuItem ("Change password");
+				pwdItem.Image = new Gtk.Image (pwdImage);
+				pwdItem.Activated += new EventHandler (OnPwdActivate);
+				pwdItem.Show ();
+				
+				popup.Append (pwdItem);				
+				users = true;
+			}
+			
+			if (users || viewPlugin.Name.ToLower() == "contacts") {
+				
+				if (!users) {
+					SeparatorMenuItem sm = new SeparatorMenuItem ();
+					sm.Show ();
+					popup.Append (sm);				
+				}
+				
+				pb = Gdk.Pixbuf.LoadFromResource ("mail-message-new.png");
+				ImageMenuItem mailItem = new ImageMenuItem ("Send email");
+				mailItem.Image = new Gtk.Image (pb);
+				mailItem.Activated += new EventHandler (OnEmailActivate);
+				mailItem.Show ();
 
-			popup.Popup(null, null, null, 3,
-					Gtk.Global.CurrentEventTime);
+				popup.Append (mailItem);
+
+				Gdk.Pixbuf wwwImage = Gdk.Pixbuf.LoadFromResource ("go-home.png");
+				ImageMenuItem wwwItem = new ImageMenuItem ("Open home page");
+				wwwItem.Image = new Gtk.Image (wwwImage);
+				wwwItem.Activated += new EventHandler (OnWWWActivate);
+				wwwItem.Show ();
+
+				popup.Append (wwwItem);			
+			}
+			
+			popup.Popup(null, null, null, 3, Gtk.Global.CurrentEventTime);
 		}
 
 		public string GetDN (TreePath path)
@@ -191,6 +224,68 @@ namespace lat
 				LdapEntry le = conn.Data.GetEntry (GetDN(path));
 				viewPlugin.OnEditEntry (conn, le);			
 				Populate ();
+			}
+		}
+
+		string GetSelectedAttribute (string attrName)
+		{
+			Gtk.TreeModel model;
+			TreePath[] tp = this.Selection.GetSelectedRows (out model);
+
+			try {
+				LdapEntry le = conn.Data.GetEntry (GetDN(tp[0]));
+				LdapAttribute la = le.getAttribute (attrName);
+
+				return la.StringValue;
+			}
+			catch {}
+
+			return "";
+		}
+
+		void OnEmailActivate (object o, EventArgs args) 
+		{
+			string url = GetSelectedAttribute ("mail");
+
+			if (url == null || url == "") {
+				string msg = Mono.Unix.Catalog.GetString (
+					"Invalid or empty email address");
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parentWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Email error",
+					msg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+				
+				return;
+			}
+
+			try {
+			
+				Gnome.Url.Show ("mailto:" + url);
+
+			} catch (Exception e) {
+
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to send mail to: ") + url;
+
+				errorMsg += "\nError: " + e.Message;
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parentWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Email error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
 			}
 		}
 
@@ -239,6 +334,45 @@ namespace lat
 			catch {}
 		}
 
+		void OnPwdActivate (object o, EventArgs args)
+		{
+			PasswordDialog pd = new PasswordDialog ();
+			if (pd.UnixPassword.Equals ("") || pd.UserResponse == ResponseType.Cancel)
+				return;
+
+			TreeModel model;
+			TreePath[] tp = this.Selection.GetSelectedRows (out model);
+
+			foreach (TreePath path in tp) {
+				LdapEntry le = conn.Data.GetEntry (GetDN(path));
+				ChangePassword (le, pd);
+			}
+		}				
+
+		void ChangePassword (LdapEntry entry, PasswordDialog pd)
+		{
+			List<LdapModification> mods = new List<LdapModification> ();
+			
+			LdapAttribute la; 
+			LdapModification lm;
+
+			la = new LdapAttribute ("userPassword", pd.UnixPassword);
+			lm = new LdapModification (LdapModification.REPLACE, la);
+			mods.Add (lm);
+
+			if (Util.CheckSamba (entry)) {
+				la = new LdapAttribute ("sambaLMPassword", pd.LMPassword);
+				lm = new LdapModification (LdapModification.REPLACE, la);
+				mods.Add (lm);
+
+				la = new LdapAttribute ("sambaNTPassword", pd.NTPassword);
+				lm = new LdapModification (LdapModification.REPLACE, la);
+				mods.Add (lm);
+			}
+
+			Util.ModifyEntry (conn, entry.DN, mods.ToArray());
+		}
+
 		public void OnRefreshActivate (object o, EventArgs args)
 		{
 			Populate ();
@@ -262,6 +396,34 @@ namespace lat
 				string dn = (string) this.dataStore.GetValue (iter, dnColumn);				
 				viewPlugin.OnEditEntry (conn, conn.Data.GetEntry (dn));
 			} 		
+		}
+		
+		void OnWWWActivate (object o, EventArgs args) 
+		{
+			string url = GetSelectedAttribute ("wWWHomePage");
+
+			try {
+			
+				Gnome.Url.Show (url);
+
+			} catch (Exception e) {
+
+				string errorMsg =
+					Mono.Unix.Catalog.GetString ("Unable to open page: ") + url;
+
+				errorMsg += "\nError: " + e.Message;
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parentWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Network error",
+					errorMsg);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
 		}
 		
 		void SetViewColumns ()

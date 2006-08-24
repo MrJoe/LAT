@@ -49,36 +49,8 @@ namespace lat {
 		}
 					
 		public override void OnPopupShow (Menu popup)
-		{
-			SeparatorMenuItem sm = new SeparatorMenuItem ();
-			sm.Show ();
-		
-			popup.Append (sm);
-
-			Gdk.Pixbuf pwdImage = Gdk.Pixbuf.LoadFromResource ("locked16x16.png");
-			ImageMenuItem pwdItem = new ImageMenuItem ("Change password");
-			pwdItem.Image = new Gtk.Image (pwdImage);
-//			pwdItem.Activated += new EventHandler (OnPwdActivate);
-			pwdItem.Show ();
-			
-			popup.Append (pwdItem);		
-		}
-					
-//		void OnPwdActivate (object o, EventArgs args)
-//		{
-//			PasswordDialog pd = new PasswordDialog ();
-//
-//			if (pd.UnixPassword.Equals ("") || pd.UserResponse == ResponseType.Cancel)
-//				return;
-//
-//			TreeModel model;
-//			TreePath[] tp = tv.Selection.GetSelectedRows (out model);
-//
-//			foreach (TreePath path in tp) {
-//				LdapEntry le = LookupEntry (path);
-//				ChangePassword (le, pd);
-//			}
-//		}			
+		{		
+		}	
 			
 		public override string[] Authors 
 		{
