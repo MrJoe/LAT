@@ -337,7 +337,10 @@ namespace lat
 		void OnPwdActivate (object o, EventArgs args)
 		{
 			PasswordDialog pd = new PasswordDialog ();
-			if (pd.UnixPassword.Equals ("") || pd.UserResponse == ResponseType.Cancel)
+			if (pd.UserResponse == ResponseType.Cancel)
+				return;
+				
+			if (pd.UnixPassword == null || pd.UnixPassword == "")
 				return;
 
 			TreeModel model;
