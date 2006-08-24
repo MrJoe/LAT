@@ -1,4 +1,5 @@
 	* Plugin settings are now configurable per server
+	* Store plugin states in a single file (plugins.state)
 	* Redesigned preferences dialog
 	* Don't block UI with GNOME keyring dialog
 	* Fixed fields in schema browser that were not updating properly
