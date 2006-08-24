@@ -34,7 +34,7 @@ namespace lat
 	[Serializable]
 	public struct ViewPluginConfig
 	{
-		public string ConfigName;
+		public string PluginName;
 		public string[] ColumnNames;
 		public string[] ColumnAttributes;
 		public string DefaultNewContainer;
@@ -53,8 +53,8 @@ namespace lat
 		}
 
 		public void Add (ViewPluginConfig vpc)
-		{
-			pluginConfigs.Add (vpc.ConfigName, vpc);
+		{	
+			pluginConfigs.Add (vpc.PluginName, vpc);
 		}
 
 		public void Clear ()
@@ -106,8 +106,13 @@ namespace lat
 
 		public bool Remove (ViewPluginConfig vpc)
 		{
-			return pluginConfigs.Remove (vpc.ConfigName);
+			return pluginConfigs.Remove (vpc.PluginName);
 		}
+
+		public void Update (ViewPluginConfig vpc)
+		{	
+			pluginConfigs[vpc.PluginName] = vpc;
+		} 
 
 		public int Count
 		{
@@ -142,7 +147,8 @@ namespace lat
 			
 		// Properties
 		public ViewPluginConfig PluginConfiguration
-		{
+		{			
+			get { return config; }
 			set { config = value; }
 		}
 		
@@ -221,7 +227,7 @@ namespace lat
 		List<AttributeViewPlugin> attrPluginList;
 		Dictionary<string,string> viewPluginHash;
 
-		PluginConfigCollection pluginConfigs;
+		Dictionary<string,PluginConfigCollection> serverViewConfig;
 
 		FileSystemWatcher sysPluginWatch;
 		FileSystemWatcher usrPluginWatch;
@@ -232,7 +238,7 @@ namespace lat
 			attrPluginList = new List<AttributeViewPlugin> ();
 			viewPluginHash = new Dictionary<string,string> ();
 			
-			pluginConfigs = new PluginConfigCollection ();
+			serverViewConfig = new Dictionary<string,PluginConfigCollection> (); 
 			
 			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
 			DirectoryInfo di = new DirectoryInfo (homeDir);
@@ -328,13 +334,18 @@ namespace lat
 			if (viewPluginHash.ContainsKey (pluginName))
 				labelKey = viewPluginHash [pluginName];
 
-			foreach (ViewPlugin vp in viewPluginList)
+			foreach (ViewPlugin vp in viewPluginList) {		
 				if (vp.Name == pluginName || vp.Name == labelKey)
 					retVal = vp;
+			}
 
-			if (retVal != null && pluginConfigs.Contains (configName))  {
-				ViewPluginConfig vpc = pluginConfigs [configName];			
-				retVal.PluginConfiguration = vpc;
+			if (retVal != null && serverViewConfig.ContainsKey (configName)) {
+				
+				PluginConfigCollection pcc = serverViewConfig [configName];
+				if (pcc.Contains (pluginName)) {
+					ViewPluginConfig vpc = pcc [pluginName];			
+					retVal.PluginConfiguration = vpc;
+				}
 			}
 
 			return retVal;
@@ -356,8 +367,10 @@ namespace lat
 				Stream stream = File.OpenRead (pluginStateFile);
 
 				IFormatter formatter = new BinaryFormatter();
-				this.pluginConfigs = (PluginConfigCollection) formatter.Deserialize (stream);
+				this.serverViewConfig = (Dictionary<string,PluginConfigCollection>) formatter.Deserialize (stream);
 				stream.Close ();
+
+				Log.Debug ("Loaded {0} configs from plugins.state", this.serverViewConfig.Count);
 
 			} catch (Exception e) {
 				Log.Error ("Error loading plugin state: {0}", e.Message);
@@ -368,17 +381,41 @@ namespace lat
 		public void Save ()
 		{
 			try {
-
+			
 				Stream stream = File.OpenWrite (pluginStateFile);
 			
 				IFormatter formatter = new BinaryFormatter ();
-				formatter.Serialize (stream, this.pluginConfigs); 
+				formatter.Serialize (stream, this.serverViewConfig); 
 				stream.Close ();
+	
+				Log.Debug ("Saved {0} configs to plugins.state", this.serverViewConfig.Count);
 
 			} catch (Exception e) {
 				Log.Error ("Error saving plugin state: {0}", e.Message);
 				Log.Debug (e);
 			}			
+		}
+
+		public void SetPluginConfiguration (string connName, ViewPluginConfig config)
+		{
+			if (serverViewConfig.ContainsKey (connName)) {
+			
+				PluginConfigCollection pcc = serverViewConfig [connName];
+				pcc.Update (config);
+			
+			} else {
+			
+				PluginConfigCollection pcc = new PluginConfigCollection ();
+				pcc.Add (config);				
+				
+				serverViewConfig.Add (connName, pcc);
+			}				
+		}
+
+		public Dictionary<string,PluginConfigCollection> ServerViewConfig
+		{
+			get { return serverViewConfig; }
+			set { serverViewConfig = value; }
 		}
 
 		public ViewPlugin[] ServerViewPlugins

@@ -294,6 +294,8 @@ namespace lat
 
 				if (vp.SearchBase != "")
 					searchBaseButton.Label = vp.SearchBase;					
+			} else {
+				Log.Error ("Unable to find view plugin {0}", pluginName); 
 			}
 										
 			pluginConfigureDialog.Icon = Global.latIcon;
@@ -332,16 +334,20 @@ namespace lat
 		
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			vp.ColumnNames = colNames.ToArray ();
-			vp.ColumnAttributes = colAttrs.ToArray ();
-		
-			vp.Filter = filterEntry.Text;
-					
+			ViewPluginConfig vpc = new ViewPluginConfig ();
+			vpc.ColumnAttributes = colAttrs.ToArray ();
+			vpc.ColumnNames = colNames.ToArray ();
+			vpc.PluginName = vp.Name;
+			vpc.Filter = filterEntry.Text;
+
 			if (newContainerButton.Label != "")
-				vp.DefaultNewContainer = newContainerButton.Label;
+				vpc.DefaultNewContainer = newContainerButton.Label;
 
 			if (searchBaseButton.Label != "")
-				vp.SearchBase = searchBaseButton.Label;		
+				vpc.SearchBase = searchBaseButton.Label;			
+
+			vp.PluginConfiguration = vpc;
+			Global.Plugins.SetPluginConfiguration (conn.Settings.Name, vpc);
 		}
 		
 		public void OnAddClicked (object o, EventArgs args)

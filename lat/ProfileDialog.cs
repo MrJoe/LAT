@@ -348,7 +348,7 @@ namespace lat
 
 				} else {
 
-					Global.Connections[data.Name] = c;
+//					Global.Connections[data.Name] = c;
 				}
 
 			} else {

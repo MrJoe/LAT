@@ -340,7 +340,8 @@ namespace lat
 		{
 			if (conn == null)
 				throw new ArgumentNullException ("conn");
-
+		
+			Log.Debug ("Connection manager adding connection {0}", conn.Settings.Name);		
 			connections.Add (conn);
 		}
 
@@ -387,7 +388,7 @@ namespace lat
 		}
 
 		public void Remove (string name)
-		{
+		{	
 			Connection conn = null;
 			foreach (Connection c in connections)
 				if (name == c.ToString())
