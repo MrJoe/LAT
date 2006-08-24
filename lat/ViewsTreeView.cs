@@ -132,9 +132,11 @@ namespace lat
 	
 		void AddViews (Connection conn, TreeIter profileIter)
 		{
-			if (conn == null)
+			if (conn == null) {
+				Log.Error ("Unable to add views to ViewsTreeView connection is null");
 				return;
-			
+			}
+
 			if (conn.ServerViews.Count == 0)
 				conn.SetDefaultServerViews ();
 			

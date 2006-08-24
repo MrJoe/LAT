@@ -362,6 +362,9 @@ namespace lat
 
 		public void Load ()
 		{
+			if (!File.Exists (pluginStateFile))
+				return;
+		
 			try {
 
 				Stream stream = File.OpenRead (pluginStateFile);

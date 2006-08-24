@@ -611,7 +611,8 @@ namespace lat
 				List<string> names = new List<string> ();
 				foreach (Connection c in connections)
 					names.Add (c.ToString());
-					
+				
+				names.Sort ();
 				return names.ToArray();
 			}
 		}

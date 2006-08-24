@@ -200,6 +200,14 @@ namespace lat
 #endif
 			
 			viewNotebook.SwitchPage += new SwitchPageHandler (OnNotebookViewChanged);
+			
+			if (Global.Connections.ConnectionNames.Length == 0) {
+				new ConnectDialog ();		
+				
+				viewsTreeView.Refresh ();
+				ldapTreeView.Refresh ();
+				schemaTreeview.Refresh ();
+			}
 		}
 
 		void CleanupView ()
@@ -1222,25 +1230,25 @@ namespace lat
 
 			if (args.Parent == "Object Classes") {
 				
-				SetInfoNotePage (0);
+				SetInfoNotePage (3);
 				SchemaParser sp = conn.Data.GetObjectClassSchema (args.Name);
 				ShowEntrySchema (sp);
 
 			} else if (args.Parent == "Attribute Types") {
 
-				SetInfoNotePage (1);
+				SetInfoNotePage (2);
 				SchemaParser sp = conn.Data.GetAttributeTypeSchema (args.Name);
 				ShowAttrTypeSchema (sp);
 				
 			} else if (args.Parent == "Matching Rules") {
 
-				SetInfoNotePage (2);
+				SetInfoNotePage (1);
 				SchemaParser sp = conn.Data.GetMatchingRule (args.Name);
 				ShowMatchingRule (sp);				
 			
 			} else if (args.Parent == "LDAP Syntaxes") {
 			
-				SetInfoNotePage (3);
+				SetInfoNotePage (0);
 				SchemaParser sp = conn.Data.GetLdapSyntax (args.Name);
 				ShowLdapSyntax (sp);
 			}

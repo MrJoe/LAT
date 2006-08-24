@@ -113,6 +113,9 @@ namespace lat
 			conn = connection;
 			IsSingle = true;
 
+			if (!conn.IsConnected)
+				conn.Connect ();
+
 			Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			rootIter = browserStore.AppendValues (dirIcon, "Servers", "Servers");
 
@@ -217,7 +220,7 @@ namespace lat
 			browserStore.Clear ();
 			
 			Gdk.Pixbuf dirIcon = Pixbuf.LoadFromResource ("x-directory-remote-server.png");
-			rootIter = browserStore.AppendValues (dirIcon, "Servers");
+			rootIter = browserStore.AppendValues (dirIcon, "Servers", "Servers");
 			TreePath path = browserStore.GetPath (rootIter);
 			
 			if (IsSingle) {
@@ -369,6 +372,9 @@ namespace lat
 			if (!IsSingle) {				
 				conn = Global.Connections [serverName];
 			}
+
+			if (!conn.IsConnected)
+				conn.Connect ();
 
 			if (name == serverName) {			
 			

@@ -85,7 +85,7 @@ namespace lat
 			Gdk.Pixbuf dirIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server.png");
 			Gdk.Pixbuf folderIcon = Gdk.Pixbuf.LoadFromResource ("x-directory-normal.png");
 
-			 rootIter = schemaStore.AppendValues (dirIcon, "Servers");
+			rootIter = schemaStore.AppendValues (dirIcon, "Servers");
 
 			foreach (string n in Global.Connections.ConnectionNames) {
 				TreeIter iter = schemaStore.AppendValues (rootIter, dirIcon, n);
