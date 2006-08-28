@@ -1,4 +1,2 @@
-- Add support for NetworkManager
 - Find a way to change a AD users password (need SSL support)
-- Edit/view AD group info
-- Support binary data in attributes
+- Edit/view AD group info for all group types

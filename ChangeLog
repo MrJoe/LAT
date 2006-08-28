@@ -1,3 +1,5 @@
+1.1.6
+
 	* Plugin settings are now configurable per server
 	* Store plugin states in a single file (plugins.state)
 	* Redesigned preferences dialog

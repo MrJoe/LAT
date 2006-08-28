@@ -7,6 +7,7 @@ Group: 		Applications/System
 License: 	GPL
 URL: 		http://dev.mmgsecurity.com/projects/lat
 BuildRoot: 	%{_tmppath}/%{name}-root
+BuildArch:      noarch
 Source: 	http://dev.mmgsecurity.com/downloads/lat/%{name}-%{version}.tar.gz
 
 Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
