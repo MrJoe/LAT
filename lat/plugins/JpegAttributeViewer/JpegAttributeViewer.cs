@@ -33,11 +33,11 @@ namespace lat {
 		{
 		}
 	
-		public override void OnActivate (string attributeData)
+		public override void OnActivate (string attributeName, string attributeData)
 		{
 		}
 		
-		public override void OnActivate (byte[] attributeData)
+		public override void OnActivate (string attributeName, byte[] attributeData)
 		{
 			jpegData = null;
 			
@@ -60,9 +60,9 @@ namespace lat {
 			get { return jpegData; }
 		}
 		
-		public override string AttributeName 
+		public override string[] AttributeNames 
 		{
-			get { return "jpegPhoto"; }
+			get { return new string[] { "jpegPhoto"}; }
 		}	
 			
 		public override string[] Authors 

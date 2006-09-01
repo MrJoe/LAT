@@ -201,10 +201,10 @@ namespace lat
 		{
 		}
 			
-		public abstract void OnActivate (string attributeData);
-		public abstract void OnActivate (byte[] attributeData);
+		public abstract void OnActivate (string attributeName, string attributeData);
+		public abstract void OnActivate (string attributeName, byte[] attributeData);
 	
-		public abstract string AttributeName { get; }
+		public abstract string[] AttributeNames { get; }
 		public abstract string StringValue { get; }
 		public abstract byte[] ByteValue { get; }
 

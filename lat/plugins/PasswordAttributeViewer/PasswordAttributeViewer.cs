@@ -30,7 +30,7 @@ namespace lat {
 		{
 		}
 	
-		public override void OnActivate (string attributeData)
+		public override void OnActivate (string attributeName, string attributeData)
 		{
 			passwordData = null;
 			PasswordDialog pd = new PasswordDialog ();
@@ -38,10 +38,26 @@ namespace lat {
 			if (pd.UnixPassword == null)			
 				return;
 
-			passwordData = pd.UnixPassword;
+			switch (attributeName.ToLower()) {
+			
+			case "userpassword":
+				passwordData = pd.UnixPassword;
+				break;
+				
+			case "sambalmpassword":
+				passwordData = pd.LMPassword;
+				break;
+				
+			case "sambantpassword":
+				passwordData = pd.NTPassword;
+				break;
+				
+			default:
+				break;
+			}
 		}
 		
-		public override void OnActivate (byte[] attributeData)
+		public override void OnActivate (string attributeName, byte[] attributeData)
 		{
 		}
 		
@@ -50,9 +66,9 @@ namespace lat {
 			get { return ViewerDataType.String; }
 		}	
 		
-		public override string AttributeName 
+		public override string[] AttributeNames
 		{
-			get { return "userPassword"; }
+			get { return  new string[] { "userPassword", "sambaLMPassword", "sambaNTPassword" }; }
 		}	
 
 		public override string StringValue 

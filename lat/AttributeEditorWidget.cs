@@ -332,16 +332,16 @@ namespace lat
 			
 			case ViewerDataType.Binary:
 				if (existing)
-					avp.OnActivate (Util.ConvertSbyteToByte(la.ByteValue));					
+					avp.OnActivate (attributeName, Util.ConvertSbyteToByte(la.ByteValue));					
 				else
-					avp.OnActivate (new byte[0]);
+					avp.OnActivate (attributeName, new byte[0]);
 				break;
 
 			case ViewerDataType.String:
 				if (existing)
-					avp.OnActivate (la.StringValue);
+					avp.OnActivate (attributeName, la.StringValue);
 				else
-					avp.OnActivate ("");
+					avp.OnActivate (attributeName, "");
 				break;				
 			}
 		
@@ -375,10 +375,12 @@ namespace lat
 				string name = null;
 				name = (string) store.GetValue (iter, 0);
 					
-				foreach (AttributeViewPlugin avp in Global.Plugins.AttributeViewPlugins)
-					if (avp.AttributeName == name)
-						if (conn.AttributeViewers.Contains (avp.GetType().ToString()))
-							RunViewerPlugin (avp, name);
+				foreach (AttributeViewPlugin avp in Global.Plugins.AttributeViewPlugins) {
+					foreach (string an in avp.AttributeNames)
+						if (an.ToLower() == name.ToLower())
+							if (conn.AttributeViewers.Contains (avp.GetType().ToString()))
+								RunViewerPlugin (avp, name);
+				}
 			} 		
 		}
 
