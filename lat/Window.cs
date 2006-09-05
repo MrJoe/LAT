@@ -22,6 +22,7 @@ using Gtk;
 using Gnome;
 using System;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
 #if ENABLE_AVAHI
@@ -931,7 +932,8 @@ namespace lat
 			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);			
 			Connection conn = Global.Connections [profileName];
 			
-			LdapEntry[] searchResults = conn.Data.Search (searchBaseButton.Label, filterEntry.Text);
+			RfcFilter filter = new RfcFilter (filterEntry.Text);			
+			LdapEntry[] searchResults = conn.Data.Search (searchBaseButton.Label, filter.filterToString());
 
 			if (searchResults == null) {
 				HIGMessageDialog dialog = new HIGMessageDialog (
