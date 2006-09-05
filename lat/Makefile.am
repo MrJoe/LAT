@@ -84,7 +84,7 @@ bin_SCRIPTS = $(ASSEMBLY)
 
 EXTRA_DIST = \
 	$(CSFILES) \
-	$(AVAHI_CSFILES) \
+	ServiceFinder.cs \
 	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
