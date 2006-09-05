@@ -25,6 +25,7 @@ using System.Text;
 using Mono.Security.X509;
 using Mono.Security.Cryptography;
 using Novell.Directory.Ldap;
+using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace lat {
@@ -245,10 +246,11 @@ namespace lat {
 			try {
 
 				List<LdapEntry> retVal = new List<LdapEntry> ();
+				RfcFilter rfcFilter = new RfcFilter (searchFilter);
 
 				LdapSearchQueue queue = conn.Search (searchBase,
 						searchScope,
-						searchFilter,
+						rfcFilter.filterToString(),
 						searchAttrs,
 						false,
 						(LdapSearchQueue) null,
