@@ -258,8 +258,6 @@ namespace lat {
 						(LdapSearchQueue) null,
 						cons);
 
-
-
 				LdapMessage msg;
 
 				while ((msg = queue.getResponse ()) != null) {
