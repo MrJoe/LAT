@@ -202,19 +202,6 @@ namespace lat
 			return false;
 		}
 
-		public static byte[] ConvertSbyteToByte (sbyte[] data)
-		{
-			byte[] retVal = new byte[data.Length];
-			int count = 0;
-
-			foreach (sbyte sb in data) {
-				retVal[count] = (byte) sb;
-				count++;
-			}
-			
-			return retVal;
-		}
-
 		public static bool AddEntry (Connection conn, LdapEntry entry)
 		{
 			try {

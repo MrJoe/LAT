@@ -1,3 +1,4 @@
+	* Remove limit on number of search results
 	* Handle non-Latin characters in searches
 
 1.1.6.1

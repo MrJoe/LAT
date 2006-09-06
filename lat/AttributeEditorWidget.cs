@@ -332,7 +332,7 @@ namespace lat
 			
 			case ViewerDataType.Binary:
 				if (existing)
-					avp.OnActivate (attributeName, Util.ConvertSbyteToByte(la.ByteValue));					
+					avp.OnActivate (attributeName, SupportClass.ToByteArray (la.ByteValue));
 				else
 					avp.OnActivate (attributeName, new byte[0]);
 				break;

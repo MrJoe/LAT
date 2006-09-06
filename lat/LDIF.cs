@@ -53,8 +53,9 @@ namespace lat
 			LdapAttributeSet las = _le.getAttributeSet ();
 
 			foreach (LdapAttribute attr in las) {
-
-				// FIXME: handle binary value exports
+				// FIXME: handle binary value exports; see Base64.IsLDIFSafe (attributeValue) 
+				// SupportClass.ToByteArray(attributeValue);
+				// Base64.encode(SupportClass.ToSByteArray(byte[] from above)
 				try {			
 					foreach (string v in attr.StringValueArray) {
 						string tmp = v.Replace ("\n", "\n ");

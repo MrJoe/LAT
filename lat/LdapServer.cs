@@ -75,7 +75,6 @@ namespace lat {
 				
 			profileName = connectionData.Name;
 				
-			// FIXME: clean up this code
 			adInfo = new ActiveDirectoryInfo ();
 			SetServerType ();		
 		}
@@ -247,6 +246,9 @@ namespace lat {
 
 				List<LdapEntry> retVal = new List<LdapEntry> ();
 				RfcFilter rfcFilter = new RfcFilter (searchFilter);
+				
+				LdapSearchConstraints cons = new LdapSearchConstraints ();
+				cons.MaxResults = 0;
 
 				LdapSearchQueue queue = conn.Search (searchBase,
 						searchScope,
@@ -254,7 +256,9 @@ namespace lat {
 						searchAttrs,
 						false,
 						(LdapSearchQueue) null,
-						(LdapSearchConstraints) null);
+						cons);
+
+
 
 				LdapMessage msg;
 
