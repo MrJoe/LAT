@@ -448,7 +448,7 @@ namespace lat
 	{
 		string connectionDataFileName;
 		ConnectionCollection connections;
-	
+
 		public ConnectionManager ()
 		{
 			connections = new ConnectionCollection ();

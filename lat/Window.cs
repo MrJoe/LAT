@@ -194,10 +194,10 @@ namespace lat
 #endif
 
 #if ENABLE_AVAHI
-			// FIXME: casuses crashes. Not sure why.	
-			// Watch for any services available
+			// FIXME: causes delay/crashes on exit for some reason
 			finder = new ServiceFinder ();
-			finder.Found += new ServiceEventHandler (OnServerFound);
+			finder.Found += new FoundServiceEventHandler (OnServerFound);
+			finder.Removed += new RemovedServiceEventHandler (OnServerRemoved);
 			finder.Start ();
 #endif
 			
@@ -892,6 +892,10 @@ namespace lat
 			Preferences.Set (Preferences.MAIN_WINDOW_HPANED, hpaned1.Position);
 			Preferences.Set (Preferences.BROWSER_SELECTION, ldapTreeView.BrowserSelectionMethod);
 
+#if ENABLE_AVAHI
+			finder.Stop ();
+#endif
+
 			program.Quit ();
 		}
 
@@ -1259,15 +1263,23 @@ namespace lat
 		}
 
 #if ENABLE_AVAHI
-		void OnServerFound (object o, ServiceEventArgs args)
-		{	
+		void OnServerFound (object o, FoundServiceEventArgs args)
+		{
 			Global.Connections [args.FoundConnection.Settings.Name] = args.FoundConnection;
 			viewsTreeView.AddConnection (args.FoundConnection);
 			ldapTreeView.AddConnection (args.FoundConnection.Settings.Name);
-			schemaTreeview.AddConnection (args.FoundConnection.Settings.Name);
+			schemaTreeview.AddConnection (args.FoundConnection.Settings.Name);			
+		}
+		
+		void OnServerRemoved (object o, RemovedServiceEventArgs args)
+		{
+			Global.Connections.Delete (args.ConnectionName);
+			viewsTreeView.Refresh ();
+			ldapTreeView.Refresh ();
+			schemaTreeview.Refresh ();			
 		}
 #endif
-		
+			
 		void OnViewSelected (object o, ViewSelectedEventArgs args)
 		{
 			ViewPlugin vp = Global.Plugins.GetViewPlugin (args.Name, args.ConnectionName);  

@@ -23,29 +23,26 @@ using Avahi;
 
 namespace lat
 {
-	public class ServiceEventArgs : EventArgs
+	public class FoundServiceEventArgs : EventArgs
 	{
-		Connection conn;
-
-		public ServiceEventArgs (Connection conn)
-		{
-			this.conn = conn;
-		}
-
-		public Connection FoundConnection
-		{
-			get { return conn; }
-		}	
+		public Connection FoundConnection;		
 	}
 
-	public delegate void ServiceEventHandler (object o, ServiceEventArgs args);
+	public class RemovedServiceEventArgs : EventArgs
+	{
+		public string ConnectionName;		
+	}
+
+	public delegate void FoundServiceEventHandler (object o, FoundServiceEventArgs args);
+	public delegate void RemovedServiceEventHandler (object o, RemovedServiceEventArgs args);
 
 	public class ServiceFinder
 	{
 		Client client;
 		ServiceBrowser sb;
 
-        public event ServiceEventHandler Found;
+        public event FoundServiceEventHandler Found;
+        public event RemovedServiceEventHandler Removed;
 
 		public ServiceFinder ()
 		{
@@ -70,8 +67,6 @@ namespace lat
 
 	    void OnServiceResolved (object o, ServiceInfoArgs args) 
 		{
-			(o as ServiceResolver).Dispose ();
-		
 			ConnectionData cd = new ConnectionData ();
 			cd.Name = String.Format ("{0} ({1})", args.Service.Name, args.Service.Address);
 			cd.Host = args.Service.Address.ToString ();
@@ -90,8 +85,11 @@ namespace lat
 			
 			Connection conn = new Connection (cd);
 			
-			if (Found != null)
-                Found (this, new ServiceEventArgs (conn));
+			if (Found != null) {
+				FoundServiceEventArgs fargs = new FoundServiceEventArgs ();
+				fargs.FoundConnection = conn;
+                Found (this, fargs);
+			}
 		}
 
 		void OnServiceAdded (object o, ServiceInfoArgs args) 
@@ -102,6 +100,12 @@ namespace lat
 
 		void OnServiceRemoved (object o, ServiceInfoArgs args)
 		{
+			if (Removed == null)
+				return;
+			
+			RemovedServiceEventArgs rargs = new RemovedServiceEventArgs ();
+			rargs.ConnectionName = String.Format ("{0} ({1})", args.Service.Name, args.Service.Address);			
+			Removed (this, rargs);
 		}
 	}
 }
