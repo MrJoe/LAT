@@ -59,12 +59,28 @@ namespace lat
 		{
 			if (viewPlugin.SearchBase == null)
 				viewPlugin.SearchBase = conn.DirectoryRoot;
-				
-			LdapEntry[] data = conn.Data.Search (conn.DirectoryRoot, viewPlugin.Filter);
-			Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
-					viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
 
-			DoInsert (data, viewPlugin.ColumnAttributes);
+			try {
+				
+				LdapEntry[] data = conn.Data.Search (conn.DirectoryRoot, viewPlugin.Filter);
+				Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
+						viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
+
+				DoInsert (data, viewPlugin.ColumnAttributes);
+				
+			} catch (Exception e) {
+									
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parentWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Connection error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
 		}
 
 		void DoInsert (LdapEntry[] objs, string[] attributes)

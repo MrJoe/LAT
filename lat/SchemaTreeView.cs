@@ -108,6 +108,9 @@ namespace lat
 				schemaStore.AppendValues (synIter, null, "");				
 			}
 				
+			TreePath path = schemaStore.GetPath (rootIter);
+			this.ExpandRow (path, false);
+				
 			this.ShowAll ();
 		}
 
@@ -273,7 +276,8 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Log.Debug (e.ToString());
+				schemaStore.AppendValues (args.Iter, null, "");
+				Log.Debug (e);				
 
 				string	msg = Mono.Unix.Catalog.GetString (
 					"Unable to read schema information from server");

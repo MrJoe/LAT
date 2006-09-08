@@ -102,6 +102,9 @@ namespace lat
 				browserStore.AppendValues (iter, null, "", "");				
 			}
 
+			TreePath path = browserStore.GetPath (rootIter);
+			this.ExpandRow (path, false);
+
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
 			this.ShowAll ();
 		}
@@ -121,6 +124,9 @@ namespace lat
 
 			TreeIter iter = browserStore.AppendValues (rootIter, dirIcon, conn.Settings.Name, conn.Settings.Name);
 			browserStore.AppendValues (iter, null, "", "");				
+
+			TreePath path = browserStore.GetPath (rootIter);
+			this.ExpandRow (path, false);
 
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnBrowserRightClick);
 			this.ShowAll ();
@@ -374,8 +380,28 @@ namespace lat
 				conn = Global.Connections [serverName];
 			}
 
-			if (!conn.IsConnected)
-				conn.Connect ();
+			try {
+			
+				if (!conn.IsConnected)
+					conn.Connect ();
+					
+			} catch (Exception e) { 
+
+				browserStore.AppendValues (args.Iter, null, "", "");
+				
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					parent,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Connection error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
+				
+				return;
+			}
 
 			if (name == serverName) {			
 			

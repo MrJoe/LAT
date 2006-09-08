@@ -578,15 +578,21 @@ namespace lat
 			if (conn == null)
 				return;
 
-			if (conn.AuthDN == null)
-				msg = String.Format("Bind DN: anonymous");
-			else
-				msg = String.Format("Bind DN: {0}", conn.AuthDN);
+			try {
+			
+				if (conn.AuthDN == null)
+					msg = String.Format("Bind DN: anonymous");
+				else
+					msg = String.Format("Bind DN: {0}", conn.AuthDN);
 
-			appBar.Pop ();
-			appBar.Push (msg);
+				appBar.Pop ();
+				appBar.Push (msg);
 
-			sslImage.Pixbuf = Util.GetSSLIcon (conn.UseSSL);
+				sslImage.Pixbuf = Util.GetSSLIcon (conn.UseSSL);
+				
+			} catch (Exception e) {
+				Log.Debug (e);
+			}
 		}
 		
 		// Handlers
@@ -968,13 +974,17 @@ namespace lat
 			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);			
 			Connection conn = Global.Connections [profileName];
 		
-			SelectContainerDialog scd = new SelectContainerDialog (conn, mainWindow);
-			scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
-			scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
-			scd.Run ();
+			try {
+			
+				SelectContainerDialog scd = new SelectContainerDialog (conn, mainWindow);
+				scd.Message = String.Format (Mono.Unix.Catalog.GetString ("Where in the directory would\nyou like to start the search?"));
+				scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
+				scd.Run ();
 
-			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
-				searchBaseButton.Label = scd.DN;
+				if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
+					searchBaseButton.Label = scd.DN;
+					
+			} catch {}
 		}
 
 		public void OnShowAllAttributes (object o, EventArgs args)

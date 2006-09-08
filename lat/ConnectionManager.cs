@@ -56,9 +56,19 @@ namespace lat
 		
 		public void Connect ()
 		{
+			if (settings.DontSavePassword) {
+				LoginDialog ld = new LoginDialog (settings.UserName);				
+				
+				bool res = ld.Run ();
+				if (res) {
+					settings.UserName = ld.UserName;
+					settings.Pass = ld.UserPass;
+				} else { settings.Pass = "dog"; }
+			}
+		
 			try {
 			
-				server.Connect (settings.Encryption);
+				server.Connect (settings.Encryption);			
 				server.Bind (settings.UserName, settings.Pass);
 			
 				if (!server.Connected) {
@@ -233,7 +243,7 @@ namespace lat
 		string directoryRoot;
 		string userName;
 		string password;
-		bool savePassword;
+		bool dontSavePassword;
 		EncryptionType encryptionType;
 		LdapServerType serverType;
 		bool dynamic;
@@ -249,7 +259,7 @@ namespace lat
 			this.port = port;
 			this.directoryRoot = directoryRoot;
 			this.userName = userName;
-			this.savePassword = savePassword;
+			this.dontSavePassword = savePassword;
 			this.encryptionType = encryptionType;
 			this.serverType = serverType;
 			this.dynamic = dynamic;
@@ -307,10 +317,10 @@ namespace lat
 			set { password = value; }
 		}
 		
-		public bool SavePassword
+		public bool DontSavePassword
 		{
-			get { return savePassword; }
-			set { savePassword = value; }
+			get { return dontSavePassword; }
+			set { dontSavePassword = value; }
 		}
 		
 		public EncryptionType Encryption
@@ -563,7 +573,7 @@ namespace lat
 				profile.SetAttribute ("port", c.Settings.Port.ToString());
 				profile.SetAttribute ("base", c.Settings.DirectoryRoot);
 				profile.SetAttribute ("user", c.Settings.UserName);
-				profile.SetAttribute ("save_password", c.Settings.SavePassword.ToString());
+				profile.SetAttribute ("save_password", c.Settings.DontSavePassword.ToString());
 				profile.SetAttribute ("encryption", Util.GetEncryptionType (c.Settings.Encryption));
 				profile.SetAttribute ("server_type", Util.GetServerType (c.Settings.ServerType));
 				

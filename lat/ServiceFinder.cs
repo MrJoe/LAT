@@ -78,7 +78,7 @@ namespace lat
 			cd.Port = args.Service.Port;
 			cd.UserName = "";
 			cd.Pass = "";
-			cd.SavePassword = false;
+			cd.DontSavePassword = false;
 			cd.ServerType = Util.GetServerType ("Generic LDAP server");
 			cd.Dynamic = true;
 

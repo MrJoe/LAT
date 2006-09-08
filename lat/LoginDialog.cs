@@ -40,6 +40,15 @@ namespace lat
 		string userName;
 		string userPass;
 
+		public LoginDialog (string user)
+		{
+			Init ();
+			
+			useSSLCheckButton.HideAll ();
+			msgLabel.Text = Mono.Unix.Catalog.GetString ("Enter your password");
+			userEntry.Text = user;
+		}
+
 		public LoginDialog (string msg, string user)
 		{
 			Init ();
@@ -59,10 +68,15 @@ namespace lat
 			isRelogin = true;
 		}
 
-		public void Run ()
+		public bool Run ()
 		{
-			loginDialog.Run ();
+			ResponseType res = (ResponseType) loginDialog.Run ();
 			loginDialog.Destroy ();
+			
+			if (res == ResponseType.Ok)
+				return true;
+			
+			return false;
 		}
 
 		private void Init ()

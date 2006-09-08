@@ -81,7 +81,7 @@ namespace lat
 			
 			userEntry.Text = conn.Settings.UserName;
 
-			if (conn.Settings.SavePassword)
+			if (conn.Settings.DontSavePassword)
 				savePasswordButton.Active =  true;
 			else
 				passEntry.Text = conn.Settings.Pass;
@@ -328,10 +328,10 @@ namespace lat
 			data.DirectoryRoot = ldapBaseEntry.Text;
 			data.UserName = userEntry.Text;
 			data.Encryption = encryption;
-			data.SavePassword = savePasswordButton.Active;
+			data.DontSavePassword = savePasswordButton.Active;
 			data.ServerType = Util.GetServerType (st);
 
-			if (data.SavePassword)
+			if (data.DontSavePassword)
 				data.Pass = "";
 			else
 				data.Pass = passEntry.Text;

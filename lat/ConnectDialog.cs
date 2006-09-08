@@ -278,7 +278,7 @@ namespace lat
 			cd.Pass = passEntry.Text;
 			cd.DirectoryRoot = ldapBaseEntry.Text;
 			cd.ServerType = Util.GetServerType (serverType);			
-			cd.SavePassword = false;
+			cd.DontSavePassword = false;
 			cd.Encryption = encryption;
 
 			if (saveProfileButton.Active) {
