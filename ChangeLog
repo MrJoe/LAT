@@ -1,5 +1,6 @@
 	* Remove limit on number of search results
-	* Handle non-Latin characters in searches
+	* NetworkManager support now optional (--enable-networkmanager)
+	* Fixed typo in user view edit dialog that caused unhandled exceptions
 
 1.1.6.1
 
