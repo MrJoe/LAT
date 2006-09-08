@@ -46,6 +46,18 @@ namespace lat
             }
        	}
 
+		public static ComboBox CreateServerCombo ()
+		{
+			ComboBox serverComboBox = ComboBox.NewText ();			
+			foreach (string s in Global.Connections.ConnectionNames)
+				serverComboBox.AppendText (s);
+
+			serverComboBox.Active = 0;
+			serverComboBox.Show ();
+			
+			return serverComboBox;
+		}
+
 		public static double GetDateTime (string stringDate)
 		{
 			int ret = 0;

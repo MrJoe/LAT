@@ -227,13 +227,7 @@ namespace lat
 
 		void CreateServerCombo ()
 		{
-			serverComboBox = ComboBox.NewText ();			
-			foreach (string s in Global.Connections.ConnectionNames)
-				serverComboBox.AppendText (s);
-
-			serverComboBox.Active = 0;
-			serverComboBox.Show ();
-
+			serverComboBox = Util.CreateServerCombo (); 
 			hbox448.PackEnd (serverComboBox, true, true, 5);
 		}
 
@@ -755,11 +749,7 @@ namespace lat
 
 		public void OnPopulateActivate (object o, EventArgs args)
 		{
-			Connection conn = GetActiveConnection ();
-			if (conn == null)
-				return;
-				
-			new SambaPopulateDialog (conn);
+			new SambaPopulateDialog ();
 		}
 
 		public void OnPreferencesActivate (object sender, EventArgs args)
@@ -874,11 +864,7 @@ namespace lat
 
 		public void OnMassEditActivate (object o, EventArgs args)
 		{
-			Connection conn = GetActiveConnection ();
-			if (conn == null)
-				return;
-				
-			new MassEditDialog (conn);
+			new MassEditDialog ();
 		}
 
 		void Close ()

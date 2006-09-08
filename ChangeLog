@@ -1,3 +1,4 @@
+	* Added combobox to select connection for mass edit and samba populate dialogs
 	* Fixed time/date fields in posix user view dialog
 	* Fixed 'prompt for password' in connection profiles
 	* Remove limit on number of search results

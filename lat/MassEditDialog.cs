@@ -30,6 +30,7 @@ namespace lat
 		Glade.XML ui;
 
 		[Glade.Widget] Gtk.Dialog massEditDialog;
+		[Glade.Widget] Gtk.HBox hbox452;
 		[Glade.Widget] Gtk.Entry searchEntry;
 		[Glade.Widget] Gtk.Entry nameEntry;
 		[Glade.Widget] Gtk.Entry valueEntry;
@@ -38,14 +39,13 @@ namespace lat
 
 		ListStore modListStore;
 		List<LdapModification> _modList;
-		Connection conn;
 
+		ComboBox connComboBox;
 		ComboBox actionComboBox;
 
-		public MassEditDialog (Connection connection)
+		public MassEditDialog ()
 		{
 			_modList = new List<LdapModification> ();
-			conn = connection;
 
 			ui = new Glade.XML (null, "lat.glade", "massEditDialog", null);
 			ui.Autoconnect (this);
@@ -73,6 +73,21 @@ namespace lat
 			massEditDialog.Destroy ();
 		}
 
+		Connection GetCurrentConnection ()
+		{
+			TreeIter iter;
+			if (!connComboBox.GetActiveIter (out iter))
+				return null;
+
+			string name = (string) connComboBox.Model.GetValue (iter, 0);
+			
+			Connection conn = Global.Connections [name];
+			if (!conn.IsConnected)
+				conn.Connect ();			
+			
+			return conn;
+		}
+
 		void createCombos ()
 		{
 			// class
@@ -85,6 +100,9 @@ namespace lat
 			actionComboBox.Show ();
 
 			actionHBox.PackStart (actionComboBox, true, true, 5);
+			
+			connComboBox = Util.CreateServerCombo ();
+			hbox452.PackEnd (connComboBox, true, true, 5);
 		}
 
 		public void OnSearchClicked (object o, EventArgs args)
@@ -101,8 +119,9 @@ namespace lat
 				return;
 
 			string action = (string) actionComboBox.Model.GetValue (iter, 0);
-
-			modListStore.AppendValues (action, nameEntry.Text, valueEntry.Text);
+			
+			if (nameEntry.Text != "" && valueEntry.Text != "")
+				modListStore.AppendValues (action, nameEntry.Text, valueEntry.Text);
 		}
 
 		public void OnClearClicked (object o, EventArgs args)
@@ -122,6 +141,8 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
+			Connection conn = GetCurrentConnection ();
+		
 			LdapEntry[] sr = conn.Data.Search (conn.DirectoryRoot, searchEntry.Text);
 			
 			foreach (object[] row in modListStore) {
@@ -159,16 +180,6 @@ namespace lat
 				Util.ModifyEntry (conn, e.DN, _modList.ToArray());
 			}
 
-			massEditDialog.HideAll ();
-		}
-
-		public void OnCancelClicked (object o, EventArgs args)
-		{
-			massEditDialog.HideAll ();
-		}
-
-		public void OnDlgDelete (object o, DeleteEventArgs args)
-		{
 			massEditDialog.HideAll ();
 		}
 	}
