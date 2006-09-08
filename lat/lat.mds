@@ -4,11 +4,13 @@
       <Entry build="True" name="lat" configuration="Debug" />
       <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
       <Entry build="True" name="plugins" configuration="" />
+      <Entry build="True" name="network-manager" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="lat" configuration="Debug" />
       <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
       <Entry build="True" name="plugins" configuration="" />
+      <Entry build="True" name="network-manager" configuration="Release" />
     </Configuration>
   </Configurations>
   <DeployTargets />
@@ -16,10 +18,12 @@
     <Execute type="None" entry="lat" />
     <Execute type="None" entry="gnome-keyring-glue" />
     <Execute type="None" entry="plugins" />
+    <Execute type="None" entry="network-manager" />
   </StartMode>
   <Entries>
     <Entry filename="./lat.mdp" />
     <Entry filename="../gnome-keyring-glue/gnome-keyring-glue.mdp" />
     <Entry filename="./plugins/plugins.mds" />
+    <Entry filename="../network-manager/network-manager.mdp" />
   </Entries>
 </Combine>

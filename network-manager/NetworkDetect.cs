@@ -70,8 +70,8 @@ namespace lat
                 ConnectToNetworkManager();
             } catch(Exception e) {
                 nm_manager = null;
-                Log.Debug ("Cannot connect to NetworkManager; Assuming working connection");
-                Log.Debug (e.Message);
+                Console.WriteLine ("Cannot connect to NetworkManager; Assuming working connection");
+                Console.WriteLine (e.Message);
             }
         }
 
@@ -101,12 +101,12 @@ namespace lat
                     Device active_device = nm_manager.ActiveDevice;
                     
                     if(Connected && active_device != null) {
-                    	Log.Debug ("Network Connection Established", String.Format("{0} ({1})",
+                    	Console.WriteLine ("Network Connection Established", String.Format("{0} ({1})",
                             active_device.Name, active_device.IP4Address));
                     } else if(Connected) {
-                    	Log.Debug ("Network Connection Established", "Active Device Unknown");
+                    	Console.WriteLine ("Network Connection Established", "Active Device Unknown");
                     } else {
-                        Log.Debug ("Network Connection Unavailable", "Disconnected");
+                        Console.WriteLine ("Network Connection Unavailable", "Disconnected");
                     }
                 }
             } catch(Exception) {

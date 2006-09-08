@@ -8,10 +8,6 @@ endif
 
 if ENABLE_NETWORKMANAGER
 NETWORKMANAGER_CSFLAGS = -define:ENABLE_NETWORKMANAGER
-NETWORKMANAGER_CSFILES = \
-	NetworkManager/Manager.cs \
-	NetworkManager/Device.cs \
-	NetworkManager/Network.cs 
 endif
 
 CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(AVAHI_CSFLAGS) $(NETWORKMANAGER_CSFLAGS)
@@ -36,7 +32,6 @@ CSFILES = \
 	LoginDialog.cs \
 	Main.cs \
 	MassEditDialog.cs \
-	NetworkDetect.cs \
 	NewEntryDialog.cs \
 	PasswordDialog.cs \
 	Preferences.cs \
@@ -65,14 +60,15 @@ SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
 REFERENCES = \
 	../gnome-keyring-glue/gnome-keyring-glue.dll \
+	../network-manager/network-manager.dll \
 	Mono.Posix \
 	Mono.Security \
 	Novell.Directory.Ldap
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
-$(ASSEMBLY).exe: $(CSFILES) $(AVAHI_CSFILES) $(NETWORKMANAGER_CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(AVAHI_CSFILES) $(NETWORKMANAGER_CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(NETWORKMANAGER_LIBS) $(AVAHI_LIBS)
+$(ASSEMBLY).exe: $(CSFILES) $(AVAHI_CSFILES)
+	$(CSC) -out:$@ $(CSFILES) $(AVAHI_CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(AVAHI_LIBS)
 
 all: $(ASSEMBLY).exe
 

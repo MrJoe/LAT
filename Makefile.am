@@ -1,6 +1,10 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = gnome-keyring-glue lat po desktop resources help
+#if ENABLE_NETWORKMANAGER
+NM_DIR = network-manager
+#endif
+
+SUBDIRS = gnome-keyring-glue $(NM_DIR) lat po desktop resources help
 
 EXTRA_DIST = \
 	README \

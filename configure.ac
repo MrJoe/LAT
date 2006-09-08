@@ -74,6 +74,8 @@ lat.spec
 desktop/Makefile
 desktop/lat-plugins.pc
 gnome-keyring-glue/Makefile
+help/Makefile
+help/C/Makefile
 lat/AssemblyInfo.cs
 lat/Defines.cs
 lat/Makefile
@@ -83,9 +85,8 @@ lat/plugins/PosixCoreViews/Makefile
 lat/plugins/ActiveDirectoryCoreViews/Makefile
 lat/plugins/JpegAttributeViewer/Makefile
 lat/plugins/PasswordAttributeViewer/Makefile
+network-manager/Makefile
 po/Makefile.in
-help/Makefile
-help/C/Makefile
 resources/Makefile
 ])
 
