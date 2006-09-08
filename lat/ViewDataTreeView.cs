@@ -66,6 +66,9 @@ namespace lat
 				Log.Debug ("InsertData()\n\tbase: [{0}]\n\tfilter: [{1}]\n\tnumResults: [{2}]",
 						viewPlugin.SearchBase, viewPlugin.Filter, data.Length);
 
+				string msg = string.Format (Mono.Unix.Catalog.GetString ("Found {0} entries"), data.Length);
+				Global.Window.WriteStatusMessage (msg);
+
 				DoInsert (data, viewPlugin.ColumnAttributes);
 				
 			} catch (Exception e) {

@@ -583,6 +583,12 @@ namespace lat
 				Log.Debug (e);
 			}
 		}
+
+		public void WriteStatusMessage (string msg)
+		{
+			appBar.Pop ();
+			appBar.Push (msg);
+		}
 		
 		// Handlers
 
@@ -1096,7 +1102,9 @@ namespace lat
 #endif
 
 		void OnNotebookViewChanged (object o, SwitchPageArgs args)
-		{	
+		{
+			WriteStatusMessage ("");
+		
 			if (args.PageNum == 0) {
 
 				ldapTreeView.removeToolbarHandlers ();
@@ -1307,8 +1315,6 @@ namespace lat
 			SetupToolbar (vp);
 			
 			GenerateNewMenu (conn);
-			
-			UpdateStatusBar ();
 		}
 	}
 

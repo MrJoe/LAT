@@ -27,6 +27,7 @@ using lat;
 public class Global
 {
 	public static Gdk.Pixbuf latIcon;
+	public static MainWindow Window;
 	
 	public static ConnectionManager Connections;
 	public static PluginManager Plugins;
@@ -116,7 +117,7 @@ public class LdapAdministrationTool
 		try {
 		
 			Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);					
-			new MainWindow (program);		
+			Global.Window = new MainWindow (program);		
 			program.Run ();
 		
 		} catch (Exception e) {
