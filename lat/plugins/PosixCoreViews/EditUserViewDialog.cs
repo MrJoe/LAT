@@ -150,9 +150,10 @@ namespace lat
 				smbProfilePathEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaProfilePath");
 				smbHomePathEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaHomePath");
 				smbHomeDriveEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaHomeDrive");
-				smbExpireEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaKickoffTime");
-				smbCanChangePwdEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaPwdCanChange");
-				smbMustChangePwdEntry.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaPwdMustChange");
+								
+				smbExpireEntry.Text = GetStringDate (conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaKickoffTime"));
+				smbCanChangePwdEntry.Text = GetStringDate (conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaPwdCanChange"));
+				smbMustChangePwdEntry.Text = GetStringDate (conn.Data.GetAttributeValueFromEntry (currentEntry, "sambaPwdMustChange"));
 
 			} else {
 
@@ -197,6 +198,20 @@ namespace lat
 			}
 
 			editUserDialog.Destroy ();
+		}
+	
+		string GetStringDate (string unixTime)
+		{
+			try {
+			
+				double d = double.Parse (unixTime);
+				DateTime dt = Util.GetDateTime (d);
+				
+				return dt.ToString ();
+			
+			} catch {
+				return "";
+			}
 		}
 	
 		void OnSambaChanged (object o, EventArgs args)
@@ -419,22 +434,28 @@ namespace lat
 		public void OnSetExpireClicked (object o, EventArgs args)
 		{
 			TimeDateDialog td = new TimeDateDialog ();
-
-			smbExpireEntry.Text = td.UnixTime.ToString ();
+			if (td.UnixTime != 0) {
+				DateTime dt = Util.GetDateTime (td.UnixTime);			
+				smbExpireEntry.Text = dt.ToString ();
+			}
 		}
 
 		public void OnSetCanClicked (object o, EventArgs args)
 		{
 			TimeDateDialog td = new TimeDateDialog ();
-
-			smbCanChangePwdEntry.Text = td.UnixTime.ToString ();
+			if (td.UnixTime != 0) {
+				DateTime dt = Util.GetDateTime (td.UnixTime);
+				smbCanChangePwdEntry.Text = dt.ToString ();
+			}
 		}
 
 		public void OnSetMustClicked (object o, EventArgs args)
 		{
 			TimeDateDialog td = new TimeDateDialog ();
-
-			smbMustChangePwdEntry.Text = td.UnixTime.ToString ();
+			if (td.UnixTime != 0) {
+				DateTime dt = Util.GetDateTime (td.UnixTime);
+				smbMustChangePwdEntry.Text = dt.ToString ();
+			}
 		}
 
 		void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)
@@ -548,14 +569,21 @@ namespace lat
 				aset.Add (new LdapAttribute ("sambaHomeDrive", smbHomeDriveEntry.Text));
 				aset.Add (new LdapAttribute ("sambaLogonScript", smbLoginScriptEntry.Text));
 				
-				if (smbExpireEntry.Text != "")
-					aset.Add (new LdapAttribute ("sambaKickoffTime", smbExpireEntry.Text));
+				double d = 0;
+				if (smbExpireEntry.Text != "") {
+					d = Util.GetDateTime (smbExpireEntry.Text);
+					aset.Add (new LdapAttribute ("sambaKickoffTime", d.ToString()));
+				}
 
-				if (smbCanChangePwdEntry.Text != "")
-					aset.Add (new LdapAttribute ("sambaPwdCanChange", smbCanChangePwdEntry.Text));
+				if (smbCanChangePwdEntry.Text != "") {
+					d = Util.GetDateTime (smbCanChangePwdEntry.Text);
+					aset.Add (new LdapAttribute ("sambaPwdCanChange", d.ToString()));
+				}
 
-				if (smbMustChangePwdEntry.Text != "")
-					aset.Add (new LdapAttribute ("sambaPwdMustChange", smbMustChangePwdEntry.Text));
+				if (smbMustChangePwdEntry.Text != "") {
+					d = Util.GetDateTime (smbMustChangePwdEntry.Text);
+					aset.Add (new LdapAttribute ("sambaPwdMustChange", d.ToString()));
+				}
 					
 			} else {
 			

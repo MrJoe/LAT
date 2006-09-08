@@ -27,7 +27,6 @@ using lat;
 public class Global
 {
 	public static Gdk.Pixbuf latIcon;
-	public static bool VerboseMessages;
 	
 	public static ConnectionManager Connections;
 	public static PluginManager Plugins;
@@ -114,9 +113,17 @@ public class LdapAdministrationTool
 			
 		Mono.Unix.Catalog.Init (Defines.PACKAGE, Defines.LOCALE_DIR);		
 
-		Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);					
-		new MainWindow (program);		
-		program.Run ();
+		try {
+		
+			Program program = new Program (Defines.PACKAGE, Defines.VERSION, Modules.UI, args);					
+			new MainWindow (program);		
+			program.Run ();
+		
+		} catch (Exception e) {
+		
+			Log.Debug (e);
+			Log.Error ("Error occured: {0}", e.Message);
+		}
 		
 		Global.Templates.Save ();
 		Global.Connections.Save ();

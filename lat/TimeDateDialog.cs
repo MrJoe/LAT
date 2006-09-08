@@ -54,9 +54,7 @@ namespace lat
 			DateTime dt = calendar.GetDate ();
 
 			DateTime userDT = new DateTime (dt.Year, dt.Month, dt.Day, hour, minute, second);
-			TimeSpan ts = userDT.Subtract (new DateTime(1970,1,1,0,0,0));
-
-			_time = ts.TotalSeconds;
+			_time = Util.GetUnixTime (userDT); 
 
 			timeDateDialog.HideAll ();
 		}

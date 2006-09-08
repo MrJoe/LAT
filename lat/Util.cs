@@ -46,6 +46,31 @@ namespace lat
             }
        	}
 
+		public static double GetDateTime (string stringDate)
+		{
+			int ret = 0;
+		
+			DateTime newTime;
+			if (DateTime.TryParse (stringDate, out newTime))
+				return Util.GetUnixTime (newTime);
+			
+			return ret;				
+		}
+
+		public static DateTime GetDateTime (double unixTime)
+		{
+			DateTime dt = new DateTime (1970, 1, 1, 0, 0, 0, 0);
+			dt = dt.AddSeconds (unixTime);
+			
+			return dt;
+		}
+
+		public static double GetUnixTime (DateTime dt)
+		{
+			TimeSpan ts = dt.Subtract (new DateTime(1970,1,1,0,0,0));
+			return ts.TotalSeconds;
+		}
+
 		public static string GetEncryptionType (EncryptionType encryptionType)
 		{
 			switch (encryptionType) {

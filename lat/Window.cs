@@ -132,7 +132,6 @@ namespace lat
 			LoadPreference (Preferences.MAIN_WINDOW_X);
 			LoadPreference (Preferences.MAIN_WINDOW_MAXIMIZED);
 			LoadPreference (Preferences.MAIN_WINDOW_HPANED);
-			LoadPreference (Preferences.DISPLAY_VERBOSE_MESSAGES);
 
 			// Watch for any changes
 			Preferences.SettingChanged += OnPreferencesChanged;
@@ -322,11 +321,7 @@ namespace lat
 				
 			case Preferences.BROWSER_SELECTION:
 				ldapTreeView.BrowserSelectionMethod = (int) val; 
-				break;
-				
-			case Preferences.DISPLAY_VERBOSE_MESSAGES:
-				Global.VerboseMessages = (bool) val;
-				break;
+				break;				
 			}
 		}
 
@@ -904,7 +899,6 @@ namespace lat
 
 			Preferences.Set (Preferences.MAIN_WINDOW_HPANED, hpaned1.Position);
 			Preferences.Set (Preferences.BROWSER_SELECTION, ldapTreeView.BrowserSelectionMethod);
-			Preferences.Set (Preferences.DISPLAY_VERBOSE_MESSAGES, Global.VerboseMessages);
 
 			program.Quit ();
 		}

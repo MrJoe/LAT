@@ -1,3 +1,4 @@
+	* Fixed time/date fields in posix user view dialog
 	* Fixed 'prompt for password' in connection profiles
 	* Remove limit on number of search results
 	* NetworkManager support now optional (--enable-networkmanager)

@@ -35,7 +35,6 @@ namespace lat
 		public const string MAIN_WINDOW_HPANED = "/apps/lat/ui/main_window_hpaned";
 
 		public const string BROWSER_SELECTION = "/apps/lat/ui/browser_selection";
-		public const string DISPLAY_VERBOSE_MESSAGES = "/apps/lat/ui/display_verbose_messages";
 
 		static GConf.Client client;
 		static GConf.NotifyEventHandler changed_handler;
@@ -66,9 +65,6 @@ namespace lat
 					
 				case BROWSER_SELECTION:
 					return 2;
-					
-				case DISPLAY_VERBOSE_MESSAGES:
-					return true;
 			}
 
 			return null;
@@ -110,7 +106,6 @@ namespace lat
 		[Glade.Widget] Gtk.Dialog preferencesDialog;
 		[Glade.Widget] RadioButton browserSingleClickButton;
 		[Glade.Widget] RadioButton browserDoubleClickButton;
-		[Glade.Widget] CheckButton verboseMessagesButton;
 		[Glade.Widget] TreeView profilesTreeView;
 
 		ListStore profileStore;
@@ -131,7 +126,6 @@ namespace lat
 			UpdateProfileList ();
 					
 			LoadPreference (Preferences.BROWSER_SELECTION);
-			LoadPreference (Preferences.DISPLAY_VERBOSE_MESSAGES);
 					
 			preferencesDialog.Icon = Global.latIcon;
 			preferencesDialog.Resize (300, 400);
@@ -163,10 +157,6 @@ namespace lat
 				else if (b == 2)
 					browserDoubleClickButton.Active = true;
 					
-				break;
-				
-			case Preferences.DISPLAY_VERBOSE_MESSAGES:
-				verboseMessagesButton.Active = (bool) val;
 				break;
 			}
 		}
@@ -231,12 +221,6 @@ namespace lat
 				Preferences.Set (Preferences.BROWSER_SELECTION, 1);
 			else
 				Preferences.Set (Preferences.BROWSER_SELECTION, 2);
-		}
-
-					
-		public void OnVerboseToggled (object o, EventArgs args)
-		{
-			Preferences.Set (Preferences.DISPLAY_VERBOSE_MESSAGES, verboseMessagesButton.Active);
 		}
 	}
 	
