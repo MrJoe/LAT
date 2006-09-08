@@ -42,6 +42,8 @@ namespace lat
 			conn = connection;
 			parentWindow = parent;
 			
+			this.Selection.Mode = Gtk.SelectionMode.Multiple; 
+			
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
 			this.RowActivated += new RowActivatedHandler (OnRowActivated);
 			this.ShowAll ();

@@ -32,8 +32,10 @@ public class Global
 	public static ConnectionManager Connections;
 	public static PluginManager Plugins;
 	public static TemplateManager Templates;
-	
+
+#if ENABLE_NETWORKMANAGER
 	public static NetworkDetect Network;
+#endif
 }
 
 public class LdapAdministrationTool

@@ -2,7 +2,6 @@ AC_INIT(lat, 1.1.6.1, http://dev.mmgsecurity.com/bugs/)
 AC_CONFIG_MACRO_DIR(m4)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
-AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs
 AC_PROG_INSTALL
@@ -39,8 +38,12 @@ AC_SUBST(GTKSHARP_LIBS)
 dnl gnome-keyring is needed, but only at runtime. Oh well, good to check for it nonetheless
 PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
 
-PKG_CHECK_MODULES(DBUS, dbus-sharp)
-AC_SUBST(DBUS_LIBS)
+PKG_CHECK_MODULES(NETWORKMANAGER, dbus-sharp, ENABLE_NETWORKMANAGER="yes", ENABLE_NETWORKMANAGER="no")
+AC_ARG_ENABLE(networkmanager, 
+	      [  --enable-networkmanager[[=no/yes]]    compile with NetworkManager support [[default: yes]]],
+	      ENABLE_AVAHI="$enableval")
+AM_CONDITIONAL(ENABLE_NETWORKMANAGER, test "$ENABLE_NETWORKMANAGER" = "yes")
+AC_SUBST(NETWORKMANAGER_LIBS)
 
 PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="no", ENABLE_AVAHI="yes")
 AC_ARG_ENABLE(avahi, 
@@ -94,5 +97,6 @@ $PACKAGE-$VERSION
     Mono Runtime:      ${MONO}
 
     Features:
-      AVAHI support:           ${ENABLE_AVAHI}
+      AVAHI support:           		${ENABLE_AVAHI}
+      NetworkManager support:  		${ENABLE_NETWORKMANAGER}
 "

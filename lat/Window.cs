@@ -189,8 +189,10 @@ namespace lat
 			// status bar			
 			UpdateStatusBar ();
 
+#if ENABLE_NETWORKMANAGER
 			Global.Network = NetworkDetect.Instance;
 			Global.Network.StateChanged += OnNetworkStateChanged;
+#endif
 
 #if ENABLE_AVAHI
 			// FIXME: casuses crashes. Not sure why.	
@@ -1078,6 +1080,7 @@ namespace lat
 				attributeEditor.Show (conn, entry, showAllAttributes.Active);
 		}
 
+#if ENABLE_NETWORKMANAGER
 		void OnNetworkStateChanged (object o, NetworkStateChangedArgs args)
 		{
 			if (args.Connected) {
@@ -1100,6 +1103,7 @@ namespace lat
 				mainWindow.Sensitive = false;				
 			}
 		}
+#endif
 
 		void OnNotebookViewChanged (object o, SwitchPageArgs args)
 		{	

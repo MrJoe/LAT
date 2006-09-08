@@ -302,15 +302,12 @@ namespace lat
 		{
 			string msg = String.Format (
 				Mono.Unix.Catalog.GetString (
-				"Are you sure you want to delete:\n\n"));
+				"Are you sure you want to delete the selected entries?"));
 
 			string errorMsg =
 				Mono.Unix.Catalog.GetString (
 				"Unable to delete the following entries:\n");
 			
-			foreach (string n in dn)
-				msg += String.Format ("{0}\n", n);
-
 			if (!Util.AskYesNo (null, msg))
 				return false;
 
