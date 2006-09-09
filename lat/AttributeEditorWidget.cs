@@ -432,6 +432,17 @@ namespace lat
 			
 			} catch (Exception e) {
 				Log.Debug (e);
+				
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					null,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Add binary value error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();				
 			}
 			
 			return fileBytes.ToArray();
@@ -454,6 +465,8 @@ namespace lat
 			if (response == ResponseType.Ok) {
 
 				byte[] fileBytes = ReadFileBytes (fcd.Filename);
+				if (fileBytes.Length == 0)
+					return;
 				
 				string attributeName = GetAttributeName ();
 				string attributeValue = Base64.encode (SupportClass.ToSByteArray (fileBytes));
@@ -486,6 +499,55 @@ namespace lat
 			fcd.Destroy();
 		}
 
+		void WriteBytesToFile (string fileName, byte[] fileBytes)
+		{
+			try {
+							
+				FileStream fs = File.OpenWrite (fileName);
+				fs.Write (fileBytes, 0, fileBytes.Length);			
+				fs.Close ();				
+			
+			} catch (Exception e) {
+				Log.Debug (e);
+				
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					null,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Save binary attribute error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();				
+			}
+		}
+
+		void OnSaveBinaryValueActivate (object o, EventArgs args)
+		{
+			FileChooserDialog fcd = new FileChooserDialog (
+				Mono.Unix.Catalog.GetString ("Save binary as"),
+				Gtk.Stock.Save, 
+				null, 
+				FileChooserAction.Save);
+
+			fcd.AddButton (Gtk.Stock.Cancel, ResponseType.Cancel);
+			fcd.AddButton (Gtk.Stock.Save, ResponseType.Ok);
+
+			fcd.SelectMultiple = false;
+
+			ResponseType response = (ResponseType) fcd.Run();
+			if (response == ResponseType.Ok)  {			
+				string attributeName = GetAttributeName ();
+				LdapEntry le = conn.Data.GetEntry (currentDN);
+				LdapAttribute la = le.getAttribute (attributeName);
+				
+				WriteBytesToFile (fcd.Filename, SupportClass.ToByteArray (la.ByteValue)); 
+			}
+			
+			fcd.Destroy ();
+		}
+
 		void OnAddObjectClassActivate (object o, EventArgs args)
 		{
 			AddObjectClassDialog dlg = new AddObjectClassDialog (conn);
@@ -511,17 +573,23 @@ namespace lat
 		{
 			Menu popup = new Menu();
 
-			ImageMenuItem addBinaryValueItem = new ImageMenuItem ("Add binary value");
+			ImageMenuItem addBinaryValueItem = new ImageMenuItem ("Add binary value...");
 			addBinaryValueItem.Image = new Gtk.Image (Stock.Open, IconSize.Menu);
 			addBinaryValueItem.Activated += new EventHandler (OnAddBinaryValueActivate);
 			addBinaryValueItem.Show ();
 			popup.Append (addBinaryValueItem);
 
-			ImageMenuItem newObjectClassItem = new ImageMenuItem ("Add object class(es)");
+			ImageMenuItem newObjectClassItem = new ImageMenuItem ("Add object class(es)...");
 			newObjectClassItem.Image = new Gtk.Image (Stock.Add, IconSize.Menu);
 			newObjectClassItem.Activated += new EventHandler (OnAddObjectClassActivate);
 			newObjectClassItem.Show ();
 			popup.Append (newObjectClassItem);
+
+			ImageMenuItem deleteItem = new ImageMenuItem ("Delete attribute");
+			deleteItem.Image = new Gtk.Image (Stock.Delete, IconSize.Menu);
+			deleteItem.Activated += new EventHandler (OnDeleteActivate);
+			deleteItem.Show ();
+			popup.Append (deleteItem);
 
 			ImageMenuItem newItem = new ImageMenuItem ("Insert attribute");
 			newItem.Image = new Gtk.Image (Stock.New, IconSize.Menu);
@@ -529,11 +597,11 @@ namespace lat
 			newItem.Show ();
 			popup.Append (newItem);
 
-			ImageMenuItem deleteItem = new ImageMenuItem ("Delete attribute");
-			deleteItem.Image = new Gtk.Image (Stock.Delete, IconSize.Menu);
-			deleteItem.Activated += new EventHandler (OnDeleteActivate);
-			deleteItem.Show ();
-			popup.Append (deleteItem);
+			ImageMenuItem saveBinaryValueItem = new ImageMenuItem ("Save binary value...");
+			saveBinaryValueItem.Image = new Gtk.Image (Stock.Save, IconSize.Menu);
+			saveBinaryValueItem.Activated += new EventHandler (OnSaveBinaryValueActivate);
+			saveBinaryValueItem.Show ();
+			popup.Append (saveBinaryValueItem);
 
 			popup.Popup(null, null, null, 3, Gtk.Global.CurrentEventTime);
 		}
