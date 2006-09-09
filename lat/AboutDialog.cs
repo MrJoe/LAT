@@ -43,12 +43,8 @@ namespace lat
 			ab.Version = Defines.VERSION;
 			ab.Icon = Global.latIcon;
 
-			ab.Show ();
-		}
-
-		public static void Show ()
-		{
-			new AboutDialog ();
+			ab.Run ();
+			ab.Destroy ();
 		}
 	}
 }

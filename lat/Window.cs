@@ -599,7 +599,7 @@ namespace lat
 
 		public void OnAboutActivate (object o, EventArgs args) 
 		{
-			AboutDialog.Show ();
+			new AboutDialog ();			
 		}
 
 		public void OnAppDelete (object o, DeleteEventArgs args) 
@@ -765,7 +765,7 @@ namespace lat
 
 		public void OnPreferencesActivate (object sender, EventArgs args)
 		{
-			new PreferencesDialog ();
+			new PreferencesDialog (program);
 			
 			Global.Connections.Save ();
 		}

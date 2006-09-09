@@ -10349,6 +10349,7 @@ Make sure you are logged in as the administator.</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-11</property>
+	      <signal name="clicked" handler="OnHelpClicked" last_modification_time="Sat, 09 Sep 2006 16:08:01 GMT"/>
 	    </widget>
 	  </child>
 

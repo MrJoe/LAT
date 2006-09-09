@@ -109,11 +109,15 @@ namespace lat
 		[Glade.Widget] TreeView profilesTreeView;
 
 		ListStore profileStore;
+		Gnome.Program program;
+		bool gettingHelp = false;
 			
-		public PreferencesDialog ()
+		public PreferencesDialog (Gnome.Program program)
 		{
 			ui = new Glade.XML (null, "lat.glade", "preferencesDialog", null);
 			ui.Autoconnect (this);
+			
+			this.program = program;
 			
 			profileStore = new ListStore (typeof (string));
 			profilesTreeView.Model = profileStore;
@@ -128,8 +132,14 @@ namespace lat
 			LoadPreference (Preferences.BROWSER_SELECTION);
 					
 			preferencesDialog.Icon = Global.latIcon;
-			preferencesDialog.Resize (300, 400);
+			preferencesDialog.Resize (300, 400);			
 			preferencesDialog.Run ();
+			
+			if (gettingHelp) {
+				preferencesDialog.Run ();
+				gettingHelp = false;
+			}
+			
 			preferencesDialog.Destroy ();
 		}
 
@@ -221,6 +231,33 @@ namespace lat
 				Preferences.Set (Preferences.BROWSER_SELECTION, 1);
 			else
 				Preferences.Set (Preferences.BROWSER_SELECTION, 2);
+		}
+		
+		public void OnHelpClicked (object o, EventArgs args)
+		{
+			try {
+
+				gettingHelp = true;
+
+				Gnome.Help.DisplayDesktopOnScreen (program, 
+					Defines.PACKAGE, 
+					"lat.xml", 
+					"lat-preferences", 
+					Gdk.Screen.Default);
+
+			} catch (Exception e) {
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					null,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Help error",
+					e.Message);
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}			
 		}
 	}
 	
