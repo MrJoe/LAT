@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-08 21:38-0400\n"
+"POT-Creation-Date: 2006-09-09 12:35-0400\n"
 "PO-Revision-Date: 2006-03-14 10:34+0100\n"
 "Last-Translator: Thomas Constans <thomas.constans@opendoor.fr>\n"
 "Language-Team: fr_FR <fr_FR@li.org>\n"
@@ -679,6 +679,15 @@ msgstr "_Serveur"
 msgid "_View"
 msgstr "_Vue"
 
+#: ../lat/AttributeEditorWidget.cs:454
+#, fuzzy
+msgid "Select file to add as binary attribute"
+msgstr "Sauvegarder l'ancien nom comme attribut"
+
+#: ../lat/AttributeEditorWidget.cs:529
+msgid "Save binary as"
+msgstr ""
+
 #: ../lat/ConnectionManager.cs:78
 #, csharp-format
 msgid "Unable to connect to: ldap://{0}:{1}"
@@ -716,21 +725,21 @@ msgstr "Impossible de se reconnecter"
 msgid "Password don't match"
 msgstr "Les mots de passe sont différents"
 
-#: ../lat/Preferences.cs:208
+#: ../lat/Preferences.cs:218
 msgid "Are you sure you want to delete the profile:"
 msgstr "Êtes vous sûr de vouloir supprimer le profil: {0}"
 
-#: ../lat/Preferences.cs:365
+#: ../lat/Preferences.cs:402
 #, fuzzy, csharp-format
 msgid "Select a container for new objects"
 msgstr "Choisissez le conteneur que vous souhaitez exporter."
 
-#: ../lat/Preferences.cs:366 ../lat/Preferences.cs:377
+#: ../lat/Preferences.cs:403 ../lat/Preferences.cs:414
 #, fuzzy
 msgid "Select container"
 msgstr "LAT - Choisissez le conteneur 'utilisateur'"
 
-#: ../lat/Preferences.cs:376
+#: ../lat/Preferences.cs:413
 #, fuzzy, csharp-format
 msgid "Select a search base"
 msgstr "Choisissez la base de recherche"
@@ -802,51 +811,51 @@ msgstr "Aucune entrée trouvée."
 msgid "Are you sure you want to delete:"
 msgstr "Êtes vous sûr de supprimer:"
 
-#: ../lat/Util.cs:149
+#: ../lat/Util.cs:283
 msgid ""
 "LAT could not determine your Samba System ID (SID). If you haven't "
 "configured your directory for Samba yet, select 'Populate directory for "
 "samba' from the Server menu"
 msgstr ""
 
-#: ../lat/Util.cs:251
+#: ../lat/Util.cs:385
 msgid "Unable to add entry "
 msgstr "Impossible d'ajouter l'entrée {0}"
 
-#: ../lat/Util.cs:288
+#: ../lat/Util.cs:422
 msgid "Unable to modify entry "
 msgstr "Impossible de modifier l'entrée {0}"
 
-#: ../lat/Util.cs:342
+#: ../lat/Util.cs:476
 #, fuzzy, csharp-format
 msgid "Are you sure you want to delete the selected entries?"
 msgstr "Êtes vous sûr de vouloir supprimer le profil: {0}"
 
-#: ../lat/Util.cs:346
+#: ../lat/Util.cs:480
 msgid "Unable to delete the following entries:\n"
 msgstr "Impossible de supprimer les entrées suivantes:\n"
 
-#: ../lat/Util.cs:382
+#: ../lat/Util.cs:516
 msgid "Are you sure you want to delete"
 msgstr "Êtes vous sûr de vouloir supprimer le profil: {0}"
 
-#: ../lat/Util.cs:398
+#: ../lat/Util.cs:532
 msgid "Unable to delete entry "
 msgstr "Impossible de supprimer l'entrée {0}"
 
-#: ../lat/Util.cs:427
+#: ../lat/Util.cs:561
 #, csharp-format
 msgid ""
 "Imported {0} entries\n"
 "from {1}."
 msgstr "{0} entrées importées depuis {1}."
 
-#: ../lat/Util.cs:483
+#: ../lat/Util.cs:617
 #, csharp-format
 msgid "Imported {0} entries."
 msgstr "{0} entrées importées."
 
-#: ../lat/Util.cs:558
+#: ../lat/Util.cs:692
 msgid "Save LDIF export as"
 msgstr "Sauvegarder l'exportation LDIF sous"
 
@@ -878,7 +887,7 @@ msgstr ""
 "Vous devez fournir une valeur pour les attributs suivants;\n"
 "\n"
 
-#: ../lat/Window.cs:645
+#: ../lat/Window.cs:650
 msgid ""
 "Enter the new username and password\n"
 "you wish to re-login with"
@@ -886,86 +895,98 @@ msgstr ""
 "Entrez le nouveau login et mot de passe avec lesquels vous souhaitez vous "
 "reconnecter"
 
-#: ../lat/Window.cs:716
+#: ../lat/Window.cs:721
 msgid "Choose an LDIF file to import"
 msgstr "Choisissez un fichier LDIF à importer"
 
-#: ../lat/Window.cs:746
+#: ../lat/Window.cs:751
 msgid "Export entry"
 msgstr "Exporter l'entrée"
 
-#: ../lat/Window.cs:747
+#: ../lat/Window.cs:752
 msgid "Select the container you wish to export."
 msgstr "Choisissez le conteneur que vous souhaitez exporter."
 
-#: ../lat/Window.cs:943
+#: ../lat/Window.cs:816
+msgid "Cannot copy/cut enteries between servers"
+msgstr ""
+
+#: ../lat/Window.cs:855
+msgid "Unable to copy entry "
+msgstr "Impossible de copier l'entrée "
+
+#: ../lat/Window.cs:857
+msgid "Unable to move entry "
+msgstr "Impossible de déplacer l'entrée"
+
+#: ../lat/Window.cs:952
 msgid "Invalid search filter."
 msgstr "Filtre de recherche incorrect"
 
-#: ../lat/Window.cs:970
+#: ../lat/Window.cs:979
 #, csharp-format
 msgid ""
 "Where in the directory would\n"
 "you like to start the search?"
 msgstr "Choisissez la bae de la recherche:"
 
-#: ../lat/Window.cs:971
+#: ../lat/Window.cs:980
 msgid "Select search base"
 msgstr "Choisissez la base de recherche"
 
-#: ../lat/Window.cs:1343
+#: ../lat/Window.cs:1356
 msgid "Host"
 msgstr "Serveur:"
 
-#: ../lat/Window.cs:1344
+#: ../lat/Window.cs:1357
 msgid "Port"
 msgstr "Port"
 
-#: ../lat/Window.cs:1345
+#: ../lat/Window.cs:1358
 msgid "User"
 msgstr "Utilisateur"
 
-#: ../lat/Window.cs:1346
+#: ../lat/Window.cs:1359
 msgid "Base DN"
 msgstr "DN de base"
 
-#: ../lat/Window.cs:1347
+#: ../lat/Window.cs:1360
 msgid "Connected"
 msgstr "Connecté"
 
-#: ../lat/Window.cs:1348
+#: ../lat/Window.cs:1361
 msgid "Bound"
 msgstr "lié"
 
-#: ../lat/Window.cs:1349
+#: ../lat/Window.cs:1362
 msgid "TLS/SSL"
 msgstr "TLS/SSL"
 
-#: ../lat/Window.cs:1350
+#: ../lat/Window.cs:1363
 msgid "Protocol Version"
 msgstr "Version du protocole"
 
-#: ../lat/Window.cs:1353
+#: ../lat/Window.cs:1366
 msgid "DNS Host Name"
 msgstr "Nom DNS:"
 
-#: ../lat/Window.cs:1354
+#: ../lat/Window.cs:1367
 msgid "Domain Controller Functionality"
 msgstr "Fonctionnalité de Contrôleur de domaine"
 
-#: ../lat/Window.cs:1355
+#: ../lat/Window.cs:1368
 msgid "Forest Functionality"
 msgstr "Fonctionalité de Forêt"
 
-#: ../lat/Window.cs:1356
+#: ../lat/Window.cs:1369
 msgid "Domain Functionality"
 msgstr "Fonctionnalité de Domaine"
 
-#: ../lat/Window.cs:1357
+#: ../lat/Window.cs:1370
 msgid "Global Catalog Ready"
 msgstr "Le catalogue global est prêt"
 
-#: ../lat/Window.cs:1358
+#: ../lat/Window.cs:1371
 msgid "Synchronized"
 msgstr "Synchronisé"
 
@@ -1036,12 +1057,6 @@ msgstr ""
 
 #~ msgid "Entry {0} moved to {1}"
 #~ msgstr "L'entrée {0} a été déplacée vers {1}"
-
-#~ msgid "Unable to copy entry "
-#~ msgstr "Impossible de copier l'entrée "
-
-#~ msgid "Unable to move entry "
-#~ msgstr "Impossible de déplacer l'entrée"
 
 #~ msgid "You must provide a group name and description"
 #~ msgstr "Vous devez fournir un nom de groupe et une description"
