@@ -89,12 +89,10 @@ namespace lat
 		{
 			_templates = new List<Template> ();
 		
-			string dir = Environment.GetEnvironmentVariable("HOME");
-			string tmp = Path.Combine (dir, ".lat");
-			
-			_configFile = Path.Combine (tmp, "templates.dat");
+			string latDir = Util.GetConfigDirectory ();			
+			_configFile = Path.Combine (latDir, "templates.dat");
 
-			DirectoryInfo di = new DirectoryInfo (tmp);
+			DirectoryInfo di = new DirectoryInfo (latDir);
 			if (!di.Exists)
 				di.Create ();
 				
@@ -169,7 +167,8 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Log.Debug ("TemplateManager.Load: {0}", e.Message);
+				Log.Debug (e);
+				Log.Error ("TemplateManager.Load: {0}", e.Message);
 			}
 		}
 		
@@ -187,7 +186,8 @@ namespace lat
 
 			} catch (Exception e) {
 
-				Log.Debug ("TemplateManager.Save: {0}", e.Message);
+				Log.Debug (e);
+				Log.Error ("TemplateManager.Save: {0}", e.Message);
 			}
 		}
 	}

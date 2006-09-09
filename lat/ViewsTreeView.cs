@@ -121,7 +121,7 @@ namespace lat
 
 			viewsStore.Remove (ref child);
 					
-			Log.Debug ("view expanded {0}", name);
+			Log.Debug ("View expanded {0}", name);
 			
 			Connection conn = Global.Connections [name];
 			AddViews (conn, args.Iter);
@@ -140,7 +140,7 @@ namespace lat
 			if (conn.ServerViews.Count == 0)
 				conn.SetDefaultServerViews ();
 			
-			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins) {
+			foreach (ViewPlugin vp in Global.Plugins.ServerViewPlugins) {	
 				if (conn.ServerViews.Contains (vp.GetType().ToString()))
 					viewsStore.AppendValues (profileIter, vp.Icon, vp.Name);
 			}			

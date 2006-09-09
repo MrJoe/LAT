@@ -240,8 +240,8 @@ namespace lat
 			
 			serverViewConfig = new Dictionary<string,PluginConfigCollection> (); 
 			
-			string homeDir = Path.Combine (Environment.GetEnvironmentVariable("HOME"), ".lat");
-			DirectoryInfo di = new DirectoryInfo (homeDir);
+			string latDir = Util.GetConfigDirectory ();			
+			DirectoryInfo di = new DirectoryInfo (latDir);
 			if (!di.Exists)
 				di.Create ();
 
@@ -252,9 +252,9 @@ namespace lat
 					LoadPluginsFromFile (f.FullName);
 			
 			// Load any plugins in home dir
-			pluginStateDirectory = homeDir;
+			pluginStateDirectory = latDir;
 			pluginStateFile = Path.Combine (pluginStateDirectory, "plugins.state");
-			pluginDirectory = Path.Combine (homeDir, "plugins");
+			pluginDirectory = Path.Combine (latDir, "plugins");
 
 			dir = new System.IO.DirectoryInfo (pluginDirectory);
 			if (dir.Exists)

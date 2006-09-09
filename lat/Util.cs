@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml;
 using Mono.Unix;
 using Novell.Directory.Ldap;
 
@@ -56,6 +57,139 @@ namespace lat
 			serverComboBox.Show ();
 			
 			return serverComboBox;
+		}
+
+		public static bool IsOldConfig ()
+		{
+			bool ret = false;
+			string v1Views = Path.Combine (GetConfigDirectory (), "views.xml");
+			
+			if (File.Exists (v1Views))
+				ret = true;
+			
+			return ret;
+		}
+
+		public static void UpgradeConfigurationFiles ()
+		{
+			try {
+				
+				Log.Debug ("Upgrading configuration files from LAT v1.0");
+				
+				string latDir = GetConfigDirectory();
+				
+				File.Delete (Path.Combine (latDir, "templates.dat"));
+				File.Delete (Path.Combine (latDir, "views.xml"));
+				
+				XmlDocument updatedProfiles = ConvertV1Profiles ();
+				updatedProfiles.Save (Path.Combine (latDir, "profiles.xml"));
+				
+				Log.Debug ("Upgrade complete.");
+			
+			} catch (Exception e) {
+				
+				Log.Error ("Unable to upgrade configuration files due to: {0}", e.Message);
+				Log.Debug (e);
+			}
+		}
+
+		static Connection ParseV1Profile (XmlElement profileElement)
+		{
+			EncryptionType e = EncryptionType.None;
+			bool savePassword = false;
+
+			string encryption = profileElement.GetAttribute ("encryption");
+			if (encryption != null) {
+				if (encryption.ToLower() == "ssl")
+					e = EncryptionType.SSL;
+				else if (encryption.ToLower() == "tls")
+					e = EncryptionType.TLS;
+			}
+
+			string sp = profileElement.GetAttribute ("save_password");
+			if (sp != null) {
+				try { savePassword = bool.Parse (sp); }
+				catch { savePassword = false; }
+			}
+			
+			ConnectionData data = new ConnectionData (
+					profileElement.GetAttribute ("name"),
+					profileElement.GetAttribute ("host"),
+					int.Parse (profileElement.GetAttribute ("port")),
+					profileElement.GetAttribute ("base"),
+					profileElement.GetAttribute ("user"),
+					savePassword,
+					e,
+					Util.GetServerType (profileElement.GetAttribute ("server_type")),
+					false);
+
+			Connection conn = new Connection (data);
+			conn.SetDefaultAttributeViewers ();
+			conn.SetDefaultServerViews ();			
+					
+			return conn;
+		}
+
+		static XmlDocument ConvertV1Profiles ()
+		{
+			string latDir = GetConfigDirectory ();
+
+			// Create new profiles document			
+			XmlDocument newDoc = new XmlDocument ();
+			newDoc.AppendChild (newDoc.CreateNode (XmlNodeType.XmlDeclaration,"",""));
+			
+			XmlElement profiles = newDoc.CreateElement ("profiles");
+			newDoc.AppendChild (profiles);			
+			
+			// read data from old profiles document
+			XmlDocument oldDoc = new XmlDocument ();
+			oldDoc.Load (Path.Combine (latDir, "profiles.xml"));
+
+			XmlNodeList nl = oldDoc.GetElementsByTagName ("profile");
+			if (!(nl.Count > 0))
+				return null;
+
+			foreach (XmlElement p in nl) {
+				Connection c = ParseV1Profile (p);
+
+				XmlElement profile = newDoc.CreateElement ("profile");
+				profile.SetAttribute ("name", c.Settings.Name);
+				profile.SetAttribute ("host", c.Settings.Host);
+				profile.SetAttribute ("port", c.Settings.Port.ToString());
+				profile.SetAttribute ("base", c.Settings.DirectoryRoot);
+				profile.SetAttribute ("user", c.Settings.UserName);
+				profile.SetAttribute ("save_password", c.Settings.DontSavePassword.ToString());
+				profile.SetAttribute ("encryption", Util.GetEncryptionType (c.Settings.Encryption));
+				profile.SetAttribute ("server_type", Util.GetServerType (c.Settings.ServerType));
+				
+				XmlElement server_views = newDoc.CreateElement ("server_views");
+				foreach (string sv in c.ServerViews) {
+					XmlElement server_view = newDoc.CreateElement ("server_view");
+					server_view.InnerText = sv;
+					server_views.AppendChild (server_view);
+				}				
+				profile.AppendChild (server_views);
+				
+				XmlElement attribute_viewers = newDoc.CreateElement ("attribute_viewers");
+				foreach (string a in c.AttributeViewers) {
+					XmlElement av = newDoc.CreateElement ("attribute_viewer");
+					av.InnerText = a;
+					attribute_viewers.AppendChild (av);
+				}								
+				profile.AppendChild (attribute_viewers);
+				
+				profiles.AppendChild (profile);				
+			}
+			
+			return newDoc;
+		}
+
+		public static string GetConfigDirectory ()
+		{
+			string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal); 
+			string latDir = Path.Combine (homeDir, ".lat");
+			
+			return latDir;
 		}
 
 		public static double GetDateTime (string stringDate)
@@ -192,7 +326,7 @@ namespace lat
 					retVal = true;
 
 			return retVal;
-		}
+		}		
 
 		public static string SuggestUserName (string firstName, string lastName)
 		{

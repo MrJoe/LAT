@@ -108,6 +108,9 @@ public class LdapAdministrationTool
 
 		Util.SetProcessName (Defines.PACKAGE);
 		
+		if (Util.IsOldConfig())
+			Util.UpgradeConfigurationFiles ();
+		
 		Global.Templates = new TemplateManager ();
 		Global.Plugins = new PluginManager ();		
 		Global.Connections = new ConnectionManager ();

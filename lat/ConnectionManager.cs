@@ -453,8 +453,7 @@ namespace lat
 		{
 			connections = new ConnectionCollection ();
 		
-			string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal); 
-			string latDir = Path.Combine (homeDir, ".lat");			
+			string latDir = Util.GetConfigDirectory ();			
 			connectionDataFileName = Path.Combine (latDir, "profiles.xml");
 
 			if (!Directory.Exists (latDir)) 
