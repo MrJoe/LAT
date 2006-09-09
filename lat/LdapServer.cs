@@ -164,7 +164,22 @@ namespace lat {
 		/// <param name="parentDN">Parent name</param>
 		public void Copy (string oldDN, string newRDN, string parentDN)
 		{
-			conn.Rename (oldDN, newRDN, parentDN, false);
+			string newDN = string.Format ("{0},{1}", newRDN, parentDN);			
+								
+			LdapEntry[] entry = Search (oldDN, LdapConnection.SCOPE_BASE, "objectclass=*", null);
+			if (!(entry.Length > 0))
+				return;
+			
+			LdapEntry oldEntry = entry[0];				
+			LdapAttributeSet attributeSet = new LdapAttributeSet();
+			
+			foreach (LdapAttribute attr in oldEntry.getAttributeSet()) {
+				LdapAttribute newAttr = new LdapAttribute (attr);
+				attributeSet.Add (newAttr);
+			}			
+			
+			LdapEntry le = new LdapEntry (newDN, attributeSet);
+			conn.Add (le);
 		}
 
 		/// <summary>Deletes a directory entry

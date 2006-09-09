@@ -21,6 +21,7 @@
 using Gtk;
 using Gnome;
 using System;
+using System.Text;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -110,6 +111,11 @@ namespace lat
 		ListStore objOptionalStore;
 		
 		ComboBox serverComboBox;		
+
+		string editDN;
+		string editName;
+		bool editIsCopy;
+		TreeIter editIter;
 		
 #if ENABLE_AVAHI
 		ServiceFinder finder;
@@ -258,14 +264,13 @@ namespace lat
 			string serverName = null;
 			Connection conn = null;
 			
-			if (viewsView.Active) {
-				serverName = viewsTreeView.GetActiveServerName ();
-			} else if (browserView.Active) {
-				serverName = ldapTreeView.GetActiveServerName ();
-			} else if (schemaView.Active) {
-				serverName = schemaTreeview.GetActiveServerName ();
-			} 
-		
+			if (viewsView.Active)
+				serverName = viewsTreeView.GetActiveServerName ();					
+			else if (browserView.Active)
+				serverName = ldapTreeView.GetActiveServerName ();			
+			else if (schemaView.Active)
+				serverName = schemaTreeview.GetActiveServerName ();	
+					
 			if (serverName == null)
 				return conn;
 
@@ -767,105 +772,109 @@ namespace lat
 
 		public void OnCutActivate (object o, EventArgs args)
 		{
-//			if (!(viewNotebook.Page == 1))
-//				return;
-//
-//			_cutDN = ldapTreeView.getSelectedDN ();
-//			_cutIter = ldapTreeView.getSelectedIter ();
-//
-//			Log.Debug ("cut - dn: {0}", _cutDN);
+			if (!(viewNotebook.Page == 1))
+				return;
+
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
+				return;
+
+			editDN = ldapTreeView.GetSelectedDN ();
+			editIter = ldapTreeView.GetSelectedIter ();
+			editName = conn.Settings.Name;
+
+			Log.Debug ("Edit->Cut dn: {0}", editDN);
 		}
 
 		public void OnCopyActivate (object o, EventArgs args)
 		{
-//			if (!(viewNotebook.Page == 1))
-//				return;
-//
-//			_cutDN = ldapTreeView.getSelectedDN ();
-//
-//			_isCopy = true;
-//
-//			Log.Debug ("copy - dn: {0}", _cutDN);
+			if (!(viewNotebook.Page == 1))
+				return;
+
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
+				return;
+
+			editDN = ldapTreeView.GetSelectedDN ();
+			editName = conn.Settings.Name;
+			editIsCopy = true;
+
+			Log.Debug ("Edit->Copy dn: {0}", editDN);
 		}
 
 		public void OnPasteActivate (object o, EventArgs args)
 		{
-//			if (!(viewNotebook.Page == 1))
-//				return;
-//
-//			_pasteDN = ldapTreeView.getSelectedDN ();
-//
-//			if (_pasteDN.Equals (null))
-//				return;
-//
-//			DN dn = new DN (_cutDN);
-//			RDN r = (RDN) dn.RDNs[0];
-//
-//			try {
-//
-//				string msg = null;
-//
-//				if (_isCopy) {
-//
-//					server.Copy (_cutDN, r.toString(false), _pasteDN);
-//
-//					msg = String.Format (
-//						Mono.Unix.Catalog.GetString ("Entry {0} copied to {1}"), 
-//						_cutDN, _pasteDN);
-//
-//				} else {
-//
-//					server.Move (_cutDN, r.toString(false), _pasteDN);
-//
-//					msg = String.Format (
-//						Mono.Unix.Catalog.GetString ("Entry {0} moved to {1}"), 
-//						_cutDN, _pasteDN);
-//
-//				}
-//
-//				HIGMessageDialog dialog = new HIGMessageDialog (
-//					mainWindow,
-//					0,
-//					Gtk.MessageType.Info,
-//					Gtk.ButtonsType.Ok,
-//					"Paste results",
-//					msg);
-//
-//				dialog.Run ();
-//				dialog.Destroy ();
-//
-//				if (!_isCopy)
-//					ldapTreeView.RemoveRow (_cutIter);
-//
-//			} catch (Exception e) {
-//
-//				string msg = null;
-//
-//				if (_isCopy) {
-//					string txt = Mono.Unix.Catalog.GetString ("Unable to copy entry ");
-//					msg = txt + _cutDN;
-//				} else {
-//
-//					string txt = Mono.Unix.Catalog.GetString ("Unable to move entry ");
-//					msg = txt + _cutDN;
-//				}
-//
-//				msg += "\nError: " + e.Message;
-//
-//				HIGMessageDialog dialog = new HIGMessageDialog (
-//					mainWindow,
-//					0,
-//					Gtk.MessageType.Error,
-//					Gtk.ButtonsType.Ok,
-//					"Paste error",
-//					msg);
-//
-//				dialog.Run ();
-//				dialog.Destroy ();
-//			}
-//
-//			if (_isCopy)
-//				_isCopy = false;
+			if (!(viewNotebook.Page == 1))
+				return;
+
+			Connection conn = GetActiveConnection ();
+			if (conn == null)
+				return;
+
+			if (conn.Settings.Name != editName) {
+			
+				string msg = Mono.Unix.Catalog.GetString ("Cannot copy/cut enteries between servers");				
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Paste error",
+					msg.ToString ());
+
+				dialog.Run ();
+				dialog.Destroy ();
+				
+				return;
+			}
+
+			string pasteDN = ldapTreeView.GetSelectedDN ();
+			if (pasteDN == null)
+				return;
+
+			DN dn = new DN (editDN);
+			RDN r = (RDN) dn.RDNs [0];
+
+			try {
+
+				if (editIsCopy) {
+					conn.Data.Copy (editDN, r.toString (false), pasteDN);
+					WriteStatusMessage ("Entry copied");
+				} else {
+					conn.Data.Move (editDN, r.toString (false), pasteDN);
+					ldapTreeView.RemoveRow (editIter);
+					WriteStatusMessage ("Entry moved.");
+				}
+				
+			} catch (Exception e) {
+
+				Log.Debug (e);				
+				StringBuilder msg = new StringBuilder ();
+
+				if (editIsCopy)
+					msg.AppendFormat ("{0} {1}", Mono.Unix.Catalog.GetString ("Unable to copy entry "), editDN);
+				else
+					msg.AppendFormat ("{0} {1}", Mono.Unix.Catalog.GetString ("Unable to move entry "), editDN);
+				
+				msg.AppendFormat ("\nError: {0}", e.Message);
+
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Paste error",
+					msg.ToString ());
+
+				dialog.Run ();
+				dialog.Destroy ();
+			}
+
+			if (editIsCopy)
+				editIsCopy = false;
+				
+			editDN = null;
+			editName = null;
 		}
 
 		public void OnMassEditActivate (object o, EventArgs args)
@@ -1114,6 +1123,7 @@ namespace lat
 				ldapTreeView.removeToolbarHandlers ();
 				ToggleButtons (false);
 				ToggleInfoNotebook (false);
+				viewsView.Active = true;
 
 				if (serverInfoView != null) {
 					serverInfoView.Destroy ();
@@ -1133,6 +1143,7 @@ namespace lat
 
 				ToggleButtons (true);
 				ToggleInfoNotebook (false);
+				browserView.Active = true;
 
 				newMenuItem.Submenu = null;
 				newMenuToolButton.Menu = null;
@@ -1165,6 +1176,7 @@ namespace lat
 				CleanupView ();
 
 				ldapTreeView.removeToolbarHandlers ();
+				searchView.Active = true;
 
 				newMenuItem.Submenu = null;
 				newMenuToolButton.Menu = null;
@@ -1202,6 +1214,7 @@ namespace lat
 				CleanupView ();
 
 				ToggleButtons (false);
+				schemaView.Active = true;
 
 				newMenuItem.Submenu = null;
 				newMenuToolButton.Menu = null;

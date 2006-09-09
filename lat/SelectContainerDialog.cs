@@ -85,7 +85,7 @@ namespace lat
 
 		public void OnOkClicked (object o, EventArgs args)
 		{
-			_dn = _ldapTreeview.getSelectedDN ();
+			_dn = _ldapTreeview.GetSelectedDN ();
 
 			selectContainerDialog.HideAll ();
 		}

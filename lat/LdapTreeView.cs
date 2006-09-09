@@ -172,7 +172,7 @@ namespace lat
 				dnSelected (this, new dnSelectedEventArgs (dn, host, serverName));
 		}
 
-		public string getSelectedDN ()
+		public string GetSelectedDN ()
 		{
 			TreeModel ldapModel;
 			TreeIter ldapIter;
@@ -205,7 +205,7 @@ namespace lat
 			connection = null;
 		}
 
-		public TreeIter getSelectedIter ()
+		public TreeIter GetSelectedIter ()
 		{
 			TreeModel ldapModel;
 			TreeIter ldapIter;
@@ -349,7 +349,7 @@ namespace lat
 			
 			if (!browserStore.IterIsValid (parent))
 				return null;
-			
+
 			string parentName = (string)model.GetValue (parent, (int)TreeCols.DN);			
 			if (parentName == "Servers")
 				return (string)model.GetValue (iter, (int)TreeCols.DN);
@@ -480,7 +480,7 @@ namespace lat
 
 		public void OnNewEntryActivate (object o, EventArgs args) 
 		{
-			string dn = getSelectedDN ();
+			string dn = GetSelectedDN ();
 			
 			TreeModel model;
 			TreeIter iter;
@@ -500,8 +500,8 @@ namespace lat
 
 		void OnRenameActivate (object o, EventArgs args) 
 		{
-			string dn = getSelectedDN ();
-			TreeIter iter = getSelectedIter ();
+			string dn = GetSelectedDN ();
+			TreeIter iter = GetSelectedIter ();
 
 			string serverName = FindServerName (iter, browserStore);
 			if (serverName == null)
@@ -530,12 +530,12 @@ namespace lat
 
 		void OnExportActivate (object o, EventArgs args) 
 		{
-			string dn = getSelectedDN ();
+			string dn = GetSelectedDN ();
 			
 			if (dn.Equals (null))
 				return;
 
-			TreeIter iter = getSelectedIter ();
+			TreeIter iter = GetSelectedIter ();
 			string serverName = FindServerName (iter, browserStore);
 			if (serverName == null)
 				return;
