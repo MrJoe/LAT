@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using Gtk;
 using GLib;
 using Novell.Directory.Ldap;
@@ -393,6 +394,97 @@ namespace lat
 		{
 			DeleteAttribute ();
 		}
+	
+		public string GetAttributeName ()
+		{
+			TreeModel model;
+			TreeIter iter;
+			string name;
+
+			if (tv.Selection.GetSelected (out model, out iter)) {
+				name = (string) store.GetValue (iter, 0);
+				return name;
+			}
+
+			return null;
+		}
+	
+		byte[] ReadFileBytes (string fileName)
+		{
+			List<byte> fileBytes = new List<byte> ();
+		
+			try {
+							
+				FileStream fs = File.OpenRead (fileName);
+				
+				byte[] buf = new byte[4096];
+				int ret = 0;
+				
+				do {
+				
+					ret = fs.Read (buf, 0, buf.Length);
+					for (int i = 0; i < ret; i++)
+						fileBytes.Add (buf[i]);
+				
+				} while (ret != 0);
+				
+				fs.Close ();				
+			
+			} catch (Exception e) {
+				Log.Debug (e);
+			}
+			
+			return fileBytes.ToArray();
+		}
+	
+		void OnAddBinaryValueActivate (object o, EventArgs args)
+		{
+			FileChooserDialog fcd = new FileChooserDialog (
+				Mono.Unix.Catalog.GetString ("Select file to add as binary attribute"),
+				Gtk.Stock.Open, 
+				null, 
+				FileChooserAction.Open);
+
+			fcd.AddButton (Gtk.Stock.Cancel, ResponseType.Cancel);
+			fcd.AddButton (Gtk.Stock.Open, ResponseType.Ok);
+
+			fcd.SelectMultiple = false;
+
+			ResponseType response = (ResponseType) fcd.Run();
+			if (response == ResponseType.Ok) {
+
+				byte[] fileBytes = ReadFileBytes (fcd.Filename);
+				
+				string attributeName = GetAttributeName ();
+				string attributeValue = Base64.encode (SupportClass.ToSByteArray (fileBytes));
+				
+				LdapEntry le = conn.Data.GetEntry (currentDN);
+				LdapAttribute la = le.getAttribute (attributeName);
+			
+				bool existing = false;
+				if (la != null)
+					existing = true; 
+
+				LdapAttribute newla = new LdapAttribute (attributeName);		
+				newla.addBase64Value (attributeValue);
+				
+				LdapModification lm;
+			
+				if (existing)
+					lm = new LdapModification (LdapModification.REPLACE, newla);
+				else
+					lm = new LdapModification (LdapModification.ADD, newla);
+
+				List<LdapModification> modList = new List<LdapModification> ();
+				modList.Add (lm);
+				
+				Util.ModifyEntry (conn, currentDN, modList.ToArray());
+				
+				this.Show (conn, conn.Data.GetEntry (currentDN), displayAll);
+			}
+			
+			fcd.Destroy();
+		}
 
 		void OnAddObjectClassActivate (object o, EventArgs args)
 		{
@@ -418,6 +510,12 @@ namespace lat
 		void DoPopUp()
 		{
 			Menu popup = new Menu();
+
+			ImageMenuItem addBinaryValueItem = new ImageMenuItem ("Add binary value");
+			addBinaryValueItem.Image = new Gtk.Image (Stock.Open, IconSize.Menu);
+			addBinaryValueItem.Activated += new EventHandler (OnAddBinaryValueActivate);
+			addBinaryValueItem.Show ();
+			popup.Append (addBinaryValueItem);
 
 			ImageMenuItem newObjectClassItem = new ImageMenuItem ("Add object class(es)");
 			newObjectClassItem.Image = new Gtk.Image (Stock.Add, IconSize.Menu);

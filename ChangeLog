@@ -1,3 +1,4 @@
+	* Added 'Add binary value' to attribute editor popup menu
 	* Handle avahi service removed event
 	* Added combobox to select connection for mass edit and samba populate dialogs
 	* Fixed time/date fields in posix user view dialog

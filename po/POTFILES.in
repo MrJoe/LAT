@@ -1,7 +1,9 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 resources/lat.glade
+lat/AttributeEditorWidget.cs
 lat/ConnectDialog.cs
+lat/ConnectionManager.cs
 lat/CreateEntryDialog.cs
 lat/LdapTreeView.cs
 lat/LoginDialog.cs
@@ -9,14 +11,14 @@ lat/PasswordDialog.cs
 lat/Preferences.cs
 lat/RenameEntryDialog.cs
 lat/SambaPopulateDialog.cs
+lat/SchemaTreeView.cs
 lat/SearchResultsTreeView.cs
-lat/ServerView.cs
 lat/TemplatesDialog.cs
 lat/Util.cs
-lat/ViewDialog.cs
 lat/ViewDataTreeView.cs
+lat/ViewDialog.cs
 lat/Window.cs
 lat/plugins/ActiveDirectoryCoreViews/EditAdComputerViewDialog.cs
-lat/plugins/ActiveDirectoryCoreViews/NewAdGroupViewDialog.cs
+lat/plugins/ActiveDirectoryCoreViews/GroupsViewDialog.cs
 lat/plugins/PosixCoreViews/EditUserViewDialog.cs
 lat/plugins/PosixCoreViews/NewUserViewDialog.cs
