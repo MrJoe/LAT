@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "0.6">
-  <!ENTITY manrevision "0.1">
-  <!ENTITY date "July 2005">
+  <!ENTITY appversion "1.2">
+  <!ENTITY manrevision "1.2">
+  <!ENTITY date "September 2006">
   <!ENTITY app "lat">
 ]>
 <!-- 
@@ -90,7 +90,12 @@
 <!-- ============= Introduction ============================== -->
   <sect1 id="lat-intro"> 
 	 <title>Introduction</title>
-	 <para>The <application>&app;</application> application allows you to browse LDAP-based directories and add/edit/delete entries contained within. It can store profiles for quick access to different servers. There are also different views available such as Users, Groups and Hosts which allow you to easily manage objects without having to deal with the intricacies of LDAP.</para>
+	 <para>An LDAP server is a hierarchical database system. It's typically used to provide a 
+	central store of information on users and other configuration data.</para>
+	 <para><application>&app;</application> allows you to browse LDAP-based directories and
+	add/edit/delete entries contained within. It can store profiles for quick access to different
+	servers. There are also different views available such as Users, Contacts, Groups and Hosts which 
+	allow you to easily manage objects without having to deal with the intricacies of LDAP.</para>
   </sect1>
 <!-- ============= Getting Started =========================== -->
   <sect1 id="lat-getting-started"> 
@@ -186,7 +191,7 @@
                         </row>
                         <row valign="top">               
                           <entry><para>Menubar</para></entry>
-                          <entry><para>Choose <menuchoice><guimenu>File</guimenu><guimenuitem>Import LDIF...</guimenuitem></menuchoice>.</para>
+                          <entry><para>Choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Import LDIF...</guimenuitem></menuchoice>.</para>
 
 </entry>
                         </row>
@@ -211,6 +216,16 @@
 	 <sect2 id="lat-server-delete-entry"> 
 		<title>To Delete an Entry</title>
 		<para>To delete an entry, choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Delete</guimenuitem></menuchoice>. The application will display a confirmation dialog before proceeding.</para>
+	 </sect2>
+
+<!-- ============= To Connect to a Server  ======================== -->
+	 <sect2 id="lat-server-connect"> 
+		<title>To connect a Server</title>
+		<para>Choose <menuchoice><guimenu>Server</guimenu><guimenuitem>Connect</guimenuitem></menuchoice> and the connect dialog
+		will appear. By default, you only need to specify a hostname. You can specify more options if you wish and also
+		save the connection as a profile for future use.</para>
+		<para>If you don't save it as a profile then it will only last for the duration of the session. 
+		Next time you use <application>&app;</application> it won't be remembered.</para>
 	 </sect2>
 
 <!-- ============= To Re-login to a Server  ======================== -->
@@ -247,13 +262,12 @@
 following information and then click on the ok button.</para>
 
 		<note>
-	              <para>
-                       You have the Samba schema installed on your directory in order for this to work. 
-	              </para>
+	              <para>You have the Samba schema installed on your directory in order for this to work.</para>
 	        </note>
 
 		<itemizedlist> 
-		<listitem><para>SID - This is the Security Identifier for your domain. You can obtain it by running the command net getlocalsid</para></listitem>
+		<listitem><para>Server - The name of the server to populate .</para></listitem>
+		<listitem><para>SID - This is the Security Identifier for your domain. You can obtain it by running the command 'net getlocalsid' from a terminal.</para></listitem>
  		<listitem><para>Domain - Name of your Samba domain</para></listitem>
 		<listitem><para>Administrator - The user name of the system administrator</para></listitem>
 		<listitem><para>Guest - The user name of the system guest user</para></listitem>
@@ -264,6 +278,35 @@ following information and then click on the ok button.</para>
 		</itemizedlist>
 	 </sect2>
 
+	<!-- ================ Mass Edit ================================ -->
+	  <sect2 id="lat-mass-edit"> 
+		 <title>To make the mass changes to entries</title>
+
+	<!-- ============= Mass Edit ======================== -->
+		 <sect3 id="lat-mass-edit-intro"> 
+			<title>Mass edit of directory entries</title>
+			<para>There are times when it is necessary to make changes to a number of entries. Mass edit can help with this task. 
+			Choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Mass Edit...</guimenuitem></menuchoice> to bring up the mass edit dialog.</para>
+
+			<sect4 id="lat-mass-edit-server">
+			<title>Server</title>
+			<para>This selects the server to perform the mass edit(s) on.</para>
+			</sect4>
+
+			<sect4 id="lat-mass-edit-criteria">
+			<title>Criteria</title>
+			<para>The filter is used to select the entries that will be edited. For example, it could be all users in a certain department.</para>
+			</sect4>
+
+			<sect4 id="lat-mass-edit-Edits">
+			<title>Edits</title>
+			<para>This describes the edits you wish to perform. You can add, replace or delete attributes from the entries.
+			You can add and remove the edits as necessary. Once you are happy with them click on the OK button and the program will do the necessary work.</para>
+			</sect4>
+		 </sect3>
+
+	  </sect2>
+
 <!-- ============= To Quit LAT ======================== -->
 	 <sect2 id="lat-server-quit"> 
 		<title>To Quit LAT</title>
@@ -272,43 +315,153 @@ following information and then click on the ok button.</para>
 
   </sect1>
 
-<!-- ================ Edit ================================ -->
-  <sect1 id="lat-edit"> 
-	 <title>Edit</title>
+<!-- ============= Preferences =========================== -->
+  <sect1 id="lat-preferences"> 
+	 <title>Preferences</title>
 
-<!-- ============= Mass Edit ======================== -->
-	 <sect2 id="lat-edit-mass"> 
-		<title>Mass edit of directory entries</title>
-		<para>To mass edit some entries, choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Mas Edit...</guimenuitem></menuchoice>. You will need to provide a search filter and provide the edits you
-wish to make.</para>
-	 </sect2>
+<!-- ============= To Start lat ============================ -->
+	 <sect2 id="lat-pref-browser-selection"> 
+		<title>Browser selection</title>
+		<para>This controls how the LDAP browser works selects an entry. You can
+		choose between a single or double click. The default is to double click.</para>
+	</sect2>
+	
+	 <sect2 id="lat-pref-profiles"> 
+		<title>Profiles</title>
+		<para>The profiles are used to store connection information about LDAP servers
+		that you connect to frequently so you can access them quickly. You can add, edit
+		or delete profiles from here.</para>
 
+		<para>The following documents the various profile options available.</para>
+
+		<note>
+		<para>At a minimum a profile needs to have a name, host, and port.</para>
+	        </note>
+
+		<sect3 id="lat-pref-profiles-name">
+		<title>Profile name</title>
+		<para>The thing a profile needs is a name. This is used to identify the profile
+		and this name will be displayed in the various views.</para>
+		</sect3>
+
+		<sect3 id="lat-pref-profiles-basic-setttings">
+		<title>Basic Settings</title>
+		<para>The basic settings for a profile are the hostname of the LDAP server and
+		the TCP port that it listens on.</para>
+		</sect3>
+
+		<sect3 id="lat-pref-profiles-advanced-setttings">
+		<title>Advanced Settings</title>
+		<para>The following advanced settings are available</para>
+		<variablelist> 
+		  <varlistentry><term>Base DN</term> 
+			 <listitem> 
+				<para>This specifies the root of the LDAP directory. <application>&app;</application> attempts to query this value when it connects to the server. It is not mandatory</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Username</term> 
+			 <listitem> 
+				<para>The user to login to the directory with. If no user is specified it's assumed to be an anonymous connection.</para>
+				<para>The format of the username should be a valid DN, eg: cn=admin,dc=example,dc=com</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Password</term> 
+			 <listitem> 
+				<para>The password for the above mentioned username. This value will be stored in the user's GNOME keyring
+				unless the 'prompt for password' checkbox is active.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Prompt for password</term> 
+			 <listitem> 
+				<para>Causes the program to not store password information for this profile. The user will be prompted for a password instead.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Encryption</term> 
+			 <listitem> 
+				<para>Specified the level of encryption to use for the connection.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Server Type</term> 
+			 <listitem> 
+				<para>Defines what kind of software the LDAP server is running.</para>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+		</sect3>
+
+		<sect3 id="lat-pref-profiles-server-views">
+		<title>Server Views</title>
+		<para>This section allows the user to specify what views are active for this profile. The
+		views can be customized as follows:</para>
+		<variablelist> 
+		  <varlistentry><term>Attributes</term> 
+			 <listitem> 
+				<para>Defines the column names and what attribute values are displayed in the view.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Default new container</term> 
+			 <listitem> 
+				<para>This specifies where to create new objects for the view. If nothing is specified the user will be asked to select a location each time.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Filter</term> 
+			 <listitem> 
+				<para>The filter is the search query to run to get data for the view. </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Search base</term> 
+			 <listitem> 
+				<para>This tells the plugin where to start searching for entries matching the filter
+				in the directory. If nothing is specified then the directory root is used by default.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Encryption</term> 
+			 <listitem> 
+				<para>Specified the level of encryption to use for the connection.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Server Type</term> 
+			 <listitem> 
+				<para>Defines what kind of software the LDAP server is running.</para>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+		</sect3>
+
+		<sect3 id="lat-pref-profiles-attribute-viewers">
+		<title>Attribute Viewers</title>
+		<para>This section allows the user to specify what attribute viewers are active for this profile.
+		These plugins are are used in the browser view to display and/or edit non-text values</para>
+		</sect3>
+	</sect2>
   </sect1>
 
 <!-- ================ Views ================================ -->
   <sect1 id="lat-views"> 
 	 <title>Views</title>
 
-<!-- ============= Pre-defined Views  ======================== -->
-	 <sect2 id="lat-view-default"> 
-		<title>Pre-defined Views</title>
-		<para><application>&app;</application> comes with the following pre-defined views:</para>
+<!-- ============= View Plugins  ======================== -->
+	 <sect2 id="lat-view-plugins"> 
+		<title>View plugins</title>
+		<para><application>&app;</application> uses plugins to present different views of the data
+		on the server to you. By default <application>&app;</application> comes with the following plugins:</para>
 
 		<itemizedlist> 
-		  <listitem><para>Computers</para></listitem>
+		<listitem><para>Computers</para></listitem>
  		<listitem><para>Contacts</para></listitem>
 		<listitem><para>Groups</para></listitem>
 		<listitem><para>Users</para></listitem>
 		</itemizedlist>
 	 </sect2>
 
-<!-- ============= To create a custom view  ======================== -->
+<!-- ============= To create a custom server view or attribute viewer  ======================== -->
 	 <sect2 id="lat-view-custom-view"> 
 		<title>To create a custom view</title>
-		<para>To create your own view click on "Custom Views" in the View window and then choose <menuchoice><guimenu>Server</guimenu><guimenuitem>New</guimenuitem></menuchoice>.</para>
-		<para>A view is just a saved search which display certain attributes.  The fields for filter and base are where you define the search.  You can click on the help button to use the search builder.</para>
-		<para>Once you have a search defined, click on "Test Search" and then select the attributes you wish to have displayed. Then save the view.</para>
-		<para>After it's been saved you can access your view just like any of the pre-defined ones.</para>
+		<para>To create a custom view you need to write your own view plugin. You can do this
+		using C#. You need to implement the ViewPlugin or AttributeViewPlugin interface. You
+		can use pkg-config on lat-plugins to get the necessary compile information.</para>
+		<para>Plugins are run from the system plugin directory or the user's
+		~/.lat/plugins directory.</para>
 	 </sect2>
 
 <!-- ============= To browse and LDAP server  ======================== -->
@@ -370,11 +523,11 @@ wish to make.</para>
 		<para>Contains information on the users new entry templates.</para>
 	</sect2>
 
-<!-- ============= views.xml  ======================== -->
-	 <sect2 id="lat-files-views"> 
+<!-- ============= plugins.state  ======================== -->
+	 <sect2 id="lat-files-plugin-state"> 
 		<title>views.xml</title>
-		<para>$HOME/.lat/views.xml</para>
-		<para>Contains information on the users custom views.</para>
+		<para>$HOME/.lat/plugins.state</para>
+		<para>Contains the user configuration for LAT plugins.</para>
 	</sect2>
   </sect1>
 
