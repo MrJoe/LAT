@@ -8,12 +8,12 @@
       lorenb@mmgsecurity.com (Loren Bandiera)
     </maintainer>
     <title>
-      lat Manual V0.1
+      lat Manual V1.2
     </title>
     <date>
-      2005-07-01
+      2006-09-09
     </date>
-    <version identifier="0.1" date="2005-07-01" description="Initial release"/>
+    <version identifier="0.1" date="2006-09-09" description="Initial release"/>
     <subject category="GNOME|Applications|System Tools"/>
     <description>
       User manual for the LDAP Administration Tool. 
