@@ -1,5 +1,3 @@
-ACLOCAL_AMFLAGS = -I m4
-
 #if ENABLE_NETWORKMANAGER
 NM_DIR = network-manager
 #endif

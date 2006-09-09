@@ -196,9 +196,10 @@ namespace lat
 		{
 			int ret = 0;
 		
-			DateTime newTime;
-			if (DateTime.TryParse (stringDate, out newTime))
-				return Util.GetUnixTime (newTime);
+			try { 
+				DateTime newTime = DateTime.Parse (stringDate);
+				return Util.GetUnixTime (newTime); 
+			} catch {}
 			
 			return ret;				
 		}

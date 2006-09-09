@@ -16,10 +16,16 @@ CSFILES = \
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
+#if ENABLE_NETWORKMANAGER
+NM_REFERENCES = \
+	$(top_builddir)/network-manager/network-manager.dll
+#endif
+
 REFERENCES = \
 	Mono.Posix \
 	Mono.Security \
 	Novell.Directory.Ldap \
+	$(NM_REFERENCES) \
 	$(top_builddir)/lat/lat.exe
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
