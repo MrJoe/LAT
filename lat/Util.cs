@@ -36,16 +36,16 @@ namespace lat
 		{
 		}
 
-        [DllImport("libc")]
-        static extern int prctl(int option, byte [] arg2, ulong arg3 , ulong arg4, ulong arg5);
+		[DllImport("libc")]
+		static extern int prctl(int option, byte [] arg2, ulong arg3 , ulong arg4, ulong arg5);
         
-       	public static void SetProcessName(string name)
-        {        	
-            if(prctl(15 /* PR_SET_NAME */, Encoding.ASCII.GetBytes(name), 0, 0, 0) != 0) {
-            	Log.Debug ("Error setting process name: " + 
-               	    Mono.Unix.Native.Stdlib.GetLastError());
-            }
-       	}
+		public static void SetProcessName(string name)
+		{        	
+			if(prctl(15 /* PR_SET_NAME */, Encoding.ASCII.GetBytes(name), 0, 0, 0) != 0) {
+				Log.Debug ("Error setting process name: " + 
+				Mono.Unix.Native.Stdlib.GetLastError());
+			}
+		}
 
 		public static ComboBox CreateServerCombo ()
 		{

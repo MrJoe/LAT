@@ -525,7 +525,7 @@ following information and then click on the ok button.</para>
 
 <!-- ============= plugins.state  ======================== -->
 	 <sect2 id="lat-files-plugin-state"> 
-		<title>views.xml</title>
+		<title>plugins.state</title>
 		<para>$HOME/.lat/plugins.state</para>
 		<para>Contains the user configuration for LAT plugins.</para>
 	</sect2>
