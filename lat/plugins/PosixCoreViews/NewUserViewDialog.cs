@@ -92,6 +92,9 @@ namespace lat
 
 		void SetDefaults ()
 		{
+			if (defaultValues == null)
+				return;
+		
 			if (defaultValues.ContainsKey ("userPassword"))
 				passwordEntry.Text = defaultValues ["userPassword"]; 
 
@@ -150,7 +153,7 @@ namespace lat
 			primaryGroupComboBox = ComboBox.NewText ();
 			
 			string defaultGroup = "None";
-			if (defaultValues.ContainsKey ("defaultGroup")) {
+			if (defaultValues != null && defaultValues.ContainsKey ("defaultGroup")) {
 				defaultGroup = defaultValues["defaultGroup"];
 				primaryGroupComboBox.AppendText (defaultGroup);
 			}
