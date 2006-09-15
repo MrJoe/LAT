@@ -12,7 +12,8 @@ CSFILES = \
 	PosixComputerViewPlugin.cs \
 	PosixContactsViewPlugin.cs \
 	PosixGroupViewPlugin.cs \
-	PosixUserViewPlugin.cs
+	PosixUserViewPlugin.cs \
+	UserDefaultValuesDialog.cs
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 

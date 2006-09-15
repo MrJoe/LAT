@@ -367,6 +367,11 @@ namespace lat
 			if (searchBaseButton.Label != "")
 				vpc.SearchBase = searchBaseButton.Label;			
 
+			if (vp.PluginConfiguration.Defaults == null)		
+				vpc.Defaults = new Dictionary<string,string> ();
+			else
+				vpc.Defaults = vp.PluginConfiguration.Defaults;
+						
 			vp.PluginConfiguration = vpc;
 			Global.Plugins.SetPluginConfiguration (conn.Settings.Name, vpc);
 		}
@@ -416,6 +421,12 @@ namespace lat
 
 			if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
 				searchBaseButton.Label = scd.DN;
+		}
+		
+		public void OnSetDefaultValuesClicked (object o, EventArgs args)
+		{
+			vp.OnSetDefaultValues (conn);
+			Log.Debug ("OnSetDefaultValuesClicked vp.PluginConfiguration.Defaults.Count: {0}", vp.PluginConfiguration.Defaults.Count);
 		}
 	}
 }

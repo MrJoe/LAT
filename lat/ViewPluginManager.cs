@@ -39,7 +39,8 @@ namespace lat
 		public string[] ColumnAttributes;
 		public string DefaultNewContainer;
 		public string Filter;
-		public string SearchBase;
+		public string SearchBase;		
+		public Dictionary<string,string> Defaults;
 	}
 
 	[Serializable]
@@ -144,6 +145,7 @@ namespace lat
 		public abstract void OnAddEntry (Connection conn);
 		public abstract void OnEditEntry (Connection conn, LdapEntry le);
 		public abstract void OnPopupShow (Menu popup);
+		public abstract void OnSetDefaultValues (Connection conn);
 			
 		// Properties
 		public ViewPluginConfig PluginConfiguration
@@ -343,7 +345,10 @@ namespace lat
 				
 				PluginConfigCollection pcc = serverViewConfig [configName];
 				if (pcc.Contains (pluginName)) {
-					ViewPluginConfig vpc = pcc [pluginName];			
+					ViewPluginConfig vpc = pcc [pluginName];
+					if (vpc.Defaults == null)					
+						vpc.Defaults = new Dictionary <string,string> ();
+					
 					retVal.PluginConfiguration = vpc;
 				}
 			}

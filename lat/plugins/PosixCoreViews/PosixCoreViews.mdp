@@ -33,6 +33,7 @@
     <File name="../../../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../../../resources/x-directory-remote-workgroup.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="./dialogs.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="./UserDefaultValuesDialog.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="lat" />

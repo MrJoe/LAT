@@ -51,7 +51,11 @@ namespace lat {
 		public override void OnPopupShow (Menu popup)
 		{
 		}
-					
+
+		public override void OnSetDefaultValues (Connection conn)
+		{
+		}
+
 		public override string[] Authors 
 		{
 			get {

@@ -52,6 +52,10 @@ namespace lat {
 		{
 		}
 							
+		public override void OnSetDefaultValues (Connection conn)
+		{
+		}
+							
 		public override string[] Authors 
 		{
 			get {

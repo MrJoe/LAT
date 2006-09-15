@@ -59,14 +59,18 @@ namespace lat
 		string smbNT = "";
 
 		ComboBox primaryGroupComboBox;
+		Dictionary<string,string> defaultValues;
 
-		public NewUserViewDialog (Connection connection, string newContainer) : base (connection, newContainer)
+		public NewUserViewDialog (Connection connection, string newContainer, Dictionary<string,string> defaultValues) : base (connection, newContainer)
 		{
+			this.defaultValues = defaultValues;
+			
 			Init ();		
 
 			getGroups ();
-
 			createCombo ();
+
+			SetDefaults ();
 
 			uidSpinButton.Value = conn.Data.GetNextUID ();
 			enableSambaButton.Toggled += new EventHandler (OnSambaChanged);
@@ -84,6 +88,26 @@ namespace lat
 			}
 
 			newUserDialog.Destroy ();
+		}
+
+		void SetDefaults ()
+		{
+			if (defaultValues.ContainsKey ("userPassword"))
+				passwordEntry.Text = defaultValues ["userPassword"]; 
+
+			if (defaultValues.ContainsKey ("sambaLMPassword"))
+				smbLM = defaultValues["sambaLMPassword"];
+				
+			if (defaultValues.ContainsKey ("sambaNTPassword"))
+				smbNT = defaultValues["sambaNTPassword"];				
+		
+			if (defaultValues.ContainsKey ("loginShell"))
+				shellEntry.Text = defaultValues ["loginShell"]; 				
+
+			if (defaultValues.ContainsKey ("enableSamba")) {
+				bool enableSamba = bool.Parse (defaultValues ["enableSamba"]);
+				enableSambaButton.Active = enableSamba;
+			}
 		}
 
 		void OnSambaChanged (object o, EventArgs args)
@@ -124,9 +148,19 @@ namespace lat
 			}
 			
 			primaryGroupComboBox = ComboBox.NewText ();
+			
+			string defaultGroup = "None";
+			if (defaultValues.ContainsKey ("defaultGroup")) {
+				defaultGroup = defaultValues["defaultGroup"];
+				primaryGroupComboBox.AppendText (defaultGroup);
+			}
 
-			foreach (string key in _allGroups.Keys)
+			foreach (string key in _allGroups.Keys) {
+				if (key.ToLower() == defaultGroup.ToLower())
+					continue;
+					
 				primaryGroupComboBox.AppendText (key);
+			}
 
 			primaryGroupComboBox.AppendText ("Create new group...");
 
@@ -223,8 +257,13 @@ namespace lat
 					lastNameEntry.Text);
 			}
 
-			if (homeDirEntry.Text.Equals("") && !usernameEntry.Text.Equals(""))
-				homeDirEntry.Text = String.Format("/home/{0}", usernameEntry.Text);
+			if (homeDirEntry.Text.Equals("") && !usernameEntry.Text.Equals("")) {
+				string defaultDir = "/home";
+				if (defaultValues.ContainsKey ("homeDirectory"))
+					defaultDir = defaultValues["homeDirectory"];
+				
+				homeDirEntry.Text = System.IO.Path.Combine (defaultDir, usernameEntry.Text); 
+			}
 		}
 			
 		void modifyGroup (LdapEntry groupEntry, LdapModification[] mods)

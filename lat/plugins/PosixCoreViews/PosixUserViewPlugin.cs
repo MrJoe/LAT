@@ -40,7 +40,7 @@ namespace lat {
 
 		public override void OnAddEntry (Connection conn)
 		{
-			new NewUserViewDialog (conn, this.DefaultNewContainer);
+			new NewUserViewDialog (conn, this.DefaultNewContainer, this.PluginConfiguration.Defaults);
 		}		
 
 		public override void OnEditEntry (Connection conn, LdapEntry le)
@@ -51,6 +51,12 @@ namespace lat {
 		public override void OnPopupShow (Menu popup)
 		{		
 		}	
+
+		public override void OnSetDefaultValues (Connection conn)
+		{
+			new UserDefaultValuesDialog (this, conn);
+			Log.Debug ("this.PluginConfiguration.Defaults.Count: {0}", this.PluginConfiguration.Defaults.Count);
+		}
 			
 		public override string[] Authors 
 		{
