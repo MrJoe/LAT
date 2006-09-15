@@ -163,8 +163,8 @@ namespace lat
 
 			// Groups
 			string pgid = conn.Data.GetAttributeValueFromEntry (currentEntry, "gidNumber");
-			string pname = _allGroupGids [pgid];		
-			primaryGroupLabel.Text = pname;			
+			if (_allGroupGids.ContainsKey (pgid))
+				primaryGroupLabel.Text = _allGroupGids [pgid];
 
 			// Address
 			adStreetTextView.Buffer.Text = conn.Data.GetAttributeValueFromEntry (currentEntry, "street");
@@ -252,7 +252,7 @@ namespace lat
 				nameAttr = e.getAttribute ("cn");
 				gidAttr = e.getAttribute ("gidNumber");
 
-				if (le != null) {
+				if (le != null && nameAttr != null) {
 
 					LdapAttribute a;
 					a  = e.getAttribute ("memberUid");
@@ -271,8 +271,9 @@ namespace lat
 				if (!_allGroups.ContainsKey (nameAttr.StringValue))
 					_allGroups.Add (nameAttr.StringValue, e);
 
-				if (!_allGroupGids.ContainsKey (gidAttr.StringValue))
-					_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
+				if (gidAttr != null)
+					if (!_allGroupGids.ContainsKey (gidAttr.StringValue))
+						_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
 			}
 				
 		}

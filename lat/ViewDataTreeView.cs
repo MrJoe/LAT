@@ -242,9 +242,29 @@ namespace lat
 			TreePath[] tp = this.Selection.GetSelectedRows (out model);
 
 			foreach (TreePath path in tp) {
-				LdapEntry le = conn.Data.GetEntry (GetDN(path));
-				viewPlugin.OnEditEntry (conn, le);			
-				Populate ();
+				try {
+				
+					LdapEntry le = conn.Data.GetEntry (GetDN(path));
+					viewPlugin.OnEditEntry (conn, le);			
+					Populate ();
+					
+				} catch (Exception e) {
+					
+					Log.Debug (e);
+					
+					string	msg = Mono.Unix.Catalog.GetString ("Unable to edit entry");
+
+					HIGMessageDialog dialog = new HIGMessageDialog (
+						parentWindow,
+						0,
+						Gtk.MessageType.Error,
+						Gtk.ButtonsType.Ok,
+						"Error",
+						msg);
+
+					dialog.Run ();
+					dialog.Destroy ();					
+				}
 			}
 		}
 
@@ -417,8 +437,25 @@ namespace lat
 			
 			if (this.dataStore.GetIter (out iter, path)) {
 				
-				string dn = (string) this.dataStore.GetValue (iter, dnColumn);				
-				viewPlugin.OnEditEntry (conn, conn.Data.GetEntry (dn));
+				string dn = (string) this.dataStore.GetValue (iter, dnColumn);
+				try {
+					viewPlugin.OnEditEntry (conn, conn.Data.GetEntry (dn));
+				} catch (Exception e) {
+					Log.Debug (e);
+
+					string	msg = Mono.Unix.Catalog.GetString ("Unable to edit entry");
+
+					HIGMessageDialog dialog = new HIGMessageDialog (
+						parentWindow,
+						0,
+						Gtk.MessageType.Error,
+						Gtk.ButtonsType.Ok,
+						"Error",
+						msg);
+
+					dialog.Run ();
+					dialog.Destroy ();					
+				}
 			} 		
 		}
 		
