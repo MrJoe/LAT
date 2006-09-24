@@ -1,5 +1,8 @@
+1.2.0
+
 	* Support default values in view plugins
 	* BUGFIX [#70] Crash when editing a user
+	* Build system fixes for 'make distcheck'
 
 1.1.90
 

@@ -1,4 +1,4 @@
-AC_INIT(lat, 1.1.90, http://dev.mmgsecurity.com/bugs/)
+AC_INIT(lat, 1.2.0, http://dev.mmgsecurity.com/bugs/)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
 
@@ -44,7 +44,7 @@ AC_ARG_ENABLE(networkmanager,
 AM_CONDITIONAL(ENABLE_NETWORKMANAGER, test "$ENABLE_NETWORKMANAGER" = "yes")
 AC_SUBST(NETWORKMANAGER_LIBS)
 
-PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="no", ENABLE_AVAHI="yes")
+PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="yes", ENABLE_AVAHI="no")
 AC_ARG_ENABLE(avahi, 
 	      [  --enable-avahi[[=no/yes]]    compile with avahi support [[default: no]]],
 	      ENABLE_AVAHI="$enableval")

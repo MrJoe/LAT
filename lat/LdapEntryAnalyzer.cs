@@ -100,6 +100,7 @@ namespace lat
 				
 					if (rla.StringValueArray.Length > 1) {
 					
+						Log.Debug ("Replacing attribute {0} with multiple values", la.Name); 
 						LdapAttribute a = new LdapAttribute (la.Name, rla.StringValueArray);
 						LdapModification m = new LdapModification (LdapModification.REPLACE, a);
 						mods.Add (m);					

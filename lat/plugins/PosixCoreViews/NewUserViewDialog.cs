@@ -262,7 +262,7 @@ namespace lat
 
 			if (homeDirEntry.Text.Equals("") && !usernameEntry.Text.Equals("")) {
 				string defaultDir = "/home";
-				if (defaultValues.ContainsKey ("homeDirectory"))
+				if (defaultValues != null && defaultValues.ContainsKey ("homeDirectory"))
 					defaultDir = defaultValues["homeDirectory"];
 				
 				homeDirEntry.Text = System.IO.Path.Combine (defaultDir, usernameEntry.Text); 

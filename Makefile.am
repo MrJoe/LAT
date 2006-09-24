@@ -26,3 +26,6 @@ DISTCLEANFILES = \
 	intltool-merge \
 	intltool-update
 
+distuninstallcheck_listfiles = \
+        find -path ./var/scrollkeeper/\* -prune -or -type f -print \
+        find -path $(prefix)/var/scrollkeeper/\* -prune -or -type f -print

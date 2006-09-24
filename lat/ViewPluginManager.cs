@@ -150,7 +150,13 @@ namespace lat
 		// Properties
 		public ViewPluginConfig PluginConfiguration
 		{			
-			get { return config; }
+			get { 
+				if (config.Defaults == null)
+					config.Defaults = new Dictionary<string,string> ();
+					
+				return config;
+			}
+			
 			set { config = value; }
 		}
 		

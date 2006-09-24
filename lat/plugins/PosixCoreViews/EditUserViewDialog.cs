@@ -114,7 +114,8 @@ namespace lat
 			if (!isSamba)
 				firstTimeSamba = true;
 
-			getGroups (currentEntry);
+			try { getGroups (currentEntry); }
+			catch (Exception e) { Log.Debug (e); }
 
 			string userName = conn.Data.GetAttributeValueFromEntry (currentEntry, "cn");
 			editUserDialog.Title = userName + " Properties";
@@ -516,15 +517,16 @@ namespace lat
 
 		string getGidNumber (string name)
 		{
-			if (name == null)
+			if (name == null || name == string.Empty)
 				return null;
 
-			LdapEntry le = (LdapEntry) _allGroups [name];		
-			LdapAttribute attr = le.getAttribute ("gidNumber");
+			if (_allGroups.ContainsKey (name)) {
+				LdapEntry le = (LdapEntry) _allGroups [name];		
+				LdapAttribute attr = le.getAttribute ("gidNumber");
+				if (attr != null)
+					return attr.StringValue;
+			}
 
-			if (attr != null)
-				return attr.StringValue;
-			
 			return null;
 		}
 
@@ -592,7 +594,13 @@ namespace lat
 			}
 								
 			// Groups
-			aset.Add (new LdapAttribute ("gidNumber", getGidNumber(primaryGroupLabel.Text)));
+			string gid = getGidNumber(primaryGroupLabel.Text);
+			if (gid != null) {
+				aset.Add (new LdapAttribute ("gidNumber", gid));
+			} else {
+				LdapAttribute la = currentEntry.getAttribute ("gidNumber");
+				aset.Add (new LdapAttribute ("gidNumber", la.StringValue));
+			}
 
 			// Address
 			aset.Add (new LdapAttribute ("street", adStreetTextView.Buffer.Text));
@@ -628,7 +636,7 @@ namespace lat
 				 
 			 if (lea.Differences.Length == 0)
 			 	return;
-				 	
+			 	
 			 if (!Util.ModifyEntry (conn, entry.DN, lea.Differences))
 			 	errorOccured = true;
 		}

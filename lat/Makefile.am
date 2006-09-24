@@ -3,7 +3,7 @@ SUBDIRS = . plugins
 if ENABLE_AVAHI
 AVAHI_CSFLAGS = -define:ENABLE_AVAHI
 AVAHI_CSFILES = \
-	ServiceFinder.cs
+	$(srcdir)/ServiceFinder.cs
 endif
 
 if ENABLE_NETWORKMANAGER
@@ -67,8 +67,31 @@ REFERENCES = \
 
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
-$(ASSEMBLY).exe: $(CSFILES) $(AVAHI_CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(AVAHI_CSFILES) $(REFERENCES_BUILD) @lat.resources $(GTKSHARP_LIBS) $(AVAHI_LIBS)
+RESOURCES = \
+	lat.glade \
+	lat.png \
+	contact-new.png \
+	contact-new-48x48.png \
+	edit-find.png \
+	edit-find-48x48.png \
+	locked16x16.png \
+	locked-48x48.png \
+	stock_person.png \
+	text-x-generic.png \
+	unlocked16x16.png \
+	users.png \
+	x-directory-normal.png \
+	x-directory-remote-server.png \
+	x-directory-remote-workgroup.png \
+	mail-message-new.png \
+	document-save.png \
+	go-home.png \
+	x-directory-remote-server-48x48.png
+
+RESOURCES_BUILD = $(addprefix /resource:$(top_srcdir)/resources/, $(RESOURCES))
+
+$(ASSEMBLY).exe: $(SOURCES_BUILD) $(AVAHI_CSFILES)
+	$(CSC) -out:$@ $(SOURCES_BUILD) $(AVAHI_CSFILES) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS) $(AVAHI_LIBS)
 
 all: $(ASSEMBLY).exe
 
@@ -86,8 +109,7 @@ EXTRA_DIST = \
 	$(man_MANS) \
 	AssemblyInfo.cs.in \
 	Defines.cs.in \
-	$(ASSEMBLY).in \
-	$(ASSEMBLY).resources
+	$(ASSEMBLY).in
 
 CLEANFILES = \
 	$(ASSEMBLY).exe \

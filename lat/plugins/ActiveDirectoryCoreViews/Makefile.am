@@ -32,17 +32,17 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 RESOURCES = \
-	dialogs.glade \
-	$(top_builddir)/resources/users.png \
-	$(top_builddir)/resources/contact-new.png \
-	$(top_builddir)/resources/contact-new-48x48.png \
-	$(top_builddir)/resources/stock_person.png \
-	$(top_builddir)/resources/x-directory-remote-server-48x48.png
+	$(srcdir)/dialogs.glade \
+	$(top_srcdir)/resources/users.png \
+	$(top_srcdir)/resources/contact-new.png \
+	$(top_srcdir)/resources/contact-new-48x48.png \
+	$(top_srcdir)/resources/stock_person.png \
+	$(top_srcdir)/resources/x-directory-remote-server-48x48.png
 
 RESOURCES_BUILD = $(addprefix /resource:, $(RESOURCES))
 
-$(ASSEMBLY).dll: $(CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
+$(ASSEMBLY).dll: $(SOURCES_BUILD)
+	$(CSC) -out:$@ $(SOURCES_BUILD) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
 
 all: $(ASSEMBLY).dll
 

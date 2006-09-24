@@ -155,7 +155,7 @@ namespace lat
 			manNameEntry.Sensitive = false;
 			manStreetTextView.Sensitive = false;
 
-			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-conn.Data-48x48.png");
+			Gdk.Pixbuf pb = Gdk.Pixbuf.LoadFromResource ("x-directory-remote-server-48x48.png");
 			image178.Pixbuf = pb;
 		}
 

@@ -19,12 +19,12 @@ REFERENCES = \
 REFERENCES_BUILD = $(addprefix -r:, $(REFERENCES))
 
 RESOURCES = \
-	dialog.glade
+	$(srcdir)/dialog.glade
 
 RESOURCES_BUILD = $(addprefix /resource:, $(RESOURCES))
 
-$(ASSEMBLY).dll: $(CSFILES)
-	$(CSC) -out:$@ $(CSFILES) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
+$(ASSEMBLY).dll: $(SOURCES_BUILD)
+	$(CSC) -out:$@ $(SOURCES_BUILD) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
 
 all: $(ASSEMBLY).dll
 
