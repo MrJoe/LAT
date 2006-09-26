@@ -1340,6 +1340,8 @@ namespace lat
 			SetupToolbar (vp);
 			
 			GenerateNewMenu (conn);
+
+			UpdateStatusBar ();
 		}
 	}
 

@@ -1,13 +1,16 @@
 SUBDIRS = . plugins
 
-if ENABLE_AVAHI
+if BUILD_AVAHI
 AVAHI_CSFLAGS = -define:ENABLE_AVAHI
 AVAHI_CSFILES = \
 	$(srcdir)/ServiceFinder.cs
+AVAHI_REFERENCES = $(AVAHI_LIBS)
 endif
 
-if ENABLE_NETWORKMANAGER
+if BUILD_NETWORKMANAGER
 NETWORKMANAGER_CSFLAGS = -define:ENABLE_NETWORKMANAGER
+NETWORKMANAGER_REFERENCES = \
+	$(top_builddir)/network-manager/network-manager.dll
 endif
 
 CSC = $(MCS) -codepage:utf8 $(MCS_FLAGS) $(AVAHI_CSFLAGS) $(NETWORKMANAGER_CSFLAGS)
@@ -60,7 +63,7 @@ SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
 REFERENCES = \
 	../gnome-keyring-glue/gnome-keyring-glue.dll \
-	../network-manager/network-manager.dll \
+	$(NETWORKMANAGER_REFERENCES) \
 	Mono.Posix \
 	Mono.Security \
 	Novell.Directory.Ldap
@@ -91,7 +94,7 @@ RESOURCES = \
 RESOURCES_BUILD = $(addprefix /resource:$(top_srcdir)/resources/, $(RESOURCES))
 
 $(ASSEMBLY).exe: $(SOURCES_BUILD) $(AVAHI_CSFILES)
-	$(CSC) -out:$@ $(SOURCES_BUILD) $(AVAHI_CSFILES) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS) $(AVAHI_LIBS)
+	$(CSC) -out:$@ $(SOURCES_BUILD) $(AVAHI_CSFILES) $(REFERENCES_BUILD) $(AVAHI_REFERENCES) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
 
 all: $(ASSEMBLY).exe
 

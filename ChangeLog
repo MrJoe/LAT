@@ -1,3 +1,9 @@
+1.2.0.1
+
+	* Fixed status bar not being updated
+	* BUGFIX [#72] Requite gtk-sharp-2.0 in lat-plugins.pc
+	* BUGFIX [#73] Can't disable networkmanager support
+	
 1.2.0
 
 	* Support default values in view plugins

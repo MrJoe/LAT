@@ -1,6 +1,8 @@
-#if ENABLE_NETWORKMANAGER
+if BUILD_NETWORKMANAGER
 NM_DIR = network-manager
-#endif
+else
+NM_DIR =
+endif
 
 SUBDIRS = gnome-keyring-glue $(NM_DIR) lat po desktop resources help
 

@@ -1,4 +1,4 @@
-AC_INIT(lat, 1.2.0, http://dev.mmgsecurity.com/bugs/)
+AC_INIT(lat, 1.2.0.1, http://dev.mmgsecurity.com/bugs/)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
 
@@ -39,16 +39,16 @@ PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
 
 PKG_CHECK_MODULES(NETWORKMANAGER, dbus-sharp, ENABLE_NETWORKMANAGER="yes", ENABLE_NETWORKMANAGER="no")
 AC_ARG_ENABLE(networkmanager, 
-	      [  --enable-networkmanager[[=no/yes]]    compile with NetworkManager support [[default: yes]]],
-	      ENABLE_AVAHI="$enableval")
-AM_CONDITIONAL(ENABLE_NETWORKMANAGER, test "$ENABLE_NETWORKMANAGER" = "yes")
+	      [  --enable-networkmanager[[=no/yes]]    compile with NetworkManager support [[default: no]]],
+	      ENABLE_NETWORKMANAGER="$enableval")
+AM_CONDITIONAL(BUILD_NETWORKMANAGER, test "$ENABLE_NETWORKMANAGER" = "yes")
 AC_SUBST(NETWORKMANAGER_LIBS)
 
 PKG_CHECK_MODULES(AVAHI, avahi-sharp, ENABLE_AVAHI="yes", ENABLE_AVAHI="no")
 AC_ARG_ENABLE(avahi, 
 	      [  --enable-avahi[[=no/yes]]    compile with avahi support [[default: no]]],
 	      ENABLE_AVAHI="$enableval")
-AM_CONDITIONAL(ENABLE_AVAHI, test "$ENABLE_AVAHI" = "yes")
+AM_CONDITIONAL(BUILD_AVAHI, test "$ENABLE_AVAHI" = "yes")
 AC_SUBST(AVAHI_LIBS)
 
 MCS_FLAGS=

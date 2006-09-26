@@ -17,10 +17,14 @@ CSFILES = \
 
 SOURCES_BUILD = $(addprefix $(srcdir)/, $(CSFILES))
 
-#if ENABLE_NETWORKMANAGER
+if BUILD_AVAHI
+AVAHI_REFERENCES = $(AVAHI_LIBS)
+endif
+
+if BUILD_NETWORKMANAGER
 NM_REFERENCES = \
 	$(top_builddir)/network-manager/network-manager.dll
-#endif
+endif
 
 REFERENCES = \
 	Mono.Posix \
@@ -42,7 +46,7 @@ RESOURCES = \
 RESOURCES_BUILD = $(addprefix /resource:, $(RESOURCES))
 
 $(ASSEMBLY).dll: $(SOURCES_BUILD)
-	$(CSC) -out:$@ $(SOURCES_BUILD) $(REFERENCES_BUILD) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
+	$(CSC) -out:$@ $(SOURCES_BUILD) $(REFERENCES_BUILD) $(AVAHI_REFERENCES) $(RESOURCES_BUILD) $(GTKSHARP_LIBS)
 
 all: $(ASSEMBLY).dll
 
