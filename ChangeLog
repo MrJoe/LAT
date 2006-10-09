@@ -1,3 +1,5 @@
+	* BUGFIX [#75] Handle exception if prctl can not be found
+
 1.2.0.1
 
 	* Fixed status bar not being updated
