@@ -1062,6 +1062,9 @@ namespace lat
 
 		void OnLdapDNSelected (object o, dnSelectedEventArgs args)
 		{
+			if (args.Server == null)
+				return;
+
 			Connection conn = Global.Connections [args.Server];
 			
 			if (args.IsHost) {
@@ -1083,7 +1086,7 @@ namespace lat
 				valuesScrolledWindow.AddWithViewport (attributeEditor);
 				valuesScrolledWindow.ShowAll ();				
 			}
-			
+
 			LdapEntry entry = conn.Data.GetEntry (args.DN);			
 			if (entry != null)
 				attributeEditor.Show (conn, entry, showAllAttributes.Active);

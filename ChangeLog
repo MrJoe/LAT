@@ -1,4 +1,8 @@
+1.2.1
+
+	* BUGFIX [#76] Fix build issue with Mono 1.1.18
 	* BUGFIX [#75] Handle exception if prctl can not be found
+	* Fixed crash in LDAP browser
 
 1.2.0.1
 

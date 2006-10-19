@@ -31,8 +31,7 @@ namespace lat
 	{
 		[Glade.Widget] Gtk.Dialog passwordDialog;
 		[Glade.Widget] Gtk.Entry passwordEntry;
-		[Glade.Widget] Gtk.Entry reenterEntry;
-		[Glade.Widget] Gtk.RadioButton cryptRadioButton;
+		[Glade.Widget] Gtk.Entry reenterEntry;		
 		[Glade.Widget] Gtk.RadioButton md5RadioButton;
 		[Glade.Widget] Gtk.RadioButton shaRadioButton;
 		[Glade.Widget] Gtk.CheckButton useSaltCheckButton;
@@ -161,30 +160,6 @@ namespace lat
 			return retVal;
 		}
 
-		public static string generateUnixCrypt (string passwd)
-		{
-			// from crypt(3) manpage:
-			//
-			// salt is a two-character string chosen from the set [a-zA-Z0-9./]. 
-			// This string is used to perturb the algorithm in one of 4096 different ways.
-
-			string strSalt = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
-			char[] chrSalt = strSalt.ToCharArray ();
-
-			string retVal = null;
-			int c1, c2;
-
-			Random random = new Random();
-			c1 = random.Next (0, chrSalt.Length);
-			c2 = random.Next (0, chrSalt.Length);
-
-			string tmpSalt = String.Format ("{0}{1}", chrSalt[c1], chrSalt[c2]);
-			string crypt = Mono.Unix.Native.Syscall.crypt (passwd, tmpSalt);
-
-			retVal = "{CRYPT}" + crypt;
-
-			return retVal;
-		}
 
 		private void GeneratePassword ()
 		{	 
@@ -194,10 +169,7 @@ namespace lat
 			} else if (shaRadioButton.Active) {
 				_unix = doEncryption (passwordEntry.Text,
 					"SHA", useSaltCheckButton.Active);
-			} else if (cryptRadioButton.Active) {
-				_unix = generateUnixCrypt (passwordEntry.Text);
-			}
-
+			} 
 
 			SMBPassword smbpass = new SMBPassword (passwordEntry.Text);
 			_lm = smbpass.LM;
@@ -206,11 +178,6 @@ namespace lat
 
 		public void OnEncryptionChanged (object o, EventArgs args)
 		{
-			if (cryptRadioButton.Active)
-				useSaltCheckButton.Sensitive = false;
-			else
-				useSaltCheckButton.Sensitive = true;
-
 			GeneratePassword ();
 		}
 
