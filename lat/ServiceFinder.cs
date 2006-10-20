@@ -46,7 +46,12 @@ namespace lat
 
 		public ServiceFinder ()
 		{
-			client = new Client();			
+			try {
+				client = new Client();
+			} catch (Exception e) {
+				Log.Info ("Unable to enable avahi support");
+				Log.Debug (e);
+			}		
 		}
 
 		public void Start ()
@@ -55,14 +60,18 @@ namespace lat
 				sb = new ServiceBrowser (client, "_ldap._tcp");
 				sb.ServiceAdded += OnServiceAdded;
 				sb.ServiceRemoved += OnServiceRemoved;
-			} catch (ClientException ce) {
-				Log.Debug (ce);
+			} catch (Exception e) {
+				Log.Debug (e);
 			}
 		}
 		
 		public void Stop ()
 		{
-			sb.Dispose ();
+			try {
+				sb.Dispose ();
+			} catch (Exception e){
+				Log.Debug (e);
+			}
 		}
 
 	    void OnServiceResolved (object o, ServiceInfoArgs args) 

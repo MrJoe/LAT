@@ -1,4 +1,4 @@
-AC_INIT(lat, 1.2.1, http://dev.mmgsecurity.com/bugs/)
+AC_INIT(lat, 1.2.1.1, http://dev.mmgsecurity.com/bugs/)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
 

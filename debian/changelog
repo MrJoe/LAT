@@ -1,3 +1,9 @@
+lat (1.2.1.1-1) unstable; urgency=low
+
+  * LAT 1.2.1.1 release
+
+ -- Loren Bandiera <lorenb@mmgsecurity.com>  Fri, 20 Oct 2006 10:14:25 -0500
+
 lat (1.2.1-1) unstable; urgency=low
 
   * LAT 1.2.1 release

@@ -1,3 +1,7 @@
+1.2.1.1
+
+	* BUGFIX [#77] Fixed regression in Avahi support
+
 1.2.1
 
 	* BUGFIX [#76] Fix build issue with Mono 1.1.18
