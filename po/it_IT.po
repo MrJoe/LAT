@@ -8,12 +8,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-20 09:51-0400\n"
+"POT-Creation-Date: 2006-10-25 09:42-0400\n"
 "PO-Revision-Date: 20006-10-25 09:51-0400\n"
 "Last-Translator: Danilo <danilo.ingami@trs.it>\n"
 "Language-Team: it_IT <it_IT@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../resources/lat.glade.h:1
@@ -102,7 +102,8 @@ msgstr "<b>Sintassi:</b> "
 
 #: ../resources/lat.glade.h:22
 msgid "<span size=\"larger\" weight=\"bold\">Connect to untrusted site?</span>"
-msgstr "<span size=\"larger\" weight=\"bold\">Mi connetto al sito insicuro?</span>"
+msgstr ""
+"<span size=\"larger\" weight=\"bold\">Mi connetto al sito insicuro?</span>"
 
 #: ../resources/lat.glade.h:23
 msgid "<span weight=\"bold\">Description</span>"
@@ -331,7 +332,7 @@ msgid ""
 "It was not possible to automatically trust the server.  It returned \n"
 "the following security information:"
 msgstr ""
-"Non è stato possibile stabilire automaticamente il rapporto di fiducia.\n"
+"Non  stato possibile stabilire automaticamente il rapporto di fiducia.\n"
 "Il server ha riportato le seguenti informazioni di sucurezza:"
 
 #: ../resources/lat.glade.h:81
@@ -551,7 +552,7 @@ msgstr "Mostra tutti gli attributeti"
 
 #: ../resources/lat.glade.h:138
 msgid "Show more options"
-msgstr "Mostra più opzioni"
+msgstr "Mostra pi opzioni"
 
 #: ../resources/lat.glade.h:139
 msgid "Single click"
@@ -743,8 +744,7 @@ msgstr "Seleziona la cartella utenti"
 msgid ""
 "Where in the directory would\n"
 "you like to store groups?"
-msgstr ""
-"Dove vuoi salvare i gruppi?"
+msgstr "Dove vuoi salvare i gruppi?"
 
 #: ../lat/SambaPopulateDialog.cs:125
 msgid "Select a group container"
@@ -755,8 +755,7 @@ msgstr "Seleziona la cartella dei gruppi"
 msgid ""
 "Where in the directory would\n"
 "you like to store computers?"
-msgstr ""
-"Dove vuoi salvare i computer?"
+msgstr "Dove vuoi salvare i computer?"
 
 #: ../lat/SambaPopulateDialog.cs:136
 msgid "Select a computer container"
@@ -767,8 +766,7 @@ msgstr "Seleziona la cartella computer"
 msgid ""
 "Where in the directory would\n"
 "you like to store the ID map?"
-msgstr ""
-"Dove vuoi salvare la mappa degli ID?"
+msgstr "Dove vuoi salvare la mappa degli ID?"
 
 #: ../lat/SambaPopulateDialog.cs:147
 msgid "Select an ID map container"
@@ -793,9 +791,9 @@ msgid ""
 "configured your directory for Samba yet, select 'Populate directory for "
 "samba' from the Server menu"
 msgstr ""
-"LAT non è in grado di determinare il Samba System ID (SID). Se non hai"
-"ancora configurato il directory per Samba, seleziona 'Popola directory per "
-"samba' dal menu Server"
+"LAT non  in grado di determinare il Samba System ID (SID). Se non haiancora "
+"configurato il directory per Samba, seleziona 'Popola directory per samba' "
+"dal menu Server"
 
 #: ../lat/Util.cs:388
 msgid "Unable to add entry "
@@ -834,7 +832,7 @@ msgstr ""
 #: ../lat/Util.cs:620
 #, csharp-format
 msgid "Imported {0} entries."
-msgstr "Importate {0} voci\n"
+msgstr "Importate {0} voci."
 
 #: ../lat/Util.cs:695
 msgid "Save LDIF export as"
@@ -911,8 +909,7 @@ msgstr "Filtro di ricerca non valido."
 msgid ""
 "Where in the directory would\n"
 "you like to start the search?"
-msgstr ""
-"Da dove vuoi iniziare la ricerca?"
+msgstr "Da dove vuoi iniziare la ricerca?"
 
 #: ../lat/Window.cs:980
 msgid "Select search base"
@@ -983,7 +980,8 @@ msgid ""
 "You must reset the password for this account in order to set a samba "
 "password."
 msgstr ""
-"Devi resettare la password per questo account per poter settare una password per samba."
+"Devi resettare la password per questo account per poter settare una password "
+"per samba."
 
 #: ../lat/plugins/PosixCoreViews/EditUserViewDialog.cs:475
 #: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:283
@@ -993,11 +991,11 @@ msgstr "Impossibile modificare il gruppo "
 #: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:379
 #, csharp-format
 msgid "A user with the username '{0}' already exists!"
-msgstr "Esiste già un utente con la username '{0}' !"
+msgstr "Esiste gi un utente con la username '{0}' !"
 
 #: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:404
 msgid "The UID you have selected is already in use!"
-msgstr "Lo UID selezionato è già in uso!"
+msgstr "Lo UID selezionato  gi in uso!"
 
 #: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:427
 msgid "You must set a password for the new user"
