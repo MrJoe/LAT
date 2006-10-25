@@ -1,0 +1,1004 @@
+# it_IT.po
+# Copyright (C) 2005-2006 MMG Security, Inc.
+# This file is distributed under the same license as the lat package.
+# Danilo <danilo.ingami@trs.it>, 2006
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-20 09:51-0400\n"
+"PO-Revision-Date: 20006-10-25 09:51-0400\n"
+"Last-Translator: Danilo <danilo.ingami@trs.it>\n"
+"Language-Team: it_IT <it_IT@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../resources/lat.glade.h:1
+msgid " Use Salt"
+msgstr ""
+
+#: ../resources/lat.glade.h:2
+msgid "<b>Accounts</b>"
+msgstr "<b>Elenco Utenti</b>"
+
+#: ../resources/lat.glade.h:3
+msgid "<b>Advanced Settings</b>"
+msgstr "<b>Impostazioni Avanzate</b>"
+
+#: ../resources/lat.glade.h:4
+msgid "<b>Attributes</b>"
+msgstr "<b>Attributi</b>"
+
+#: ../resources/lat.glade.h:5
+msgid "<b>Basic Settings</b>"
+msgstr "<b>Preferenze</b>"
+
+#: ../resources/lat.glade.h:6
+msgid "<b>Browser selection</b>"
+msgstr "<b>Browser selection</b>"
+
+#: ../resources/lat.glade.h:7
+msgid "<b>Containers</b>"
+msgstr "<b>Cartelle</b>"
+
+#: ../resources/lat.glade.h:8
+msgid "<b>Criteria</b>"
+msgstr "<b>Criteri</b>"
+
+#: ../resources/lat.glade.h:9
+msgid "<b>Description:</b>"
+msgstr "<b>Descrizione:</b>"
+
+#: ../resources/lat.glade.h:10
+msgid "<b>Edits</b>"
+msgstr "<b>Modifica</b>"
+
+#: ../resources/lat.glade.h:11
+msgid "<b>General</b>"
+msgstr "<b>Generale</b>"
+
+#: ../resources/lat.glade.h:12
+msgid "<b>Name:</b>  "
+msgstr "<b>Nome:</b>  "
+
+#: ../resources/lat.glade.h:13
+msgid "<b>OID:</b>      "
+msgstr ""
+
+#: ../resources/lat.glade.h:14
+msgid "<b>OID:</b>              "
+msgstr ""
+
+#: ../resources/lat.glade.h:15
+msgid "<b>Object Classes</b>"
+msgstr ""
+
+#: ../resources/lat.glade.h:16
+msgid "<b>Profile</b>"
+msgstr "<b>Profilo</b>"
+
+#: ../resources/lat.glade.h:17
+msgid "<b>Search Criteria</b>"
+msgstr "<b>Critreri di ricerca</b>"
+
+#: ../resources/lat.glade.h:18
+msgid "<b>Server:</b>    "
+msgstr ""
+
+#: ../resources/lat.glade.h:19
+msgid "<b>Server:</b>       "
+msgstr ""
+
+#: ../resources/lat.glade.h:20
+msgid "<b>Settings</b>"
+msgstr "<b>Impostazioni</b>"
+
+#: ../resources/lat.glade.h:21
+msgid "<b>Syntax:</b> "
+msgstr "<b>Sintassi:</b> "
+
+#: ../resources/lat.glade.h:22
+msgid "<span size=\"larger\" weight=\"bold\">Connect to untrusted site?</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Mi connetto al sito insicuro?</span>"
+
+#: ../resources/lat.glade.h:23
+msgid "<span weight=\"bold\">Description</span>"
+msgstr "<span weight=\"bold\">Descrizione</span>"
+
+#: ../resources/lat.glade.h:24
+msgid "<span weight=\"bold\">Equality</span>"
+msgstr ""
+
+#: ../resources/lat.glade.h:25
+msgid "<span weight=\"bold\">ID</span>"
+msgstr ""
+
+#: ../resources/lat.glade.h:26
+msgid "<span weight=\"bold\">Name</span>"
+msgstr "<span weight=\"bold\">Nome</span>"
+
+#: ../resources/lat.glade.h:27
+msgid "<span weight=\"bold\">OID</span>"
+msgstr ""
+
+#: ../resources/lat.glade.h:28
+msgid "<span weight=\"bold\">Ordering</span>"
+msgstr "<span weight=\"bold\">Ordinamento</span>"
+
+#: ../resources/lat.glade.h:29
+msgid "<span weight=\"bold\">Results</span>"
+msgstr "<span weight=\"bold\">Resultati</span>"
+
+#: ../resources/lat.glade.h:30
+msgid "<span weight=\"bold\">Search Criteria</span>"
+msgstr "<span weight=\"bold\">Criteri di Ricerca</span>"
+
+#: ../resources/lat.glade.h:31
+msgid "<span weight=\"bold\">Substring</span>"
+msgstr ""
+
+#: ../resources/lat.glade.h:32
+msgid "<span weight=\"bold\">Superior</span>"
+msgstr "<span weight=\"bold\">Superiore</span>"
+
+#: ../resources/lat.glade.h:33
+msgid "<span weight=\"bold\">Syntax</span>"
+msgstr "<span weight=\"bold\">Sintassi</span>"
+
+#: ../resources/lat.glade.h:34
+msgid "Action:"
+msgstr "Azione:"
+
+#: ../resources/lat.glade.h:35
+msgid "Add object class"
+msgstr "Aggiungi object class"
+
+#: ../resources/lat.glade.h:36
+msgid "Administrator:"
+msgstr "Amministratore:"
+
+#: ../resources/lat.glade.h:37
+msgid "All groups:"
+msgstr "Tutti i Gruppi:"
+
+#: ../resources/lat.glade.h:38
+msgid "Attribute Type"
+msgstr ""
+
+#: ../resources/lat.glade.h:39
+msgid "Attribute Viewers"
+msgstr ""
+
+#: ../resources/lat.glade.h:40
+msgid "Attribute:  "
+msgstr "Attributo:  "
+
+#: ../resources/lat.glade.h:41
+msgid "Base DN:   "
+msgstr "Base DN:   "
+
+#: ../resources/lat.glade.h:42
+msgid "Base:"
+msgstr ""
+
+#: ../resources/lat.glade.h:43
+msgid "Based on the currently selected entry"
+msgstr ""
+
+#: ../resources/lat.glade.h:44
+msgid "Browse"
+msgstr "Sfoglia"
+
+#: ../resources/lat.glade.h:45
+msgid "Browser"
+msgstr ""
+
+#: ../resources/lat.glade.h:46
+msgid "Collective"
+msgstr ""
+
+#: ../resources/lat.glade.h:47
+msgid "Computers: "
+msgstr ""
+
+#: ../resources/lat.glade.h:48
+msgid "Condition: "
+msgstr "Condizione: "
+
+#: ../resources/lat.glade.h:49
+msgid "Configure"
+msgstr "Configura"
+
+#: ../resources/lat.glade.h:50
+msgid "Configure plugin"
+msgstr "Configura plugin"
+
+#: ../resources/lat.glade.h:51
+msgid "Connect"
+msgstr "Connetti"
+
+#: ../resources/lat.glade.h:52
+msgid "Connection"
+msgstr "Connessione"
+
+#: ../resources/lat.glade.h:53
+msgid "Container: "
+msgstr "Cartella: "
+
+#: ../resources/lat.glade.h:54
+msgid "Date:     "
+msgstr ""
+
+#: ../resources/lat.glade.h:55
+msgid "Default new container:"
+msgstr "Nuova cartella predefinita:"
+
+#: ../resources/lat.glade.h:56
+msgid "Default values:"
+msgstr "Valori predefiniti:"
+
+#: ../resources/lat.glade.h:57
+msgid "Delete"
+msgstr "Cancella"
+
+#: ../resources/lat.glade.h:58
+msgid "Domain:"
+msgstr "Dominio:"
+
+#: ../resources/lat.glade.h:59
+msgid "Double click"
+msgstr "Doppio click"
+
+#: ../resources/lat.glade.h:60
+msgid "Encryption:"
+msgstr "Cifratura:"
+
+#: ../resources/lat.glade.h:61
+msgid "Encryption:        "
+msgstr "Cifratura:"
+
+#: ../resources/lat.glade.h:62
+msgid "Enter Password"
+msgstr "Inserisci Password"
+
+#: ../resources/lat.glade.h:63
+msgid ""
+"Enter a hostname and port \n"
+"for the LDAP directory\n"
+"you wish to connect to."
+msgstr ""
+"Inserisci il nome host \n"
+"e la porta del server LDAP\n"
+"a cui vuoi connetterti."
+
+#: ../resources/lat.glade.h:66
+msgid "Enter password:    "
+msgstr "Inserisci password:    "
+
+#: ../resources/lat.glade.h:67
+msgid "Enter your security identifier (SID)"
+msgstr "Inserisci il tuo security identifier (SID)"
+
+#: ../resources/lat.glade.h:68
+msgid "Export LDIF..."
+msgstr "Esporta LDIF..."
+
+#: ../resources/lat.glade.h:69
+msgid "Filter: "
+msgstr "Filtro: "
+
+#: ../resources/lat.glade.h:70
+msgid "Filter:  "
+msgstr "Filtro: "
+
+#: ../resources/lat.glade.h:71
+msgid "Filter:    "
+msgstr "Filtro: "
+
+#: ../resources/lat.glade.h:72
+msgid "General"
+msgstr "Generale"
+
+#: ../resources/lat.glade.h:73
+msgid "Groups:       "
+msgstr "Gruppi:       "
+
+#: ../resources/lat.glade.h:74
+msgid "Guest:            "
+msgstr ""
+
+#: ../resources/lat.glade.h:75
+msgid "Hostname:"
+msgstr ""
+
+#: ../resources/lat.glade.h:76
+msgid "How would you like to create the new entry?"
+msgstr "Come desideri creare il nuovo elemento?"
+
+#: ../resources/lat.glade.h:77
+msgid "ID Map:        "
+msgstr "Mappa ID:        "
+
+#: ../resources/lat.glade.h:78
+msgid "Import LDIF..."
+msgstr "Importa LDIF..."
+
+#: ../resources/lat.glade.h:79
+msgid ""
+"It was not possible to automatically trust the server.  It returned \n"
+"the following security information:"
+msgstr ""
+"Non è stato possibile stabilire automaticamente il rapporto di fiducia.\n"
+"Il server ha riportato le seguenti informazioni di sucurezza:"
+
+#: ../resources/lat.glade.h:81
+msgid "LAT - Connect"
+msgstr "LAT - Connetti"
+
+#: ../resources/lat.glade.h:82
+msgid "LAT - Mass Edit"
+msgstr ""
+
+#: ../resources/lat.glade.h:83
+msgid "LAT - Profile"
+msgstr "LAT - Profilo"
+
+#: ../resources/lat.glade.h:84
+msgid "LAT - Search Builder"
+msgstr ""
+
+#: ../resources/lat.glade.h:85
+msgid "LAT - Select Container"
+msgstr "LAT - Seleziona cartella"
+
+#: ../resources/lat.glade.h:86
+msgid ""
+"LAT can setup your directory for Samba. Enter your \n"
+"SID (output from 'net getlocalsid') and confirm the\n"
+"users/containers.\n"
+"\n"
+"Make sure you are logged in as the administator."
+msgstr ""
+
+#: ../resources/lat.glade.h:91
+msgid ""
+"LAT requires your Security Identifier for Samba. This can be \n"
+"obtained by running the command 'net getlocalsid'."
+msgstr ""
+
+#: ../resources/lat.glade.h:93
+msgid "LDAP Administration Tool"
+msgstr ""
+
+#: ../resources/lat.glade.h:94
+msgid "LDAP Syntax"
+msgstr "Sintassi LDAP"
+
+#: ../resources/lat.glade.h:95
+msgid "Login"
+msgstr ""
+
+#: ../resources/lat.glade.h:96
+msgid "MD5"
+msgstr ""
+
+#: ../resources/lat.glade.h:97
+msgid "Mass Edit..."
+msgstr ""
+
+#: ../resources/lat.glade.h:98
+msgid "Matching Rule"
+msgstr ""
+
+#: ../resources/lat.glade.h:99
+msgid "Name:"
+msgstr "Nome:"
+
+#: ../resources/lat.glade.h:100
+msgid "New Entry"
+msgstr ""
+
+#: ../resources/lat.glade.h:101
+msgid "New Name:"
+msgstr "New Nome:"
+
+#: ../resources/lat.glade.h:102
+msgid "No, cancel the connection"
+msgstr ""
+
+#: ../resources/lat.glade.h:103
+msgid "None"
+msgstr "Nessuno"
+
+#: ../resources/lat.glade.h:104
+msgid "Object Class"
+msgstr ""
+
+#: ../resources/lat.glade.h:105
+msgid "Obsolete"
+msgstr "Obsoleto"
+
+#: ../resources/lat.glade.h:106
+msgid "Old Name:"
+msgstr "Vecchio Nome:"
+
+#: ../resources/lat.glade.h:107
+msgid "Password:"
+msgstr ""
+
+#: ../resources/lat.glade.h:108
+msgid "Password:  "
+msgstr ""
+
+#: ../resources/lat.glade.h:109
+msgid "Populate directory for Samba"
+msgstr "Popola directory per Samba"
+
+#: ../resources/lat.glade.h:110
+msgid "Populate for Samba..."
+msgstr "Popola per Samba..."
+
+#: ../resources/lat.glade.h:111
+msgid "Port:          "
+msgstr "Porta:         "
+
+#: ../resources/lat.glade.h:112
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: ../resources/lat.glade.h:113
+msgid "Profiles"
+msgstr "Profili"
+
+#: ../resources/lat.glade.h:114
+msgid "Prompt for password"
+msgstr "Richiedi password"
+
+#: ../resources/lat.glade.h:115
+msgid "Quick Connect"
+msgstr "Connessione Rapida"
+
+#: ../resources/lat.glade.h:116
+msgid "RDN:          "
+msgstr ""
+
+#: ../resources/lat.glade.h:117
+msgid "Re-login..."
+msgstr ""
+
+#: ../resources/lat.glade.h:118
+msgid "Re-type password:"
+msgstr "Redigita password:"
+
+#: ../resources/lat.glade.h:119
+msgid "Refresh"
+msgstr "Aggiorna"
+
+#: ../resources/lat.glade.h:120
+msgid "Rename Entry"
+msgstr "Rinomina Entry"
+
+#: ../resources/lat.glade.h:121
+msgid "SHA"
+msgstr ""
+
+#: ../resources/lat.glade.h:122
+msgid "SID:"
+msgstr ""
+
+#: ../resources/lat.glade.h:123
+msgid "SID:       "
+msgstr ""
+
+#: ../resources/lat.glade.h:124
+msgid "SSL"
+msgstr ""
+
+#: ../resources/lat.glade.h:125
+msgid "Save as profile:"
+msgstr "Salva come profilo:"
+
+#: ../resources/lat.glade.h:126
+msgid "Save old name as an attribute"
+msgstr ""
+
+#: ../resources/lat.glade.h:127
+msgid "Schema"
+msgstr ""
+
+#: ../resources/lat.glade.h:128
+msgid "Search"
+msgstr "Cerca"
+
+#: ../resources/lat.glade.h:129
+msgid "Search base:"
+msgstr ""
+
+#: ../resources/lat.glade.h:130
+msgid "Select groups"
+msgstr "Seleziona grouppi"
+
+#: ../resources/lat.glade.h:131
+msgid "Select the object class(es) you would like to add"
+msgstr "Seleziona la object class che desideri aggiungere"
+
+#: ../resources/lat.glade.h:132
+msgid "Select time and date"
+msgstr "Seleziona data e ora"
+
+#: ../resources/lat.glade.h:133
+msgid "Server Type:"
+msgstr "Tipo Server:"
+
+#: ../resources/lat.glade.h:134
+msgid "Server Views"
+msgstr "Viste Server"
+
+#: ../resources/lat.glade.h:135
+msgid "Server:"
+msgstr ""
+
+#: ../resources/lat.glade.h:136
+msgid "Set values..."
+msgstr "Imposta valori..."
+
+#: ../resources/lat.glade.h:137
+msgid "Show all attributes"
+msgstr "Mostra tutti gli attributeti"
+
+#: ../resources/lat.glade.h:138
+msgid "Show more options"
+msgstr "Mostra più opzioni"
+
+#: ../resources/lat.glade.h:139
+msgid "Single click"
+msgstr "Singolo click"
+
+#: ../resources/lat.glade.h:140
+msgid "Single value"
+msgstr "Singolo valore"
+
+#: ../resources/lat.glade.h:141
+msgid "Start Search"
+msgstr "Inizia Ricerca"
+
+#: ../resources/lat.glade.h:142
+msgid "TLS"
+msgstr ""
+
+#: ../resources/lat.glade.h:143
+msgid "Template Editor"
+msgstr "Editor Modelli"
+
+#: ../resources/lat.glade.h:144
+msgid "Templates"
+msgstr "Modelli"
+
+#: ../resources/lat.glade.h:145
+msgid "Time:     "
+msgstr "Ora:     "
+
+#: ../resources/lat.glade.h:146
+msgid "Use TLS/SSL"
+msgstr ""
+
+#: ../resources/lat.glade.h:147
+msgid "User modification"
+msgstr "Modifiche Utente"
+
+#: ../resources/lat.glade.h:148
+msgid "Username:"
+msgstr ""
+
+#: ../resources/lat.glade.h:149
+msgid "Users:         "
+msgstr "Utenti:         "
+
+#: ../resources/lat.glade.h:150
+msgid "Using a template (select one below)"
+msgstr "Usa un modello (scegli uno dei seguenti)"
+
+#: ../resources/lat.glade.h:151
+msgid "Value: "
+msgstr "Valore: "
+
+#: ../resources/lat.glade.h:152
+msgid "Value:       "
+msgstr "Valore:       "
+
+#: ../resources/lat.glade.h:153
+msgid "Views"
+msgstr "Viste"
+
+#: ../resources/lat.glade.h:154
+msgid "Yes, accept this certificate (always)"
+msgstr "Si, accetta il certificato (sempre)"
+
+#: ../resources/lat.glade.h:155
+msgid "Yes, just accept this certicate for the current session"
+msgstr "Si, accetta il certificato solo per questa sessione"
+
+#: ../resources/lat.glade.h:156
+msgid ""
+"You should only accept the security information if you trust\n"
+"the server.\n"
+msgstr ""
+
+#: ../resources/lat.glade.h:159
+msgid "_Contents"
+msgstr "_Contenuti"
+
+#: ../resources/lat.glade.h:160
+msgid "_Disconnect"
+msgstr "_Disconnetti"
+
+#: ../resources/lat.glade.h:161
+msgid "_Edit"
+msgstr "_Modifica"
+
+#: ../resources/lat.glade.h:162
+msgid "_Help"
+msgstr "_Aiuto"
+
+#: ../resources/lat.glade.h:163
+msgid "_New"
+msgstr "_Nuovo"
+
+#: ../resources/lat.glade.h:164
+msgid "_Server"
+msgstr "_Server"
+
+#: ../resources/lat.glade.h:165
+msgid "_View"
+msgstr "_Visualizza"
+
+#: ../lat/AttributeEditorWidget.cs:454
+msgid "Select file to add as binary attribute"
+msgstr "Seleziona il file da aggiungere come attributo binario"
+
+#: ../lat/AttributeEditorWidget.cs:529
+msgid "Save binary as"
+msgstr "Salva binary as"
+
+#: ../lat/ConnectionManager.cs:78
+#, csharp-format
+msgid "Unable to connect to: ldap://{0}:{1}"
+msgstr "Impossibile connettersi a: ldap://{0}:{1}"
+
+#: ../lat/ConnectionManager.cs:88
+#, csharp-format
+msgid "Unable to bind to: ldap://{0}:{1}"
+msgstr ""
+
+#: ../lat/CreateEntryDialog.cs:166
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to save the entry?"
+msgstr ""
+
+#: ../lat/CreateEntryDialog.cs:168
+msgid "Select entry base"
+msgstr "Seleziona entry base"
+
+#: ../lat/LdapTreeView.cs:444 ../lat/ViewDataTreeView.cs:110
+msgid "Unable to read data from server"
+msgstr "Impossibile leggere i dati dal server"
+
+#: ../lat/LoginDialog.cs:48
+msgid "Enter your password"
+msgstr "Inserisci la tua password"
+
+#: ../lat/LoginDialog.cs:107
+msgid "Unable to re-login"
+msgstr "Impossibile effettuare nuovamente il login"
+
+#: ../lat/PasswordDialog.cs:187
+msgid "Password don't match"
+msgstr "La password non corrisponde"
+
+#: ../lat/Preferences.cs:218
+msgid "Are you sure you want to delete the profile:"
+msgstr "Sei sicuro di voler eliminare il profilo:"
+
+#: ../lat/Preferences.cs:407
+#, csharp-format
+msgid "Select a container for new objects"
+msgstr "Seleziona una cartella per il nuovo oggetto"
+
+#: ../lat/Preferences.cs:408 ../lat/Preferences.cs:419
+msgid "Select container"
+msgstr "Seleziona cartella"
+
+#: ../lat/Preferences.cs:418
+#, csharp-format
+msgid "Select a search base"
+msgstr "Seleziona a search base"
+
+#: ../lat/RenameEntryDialog.cs:67
+#, csharp-format
+msgid "Entry {0} has been renamed to {1}."
+msgstr ""
+
+#: ../lat/RenameEntryDialog.cs:86
+msgid "Unable to rename entry "
+msgstr ""
+
+#: ../lat/SambaPopulateDialog.cs:111
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store users?"
+msgstr ""
+
+#: ../lat/SambaPopulateDialog.cs:114
+msgid "Select a user container"
+msgstr "Seleziona la cartella utenti"
+
+#: ../lat/SambaPopulateDialog.cs:123
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store groups?"
+msgstr ""
+"Dove vuoi salvare i gruppi?"
+
+#: ../lat/SambaPopulateDialog.cs:125
+msgid "Select a group container"
+msgstr "Seleziona la cartella dei gruppi"
+
+#: ../lat/SambaPopulateDialog.cs:134
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store computers?"
+msgstr ""
+"Dove vuoi salvare i computer?"
+
+#: ../lat/SambaPopulateDialog.cs:136
+msgid "Select a computer container"
+msgstr "Seleziona la cartella computer"
+
+#: ../lat/SambaPopulateDialog.cs:145
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to store the ID map?"
+msgstr ""
+"Dove vuoi salvare la mappa degli ID?"
+
+#: ../lat/SambaPopulateDialog.cs:147
+msgid "Select an ID map container"
+msgstr "Seleziona la cartella della mappa ID"
+
+#: ../lat/SchemaTreeView.cs:283
+msgid "Unable to read schema information from server"
+msgstr "Impossibile leggere i dati dello schema dal server"
+
+#: ../lat/SearchResultsTreeView.cs:116
+msgid "No matches found."
+msgstr "Nessuna corrispondenza trovata."
+
+#: ../lat/TemplatesDialog.cs:135
+#, csharp-format
+msgid "Are you sure you want to delete:"
+msgstr "Sei sicuro di voler cancellare:"
+
+#: ../lat/Util.cs:286
+msgid ""
+"LAT could not determine your Samba System ID (SID). If you haven't "
+"configured your directory for Samba yet, select 'Populate directory for "
+"samba' from the Server menu"
+msgstr ""
+"LAT non è in grado di determinare il Samba System ID (SID). Se non hai"
+"ancora configurato il directory per Samba, seleziona 'Popola directory per "
+"samba' dal menu Server"
+
+#: ../lat/Util.cs:388
+msgid "Unable to add entry "
+msgstr "Impossibile aggiungere elemento "
+
+#: ../lat/Util.cs:425
+msgid "Unable to modify entry "
+msgstr "Impossibile modificare elemento "
+
+#: ../lat/Util.cs:479
+#, csharp-format
+msgid "Are you sure you want to delete the selected entries?"
+msgstr "Sei sicuro di voler cancellare gli elementi selezionati?"
+
+#: ../lat/Util.cs:483
+msgid "Unable to delete the following entries:\n"
+msgstr "Impossibile cancellare i seguenti elementi:\n"
+
+#: ../lat/Util.cs:519
+msgid "Are you sure you want to delete"
+msgstr "Sei sicuro di voler cancellare"
+
+#: ../lat/Util.cs:535
+msgid "Unable to delete entry "
+msgstr "Impossibile cancellare elemento "
+
+#: ../lat/Util.cs:564
+#, csharp-format
+msgid ""
+"Imported {0} entries\n"
+"from {1}."
+msgstr ""
+"Importate {0} voci\n"
+"da {1}."
+
+#: ../lat/Util.cs:620
+#, csharp-format
+msgid "Imported {0} entries."
+msgstr "Importate {0} voci\n"
+
+#: ../lat/Util.cs:695
+msgid "Save LDIF export as"
+msgstr "Salva export LDIF come"
+
+#: ../lat/ViewDataTreeView.cs:69
+#, csharp-format
+msgid "Found {0} entries"
+msgstr "Trovati {0} voci"
+
+#: ../lat/ViewDataTreeView.cs:255 ../lat/ViewDataTreeView.cs:446
+msgid "Unable to edit entry"
+msgstr ""
+
+#: ../lat/ViewDataTreeView.cs:293
+msgid "Invalid or empty email address"
+msgstr "Indirizzo email non valido o vuoto"
+
+#: ../lat/ViewDataTreeView.cs:316
+msgid "Unable to send mail to: "
+msgstr "Impossibile inviare mail a: "
+
+#: ../lat/ViewDataTreeView.cs:473
+msgid "Unable to open page: "
+msgstr "Impossibile aprire la pagina: "
+
+#: ../lat/ViewDialog.cs:45
+#, csharp-format
+msgid ""
+"You must provide values for the following attributes:\n"
+"\n"
+msgstr ""
+"Devi inserire un valore per i seguenti attributi:\n"
+"\n"
+
+#: ../lat/Window.cs:650
+msgid ""
+"Enter the new username and password\n"
+"you wish to re-login with"
+msgstr ""
+"Inserisci username e password\n"
+"con i quali vuoi autenticarti"
+
+#: ../lat/Window.cs:721
+msgid "Choose an LDIF file to import"
+msgstr "Seleziona il file LDIF da importare"
+
+#: ../lat/Window.cs:751
+msgid "Export entry"
+msgstr "Esporta"
+
+#: ../lat/Window.cs:752
+msgid "Select the container you wish to export."
+msgstr "Seleziona la cartella da esportare."
+
+#: ../lat/Window.cs:816
+msgid "Cannot copy/cut enteries between servers"
+msgstr "Impossibile copiare gli elementi tra i server"
+
+#: ../lat/Window.cs:855
+msgid "Unable to copy entry "
+msgstr "Impossibile copiare elementi "
+
+#: ../lat/Window.cs:857
+msgid "Unable to move entry "
+msgstr "Impossibile spostare gli elementi "
+
+#: ../lat/Window.cs:952
+msgid "Invalid search filter."
+msgstr "Filtro di ricerca non valido."
+
+#: ../lat/Window.cs:979
+#, csharp-format
+msgid ""
+"Where in the directory would\n"
+"you like to start the search?"
+msgstr ""
+"Da dove vuoi iniziare la ricerca?"
+
+#: ../lat/Window.cs:980
+msgid "Select search base"
+msgstr "Seleziona il 'Base DN' per la ricerca"
+
+#: ../lat/Window.cs:1361
+msgid "Host"
+msgstr ""
+
+#: ../lat/Window.cs:1362
+msgid "Port"
+msgstr "Porta"
+
+#: ../lat/Window.cs:1363
+msgid "User"
+msgstr "Utente"
+
+#: ../lat/Window.cs:1364
+msgid "Base DN"
+msgstr ""
+
+#: ../lat/Window.cs:1365
+msgid "Connected"
+msgstr "Connesso"
+
+#: ../lat/Window.cs:1366
+msgid "Bound"
+msgstr ""
+
+#: ../lat/Window.cs:1367
+msgid "TLS/SSL"
+msgstr ""
+
+#: ../lat/Window.cs:1368
+msgid "Protocol Version"
+msgstr "Versione Protocollo"
+
+#: ../lat/Window.cs:1371
+msgid "DNS Host Name"
+msgstr ""
+
+#: ../lat/Window.cs:1372
+msgid "Domain Controller Functionality"
+msgstr "Funzione Domain Controller"
+
+#: ../lat/Window.cs:1373
+msgid "Forest Functionality"
+msgstr "Funzione Foresta"
+
+#: ../lat/Window.cs:1374
+msgid "Domain Functionality"
+msgstr ""
+
+#: ../lat/Window.cs:1375
+msgid "Global Catalog Ready"
+msgstr ""
+
+#: ../lat/Window.cs:1376
+msgid "Synchronized"
+msgstr "Synchronizzato"
+
+#: ../lat/plugins/ActiveDirectoryCoreViews/EditAdComputerViewDialog.cs:190
+msgid "Select a user who will manage "
+msgstr "Seleziona l'utente da amministrare "
+
+#: ../lat/plugins/PosixCoreViews/EditUserViewDialog.cs:310
+msgid ""
+"You must reset the password for this account in order to set a samba "
+"password."
+msgstr ""
+"Devi resettare la password per questo account per poter settare una password per samba."
+
+#: ../lat/plugins/PosixCoreViews/EditUserViewDialog.cs:475
+#: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:283
+msgid "Unable to modify group "
+msgstr "Impossibile modificare il gruppo "
+
+#: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:379
+#, csharp-format
+msgid "A user with the username '{0}' already exists!"
+msgstr "Esiste già un utente con la username '{0}' !"
+
+#: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:404
+msgid "The UID you have selected is already in use!"
+msgstr "Lo UID selezionato è già in uso!"
+
+#: ../lat/plugins/PosixCoreViews/NewUserViewDialog.cs:427
+msgid "You must set a password for the new user"
+msgstr "Devi impostare una password per il nuovo utente"

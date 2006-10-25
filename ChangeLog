@@ -1,3 +1,5 @@
+	* Added it_IT translation from Danilo Ingami
+
 1.2.1.1
 
 	* BUGFIX [#77] Fixed regression in Avahi support
