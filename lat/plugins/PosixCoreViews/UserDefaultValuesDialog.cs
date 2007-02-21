@@ -36,6 +36,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry homeEntry;
 		[Glade.Widget] Gtk.Entry shellEntry;
 		[Glade.Widget] Gtk.CheckButton sambaCheckButton;
+		[Glade.Widget] Gtk.CheckButton noPasswordsButton;
 
 		ComboBox primaryGroupComboBox;
 		ViewPlugin vp;
@@ -107,6 +108,12 @@ namespace lat
 				bool enableSamba = bool.Parse (vp.PluginConfiguration.Defaults ["enableSamba"]);
 				sambaCheckButton.Active = enableSamba;
 			}
+			
+			if (vp.PluginConfiguration.Defaults.ContainsKey ("dontRequirePasswords")) {
+				bool noPasswords = bool.Parse (vp.PluginConfiguration.Defaults ["dontRequirePasswords"]);
+				noPasswordsButton.Active = noPasswords;
+			}
+
 
 			if (vp.PluginConfiguration.Defaults.ContainsKey ("defaultGroup"))
 				CreateCombo (vp.PluginConfiguration.Defaults["defaultGroup"]);
@@ -135,7 +142,9 @@ namespace lat
 					vp.PluginConfiguration.Defaults["defaultGroup"] = pg;
 			}
 			
-			if (passwordEntry.Text != "") {
+			vp.PluginConfiguration.Defaults["dontRequirePasswords"] = noPasswordsButton.Active.ToString();
+			
+			if (passwordEntry.Text != "" && noPasswordsButton.Active == false) {
 				vp.PluginConfiguration.Defaults["userPassword"] = passwordEntry.Text;
 				if (sambaCheckButton.Active) {
 					vp.PluginConfiguration.Defaults["sambaLMPassword"] = smbLM;

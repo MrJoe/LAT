@@ -60,6 +60,7 @@ namespace lat
 
 		ComboBox primaryGroupComboBox;
 		Dictionary<string,string> defaultValues;
+		bool dontRequirePasswords;
 
 		public NewUserViewDialog (Connection connection, string newContainer, Dictionary<string,string> defaultValues) : base (connection, newContainer)
 		{
@@ -111,6 +112,9 @@ namespace lat
 				bool enableSamba = bool.Parse (defaultValues ["enableSamba"]);
 				enableSambaButton.Active = enableSamba;
 			}
+			
+			if (defaultValues.ContainsKey("dontRequirePasswords"))
+				dontRequirePasswords = bool.Parse (defaultValues ["dontRequirePasswords"]);
 		}
 
 		void OnSambaChanged (object o, EventArgs args)
@@ -344,7 +348,10 @@ namespace lat
 			aset.Add (new LdapAttribute ("sn", lastNameEntry.Text));
 			aset.Add (new LdapAttribute ("uid", usernameEntry.Text));
 			aset.Add (new LdapAttribute ("uidNumber", uidSpinButton.Value.ToString()));
-			aset.Add (new LdapAttribute ("userPassword", passwordEntry.Text));
+			
+			if (!dontRequirePasswords)
+				aset.Add (new LdapAttribute ("userPassword", passwordEntry.Text));
+				
 			aset.Add (new LdapAttribute ("loginShell", shellEntry.Text));
 			aset.Add (new LdapAttribute ("homeDirectory", homeDirEntry.Text));
 			aset.Add (new LdapAttribute ("displayName", displayNameEntry.Text));
@@ -365,7 +372,10 @@ namespace lat
 
 			} else {
 			
-				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person"}));
+				if (dontRequirePasswords)
+					aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "inetorgperson", "person"}));
+				else
+					aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person"}));
 			}
 					
 			LdapEntry newEntry = new LdapEntry (dn, aset);
@@ -448,7 +458,7 @@ namespace lat
 			LdapEntry entry = null;
 			string userDN = null;
 
-			if (!IsUserNameAvailable() || !IsUIDAvailable() || IsPasswordEmpty()) {
+			if (!IsUserNameAvailable() || !IsUIDAvailable() || (IsPasswordEmpty() && dontRequirePasswords == false)) {
 				errorOccured = true;
 				return;
 			}

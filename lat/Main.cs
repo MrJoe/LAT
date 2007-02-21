@@ -126,7 +126,7 @@ public class LdapAdministrationTool
 		} catch (Exception e) {
 		
 			Log.Debug (e);
-			Log.Error ("Error occured: {0}", e.Message);
+			Log.Error (e.Message);
 		}
 		
 		Global.Templates.Save ();
