@@ -1,3 +1,5 @@
+	* BUGFIX [#88] Creating new POSIX user causes crash
+
 1.2.2
 
 	* BUGFIX [#82] Password mandatory when creating a new user

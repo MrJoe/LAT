@@ -140,8 +140,10 @@ namespace lat
 				nameAttr = e.getAttribute ("cn");
 				gidAttr = e.getAttribute ("gidNumber");
 
-				_allGroups.Add (nameAttr.StringValue, e);
-				_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
+				if (!_allGroups.ContainsKey (nameAttr.StringValue)) {
+					_allGroups.Add (nameAttr.StringValue, e);
+					_allGroupGids.Add (gidAttr.StringValue, nameAttr.StringValue);
+				}
 			}
 				
 		}
