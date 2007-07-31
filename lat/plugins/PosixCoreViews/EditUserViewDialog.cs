@@ -563,7 +563,7 @@ namespace lat
 				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixaccount", "shadowaccount","inetorgperson", "person", "sambaSAMAccount"}));
 				
 				int user_rid = Convert.ToInt32 (uidSpinButton.Value) * 2 + 1000;
-				LdapAttribute[] tmp = Util.CreateSambaAttributes (user_rid, smbSID, smbLM, smbNT);
+				LdapAttribute[] tmp = Util.CreateSambaAttributes (user_rid, conn.Data.GetLocalSID (), smbLM, smbNT);
 				foreach (LdapAttribute a in tmp)
 					aset.Add (a);
 			

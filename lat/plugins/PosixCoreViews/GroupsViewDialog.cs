@@ -249,7 +249,7 @@ namespace lat
 
 				int grid = Convert.ToInt32 (groupIDSpinButton.Value) * 2 + 1001;
 				smbSID = conn.Data.GetLocalSID ();				
-				aset.Add (new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", smbSID, grid)));
+				aset.Add (new LdapAttribute ("sambaSID", String.Format ("{0}-{1}", conn.Data.GetLocalSID (), grid)));
 
 			} else {
 				aset.Add (new LdapAttribute ("objectClass", new string[] {"top", "posixGroup"}));
