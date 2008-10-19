@@ -1,51 +1,50 @@
 <Project name="lat" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
-      <Output directory="./bin/Debug" assembly="lat" />
+      <Output directory="bin/Debug" assembly="lat" />
       <Build debugmode="True" target="Exe" />
       <Execution runwithwarnings="True" commandlineparameters="--debug" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" definesymbols="ENABLE_NETWORKMANAGER" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" win32Icon="." ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
-      <Output directory="./bin/Release" assembly="lat" />
+      <Output directory="bin/Release" assembly="lat" />
       <Build debugmode="False" target="Exe" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" definesymbols="ENABLE_NETWORKMANAGER;ENABLE_AVAHI" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" definesymbols="ENABLE_NETWORKMANAGER;ENABLE_AVAHI" generatexmldocumentation="False" win32Icon="." ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
-  <DeployTargets />
   <Contents>
-    <File name="./AboutDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
-    <File name="./CreateEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Defines.cs" subtype="Code" buildaction="Compile" />
-    <File name="./LDIF.cs" subtype="Code" buildaction="Compile" />
-    <File name="./LdapSearch.cs" subtype="Code" buildaction="Compile" />
-    <File name="./LdapServer.cs" subtype="Code" buildaction="Compile" />
-    <File name="./LdapTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="./LoginDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Main.cs" subtype="Code" buildaction="Compile" />
-    <File name="./MassEditDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NewEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./PasswordDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Preferences.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ProfileDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./RenameEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SMBPassword.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SambaPopulateDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SchemaTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SearchBuilderDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SearchResultsTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SelectContainerDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./SelectGroupsDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./TemplateEditorDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Templates.cs" subtype="Code" buildaction="Compile" />
-    <File name="./TemplatesDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./TimeDateDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Util.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ViewsTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Window.cs" subtype="Code" buildaction="Compile" />
+    <File name="AboutDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
+    <File name="CreateEntryDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Defines.cs" subtype="Code" buildaction="Compile" />
+    <File name="LDIF.cs" subtype="Code" buildaction="Compile" />
+    <File name="LdapSearch.cs" subtype="Code" buildaction="Compile" />
+    <File name="LdapServer.cs" subtype="Code" buildaction="Compile" />
+    <File name="LdapTreeView.cs" subtype="Code" buildaction="Compile" />
+    <File name="LoginDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Main.cs" subtype="Code" buildaction="Compile" />
+    <File name="MassEditDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="NewEntryDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="PasswordDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Preferences.cs" subtype="Code" buildaction="Compile" />
+    <File name="ProfileDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="RenameEntryDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="SMBPassword.cs" subtype="Code" buildaction="Compile" />
+    <File name="SambaPopulateDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="SchemaTreeView.cs" subtype="Code" buildaction="Compile" />
+    <File name="SearchBuilderDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="SearchResultsTreeView.cs" subtype="Code" buildaction="Compile" />
+    <File name="SelectContainerDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="SelectGroupsDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="TemplateEditorDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Templates.cs" subtype="Code" buildaction="Compile" />
+    <File name="TemplatesDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="TimeDateDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Util.cs" subtype="Code" buildaction="Compile" />
+    <File name="ViewDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="ViewsTreeView.cs" subtype="Code" buildaction="Compile" />
+    <File name="Window.cs" subtype="Code" buildaction="Compile" />
     <File name="../resources/contact-new.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/contact-new-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/document-save.png" subtype="Code" buildaction="EmbedAsResource" />
@@ -65,16 +64,16 @@
     <File name="../resources/x-directory-remote-server.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
     <File name="../resources/x-directory-remote-workgroup.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="./ConnectDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ViewPluginManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ViewDataTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="./AttributeEditorWidget.cs" subtype="Code" buildaction="Compile" />
-    <File name="./AddObjectClassDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ServiceFinder.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ConnectionManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Log.cs" subtype="Code" buildaction="Compile" />
-    <File name="./LdapEntryAnalyzer.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ServerData.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConnectDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="ViewPluginManager.cs" subtype="Code" buildaction="Compile" />
+    <File name="ViewDataTreeView.cs" subtype="Code" buildaction="Compile" />
+    <File name="AttributeEditorWidget.cs" subtype="Code" buildaction="Compile" />
+    <File name="AddObjectClassDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="ServiceFinder.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConnectionManager.cs" subtype="Code" buildaction="Compile" />
+    <File name="Log.cs" subtype="Code" buildaction="Compile" />
+    <File name="LdapEntryAnalyzer.cs" subtype="Code" buildaction="Compile" />
+    <File name="ServerData.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -91,8 +90,8 @@
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="avahi-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4d116c78973743f5" />
     <ProjectReference type="Gac" localcopy="True" refto="dbus-sharp, Version=0.62.0.0, Culture=neutral, PublicKeyToken=9eef2692033670f5" />
-    <ProjectReference type="Project" localcopy="True" refto="network-manager" />
   </References>
+  <DeployTargets />
   <DeploymentInformation strategy="File">
     <excludeFiles />
   </DeploymentInformation>

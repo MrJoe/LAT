@@ -13,17 +13,17 @@
       <Entry build="True" name="PosixCoreViews" configuration="Debug" />
     </Configuration>
   </Configurations>
-  <DeployTargets />
   <StartMode startupentry="ActiveDirectoryCoreViews" single="True">
     <Execute type="None" entry="ActiveDirectoryCoreViews" />
     <Execute type="None" entry="JpegAttributeViewer" />
     <Execute type="None" entry="PasswordAttributeViewer" />
     <Execute type="None" entry="PosixCoreViews" />
   </StartMode>
+  <DeployTargets />
   <Entries>
-    <Entry filename="./ActiveDirectoryCoreViews/ActiveDirectoryCoreViews.mdp" />
-    <Entry filename="./JpegAttributeViewer/JpegAttributeViewer.mdp" />
-    <Entry filename="./PasswordAttributeViewer/PasswordAttributeViewer.mdp" />
-    <Entry filename="./PosixCoreViews/PosixCoreViews.mdp" />
+    <Entry filename="ActiveDirectoryCoreViews/ActiveDirectoryCoreViews.mdp" />
+    <Entry filename="JpegAttributeViewer/JpegAttributeViewer.mdp" />
+    <Entry filename="PasswordAttributeViewer/PasswordAttributeViewer.mdp" />
+    <Entry filename="PosixCoreViews/PosixCoreViews.mdp" />
   </Entries>
 </Combine>

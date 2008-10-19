@@ -273,27 +273,37 @@ namespace lat
 			Load ();
 
 			// Watch for any plugins to be added/removed
-			try {
-					
-				sysPluginWatch = new FileSystemWatcher (Defines.SYS_PLUGIN_DIR, "*.dll");
-				sysPluginWatch.Created += OnPluginCreated;
-				sysPluginWatch.Deleted += OnPluginDeleted;
-				sysPluginWatch.EnableRaisingEvents = true;
-			
-			} catch (Exception e) {			
-				Log.Debug ("Plugin system watch error: {0}", e);			
+			if (Directory.Exists(Defines.SYS_PLUGIN_DIR))
+			{
+				try {
+						
+					sysPluginWatch = new FileSystemWatcher (Defines.SYS_PLUGIN_DIR, "*.dll");
+					sysPluginWatch.Created += OnPluginCreated;
+					sysPluginWatch.Deleted += OnPluginDeleted;
+					sysPluginWatch.EnableRaisingEvents = true;
+				
+				} catch (Exception e) {			
+					Log.Debug ("Plugin system watch error: {0}", e);			
+				}
 			}
+			else
+				Log.Debug("Plugin system directory does not exist.");
 
-			try {
-			
-				usrPluginWatch = new FileSystemWatcher (pluginDirectory, "*.dll");
-				usrPluginWatch.Created += OnPluginCreated;
-				usrPluginWatch.Deleted += OnPluginDeleted;
-				usrPluginWatch.EnableRaisingEvents = true;
-			
-			} catch (Exception e) {			
-				Log.Debug ("Plugin user dir watch error: {0}", e);			
+			if (Directory.Exists(pluginDirectory))
+			{
+				try {
+				
+					usrPluginWatch = new FileSystemWatcher (pluginDirectory, "*.dll");
+					usrPluginWatch.Created += OnPluginCreated;
+					usrPluginWatch.Deleted += OnPluginDeleted;
+					usrPluginWatch.EnableRaisingEvents = true;
+				
+				} catch (Exception e) {			
+					Log.Debug ("Plugin user dir watch error: {0}", e);			
+				}
 			}
+			else
+				Log.Debug("Plugin user dir does not exist.");
 		}
 
 		void OnPluginCreated (object sender, FileSystemEventArgs args)
