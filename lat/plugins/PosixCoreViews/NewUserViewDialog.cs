@@ -326,6 +326,9 @@ namespace lat
 			if (name == null)
 				return null;
 
+			if (!_allGroups.ContainsKey(name))
+				return null;
+			
 			LdapEntry le = (LdapEntry) _allGroups [name];		
 			LdapAttribute attr = le.getAttribute ("gidNumber");
 
@@ -343,7 +346,9 @@ namespace lat
 				
 			if (primaryGroupComboBox.GetActiveIter (out iter)) {
 				string pg = (string) primaryGroupComboBox.Model.GetValue (iter, 0);
-				aset.Add (new LdapAttribute ("gidNumber", getGidNumber(pg)));
+				string gid = getGidNumber(pg);
+				if (gid != null)
+					aset.Add (new LdapAttribute ("gidNumber", gid));
 			}
 						
 			aset.Add (new LdapAttribute ("givenName", firstNameEntry.Text));

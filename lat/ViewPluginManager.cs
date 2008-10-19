@@ -253,8 +253,21 @@ namespace lat
 			if (!di.Exists)
 				di.Create ();
 
+			DirectoryInfo dir = null;
+
+#if DEBUG
+			// Load any plugins in the plugins directory
+			// relative to the executing path.
+			// This is for debug purposes only.
+			//		-- JA 19/10/2008
+			Assembly exeAsm = Assembly.GetExecutingAssembly();
+			string runLocation = Path.GetDirectoryName(exeAsm.Location);
+			dir = new DirectoryInfo(runLocation);
+			foreach(FileInfo fi in dir.GetFiles("*.dll"))
+				LoadPluginsFromFile(fi.FullName);
+#endif
 			// Load any plugins in sys dir
-			DirectoryInfo dir = new System.IO.DirectoryInfo (Defines.SYS_PLUGIN_DIR);
+			dir = new System.IO.DirectoryInfo (Defines.SYS_PLUGIN_DIR);
 			if (dir.Exists)
 				foreach (FileInfo f in dir.GetFiles("*.dll"))
 					LoadPluginsFromFile (f.FullName);

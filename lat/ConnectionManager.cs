@@ -94,7 +94,7 @@ namespace lat
 			} catch (Exception e) {
 
 				Log.Debug (e);
-				throw e;
+				throw;
 			}
 		}
 		

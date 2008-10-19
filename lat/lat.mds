@@ -1,15 +1,15 @@
-<Combine name="lat" fileversion="2.0" MakePkgConfig="False" MakeLibPC="False">
+<Combine name="lat" fileversion="2.0" outputpath="../build" MakePkgConfig="False" MakeLibPC="False">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
       <Entry build="True" name="lat" configuration="Debug" />
       <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
-      <Entry build="True" name="plugins" configuration="" />
+      <Entry build="True" name="plugins" configuration="Debug" />
       <Entry build="False" name="network-manager" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="lat" configuration="Debug" />
       <Entry build="True" name="gnome-keyring-glue" configuration="Debug" />
-      <Entry build="True" name="plugins" configuration="" />
+      <Entry build="True" name="plugins" configuration="Release" />
       <Entry build="True" name="network-manager" configuration="Release" />
     </Configuration>
   </Configurations>
@@ -19,7 +19,7 @@
     <Execute type="None" entry="plugins" />
     <Execute type="None" entry="network-manager" />
   </StartMode>
-  <DeployTargets />
+  <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
   <Entries>
     <Entry filename="lat.mdp" />
     <Entry filename="../gnome-keyring-glue/gnome-keyring-glue.mdp" />
