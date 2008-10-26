@@ -555,6 +555,9 @@ namespace lat
 			foreach (string s in dlg.ObjectClasses) {
 				string[] req = conn.Data.GetRequiredAttrs (s);
 				store.AppendValues ("objectClass", s);
+
+				if (req == null)
+					continue;
 				
 				foreach (string r in req) {
 					if (allAttrs.Contains (r))
