@@ -1,31 +1,30 @@
 <Project name="gnome-keyring-glue" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
-      <Output directory="./bin/Debug" assembly="gnome-keyring-glue" />
+      <Output directory="bin/Debug" assembly="gnome-keyring-glue" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="True" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="True" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
-      <Output directory="./bin/Release" assembly="gnome-keyring-glue" />
-      <Build debugmode="False" target="Exe" />
+      <Output directory="bin/Release" assembly="gnome-keyring-glue" />
+      <Build debugmode="False" target="Library" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="True" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="True" generateoverflowchecks="True" mainclass="" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
-  <DeployTargets />
   <Contents>
-    <File name="./Attribute.cs" subtype="Code" buildaction="Compile" />
-    <File name="./AttributeType.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Found.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Global.cs" subtype="Code" buildaction="Compile" />
-    <File name="./GnomeKeyringSharp.OperationGetIntCallbackNative.cs" subtype="Code" buildaction="Compile" />
-    <File name="./GnomeKeyringSharp.OperationGetListCallbackNative.cs" subtype="Code" buildaction="Compile" />
-    <File name="./ItemType.cs" subtype="Code" buildaction="Compile" />
-    <File name="./NetworkPasswordData.cs" subtype="Code" buildaction="Compile" />
-    <File name="./OperationGetIntCallback.cs" subtype="Code" buildaction="Compile" />
-    <File name="./OperationGetListCallback.cs" subtype="Code" buildaction="Compile" />
-    <File name="./Result.cs" subtype="Code" buildaction="Compile" />
+    <File name="Attribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="AttributeType.cs" subtype="Code" buildaction="Compile" />
+    <File name="Found.cs" subtype="Code" buildaction="Compile" />
+    <File name="Global.cs" subtype="Code" buildaction="Compile" />
+    <File name="GnomeKeyringSharp.OperationGetIntCallbackNative.cs" subtype="Code" buildaction="Compile" />
+    <File name="GnomeKeyringSharp.OperationGetListCallbackNative.cs" subtype="Code" buildaction="Compile" />
+    <File name="ItemType.cs" subtype="Code" buildaction="Compile" />
+    <File name="NetworkPasswordData.cs" subtype="Code" buildaction="Compile" />
+    <File name="OperationGetIntCallback.cs" subtype="Code" buildaction="Compile" />
+    <File name="OperationGetListCallback.cs" subtype="Code" buildaction="Compile" />
+    <File name="Result.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -34,7 +33,5 @@
     <ProjectReference type="Gac" localcopy="True" refto="glib-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="gconf-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
-  <DeploymentInformation strategy="File">
-    <excludeFiles />
-  </DeploymentInformation>
+  <DeploymentInformation strategy="File" />
 </Project>
