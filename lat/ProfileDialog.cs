@@ -202,7 +202,7 @@ namespace lat
 					ab.Authors = vp.Authors;
 					ab.Comments = vp.Description;
 					ab.Copyright = vp.Copyright;
-					ab.Name = vp.Name;
+					ab.ProgramName = vp.Name;
 					ab.Version = vp.Version;
 					ab.Icon = vp.Icon;
 
@@ -227,7 +227,7 @@ namespace lat
 					ab.Authors = vp.Authors;
 					ab.Comments = vp.Description;
 					ab.Copyright = vp.Copyright;
-					ab.Name = vp.Name;
+					ab.ProgramName = vp.Name;
 					ab.Version = vp.Version;
 
 					ab.Run ();

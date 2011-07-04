@@ -38,7 +38,7 @@ namespace lat
 			ab.Comments = _desc;
 			ab.Copyright = _copy;
 			ab.Documenters = _docs;
-			ab.Name = Defines.PACKAGE;
+			ab.ProgramName = Defines.PACKAGE;
 			ab.TranslatorCredits = _translators;
 			ab.Version = Defines.VERSION;
 			ab.Icon = Global.latIcon;

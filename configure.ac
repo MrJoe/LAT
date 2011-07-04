@@ -20,7 +20,7 @@ fi
 
 dnl Version dependencies
 MONO_REQUIRED=1.1.13
-GTKSHARP_REQUIRED=2.8
+GTKSHARP_REQUIRED=2.12
 
 dnl pkgconfig checks
 PKG_CHECK_MODULES(MONO,

@@ -326,17 +326,11 @@ namespace lat
 
 		void SetBrowserTooltips ()
 		{
-			Tooltips t = new Tooltips ();
-			string tipMsg = null;
+			newMenuToolButton.TooltipText = "Create a new directory entry";
 
-			tipMsg = "Create a new directory entry";
-			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			deleteToolButton.TooltipText = "Delete an entry from the directory";
 
-			tipMsg = "Delete an entry from the directory";
-			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
-
-			tipMsg = "Manage templates for creating new entries";
-			templateToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			templateToolButton.TooltipText = "Manage templates for creating new entries";
 		}
 
 		void TogglePages (bool pageOneState, bool pageTwoState, bool pageThreeState, bool pageFourState)
@@ -398,23 +392,22 @@ namespace lat
 
 		void SetupToolbar (ViewPlugin vp)
 		{
-			Tooltips t = new Tooltips ();
 			string tipMsg = null;
 
 			tipMsg = String.Format ("Create a new {0}", vp.Name.ToLower());
-			newMenuToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			newMenuToolButton.TooltipText = tipMsg;
 			newMenuToolButton.Clicked += new EventHandler (viewDataTreeView.OnNewEntryActivate);
 
 			tipMsg = String.Format ("Edit the properties of a {0}", vp.Name.ToLower());
-			propertiesToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			propertiesToolButton.TooltipText = tipMsg;
 			propertiesToolButton.Clicked += new EventHandler (viewDataTreeView.OnEditActivate);
 			
 			tipMsg = String.Format ("Delete a {0} from the directory", vp.Name.ToLower());
-			deleteToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			deleteToolButton.TooltipText = tipMsg;
 			deleteToolButton.Clicked += new EventHandler (viewDataTreeView.OnDeleteActivate);
 
 			tipMsg = "Refreshes the data from the server";
-			refreshToolButton.SetTooltip (t,  tipMsg, tipMsg);			
+			refreshToolButton.TooltipText = tipMsg;
 			refreshToolButton.Clicked += new EventHandler (viewDataTreeView.OnRefreshActivate);
 
 			ToggleButtons (true);
