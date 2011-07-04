@@ -37,7 +37,11 @@ AC_SUBST(GTKSHARP_LIBS)
 dnl gnome-keyring is needed, but only at runtime. Oh well, good to check for it nonetheless
 PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
 
-PKG_CHECK_MODULES(NETWORKMANAGER, dbus-sharp, ENABLE_NETWORKMANAGER="yes", ENABLE_NETWORKMANAGER="no")
+PKG_CHECK_MODULES(NETWORKMANAGER, dbus-sharp-1.0, ENABLE_NETWORKMANAGER="yes", ENABLE_NETWORKMANAGER="no")
+if test "$ENABLE_NETWORKMANAGER" = "no"; then
+  PKG_CHECK_MODULES(NETWORKMANAGER_ALT, dbus-sharp, ENABLE_NETWORKMANAGER="yes", ENABLE_NETWORKMANAGER="no")
+fi
+
 AC_ARG_ENABLE(networkmanager, 
 	      [  --enable-networkmanager[[=no/yes]]    compile with NetworkManager support [[default: no]]],
 	      ENABLE_NETWORKMANAGER="$enableval")
