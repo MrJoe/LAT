@@ -1,95 +1,94 @@
-<Project name="lat" fileversion="2.0" language="C#" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
+<Project name="lat" fileversion="2.0" DefaultNamespace="lat" language="C#" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="../build-debug" assembly="lat" />
       <Build debugmode="True" target="Exe" />
-      <Execution runwithwarnings="True" commandlineparameters="--debug" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
-      <EnvironmentVariables />
+      <Execution consolepause="True" commandlineparameters="--debug" runwithwarnings="True" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="DEBUG" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="bin/Release" assembly="lat" />
       <Build debugmode="False" target="Exe" />
-      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <Execution consolepause="True" runwithwarnings="True" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="ENABLE_NETWORKMANAGER;ENABLE_AVAHI" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
   <Contents>
-    <File name="AboutDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
-    <File name="CreateEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="Defines.cs" subtype="Code" buildaction="Compile" />
-    <File name="LDIF.cs" subtype="Code" buildaction="Compile" />
-    <File name="LdapSearch.cs" subtype="Code" buildaction="Compile" />
-    <File name="LdapServer.cs" subtype="Code" buildaction="Compile" />
-    <File name="LdapTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="LoginDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="Main.cs" subtype="Code" buildaction="Compile" />
-    <File name="MassEditDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="NewEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="PasswordDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="Preferences.cs" subtype="Code" buildaction="Compile" />
-    <File name="ProfileDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="RenameEntryDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="SMBPassword.cs" subtype="Code" buildaction="Compile" />
-    <File name="SambaPopulateDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="SchemaTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="SearchBuilderDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="SearchResultsTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="SelectContainerDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="SelectGroupsDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="TemplateEditorDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="Templates.cs" subtype="Code" buildaction="Compile" />
-    <File name="TemplatesDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="TimeDateDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="Util.cs" subtype="Code" buildaction="Compile" />
-    <File name="ViewDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="ViewsTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="Window.cs" subtype="Code" buildaction="Compile" />
-    <File name="../resources/contact-new.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/contact-new-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/document-save.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/edit-find.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/edit-find-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/go-home.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/lat.glade" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/lat.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/locked16x16.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/locked-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/mail-message-new.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/stock_person.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/text-x-generic.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/unlocked16x16.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/users.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/x-directory-normal.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/x-directory-remote-server.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/x-directory-remote-server-48x48.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="../resources/x-directory-remote-workgroup.png" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="ConnectDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="ViewPluginManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="ViewDataTreeView.cs" subtype="Code" buildaction="Compile" />
-    <File name="AttributeEditorWidget.cs" subtype="Code" buildaction="Compile" />
-    <File name="AddObjectClassDialog.cs" subtype="Code" buildaction="Compile" />
-    <File name="ServiceFinder.cs" subtype="Code" buildaction="Compile" />
-    <File name="ConnectionManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="Log.cs" subtype="Code" buildaction="Compile" />
-    <File name="LdapEntryAnalyzer.cs" subtype="Code" buildaction="Compile" />
-    <File name="ServerData.cs" subtype="Code" buildaction="Compile" />
+    <File subtype="Code" buildaction="Compile" name="AboutDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="AssemblyInfo.cs" />
+    <File subtype="Code" buildaction="Compile" name="CreateEntryDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="Defines.cs" />
+    <File subtype="Code" buildaction="Compile" name="LDIF.cs" />
+    <File subtype="Code" buildaction="Compile" name="LdapSearch.cs" />
+    <File subtype="Code" buildaction="Compile" name="LdapServer.cs" />
+    <File subtype="Code" buildaction="Compile" name="LdapTreeView.cs" />
+    <File subtype="Code" buildaction="Compile" name="LoginDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="Main.cs" />
+    <File subtype="Code" buildaction="Compile" name="MassEditDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="NewEntryDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="PasswordDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="Preferences.cs" />
+    <File subtype="Code" buildaction="Compile" name="ProfileDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="RenameEntryDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="SMBPassword.cs" />
+    <File subtype="Code" buildaction="Compile" name="SambaPopulateDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="SchemaTreeView.cs" />
+    <File subtype="Code" buildaction="Compile" name="SearchBuilderDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="SearchResultsTreeView.cs" />
+    <File subtype="Code" buildaction="Compile" name="SelectContainerDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="SelectGroupsDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="TemplateEditorDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="Templates.cs" />
+    <File subtype="Code" buildaction="Compile" name="TemplatesDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="TimeDateDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="Util.cs" />
+    <File subtype="Code" buildaction="Compile" name="ViewDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="ViewsTreeView.cs" />
+    <File subtype="Code" buildaction="Compile" name="Window.cs" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/contact-new.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/contact-new-48x48.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/document-save.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/edit-find.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/edit-find-48x48.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/go-home.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/lat.glade" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/lat.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/locked16x16.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/locked-48x48.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/mail-message-new.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/stock_person.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/text-x-generic.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/unlocked16x16.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/users.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/x-directory-normal.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/x-directory-remote-server.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/x-directory-remote-server-48x48.png" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="../resources/x-directory-remote-workgroup.png" />
+    <File subtype="Code" buildaction="Compile" name="ConnectDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="ViewPluginManager.cs" />
+    <File subtype="Code" buildaction="Compile" name="ViewDataTreeView.cs" />
+    <File subtype="Code" buildaction="Compile" name="AttributeEditorWidget.cs" />
+    <File subtype="Code" buildaction="Compile" name="AddObjectClassDialog.cs" />
+    <File subtype="Code" buildaction="Compile" name="ServiceFinder.cs" />
+    <File subtype="Code" buildaction="Compile" name="ConnectionManager.cs" />
+    <File subtype="Code" buildaction="Compile" name="Log.cs" />
+    <File subtype="Code" buildaction="Compile" name="LdapEntryAnalyzer.cs" />
+    <File subtype="Code" buildaction="Compile" name="ServerData.cs" />
   </Contents>
   <References>
-    <ProjectReference type="Gac" localcopy="True" specificVersion="False" refto="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <ProjectReference type="Gac" localcopy="True" specificVersion="False" refto="gconf-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <ProjectReference type="Gac" localcopy="True" specificVersion="False" refto="gdk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <ProjectReference type="Gac" localcopy="True" specificVersion="False" refto="glade-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <ProjectReference type="Gac" localcopy="True" specificVersion="False" refto="glib-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <ProjectReference type="Gac" localcopy="True" specificVersion="False" refto="gnome-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="atk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="gconf-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="gdk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="glade-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="glib-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="gnome-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Project" localcopy="True" refto="gnome-keyring-glue" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="Novell.Directory.Ldap, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Gac" localcopy="True" refto="avahi-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4d116c78973743f5" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="avahi-sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4d116c78973743f5" />
   </References>
   <LanguageParameters ApplicationIcon="." ctype="CSharpProjectParameters" />
   <DeploymentInformation strategy="File" />
