@@ -46,6 +46,7 @@ namespace lat
 			
 			this.ButtonPressEvent += new ButtonPressEventHandler (OnRightClick);
 			this.RowActivated += new RowActivatedHandler (OnRowActivated);
+			this.Selection.Changed += (object o, EventArgs args) => {};
 			this.ShowAll ();
 		}
 		
@@ -239,6 +240,10 @@ namespace lat
 		public void OnEditActivate (object o, EventArgs args) 
 		{
 			TreeModel model;
+			
+			if (this.Selection == null)
+				return;
+				
 			TreePath[] tp = this.Selection.GetSelectedRows (out model);
 
 			foreach (TreePath path in tp) {
