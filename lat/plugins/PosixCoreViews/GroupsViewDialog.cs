@@ -279,14 +279,14 @@ namespace lat
 			
 				string userDN = null;
 				
-				if (this.defaultNewContainer == string.Empty) {
+				if (string.IsNullOrEmpty(this.defaultNewContainer)) {
 				
 					SelectContainerDialog scd =	new SelectContainerDialog (conn, groupDialog);
 					scd.Title = "Save Group";
 					scd.Message = String.Format ("Where in the directory would\nyou like save the group\n{0}?", groupNameEntry.Text);
 					scd.Run ();
 
-					if (scd.DN == "")
+					if (string.IsNullOrEmpty(scd.DN))
 						return;
 
 					userDN = String.Format ("cn={0},{1}", groupNameEntry.Text, scd.DN);
