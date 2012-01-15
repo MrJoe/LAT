@@ -14,7 +14,7 @@ see the file 'COPYING' for more information.
 
 The official web site is:
 
-	http://dev.mmgsecurity.com/projects/lat/
+	http://ldap-at.sourceforge.net/
 
 Installation
 ============
@@ -51,4 +51,5 @@ the MMG Security Subversion repository in the module lat.
 
 Bugs / Patches
 ==================
-Bugs/patches can be reported/submitted to http://dev.mmgsecurity.com/bugs/
+Bugs/patches can be reported/submitted to https://github.com/MrJoe/LAT/issues
+

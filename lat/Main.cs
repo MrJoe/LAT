@@ -44,8 +44,8 @@ public class LdapAdministrationTool
 	{
 		StringBuilder usage = new StringBuilder ();
 		usage.AppendFormat ("{0} {1}\n", Defines.PACKAGE, Defines.VERSION);
-		usage.AppendFormat ("Web page: http://dev.mmgsecurity.com/projects/lat/\n");
-		usage.AppendFormat ("Copyright 2005-2006 MMG Security, Inc.\n\n");
+		usage.AppendFormat ("Web page: https://sourceforge.net/projects/ldap-at/\n");
+		usage.AppendFormat ("Copyright 2005-2006 MMG Security, Inc.\nCopyright 2008-2012 Jeroen Asselman\n");
 		usage.AppendFormat ("Usage: {0} [OPTIONS]\n\n", Defines.PACKAGE);
 		usage.AppendFormat ("Options:\n");
 		usage.AppendFormat ("  -d,  --debug\t\t\tTurn on debugging messages.\n");
@@ -59,7 +59,7 @@ public class LdapAdministrationTool
 	{
 		StringBuilder version = new StringBuilder ();
 		version.AppendFormat ("{0} {1}\n\n", Defines.PACKAGE, Defines.VERSION);
-		version.AppendFormat ("Copyright 2005-2006 MMG Security, Inc.\n");
+		version.AppendFormat ("Copyright 2005-2006 MMG Security, Inc.\nCopyright 2008-2012 Jeroen Asselman\n");
 		version.AppendFormat ("This is free software; see the source for copying conditions. There is NO\n");
 		version.AppendFormat ("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
 		
