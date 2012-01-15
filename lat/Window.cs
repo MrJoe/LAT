@@ -1311,6 +1311,7 @@ namespace lat
 				valuesScrolledWindow.AddWithViewport (serverInfoView);
 				valuesScrolledWindow.ShowAll ();
 
+				ToggleButtons (false);
 				UpdateStatusBar ();
 				
 				return;
