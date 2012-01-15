@@ -65,7 +65,11 @@ namespace lat
 
 		public string GetAttributeDefaultValue (string attrName)
 		{
-			return (string) _attributes [attrName]; 
+			string result;
+			
+			_attributes.TryGetValue(attrName, out result);
+			
+			return result;
 		}
 
 		public string Name
