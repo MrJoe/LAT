@@ -160,7 +160,7 @@ namespace lat
 
 				if (_isEdit) {
 					attrListStore.AppendValues (s, 
-						"Required", 
+						"Optional", 
 						t.GetAttributeDefaultValue (s));
 
 				} else {
