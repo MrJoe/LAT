@@ -25,11 +25,11 @@ namespace lat
 {
 	public class AboutDialog
 	{
-		static string[] _author = { "Loren Bandiera" };
+		static string[] _author = { "Loren Bandiera, Jeroen Asselman" };
 		static string[] _docs = { "Loren Bandiera" };
 		static string _translators = "Pablo Borges (pt_BR)\nThomas Constans (fr_FR)";
 		static string _desc = "LDAP Administration Tool";
-		static string _copy = "Copyright \xa9 2005-2006 MMG Security Inc.";
+		static string _copy = "Copyright \xa9 2005-2006 MMG Security Inc.\nCopyright \xa9 2008-2012 Jeroen Asselman";
 
 		public AboutDialog ()
 		{
