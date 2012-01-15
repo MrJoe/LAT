@@ -1,4 +1,4 @@
-AC_INIT(lat, 1.2.4, https://github.com/MrJoe/LAT/issues/)
+AC_INIT(lat, 1.2.4, https://github.com/MrJoe/lat/issues/)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_MAINTAINER_MODE
 

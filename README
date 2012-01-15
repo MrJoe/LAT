@@ -39,12 +39,10 @@ Hacking
 =======
 
 LAT is written in C# using Mono and Gtk#. The source code is available from 
-the MMG Security Subversion repository in the module lat.
+github and sourceforge.
 
-	$ mkdir lat
+	$ git clone git://github.com/MrJoe/lat.git
 	$ cd lat
-	$ svn co http://dev.mmgsecurity.com/src/lat/trunk
-	$ cd trunk
 	$ ./autogen.sh
 	$ ./configure
 	$ make
