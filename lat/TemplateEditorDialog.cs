@@ -237,7 +237,7 @@ namespace lat
 				string nam = (string) row[0];
 				string val = (string) row[2];
 				
-				if (nam == null || val == null || val == "")
+				if (string.IsNullOrEmpty(nam) || string.IsNullOrEmpty(val))
 					continue;
 					
 				t.AddAttribute (nam, val);
