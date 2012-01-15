@@ -5,10 +5,10 @@ Summary: 	LDAP Administration Tool
 
 Group: 		Applications/System
 License: 	GPL
-URL: 		http://dev.mmgsecurity.com/projects/lat
+URL: 		https://sourceforge.net/projects/ldap-at/
 BuildRoot: 	%{_tmppath}/%{name}-root
 BuildArch:      noarch
-Source: 	http://dev.mmgsecurity.com/downloads/lat/%{name}-%{version}.tar.gz
+Source: 	https://sourceforge.net/projects/ldap-at/files/LAT/%{name}-%{version}.tar.gz
 
 Packager:	Loren Bandiera <lorenb@mmgsecurity.com>
 
