@@ -932,9 +932,27 @@ namespace lat
 			string profileName = (string) serverComboBox.Model.GetValue (iter, 0);			
 			Connection conn = Global.Connections [profileName];
 			
-			RfcFilter filter = new RfcFilter (filterEntry.Text);			
-			LdapEntry[] searchResults = conn.Data.Search (searchBaseButton.Label, filter.filterToString());
+			LdapEntry[] searchResults = null;
+			try {
+				RfcFilter filter = new RfcFilter (filterEntry.Text);			
+				searchResults = conn.Data.Search (searchBaseButton.Label, filter.filterToString());
+			}
+			catch(LdapLocalException ex)
+			{
+				HIGMessageDialog dialog = new HIGMessageDialog (
+					mainWindow,
+					0,
+					Gtk.MessageType.Error,
+					Gtk.ButtonsType.Ok,
+					"Search error",
+					string.Format("{0}.\n{1}", ex.Message, ex.LdapErrorMessage));
 
+				dialog.Run ();
+				dialog.Destroy ();
+				
+				return;
+			}
+			
 			if (searchResults == null) {
 				HIGMessageDialog dialog = new HIGMessageDialog (
 					mainWindow,
