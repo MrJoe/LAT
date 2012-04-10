@@ -80,7 +80,7 @@ namespace lat
 		[Glade.Widget] Gtk.Entry attrOrderingEntry;
 		[Glade.Widget] Gtk.Entry attrSubstringEntry;
 		[Glade.Widget] Gtk.Entry attrSyntaxEntry;		
-
+		[Glade.Widget] Gtk.Button searchButton;
 		[Glade.Widget] Gtk.Entry matNameEntry;
 		[Glade.Widget] Gtk.Entry matOIDEntry;
 		[Glade.Widget] Gtk.Entry matSyntaxEntry;
@@ -511,16 +511,19 @@ namespace lat
 				objNameTextview.Buffer.Text = tmp;
 
 				tmp = "";
-
-				foreach (string b in sp.Superiors)
+				
+				string[] superiors = sp.Superiors ?? new string[0];
+				foreach (string b in superiors)
 					tmp += String.Format ("{0}\n", b);
 
 				objSuperiorTextview.Buffer.Text = tmp;
-
-				foreach (string c in sp.Required)
+				
+				string[] requireds = sp.Required ?? new string[0];
+				foreach (string c in requireds)
 					objRequiredStore.AppendValues (c);
-
-				foreach (string d in sp.Optional)
+				
+				string[] optionals = sp.Optional ?? new string[0];
+				foreach (string d in optionals)
 					objOptionalStore.AppendValues (d);
 
 				objObsoleteCheckbutton.Active = sp.Obsolete;
@@ -991,8 +994,10 @@ namespace lat
 				scd.Title = Mono.Unix.Catalog.GetString ("Select search base");
 				scd.Run ();
 
-				if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host))
+				if (!scd.DN.Equals ("") && !scd.DN.Equals (conn.Settings.Host)) {
 					searchBaseButton.Label = scd.DN;
+					searchButton.Sensitive = true;
+				}
 					
 			} catch {}
 		}
