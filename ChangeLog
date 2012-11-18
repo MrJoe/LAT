@@ -1,3 +1,10 @@
+1.2.4
+	* BUGFIX Crash trying use "New" in "Browser" window
+	* Updated dependency of dbus-sharp to dbus-sharp-1.0
+	* Updated dependency of gtk-sharp to gtk-sharp-2.12
+	* Fixed various crashes
+
+1.2.3
 	* BUGFIX [#90] Fix bug with samba SID being stripped during edits
 	* BUGFIX [#88] Creating new POSIX user causes crash
 
