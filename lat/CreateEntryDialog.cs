@@ -44,6 +44,11 @@ namespace lat
 
 		public CreateEntryDialog (Connection connection, Template theTemplate)
 		{
+			if (connection == null)
+				throw new ArgumentNullException("connection");
+			if (theTemplate == null)
+				throw new ArgumentNullException("theTemplate");
+			
 			conn = connection;
 			t = theTemplate;
 			isTemplate = true;
@@ -60,7 +65,7 @@ namespace lat
 			createEntryDialog.Icon = Global.latIcon;
 			
 			createEntryDialog.Run ();
-			while (errorOccured)
+		
 				createEntryDialog.Run ();
 
 			createEntryDialog.Destroy ();
@@ -68,6 +73,11 @@ namespace lat
 
 		public CreateEntryDialog (Connection connection, LdapEntry le)
 		{
+			if (connection == null)
+				throw new ArgumentNullException("connection");
+			if (le == null)
+				throw new ArgumentNullException("le");
+			
 			conn = connection;
 
 			Init ();
